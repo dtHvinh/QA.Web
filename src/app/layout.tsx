@@ -33,7 +33,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${dmSans.variable} ${geistSans.variable} ${geistMono.variable} bg-white text-black antialiased`}
+        className={`${dmSans.className} ${geistSans.variable} ${geistMono.variable} bg-white text-black antialiased`}
       >
         <div className="container mx-auto px-4">
           <AuthContextProvider>
