@@ -13,3 +13,5 @@ export const Routes = {
     Settings: "/settings",
     Logout: "/logout",
 }
+
+export const backendURL = process.env.NEXT_PUBLIC_BACKEND_HOST

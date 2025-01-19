@@ -1,19 +1,25 @@
+'use client'
+
 import TagLabel from "@/components/TagLabel";
+import { AuthContext } from "@/context/AuthContextProvider";
+import { useContext } from "react";
 
 export default function Home() {
+  const auth = useContext(AuthContext);
+
   return (
     <div className="grid grid-cols-3 gap-4 mt-2">
       <div className="text-2xl col-span-3">
-        Hello, Vinh!
+        Hello, {auth?.username}
       </div>
 
       <div className="gap-4 col-span-3 md:col-span-1 border-2 border-gray-400 h-full m-2 p-4 flex flex-col">
-        <div className="text-lg font-semibold ">
+        <div className="text-lg font-semibold">
           Reputation
         </div>
         <div className="flex flex-col gap-4">
           <div className="flex">
-            <div className="w-1/2 -ml-4 text-center">
+            <div className="w-3/4 -ml-4 text-center">
               0
             </div>
             <svg viewBox="0 0 180 30" xmlns="http://www.w3.org/2000/svg">

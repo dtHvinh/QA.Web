@@ -2,10 +2,10 @@
 
 import { AuthContext } from "@/context/AuthContextProvider";
 import { AppName, Routes } from "@/utilities/Constants";
-import Image from 'next/image';
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useContext } from "react";
+import UserDropdown from "./UserDropdown";
 
 export default function Appbar() {
     const authContext = useContext(AuthContext);
@@ -29,16 +29,7 @@ export default function Appbar() {
                 </div>
                 {authContext !== null
                     ?
-                    <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-                        <Image
-                            src="https://ui-avatars.com/api/?name=hien+vinh2"
-                            width={32}
-                            height={32}
-                            quality={100}
-                            className="rounded-full"
-                            alt="A"
-                        />
-                    </div>
+                    <UserDropdown profilePicture={authContext.profilePicture} />
                     :
                     <div className="text-gray-500 flex gap-2">
                         <Link href={Routes.Auth.Login} className="rounded-full border py-1 px-4 border-gray-300 hover:bg-gray-200 transition-all active:scale-95">

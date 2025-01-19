@@ -1,16 +1,20 @@
 'use client'
 
-import { Routes } from "@/utilities/Constants";
+import { ErrorResponse } from "@/props/ErrorResponse";
+import { backendURL, Routes } from "@/utilities/Constants";
+import notify from "@/utilities/ToastrExtensions";
+import { setCookie } from "cookies-next/client";
 import Link from "next/link";
+import { redirect, usePathname } from "next/navigation";
 import { useState } from "react";
+import { ToastContainer } from "react-toastify";
 
-export default function RegisterPage() {
-    const [error, setError] = useState<string | null>(null);
+export default function LoginPage() {
     const [isLoading, setIsLoading] = useState(false);
+    const name = usePathname()
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        setError(null);
         setIsLoading(true);
 
         try {
@@ -20,25 +24,47 @@ export default function RegisterPage() {
                 password: formData.get('password') as string,
             };
 
+            const response = await fetch(`${backendURL}/api${name}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+
+
+            if (!response.ok) {
+                const error = (await response.json()) as ErrorResponse;
+                throw new Error(error.errors);
+            }
+
+            const body = await response.json();
+
+            setCookie('auth', body)
+
         } catch (err) {
-            setError(err instanceof Error ? err.message : 'Something went wrong');
+            notify('error', err instanceof Error ? err.message : 'Something went wrong');
+            return;
         } finally {
             setIsLoading(false);
         }
+
+        redirect('/')
     }
 
     return (
         <div className="flex flex-col h-screen">
+            <ToastContainer />
             <div className="grid place-items-center mx-2 my-20 sm:my-auto">
 
                 <div className="w-full p-12 sm:w-8/12 md:w-6/12 lg:w-5/12 2xl:w-4/12 
-                                bg-white rounded-lg border-2 border-gray-300">
+                                bg-white rounded-lg md:border-2 md:border-gray-300">
 
                     <h2 className="text-center font-semibold text-3xl lg:text-4xl text-gray-800">
                         Log in
                     </h2>
+                    <form className="mt-10" method="POST" onSubmit={handleSubmit}>
 
-                    <form className="mt-10" method="POST">
                         <label htmlFor="email" className="block text-xs font-semibold text-gray-600 uppercase">E-mail</label>
                         <input id="email" type="email" name="email" placeholder="e-mail address" autoComplete="email"
                             className="block w-full py-3 px-1 mt-2 
@@ -59,7 +85,7 @@ export default function RegisterPage() {
                             className="w-full py-3 mt-10 bg-gray-800 rounded-sm
                     font-medium text-white uppercase
                     focus:outline-none hover:bg-gray-700 hover:shadow-none">
-                            SIGN UP
+                            {isLoading ? 'Login...' : 'Login'}
                         </button>
 
                         <div className="sm:flex sm:flex-wrap mt-8 sm:mb-4 text-sm text-center">
