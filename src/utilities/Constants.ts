@@ -6,6 +6,7 @@ export const Routes = {
         Login: "/auth/login",
         Register: "/auth/register",
     },
+    NewQuestion: "/new-question",
     Questions: "/questions",
     Tags: "/tags",
     Bookmarks: "/bookmarks",

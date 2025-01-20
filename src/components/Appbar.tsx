@@ -1,10 +1,10 @@
 'use client'
 
-import { AuthContext } from "@/context/AuthContextProvider";
-import { AppName, Routes } from "@/utilities/Constants";
+import {AuthContext} from "@/context/AuthContextProvider";
+import {AppName} from "@/utilities/Constants";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useContext } from "react";
+import {usePathname} from "next/navigation";
+import {useContext} from "react";
 import UserDropdown from "./UserDropdown";
 
 export default function Appbar() {
@@ -25,21 +25,11 @@ export default function Appbar() {
 
             <div className="flex gap-4 items-center mt-4 md:mt-0 w-full md:w-auto justify-between md:justify-end">
                 <div className="w-full md:w-auto">
-                    <input type="text" placeholder="Search..." className="w-full md:w-auto text-gray-500 border p-2 outline-none rounded-full focus:border-black transition-colors" />
+                    <input type="text" placeholder="Search..."
+                           className="w-full md:w-auto text-gray-500 border p-2 outline-none rounded-full focus:border-black transition-colors"/>
                 </div>
-                {authContext !== null
-                    ?
-                    <UserDropdown profilePicture={authContext.profilePicture} />
-                    :
-                    <div className="text-gray-500 flex gap-2">
-                        <Link href={Routes.Auth.Login} className="rounded-full border py-1 px-4 border-gray-300 hover:bg-gray-200 transition-all active:scale-95">
-                            Login
-                        </Link>
-                        <Link href={Routes.Auth.Register} className="hidden md:block rounded-full border py-1 px-4 border-gray-300 hover:bg-gray-200 transition-all active:scale-95">
-                            Sign up
-                        </Link>
-                    </div>
-                }
+
+                <UserDropdown profilePicture={authContext?.profilePicture}/>
             </div>
         </div>
     )
