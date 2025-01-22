@@ -4,3 +4,5 @@ export interface ErrorResponse {
     status: number;
     errors: string
 }
+
+export type ErrorResponseProps = ErrorResponse;

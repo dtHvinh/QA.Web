@@ -2,33 +2,64 @@
 
 import TextEditor from "@/components/TextEditor";
 import TagInput from "@/components/TagInput";
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
+import {Apis, backendURL} from "@/utilities/Constants";
+import {AuthContext} from "@/context/AuthContextProvider";
+import {fetcher, IsErrorResponse} from "@/helpers/request-utils";
+import notifyError, {notifySucceed} from "@/utilities/ToastrExtensions";
+import {CreateQuestionResponse} from "@/types/types";
+import {ErrorResponse} from "@/props/ErrorResponse";
 
 export default function NewQuestion() {
     const [tagIds, setTagIds] = useState<string[]>([]);
-    const [title, setTitle] = useState<string>('');
     const [content, setContent] = useState<string>('');
+    const auth = useContext(AuthContext);
+
+    const requestUrl = `${backendURL}${Apis.Question.Create}`;
 
     const handleTagChange = (tagIds: string[]) => {
         setTagIds(tagIds);
     };
 
-    const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        const formData = new FormData(event.currentTarget);
-        const name = formData.get('title') as string;
+    const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
 
-        console.log({name, content, tagIds});
+        const formData = new FormData(event.currentTarget);
+        const title = formData.get('title') as string;
+
+        if (content.replaceAll(' ', '').length <= 7) {
+            notifyError('Must not leave question detail empty');
+            return;
+        }
+
+        const response = await fetcher<CreateQuestionResponse>(
+            [
+                'POST',
+                requestUrl,
+                auth!.accessToken,
+                JSON.stringify({
+                    title: title,
+                    content: content.trim(),
+                    tags: tagIds
+                })
+            ]);
+
+        if (IsErrorResponse(response)) {
+            notifyError((response as ErrorResponse).errors);
+        } else {
+            notifySucceed('Question submitted successfully');
+        }
     }
 
     return (
         <div className="md:mx-auto md:w-3/4 p-4">
             <div className="text-2xl">Ask a question</div>
-
             <form className="mt-4 space-y-4" method="POST" onSubmit={handleFormSubmit}>
                 <div className="space-y-2">
                     <label htmlFor="title" className="block text-xl font-medium text-gray-700">Title</label>
                     <input
                         type="text"
+                        spellCheck={false}
                         name="title"
                         placeholder="e.g. How to use React Query?"
                         required
@@ -50,16 +81,18 @@ export default function NewQuestion() {
                                 suggestions.
                             </small>
                         </div>
-                        <TagInput onTagChange={handleTagChange}/>
+                        <TagInput onTagChange={handleTagChange} maxTags={5}/>
                     </div>
                 </div>
 
                 <div className={'flex justify-end'}>
                     <div className={'flex space-x-2.5'}>
-                        <button className={'border-[2px] border-gray-400 p-2 rounded-lg'}>
+                        <button
+                            className={'border-[2px] border-gray-400 p-2 rounded-lg transition-all active:scale-95'}>
                             Save as Draft
                         </button>
-                        <button className={'p-2 rounded-lg bg-[#5783db] hover:bg-[#5783db] text-white'}>
+                        <button
+                            className={'p-2 rounded-lg bg-[#5783db] hover:bg-[#5783db] transition-all text-white active:scale-95'}>
                             Send
                         </button>
                     </div>

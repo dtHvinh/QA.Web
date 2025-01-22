@@ -1,7 +1,7 @@
-export default function QuestionPage() {
+export default function QuestionsPage() {
     return (
         <div>
-            <h1>Question Page</h1>
+            <h1>Rec Questions Page</h1>
         </div>
     );
 }

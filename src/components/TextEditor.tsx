@@ -18,7 +18,14 @@ const TextEditor = (params: TextEditorProps) => {
         editable: true,
         content: params.currentText,
         onUpdate: ({editor}) => {
-            params.onTextChange(editor.getHTML())
+            let content = editor.getHTML();
+            const json = editor.getJSON().content;
+
+            if (Array.isArray(json) && json.length === 1 && !json[0].hasOwnProperty("content")) {
+                content = "";
+            }
+
+            params.onTextChange(content)
         },
         immediatelyRender: false,
     })
@@ -30,22 +37,26 @@ const TextEditor = (params: TextEditorProps) => {
     return (
         <div className='text-editor'>
             <TextEditorToolbar editor={editor}/>
+            <hr/>
             <EditorContent spellCheck='false' editor={editor}/>
         </div>
     )
 }
 
+export default TextEditor
+
 function TextEditorToolbar({editor}: Readonly<{ editor: Editor }>) {
     const [isSelectHeading, setIsSelectHeading] = useState(false)
 
     return (
-        <div className="toolbar gap-3 md:gap-5">
-            <div className=''>
+        <div className="toolbar flex-wrap w-full gap-3 md:gap-5">
+            <div className={'flex gap-1'}>
                 <Tooltip title='Header'>
                     <button
                         type={"button"}
                         onClick={() => setIsSelectHeading(!isSelectHeading)}
                         className={editor.isActive('heading') ? 'active' : ''}
+                        tabIndex={-1}
                     >Header
                     </button>
                 </Tooltip>
@@ -54,6 +65,7 @@ function TextEditorToolbar({editor}: Readonly<{ editor: Editor }>) {
                         type={"button"}
                         onClick={() => editor.chain().focus().toggleHeading({level: 1}).run()}
                         className={editor.isActive('heading', {level: 1}) ? 'active' : ''}
+                        tabIndex={-1}
                     >
                         H1
                     </button>
@@ -61,6 +73,7 @@ function TextEditorToolbar({editor}: Readonly<{ editor: Editor }>) {
                         type={"button"}
                         onClick={() => editor.chain().focus().toggleHeading({level: 2}).run()}
                         className={editor.isActive('heading', {level: 2}) ? 'active' : ''}
+                        tabIndex={-1}
                     >
                         H2
                     </button>
@@ -68,6 +81,7 @@ function TextEditorToolbar({editor}: Readonly<{ editor: Editor }>) {
                         type={"button"}
                         onClick={() => editor.chain().focus().toggleHeading({level: 3}).run()}
                         className={editor.isActive('heading', {level: 3}) ? 'active' : ''}
+                        tabIndex={-1}
                     >
                         H3
                     </button>
@@ -79,6 +93,7 @@ function TextEditorToolbar({editor}: Readonly<{ editor: Editor }>) {
                     type={"button"}
                     onClick={() => editor.chain().focus().toggleBold().run()}
                     className={editor.isActive('bold') ? 'active' : ''}
+                    tabIndex={-1}
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor">
                         <path
@@ -91,6 +106,7 @@ function TextEditorToolbar({editor}: Readonly<{ editor: Editor }>) {
                     type={"button"}
                     onClick={() => editor.chain().focus().toggleItalic().run()}
                     className={editor.isActive('italic') ? 'active' : ''}
+                    tabIndex={-1}
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor">
                         <path
@@ -103,6 +119,7 @@ function TextEditorToolbar({editor}: Readonly<{ editor: Editor }>) {
                     type={"button"}
                     onClick={() => editor.chain().focus().toggleStrike().run()}
                     className={editor.isActive('strike') ? 'active' : ''}
+                    tabIndex={-1}
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor">
                         <path
@@ -115,6 +132,7 @@ function TextEditorToolbar({editor}: Readonly<{ editor: Editor }>) {
                     type={"button"}
                     onClick={() => editor.chain().focus().toggleBulletList().run()}
                     className={editor.isActive('bulletList') ? 'active' : ''}
+                    tabIndex={-1}
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor">
                         <path fillRule="evenodd"
@@ -127,6 +145,7 @@ function TextEditorToolbar({editor}: Readonly<{ editor: Editor }>) {
                     type={"button"}
                     onClick={() => editor.chain().focus().toggleOrderedList().run()}
                     className={editor.isActive('orderedList') ? 'active' : ''}
+                    tabIndex={-1}
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor">
                         <path fillRule="evenodd"
@@ -141,6 +160,7 @@ function TextEditorToolbar({editor}: Readonly<{ editor: Editor }>) {
                     type={"button"}
                     onClick={() => editor.chain().focus().toggleBlockquote().run()}
                     className={editor.isActive('orderedList') ? 'active' : ''}
+                    tabIndex={-1}
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor">
                         <path
@@ -153,6 +173,7 @@ function TextEditorToolbar({editor}: Readonly<{ editor: Editor }>) {
                     type={"button"}
                     onClick={() => editor.chain().focus().toggleCodeBlock().run()}
                     className={editor.isActive('codeBlock') ? 'active' : ''}
+                    tabIndex={-1}
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor">
                         <path
@@ -165,6 +186,7 @@ function TextEditorToolbar({editor}: Readonly<{ editor: Editor }>) {
                     type={"button"}
                     onClick={() => editor.chain().focus().toggleCode().run()}
                     className={editor.isActive('code') ? 'active' : ''}
+                    tabIndex={-1}
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                          viewBox="0 0 16 16">
@@ -177,4 +199,4 @@ function TextEditorToolbar({editor}: Readonly<{ editor: Editor }>) {
     );
 }
 
-export default TextEditor
+

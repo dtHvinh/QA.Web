@@ -2,7 +2,6 @@
 
 import LeftNav from "@/components/LeftNav";
 import {usePathname} from "next/navigation";
-import {TopBanner} from "@/components/TopBanner";
 
 export default function SubLayout({
                                       children,
@@ -16,7 +15,6 @@ export default function SubLayout({
             </div>
             :
             <div>
-                <TopBanner/>
                 <div className="grid grid-cols-6">
                     <div className="hidden md:flex flex-col gap-2 text-gray-500 divide-y">
                         <LeftNav/>

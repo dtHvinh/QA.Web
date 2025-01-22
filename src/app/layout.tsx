@@ -5,6 +5,8 @@ import {DM_Sans, Geist, Geist_Mono} from "next/font/google";
 import "./globals.css";
 import "./globals.scss";
 import SubLayout from "./layouts/sub-layout";
+import {ToastContainer} from "react-toastify";
+import React from "react";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -23,7 +25,7 @@ const dmSans = DM_Sans({
 
 export const metadata: Metadata = {
     title: "Q&A",
-    description: "Apppppppp",
+    description: "App",
 };
 
 export default function RootLayout({
@@ -40,6 +42,7 @@ export default function RootLayout({
             <AuthContextProvider>
                 <Appbar/>
                 <SubLayout>
+                    <ToastContainer/>
                     {children}
                 </SubLayout>
             </AuthContextProvider>

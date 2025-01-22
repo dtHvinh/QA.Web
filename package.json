@@ -19,10 +19,12 @@
     "next": "15.1.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-toastify": "^11.0.2"
+    "react-toastify": "^11.0.2",
+    "swr": "^2.3.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@mui/styles": "^6.4.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-autosuggest": "^10.1.11",
