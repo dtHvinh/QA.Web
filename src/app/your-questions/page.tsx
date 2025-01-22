@@ -1,18 +1,18 @@
 'use client'
 
 import {MenuItem, Select, SelectChangeEvent} from "@mui/material";
-import React, {useContext, useState} from "react";
+import React, {useState} from "react";
 import {Apis, backendURL, Routes} from "@/utilities/Constants";
-import {AuthContext} from "@/context/AuthContextProvider";
 import {getFetcher} from "@/helpers/request-utils";
 import useSWR from "swr";
 import {QuestionResponse, YourQuestionList} from "@/types/types";
 import notifyError from "@/utilities/ToastrExtensions";
 import YourQuestionItem from "@/components/YourQuestionItem";
 import Link from "next/link";
+import getAuth from "@/helpers/auth-utils";
 
 export default function YourQuestionPage() {
-    const authContext = useContext(AuthContext);
+    const auth = getAuth();
     const validOrders = ['Newest', 'MostViewed', 'MostVoted'];
     const [orderBy, setOrderBy] = useState<string>(validOrders[0]);
     const [pageIndex, setPageIndex] = useState<number>(1);
@@ -24,7 +24,7 @@ export default function YourQuestionPage() {
         + `&pageIndex=${pageIndex}`
         + `&pageSize=${pageSize}`;
 
-    const {data, error, isLoading} = useSWR([requestUrl, authContext?.accessToken], getFetcher)
+    const {data, error, isLoading} = useSWR([requestUrl, auth?.accessToken], getFetcher)
     //
     const handleOrderByChange = (event: SelectChangeEvent) => {
         setOrderBy(event.target.value);

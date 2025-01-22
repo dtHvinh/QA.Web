@@ -7,6 +7,15 @@ export const getFetcher
     }
 }).then(res => res.json());
 
+export const postFetcher = ([url, token, jsonBody]: [string, string, string]) => fetch(url, {
+    method: 'POST',
+    headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+    },
+    body: jsonBody,
+}).then(res => res.json());
+
 export const deleteFetcher
     = ([url, token]: [string, string]) => fetch(url, {
     method: 'DELETE',

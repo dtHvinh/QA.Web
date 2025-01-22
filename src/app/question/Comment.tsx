@@ -1,5 +1,5 @@
 import {Avatar} from "@mui/material";
-import React, {useContext} from "react";
+import React from "react";
 import {CommentResponse} from "@/types/types";
 import TextEditor from "@/components/TextEditor";
 import AlertDialog from "@/components/AlertDialog";
@@ -8,8 +8,8 @@ import {Apis, backendURL} from "@/utilities/Constants";
 import {formatString} from "@/helpers/string-utils";
 import {deleteFetcher, IsErrorResponse, putFetcher} from "@/helpers/request-utils";
 import {ErrorResponse} from "@/props/ErrorResponse";
-import notifyError from "@/utilities/ToastrExtensions";
-import {AuthContext} from "@/context/AuthContextProvider";
+import notifyError, {notifySucceed} from "@/utilities/ToastrExtensions";
+import getAuth from "@/helpers/auth-utils";
 
 interface CommentComponentProps {
     comment: CommentResponse;
@@ -21,8 +21,9 @@ export default function Comment({comment, onCommentDelete}: Readonly<CommentComp
     const [currentText, setCurrentText] = React.useState(comment.content);
     const [editText, setEditText] = React.useState(comment.content);
     const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
-    const [isExiting, setIsExiting] = React.useState(false);
-    const auth = useContext(AuthContext);
+    const [isDeleting, setIsDeleting] = React.useState(false);
+    const [isSaveAllow, setIsSaveAllow] = React.useState(false);
+    const auth = getAuth();
 
     const handleClickOpen = () => {
         setDeleteDialogOpen(true);
@@ -37,6 +38,15 @@ export default function Comment({comment, onCommentDelete}: Readonly<CommentComp
         setEditText(currentText);
     }
 
+    const handleStartEditing = () => {
+        setIsEditing(true);
+    }
+
+    const handleEditTextChange = (text: string) => {
+        setEditText(text);
+        setIsSaveAllow(true);
+    }
+
     const handleDelete = async () => {
         const requestUrl = formatString(backendURL + Apis.Comment.Delete, comment.id);
 
@@ -45,7 +55,7 @@ export default function Comment({comment, onCommentDelete}: Readonly<CommentComp
         if (IsErrorResponse(response)) {
             notifyError((response as ErrorResponse).title);
         } else {
-            setIsExiting(true);
+            setIsDeleting(true);
             setTimeout(() => {
                 onCommentDelete(comment.id);
             }, 500);
@@ -65,12 +75,15 @@ export default function Comment({comment, onCommentDelete}: Readonly<CommentComp
             comment = response as CommentResponse;
             setCurrentText(editText);
             setIsEditing(false);
+
+            notifySucceed('Comment updated successfully');
         }
     }
 
     return (
         <div
-            className={`relative grid grid-cols-1 gap-4 p-4 mb-8 rounded-lg bg-white ${isExiting ? 'comment-exit comment-exit-active' : ''}`}>
+            className={`relative grid grid-cols-1 gap-4 p-4 mb-8 rounded-lg bg-white ${isDeleting ? 'comment-exit comment-exit-active' : ''}`}>
+            <hr/>
 
             <AlertDialog open={deleteDialogOpen}
                          onClose={handleClose}
@@ -92,38 +105,49 @@ export default function Comment({comment, onCommentDelete}: Readonly<CommentComp
                         </div>
                     </div>
                 </div>
-                <div className={'flex flex-col'}>
-                    <div className={'flex justify-end'}>
-                        {isEditing
-                            ?
-                            <div className={'flex gap-4'}>
-                                <button className={'text-red-500'} onClick={handleDiscard}>Discard</button>
-                                <button className={'text-blue-500'} onClick={handleUpdate}>Save</button>
-                            </div>
-                            :
-                            <div className={'flex gap-4'}>
-                                <button type={"button"} onClick={() => setIsEditing(!isEditing)}>Edit</button>
-                                <button type={"button"} className={'text-red-500'} onClick={handleClickOpen}>Delete
-                                </button>
-                            </div>
-                        }
+                {comment.resourceRight == 'Owner'
+                    &&
+                    <div className={'flex flex-col'}>
+                        <div className={'flex justify-end'}>
+                            {isEditing
+                                ?
+                                <div className={'flex gap-4'}>
+                                    <button className={'text-red-500'} onClick={handleDiscard}>
+                                        Discard
+                                    </button>
+                                    <button className={'text-blue-500 disabled:text-gray-500'}
+                                            disabled={!isSaveAllow}
+                                            onClick={handleUpdate}>
+                                        Save
+                                    </button>
+                                </div>
+                                :
+                                <div className={'flex gap-4'}>
+                                    <button type={"button"} onClick={handleStartEditing}>
+                                        Edit
+                                    </button>
+                                    <button type={"button"} className={'text-red-500'} onClick={handleClickOpen}>
+                                        Delete
+                                    </button>
+                                </div>
+                            }
+                        </div>
+                        <div>
+                            {comment.updatedAt == DEFAULT_TIME ?
+                                <span className="text-gray-400 text-sm">{timeFromNow(comment.createdAt)}</span> :
+                                <span className="text-gray-400 text-sm">(Edited) {timeFromNow(comment.updatedAt)}</span>
+                            }
+                        </div>
                     </div>
-                    <div>
-                        {comment.updatedAt == DEFAULT_TIME ?
-                            <span className="text-gray-400 text-sm">{timeFromNow(comment.createdAt)}</span> :
-                            <span className="text-gray-400 text-sm">(Edited) {timeFromNow(comment.updatedAt)}</span>
-                        }
-                    </div>
-                </div>
+                }
             </div>
             <div className={'transition-all duration-300 ease-in-out'}>
                 {isEditing
-                    ? <TextEditor currentText={currentText as string} onTextChange={setEditText}/>
+                    ? <TextEditor currentText={currentText as string} onTextChange={handleEditTextChange}/>
                     :
                     <>
                         <div className="text-gray-500"
                              dangerouslySetInnerHTML={{__html: currentText as TrustedHTML}}></div>
-                        <hr/>
                     </>
                 }
             </div>

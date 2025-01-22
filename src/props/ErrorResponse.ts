@@ -5,4 +5,4 @@ export interface ErrorResponse {
     errors: string
 }
 
-export type ErrorResponseProps = ErrorResponse;
+export declare let ErrorType: ErrorResponse;

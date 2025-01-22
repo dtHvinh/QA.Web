@@ -1,14 +1,13 @@
 'use client'
 
-import {AuthContext} from "@/context/AuthContextProvider";
 import {AppName, Routes} from "@/utilities/Constants";
 import Link from "next/link";
 import {usePathname} from "next/navigation";
-import {useContext} from "react";
 import UserDropdown from "./UserDropdown";
+import getAuth from "@/helpers/auth-utils";
 
 export default function Appbar() {
-    const authContext = useContext(AuthContext);
+    const authContext = getAuth();
     const currentPath = usePathname();
 
     return (

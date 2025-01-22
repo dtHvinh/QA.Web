@@ -1,6 +1,6 @@
-import { Routes } from "@/utilities/Constants";
-import { deleteCookie } from "cookies-next/client";
-import { redirect } from "next/navigation";
+import {Routes} from "@/utilities/Constants";
+import {deleteCookie} from "cookies-next/client";
+import {redirect} from "next/navigation";
 
 export default function useLogout() {
     return () => {

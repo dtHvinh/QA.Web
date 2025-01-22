@@ -1,5 +1,4 @@
 import Appbar from "@/components/Appbar";
-import AuthContextProvider from "@/context/AuthContextProvider";
 import type {Metadata} from "next";
 import {DM_Sans, Geist, Geist_Mono} from "next/font/google";
 import "./globals.css";
@@ -38,15 +37,18 @@ export default function RootLayout({
         <body
             className={`${dmSans.className} ${geistSans.variable} ${geistMono.variable} bg-white text-black antialiased`}
         >
-        <div className="container mx-auto px-4">
-            <AuthContextProvider>
-                <Appbar/>
-                <SubLayout>
-                    <ToastContainer/>
-                    {children}
-                </SubLayout>
-            </AuthContextProvider>
+        <div className="container mx-auto px-4 min-h-screen">
+            <Appbar/>
+            <SubLayout>
+                <ToastContainer/>
+                {children}
+            </SubLayout>
         </div>
+        <footer className="bg-gray-800 text-white py-4">
+            <div className="container mx-auto text-center">
+                <p>&copy; {new Date().getFullYear()} Q&A App. All rights reserved.</p>
+            </div>
+        </footer>
         </body>
         </html>
     );

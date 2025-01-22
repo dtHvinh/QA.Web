@@ -41,6 +41,7 @@ export interface QuestionResponse extends ResourceRightProps {
     isDraft: boolean,
 
     comments: CommentResponse[],
+    answers: AnswerResponse[],
 }
 
 export interface AuthorResponse {
@@ -58,6 +59,18 @@ export interface CommentResponse extends ResourceRightProps {
     updatedAt: string;
     content?: string;
     author?: AuthorResponse;
+}
+
+export interface AnswerResponse extends ResourceRightProps {
+    id: string;
+    content: string;
+    createdAt: string;
+    updatedAt: string;
+    upvote: number;
+    downvote: number;
+    isAccepted: boolean;
+    author?: AuthorResponse;
+    resourceRight: ResourceRight;
 }
 
 export interface YourQuestionList {

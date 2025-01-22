@@ -32,18 +32,17 @@ export default function LoginPage() {
                 body: JSON.stringify(data),
             })
 
-
             if (!response.ok) {
                 const error = (await response.json()) as ErrorResponse;
-                throw new Error(error.errors);
+                notifyError(error.title);
             }
 
             const body = await response.json();
 
             setCookie('auth', body)
 
-        } catch (err) {
-            notifyError('error', err instanceof Error ? err.message : 'Something went wrong');
+        } catch {
+            notifyError('Something went wrong');
             return;
         } finally {
             setIsLoading(false);

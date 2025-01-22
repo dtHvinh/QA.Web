@@ -1,64 +1,64 @@
-import {CommentResponse, QuestionResponse} from "@/types/types";
+'use client'
+
+import {AnswerResponse, QuestionResponse} from "@/types/types";
 import TextEditor from "@/components/TextEditor";
 import React from "react";
 import {Apis, backendURL} from "@/utilities/Constants";
+import getAuth from "@/helpers/auth-utils";
 import {fetcher, IsErrorResponse} from "@/helpers/request-utils";
 import notifyError from "@/utilities/ToastrExtensions";
 import {ErrorResponse} from "@/props/ErrorResponse";
-import Comment from "@/app/question/Comment";
-import getAuth from "@/helpers/auth-utils";
+import {formatString} from "@/helpers/string-utils";
+import Answer from "@/app/question/Answer";
 
-export default function CommentSection({question}: { question: QuestionResponse }) {
+export default function AnswerSection({question}: Readonly<{ question: QuestionResponse }>) {
     const [currentText, setCurrentText] = React.useState('');
-    const [comments, setComments] = React.useState(question.comments);
-
+    const [answers, setAnswers] = React.useState(question.answers);
+    const requestUrl = formatString(`${backendURL}${Apis.Question.CreateAnswer}`, question.id);
     const auth = getAuth();
-    const requestUrl = `${backendURL}${Apis.Question.CreateComment}/${question.id}/comment`
 
     const handleTextChange = (text: string) => {
         setCurrentText(text);
     }
 
-    const handleCommentDelete = (commentId: string) => {
-        setComments(comments.filter(comment => comment.id !== commentId));
-        question.commentCount--;
-    }
-
     const handleSend = async () => {
-        const response = await fetcher<CommentResponse>([
+        const response = await fetcher<AnswerResponse>([
             'POST',
             requestUrl,
             auth!.accessToken,
             JSON.stringify({
                 content: currentText
             })]);
-
+        console.log(response)
         if (IsErrorResponse(response)) {
             notifyError((response as ErrorResponse).title);
         } else {
-            setComments([...comments, response as CommentResponse]);
+            setAnswers([...answers, response as AnswerResponse]);
             setCurrentText('');
-            question.commentCount++;
+            question.answerCount++;
         }
     }
 
+    const handleAnswerDelete = (answerId: string) => {
+        setAnswers(answers.filter(answer => answer.id !== answerId));
+        question.commentCount--;
+    }
+
     return (
-        <div className={'flex flex-col gap-2'}>
-            <div>
-                Comments ({question.commentCount})
-            </div>
+        <div>
+            Answers ({question.answerCount})
 
-            {question.comments.length == 0 &&
-                <div className={'text-gray-500'}>No comments yet</div>}
+            {question.answerCount == 0 &&
+                <div className={'text-gray-500'}>No answers yet</div>}
 
             <div>
-                {comments.map(comment => (
-                    <Comment key={comment.id} comment={comment} onCommentDelete={handleCommentDelete}/>
+                {answers.map(answer => (
+                    <Answer key={answer.id} answer={answer} onAnswerDelete={handleAnswerDelete}/>
                 ))}
             </div>
 
-            <div>
-                <TextEditor currentText={''} onTextChange={handleTextChange}/>
+            <div className={'mt-5'}>
+                <TextEditor currentText={currentText} onTextChange={handleTextChange}/>
                 <div className={'w-full text-end pr-4'}>
                     <button onClick={handleSend}
                             disabled={currentText.length == 0}
@@ -76,5 +76,5 @@ export default function CommentSection({question}: { question: QuestionResponse 
                 </div>
             </div>
         </div>
-    )
+    );
 }

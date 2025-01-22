@@ -1,12 +1,11 @@
 'use client'
 
-import React, {Usable, useContext, useEffect, useState} from "react";
-import {AuthContext} from "@/context/AuthContextProvider";
+import React, {Usable, useEffect, useState} from "react";
 import {Apis, backendURL} from "@/utilities/Constants";
 import useSWR from "swr";
 import {getFetcher} from "@/helpers/request-utils";
 import notifyError from "@/utilities/ToastrExtensions";
-import timeFromNow from "@/helpers/time-utils";
+import timeFromNow, {DEFAULT_TIME} from "@/helpers/time-utils";
 import TagLabel from "@/components/TagLabel";
 import {Box} from "@mui/system";
 import {AntTab, AntTabs} from "@/components/AntTab";
@@ -15,6 +14,8 @@ import CustomTabPanel, {a11yProps} from "@/components/CustomTabPanel";
 import CommentSection from "@/app/question/CommentSection";
 import EditSection from "@/app/question/EditSection";
 import {QuestionResponse} from "@/types/types";
+import getAuth from "@/helpers/auth-utils";
+import AnswerSection from "@/app/question/AnswerSection";
 
 
 export default function QuestionPage({params}: { params: Usable<{ path: string[] }> }) {
@@ -24,7 +25,7 @@ export default function QuestionPage({params}: { params: Usable<{ path: string[]
         setTabValue(newValue);
     };
 
-    const auth = useContext(AuthContext);
+    const auth = getAuth();
     const {path} = React.use(params);
     const requestUrl = `${backendURL}${Apis.Question.GetQuestionDetail}/view/${path[0]}`
 
@@ -60,7 +61,7 @@ export default function QuestionPage({params}: { params: Usable<{ path: string[]
                                               d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
                                     </svg>}
                                 />
-                                <div>{question.upvote}</div>
+                                <div>{question.upvote - question.downvote}</div>
                                 <RoundedButton
                                     title={'Downvote'}
                                     svg={<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -80,7 +81,9 @@ export default function QuestionPage({params}: { params: Usable<{ path: string[]
                                                  aria-label="basic tabs example">
                                             <AntTab label="Question" {...a11yProps(0)} />
                                             <AntTab label="Comment" {...a11yProps(1)} />
-                                            <AntTab label="Edit" {...a11yProps(2)} />
+                                            {question.resourceRight == 'Owner' &&
+                                                <AntTab label="Edit" {...a11yProps(2)} />}
+                                            <AntTab label="Answer" {...a11yProps(3)} />
                                         </AntTabs>
                                     </Box>
                                     <CustomTabPanel value={tabValue} index={0}>
@@ -90,6 +93,11 @@ export default function QuestionPage({params}: { params: Usable<{ path: string[]
                                             </div>
                                             <div className={'flex flex-wrap space-x-5 text-gray-500'}>
                                                 <div>Asked at: {timeFromNow(question.createdAt)}</div>
+                                                {question.updatedAt !== DEFAULT_TIME ?
+                                                    <div>
+                                                        Modified at: {timeFromNow(question.updatedAt)}
+                                                    </div> : ''
+                                                }
                                                 {timeFromNow(question.updatedAt) === '1/1/1' ? ""
                                                     : (
                                                         <div className={'flex text-gray-500'}>
@@ -129,6 +137,9 @@ export default function QuestionPage({params}: { params: Usable<{ path: string[]
                                         <CustomTabPanel value={tabValue} index={2}>
                                             <EditSection question={question}/>
                                         </CustomTabPanel>}
+                                    <CustomTabPanel value={tabValue} index={3}>
+                                        <AnswerSection question={question}/>
+                                    </CustomTabPanel>
                                 </Box>
 
                             </div>

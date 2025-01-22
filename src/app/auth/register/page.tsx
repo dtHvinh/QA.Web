@@ -1,12 +1,17 @@
 'use client'
 
-import { Routes } from "@/utilities/Constants";
+import {Apis, backendURL, Routes} from "@/utilities/Constants";
 import Link from "next/link";
-import { useState } from "react";
+import React, {useState} from "react";
+import {setCookie} from "cookies-next/client";
+import {redirect} from "next/navigation";
+import {ErrorResponse} from "@/props/ErrorResponse";
+import notifyError from "@/utilities/ToastrExtensions";
 
 export default function RegisterPage() {
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
+    const requestUrl = `${backendURL}${Apis.Auth.Register}`;
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -20,12 +25,30 @@ export default function RegisterPage() {
                 password: formData.get('password') as string,
                 confirmPassword: formData.get('confirmPassword') as string,
             };
+            
+            const response = await fetch(requestUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
 
+            if (!response.ok) {
+                const error = (await response.json()) as ErrorResponse;
+                notifyError(error.title);
+            }
+
+            const body = await response.json();
+
+            setCookie('auth', body)
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Something went wrong');
         } finally {
             setIsLoading(false);
         }
+
+        redirect('/')
     }
 
     return (
@@ -39,33 +62,39 @@ export default function RegisterPage() {
                         Join us Now
                     </h2>
 
-                    <form className="mt-10" method="POST">
-                        <label htmlFor="email" className="block text-xs font-semibold text-gray-600 uppercase">E-mail</label>
+                    <form className="mt-10" method="POST" onSubmit={handleSubmit}>
+                        <label htmlFor="email"
+                               className="block text-xs font-semibold text-gray-600 uppercase">E-mail</label>
                         <input id="email" type="email" name="email" placeholder="e-mail address" autoComplete="email"
-                            className="block w-full py-3 px-1 mt-2 
+                               className="block w-full py-3 px-1 mt-2
                     text-gray-800 appearance-none 
                     border-b-2 border-gray-100
                     focus:text-gray-500 focus:outline-none focus:border-gray-200"
-                            required />
+                               required/>
 
-                        <label htmlFor="password" className="block mt-2 text-xs font-semibold text-gray-600 uppercase">Password</label>
-                        <input id="password" type="password" name="password" placeholder="password" autoComplete="current-password"
-                            className="block w-full py-3 px-1 mt-2 mb-4
+                        <label htmlFor="password"
+                               className="block mt-2 text-xs font-semibold text-gray-600 uppercase">Password</label>
+                        <input id="password" type="password" name="password" placeholder="password"
+                               autoComplete="current-password"
+                               className="block w-full py-3 px-1 mt-2 mb-4
                     text-gray-800 appearance-none 
                     border-b-2 border-gray-100
                     focus:text-gray-500 focus:outline-none focus:border-gray-200"
-                            required />
+                               required/>
 
-                        <label htmlFor="confirmPassword" className="block mt-2 text-xs font-semibold text-gray-600 uppercase">Confirm Password</label>
-                        <input id="password" type="password" name="confirmPassword" placeholder="Confirm Password" autoComplete="current-password"
-                            className="block w-full py-3 px-1 mt-2 mb-4
+                        <label htmlFor="confirmPassword"
+                               className="block mt-2 text-xs font-semibold text-gray-600 uppercase">Confirm
+                            Password</label>
+                        <input id="password" type="password" name="confirmPassword" placeholder="Confirm Password"
+                               autoComplete="current-password"
+                               className="block w-full py-3 px-1 mt-2 mb-4
                     text-gray-800 appearance-none 
                     border-b-2 border-gray-100
                     focus:text-gray-500 focus:outline-none focus:border-gray-200"
-                            required />
+                               required/>
 
                         <button type="submit"
-                            className="w-full py-3 mt-10 bg-gray-800 rounded-sm
+                                className="w-full py-3 mt-10 bg-gray-800 rounded-sm
                     font-medium text-white uppercase
                     focus:outline-none hover:bg-gray-700 hover:shadow-none">
                             SIGN UP

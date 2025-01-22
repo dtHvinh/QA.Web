@@ -1,4 +1,4 @@
-import {toast} from "react-toastify";
+import {Flip, toast} from "react-toastify";
 
 /**
  * Show an error notification
@@ -17,6 +17,7 @@ export default function notifyError(message: string, duration: number = 1) {
         progress: undefined,
         closeButton: false,
         theme: 'outline',
+        transition: Flip
     });
 }
 
@@ -25,17 +26,16 @@ export default function notifyError(message: string, duration: number = 1) {
  * @param message The message to show
  * @param duration The duration to show the notification in seconds
  */
-export function notifySucceed(message: string, duration: number = 1) {
+export function notifySucceed(message: string, duration: number = 2) {
     toast['success'](message, {
-        position: 'top-center',
-        className: 'text-black',
+        position: "top-right",
         autoClose: duration * 1000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        closeButton: false,
-        theme: 'outline',
+        theme: "colored",
+        transition: Flip,
     });
 }

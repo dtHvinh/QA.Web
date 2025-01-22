@@ -31,6 +31,7 @@ export const Apis = {
         Delete: "/api/question",
         Vote: "/api/question/vote",
         Bookmark: "/api/question/bookmark",
+        CreateAnswer: "/api/question/{0}/answer",
     },
     Tag: {
         Create: "/api/tag",

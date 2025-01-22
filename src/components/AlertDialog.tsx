@@ -24,6 +24,7 @@ export default function AlertDialog({open, onClose, onYes, title, description, y
             <Dialog
                 open={open}
                 onClose={onClose}
+                hideBackdrop={true}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
