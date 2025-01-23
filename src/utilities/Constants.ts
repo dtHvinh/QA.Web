@@ -45,6 +45,10 @@ export const Apis = {
     Comment: {
         Delete: "/api/comment/{0}",
         Update: "/api/comment/{0}",
+    },
+    Answer: {
+        Delete: "/api/answer/{0}",
+        Update: "/api/answer/{0}",
     }
 }
 

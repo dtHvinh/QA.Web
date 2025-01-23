@@ -62,8 +62,7 @@ export default function Answer({answer, onAnswerDelete}: Readonly<{
     }
 
     const handleUpdate = async () => {
-        const requestUrl = formatString(backendURL + Apis.Comment.Update, answer.id);
-
+        const requestUrl = formatString(backendURL + Apis.Answer.Update, answer.id);
         const response = await putFetcher([requestUrl, auth!.accessToken, JSON.stringify({
             content: editText
         })]);
@@ -170,10 +169,10 @@ export default function Answer({answer, onAnswerDelete}: Readonly<{
                     </div>
                     <div className={'transition-all duration-300 ease-in-out'}>
                         {isEditing
-                            ? <TextEditor currentText={currentText as string} onTextChange={handleEditTextChange}/>
+                            ? <TextEditor currentText={currentText} onTextChange={handleEditTextChange}/>
                             :
-                            <div className={'min-h-28'}>
-                                <div className="text-gray-500 mt-5"
+                            <div className={'min-h-28 text-editor-display p-4'}>
+                                <div className="tiptap"
                                      dangerouslySetInnerHTML={{__html: currentText as TrustedHTML}}></div>
                             </div>
                         }
