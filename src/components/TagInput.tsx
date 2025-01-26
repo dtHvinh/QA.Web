@@ -1,13 +1,13 @@
 // src/components/TagInput.tsx
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Autocomplete, TextField} from '@mui/material';
 import TagLabel from './TagLabel';
-import {AuthContext} from "@/context/AuthContextProvider";
 import {backendURL} from "@/utilities/Constants";
 import useSWR from "swr";
 import notifyError from "@/utilities/ToastrExtensions";
 import {getFetcher} from "@/helpers/request-utils";
 import {TagObject} from "@/types/types";
+import getAuth from "@/helpers/auth-utils";
 
 
 export interface TagInputProps {
@@ -18,7 +18,7 @@ export interface TagInputProps {
 export default function TagInput({onTagChange, maxTags}: TagInputProps) {
     const [tags, setTags] = useState<TagObject[]>([]);
     const [selectedTags, setSelectedTags] = useState<TagObject[]>([]);
-    const auth = useContext(AuthContext);
+    const auth = getAuth();
 
     const requestUrl = `${backendURL}/api/tag/all`;
 
@@ -56,9 +56,9 @@ export default function TagInput({onTagChange, maxTags}: TagInputProps) {
                 onChange={handleTagChange}
                 renderTags={(value: TagObject[], getTagProps) =>
                     value.map((option: TagObject, index: number) => (
-                        <TagLabel text={option.name}
-                                  {...getTagProps({index})}
+                        <TagLabel {...getTagProps({index})}
                                   {...option}
+                                  name={option.name}
                                   key={option.id}
                                   className={'mr-2'}
                                   onClick={(name: string) => {
@@ -70,6 +70,7 @@ export default function TagInput({onTagChange, maxTags}: TagInputProps) {
                     <TextField
                         {...params}
                         variant="outlined"
+                        placeholder={isLoading ? 'Loading tags...' : 'Select up to 5 tags'}
                     />
                 )}
             />

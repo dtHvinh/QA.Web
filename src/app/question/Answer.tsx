@@ -11,11 +11,22 @@ import {Avatar} from "@mui/material";
 import timeFromNow, {DEFAULT_TIME} from "@/helpers/time-utils";
 import TextEditor from "@/components/TextEditor";
 import RoundedButton from "@/components/RoundedButton";
+import AnswerContent from "@/app/question/AnswerContent";
 
-export default function Answer({answer, onAnswerDelete}: Readonly<{
-    answer: AnswerResponse,
-    onAnswerDelete: (id: string) => void
-}>) {
+export default function Answer(
+    {
+        answer,
+        questionId,
+        isAnyAnswerAccepted,
+        onAnswerDelete,
+        onAnswerAccepted
+    }: Readonly<{
+        answer: AnswerResponse,
+        questionId: string,
+        onAnswerDelete: (id: string) => void,
+        isAnyAnswerAccepted: boolean,
+        onAnswerAccepted: (id: string) => void,
+    }>) {
     const [isEditing, setIsEditing] = React.useState(false);
     const [currentText, setCurrentText] = React.useState(answer.content);
     const [editText, setEditText] = React.useState(answer.content);
@@ -23,6 +34,7 @@ export default function Answer({answer, onAnswerDelete}: Readonly<{
     const [isDeleting, setIsDeleting] = React.useState(false);
     const [isAllowUpdate, setIsAllowUpdate] = React.useState(false);
     const auth = getAuth();
+    const acceptAnswerUrl = formatString(backendURL + Apis.Question.AcceptAnswer, questionId, answer.id);
 
     const handleClickOpen = () => {
         setDelAnsDialog(true);
@@ -46,8 +58,20 @@ export default function Answer({answer, onAnswerDelete}: Readonly<{
         setIsAllowUpdate(true);
     }
 
+    const handleAccept = async () => {
+        const response = await putFetcher([acceptAnswerUrl, auth!.accessToken, '']);
+
+        if (IsErrorResponse(response)) {
+            notifyError((response as ErrorResponse).title);
+            return;
+        }
+
+        onAnswerAccepted(answer.id);
+        answer.isAccepted = true;
+    }
+
     const handleDelete = async () => {
-        const requestUrl = formatString(backendURL + Apis.Comment.Delete, answer.id);
+        const requestUrl = formatString(backendURL + Apis.Answer.Delete, answer.id);
 
         const response = await deleteFetcher([requestUrl, auth!.accessToken]);
 
@@ -91,27 +115,43 @@ export default function Answer({answer, onAnswerDelete}: Readonly<{
                 className={`relative grid grid-cols-6 gap-4 p-4 mb-8 rounded-lg bg-white 
             ${isDeleting ? 'comment-exit comment-exit-active' : ''}`}>
 
-
                 <div className={'col-span-1 row-span-full justify-items-center space-y-3'}>
-                    <RoundedButton
-                        title={'Upvote'}
-                        svg={<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                  fill="currentColor"
-                                  viewBox="0 0 16 16">
-                            <path fillRule="evenodd"
-                                  d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
-                        </svg>}
-                    />
+                    <div>
+                        <RoundedButton
+                            title={'Upvote'}
+                            svg={<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                      fill="currentColor"
+                                      viewBox="0 0 16 16">
+                                <path fillRule="evenodd"
+                                      d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
+                            </svg>}
+                        />
+                    </div>
                     <div>{answer.upvote - answer.downvote}</div>
-                    <RoundedButton
-                        title={'Downvote'}
-                        svg={<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                  fill="currentColor"
-                                  viewBox="0 0 16 16">
-                            <path fillRule="evenodd"
-                                  d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8"/>
-                        </svg>}
-                    />
+                    <div>
+                        <RoundedButton
+                            title={'Downvote'}
+                            svg={<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                      fill="currentColor"
+                                      viewBox="0 0 16 16">
+                                <path fillRule="evenodd"
+                                      d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8"/>
+                            </svg>}
+                        />
+                    </div>
+                    {!isAnyAnswerAccepted &&
+                        <div>
+                            <RoundedButton
+                                onClick={handleAccept}
+                                title={'Mark as answer'}
+                                className={'bg-green-300 text-black hover:bg-green-400 active:bg-green-500'}
+                                svg={<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                          className="bi bi-check2" viewBox="0 0 16 16">
+                                    <path
+                                        d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
+                                </svg>}
+                            />
+                        </div>}
                 </div>
 
                 <div className={'col-span-5 row-span-full'}>
@@ -157,24 +197,22 @@ export default function Answer({answer, onAnswerDelete}: Readonly<{
                                         </div>
                                     }
                                 </div>
-                                <div>
-                                    {answer.updatedAt == DEFAULT_TIME ?
-                                        <span className="text-gray-400 text-sm">{timeFromNow(answer.createdAt)}</span> :
+                                <div className={'flex flex-col text-right'}>
+                                    <span
+                                        className="text-gray-400 text-sm">Created: {timeFromNow(answer.createdAt)}</span>
+                                    {answer.updatedAt !== DEFAULT_TIME &&
                                         <span
-                                            className="text-gray-400 text-sm">(Edited) {timeFromNow(answer.updatedAt)}</span>
+                                            className="text-gray-400 text-sm">Edited: {timeFromNow(answer.updatedAt)}</span>
                                     }
                                 </div>
                             </div>
                         }
                     </div>
-                    <div className={'transition-all duration-300 ease-in-out'}>
+                    <div className={'mt-5'}>
                         {isEditing
                             ? <TextEditor currentText={currentText} onTextChange={handleEditTextChange}/>
                             :
-                            <div className={'min-h-28 text-editor-display p-4'}>
-                                <div className="tiptap"
-                                     dangerouslySetInnerHTML={{__html: currentText as TrustedHTML}}></div>
-                            </div>
+                            <AnswerContent content={currentText}/>
                         }
                     </div>
                 </div>

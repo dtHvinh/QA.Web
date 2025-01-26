@@ -1,4 +1,4 @@
-import {Flip, toast} from "react-toastify";
+import {Flip, Slide, toast} from "react-toastify";
 
 /**
  * Show an error notification
@@ -16,8 +16,8 @@ export default function notifyError(message: string, duration: number = 1) {
         draggable: true,
         progress: undefined,
         closeButton: false,
-        theme: 'outline',
-        transition: Flip
+        theme: 'colored',
+        transition: Slide
     });
 }
 

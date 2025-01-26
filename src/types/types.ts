@@ -14,6 +14,7 @@ export interface CreateQuestionResponse {
     id: string,
     title: string,
     content: string,
+    slug: string,
     tags: TagObject[],
 }
 
@@ -39,6 +40,7 @@ export interface QuestionResponse extends ResourceRightProps {
     isDuplicate: boolean,
     isClosed: boolean,
     isDraft: boolean,
+    isSolved: boolean,
 
     comments: CommentResponse[],
     answers: AnswerResponse[],

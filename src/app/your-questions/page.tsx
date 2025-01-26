@@ -13,8 +13,9 @@ import getAuth from "@/helpers/auth-utils";
 
 export default function YourQuestionPage() {
     const auth = getAuth();
-    const validOrders = ['Newest', 'MostViewed', 'MostVoted'];
-    const [orderBy, setOrderBy] = useState<string>(validOrders[0]);
+    const validOrderValue = ['Newest', 'MostViewed', 'MostVoted'];
+    const validOrder = ['Newest', 'Most Viewed', 'Most Voted'];
+    const [orderBy, setOrderBy] = useState<string>(validOrderValue[0]);
     const [pageIndex, setPageIndex] = useState<number>(1);
     const pageSize = 10;
 
@@ -44,9 +45,9 @@ export default function YourQuestionPage() {
                         variant={"standard"}
                         disableUnderline={true}
                 >
-                    <MenuItem value={validOrders[0]}>Newest</MenuItem>
-                    <MenuItem value={validOrders[1]}>Most Viewed</MenuItem>
-                    <MenuItem value={validOrders[2]}>Most Voted</MenuItem>
+                    {validOrder.map((order, index) => (
+                        <MenuItem key={index} value={validOrderValue[index]}>{order}</MenuItem>
+                    ))}
                 </Select>
             </div>
 

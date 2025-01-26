@@ -6,6 +6,8 @@ import "./globals.scss";
 import SubLayout from "./layouts/sub-layout";
 import {ToastContainer} from "react-toastify";
 import React from "react";
+import ScrollToTopButton from "@/components/ScrollToTopButton";
+import {SupabaseProvider} from "@/context/SupabaseClientContext";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -39,10 +41,14 @@ export default function RootLayout({
         >
         <div className="container mx-auto px-4 min-h-screen">
             <Appbar/>
-            <SubLayout>
-                <ToastContainer/>
-                {children}
-            </SubLayout>
+            <SupabaseProvider>
+                <SubLayout>
+                    <ToastContainer/>
+                    {children}
+                </SubLayout>
+            </SupabaseProvider>
+
+            <ScrollToTopButton/>
         </div>
         <footer className="bg-gray-800 text-white py-4">
             <div className="container mx-auto text-center">

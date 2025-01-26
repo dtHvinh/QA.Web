@@ -2,18 +2,21 @@
 
 import TextEditor from "@/components/TextEditor";
 import TagInput from "@/components/TagInput";
-import React, {useContext, useState} from "react";
+import React, {useState} from "react";
 import {Apis, backendURL} from "@/utilities/Constants";
-import {AuthContext} from "@/context/AuthContextProvider";
 import {fetcher, IsErrorResponse} from "@/helpers/request-utils";
 import notifyError, {notifySucceed} from "@/utilities/ToastrExtensions";
 import {CreateQuestionResponse} from "@/types/types";
 import {ErrorResponse} from "@/props/ErrorResponse";
+import getAuth from "@/helpers/auth-utils";
+import {useRouter} from "next/navigation";
+import {toQuestionPage} from "@/helpers/route-utils";
 
 export default function NewQuestion() {
     const [tagIds, setTagIds] = useState<string[]>([]);
     const [content, setContent] = useState<string>('');
-    const auth = useContext(AuthContext);
+    const auth = getAuth();
+    const router = useRouter();
 
     const requestUrl = `${backendURL}${Apis.Question.Create}`;
 
@@ -48,6 +51,10 @@ export default function NewQuestion() {
             notifyError((response as ErrorResponse).errors);
         } else {
             notifySucceed('Question submitted successfully');
+
+            const res = (response as CreateQuestionResponse);
+
+            router.push(toQuestionPage(res.id, res.slug));
         }
     }
 

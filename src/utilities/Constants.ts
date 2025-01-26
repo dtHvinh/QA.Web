@@ -8,6 +8,7 @@ export const Routes = {
     },
     NewQuestion: "/new-question",
     Questions: "/questions",
+    Question: "/question",
     YourQuestions: "/your-questions",
     Tags: "/tags",
     Bookmarks: "/bookmarks",
@@ -32,6 +33,7 @@ export const Apis = {
         Vote: "/api/question/vote",
         Bookmark: "/api/question/bookmark",
         CreateAnswer: "/api/question/{0}/answer",
+        AcceptAnswer: "/api/question/{0}/accept/{1}",
     },
     Tag: {
         Create: "/api/tag",
