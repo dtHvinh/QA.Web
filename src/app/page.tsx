@@ -8,8 +8,9 @@ import {UserResponse} from "@/types/types";
 
 export default function Home() {
     const requestUrl = `${backendURL}/api/user/`;
+    const auth = getAuth();
 
-    const {data, error, isLoading} = useSWR([requestUrl, getAuth()!.accessToken], getFetcher);
+    const {data, error, isLoading} = useSWR([requestUrl, auth?.accessToken], getFetcher);
 
     if (isLoading) {
         return <div>Loading...</div>
