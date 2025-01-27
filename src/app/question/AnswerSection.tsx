@@ -87,7 +87,7 @@ export default function AnswerSection({question}: { question: QuestionResponse }
                         <hr className={'mb-5'}/>
 
                         <Answer answer={answer}
-                                questionId={question.id}
+                                question={question}
                                 isAnyAnswerAccepted={question.isSolved}
                                 onAnswerDelete={handleAnswerDelete}
                                 onAnswerAccepted={handleAnswerAccepted}/>

@@ -1,9 +1,9 @@
-import {AnswerResponse} from "@/types/types";
+import {AnswerResponse, QuestionResponse, VoteResponse} from "@/types/types";
 import React from "react";
 import getAuth from "@/helpers/auth-utils";
 import {formatString} from "@/helpers/string-utils";
 import {Apis, backendURL} from "@/utilities/Constants";
-import {deleteFetcher, IsErrorResponse, putFetcher} from "@/helpers/request-utils";
+import {deleteFetcher, IsErrorResponse, postFetcher, putFetcher} from "@/helpers/request-utils";
 import notifyError, {notifySucceed} from "@/utilities/ToastrExtensions";
 import {ErrorResponse} from "@/props/ErrorResponse";
 import AlertDialog from "@/components/AlertDialog";
@@ -16,13 +16,13 @@ import AnswerContent from "@/app/question/AnswerContent";
 export default function Answer(
     {
         answer,
-        questionId,
+        question,
         isAnyAnswerAccepted,
         onAnswerDelete,
         onAnswerAccepted
     }: Readonly<{
         answer: AnswerResponse,
-        questionId: string,
+        question: QuestionResponse,
         onAnswerDelete: (id: string) => void,
         isAnyAnswerAccepted: boolean,
         onAnswerAccepted: (id: string) => void,
@@ -33,8 +33,10 @@ export default function Answer(
     const [delAnsDialog, setDelAnsDialog] = React.useState(false);
     const [isDeleting, setIsDeleting] = React.useState(false);
     const [isAllowUpdate, setIsAllowUpdate] = React.useState(false);
+    const [currentVote, setCurrentVote] = React.useState(answer.upvote - answer.downvote);
+
     const auth = getAuth();
-    const acceptAnswerUrl = formatString(backendURL + Apis.Question.AcceptAnswer, questionId, answer.id);
+    const acceptAnswerUrl = formatString(backendURL + Apis.Question.AcceptAnswer, question.id, answer.id);
 
     const handleClickOpen = () => {
         setDelAnsDialog(true);
@@ -58,7 +60,7 @@ export default function Answer(
         setIsAllowUpdate(true);
     }
 
-    const handleAccept = async () => {
+    const handleAnswerAccepted = async () => {
         const response = await putFetcher([acceptAnswerUrl, auth!.accessToken, '']);
 
         if (IsErrorResponse(response)) {
@@ -85,7 +87,7 @@ export default function Answer(
         }
     }
 
-    const handleUpdate = async () => {
+    const handleEdit = async () => {
         const requestUrl = formatString(backendURL + Apis.Answer.Update, answer.id);
         const response = await putFetcher([requestUrl, auth!.accessToken, JSON.stringify({
             content: editText
@@ -99,6 +101,20 @@ export default function Answer(
             setIsEditing(false);
 
             notifySucceed('Comment updated successfully');
+        }
+    }
+
+    const handleVote = async (isUpvote: boolean) => {
+        const requestUrl = `${backendURL}/api/answer/${answer.id}/${isUpvote ? 'upvote' : 'downvote'}/`;
+
+        const response = await postFetcher([requestUrl, auth!.accessToken, '']);
+
+        if (IsErrorResponse(response)) {
+            notifyError((response as ErrorResponse).title);
+        } else {
+            notifySucceed('Done');
+            const voteResponse = response as VoteResponse;
+            setCurrentVote(voteResponse.currentUpvote - voteResponse.currentDownvote);
         }
     }
 
@@ -125,9 +141,10 @@ export default function Answer(
                                 <path fillRule="evenodd"
                                       d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
                             </svg>}
+                            onClick={() => handleVote(true)}
                         />
                     </div>
-                    <div>{answer.upvote - answer.downvote}</div>
+                    <div>{currentVote}</div>
                     <div>
                         <RoundedButton
                             title={'Downvote'}
@@ -137,12 +154,15 @@ export default function Answer(
                                 <path fillRule="evenodd"
                                       d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8"/>
                             </svg>}
+                            onClick={() => handleVote(false)}
                         />
                     </div>
-                    {!isAnyAnswerAccepted &&
+                    {
+                        !isAnyAnswerAccepted &&
+                        question.resourceRight == 'Owner' &&
                         <div>
                             <RoundedButton
-                                onClick={handleAccept}
+                                onClick={handleAnswerAccepted}
                                 title={'Mark as answer'}
                                 className={'bg-green-300 text-black hover:bg-green-400 active:bg-green-500'}
                                 svg={<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -181,7 +201,7 @@ export default function Answer(
                                             </button>
                                             <button className={'text-blue-500 disabled:text-gray-500'}
                                                     disabled={!isAllowUpdate}
-                                                    onClick={handleUpdate}>
+                                                    onClick={handleEdit}>
                                                 Save
                                             </button>
                                         </div>

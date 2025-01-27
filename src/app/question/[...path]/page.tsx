@@ -36,7 +36,6 @@ export default function QuestionPage({params}: { params: Usable<{ path: string[]
         if (error) {
             notifyError('Failed to fetch question');
         }
-        hljs.initHighlightingOnLoad();
         hljs.highlightAll();
     }, [error, question, tabValue]);
 

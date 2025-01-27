@@ -1,15 +1,28 @@
 'use client'
 
-import TagLabel from "@/components/TagLabel";
 import getAuth from "@/helpers/auth-utils";
+import {backendURL} from "@/utilities/Constants";
+import useSWR from "swr";
+import {getFetcher} from "@/helpers/request-utils";
+import {UserResponse} from "@/types/types";
 
 export default function Home() {
     const auth = getAuth();
 
+    const requestUrl = `${backendURL}/api/user/`;
+
+    const {data, error, isLoading} = useSWR([requestUrl, auth!.accessToken], getFetcher);
+
+    if (isLoading) {
+        return <div>Loading...</div>
+    }
+
+    const user = data as UserResponse;
+
     return (
         <div className="grid grid-cols-3 gap-4 mt-2">
             <div className="text-2xl col-span-3">
-                Hello, {auth?.username}
+                Hello, {auth!.username}
             </div>
 
             <div className="gap-4 col-span-3 md:col-span-1 border-2 border-gray-400 h-full m-2 p-4 flex flex-col">
@@ -19,7 +32,7 @@ export default function Home() {
                 <div className="flex flex-col gap-4">
                     <div className="flex">
                         <div className="w-3/4 -ml-4 text-center">
-                            0
+                            {user.reputation}
                         </div>
                         <svg viewBox="0 0 180 30" xmlns="http://www.w3.org/2000/svg">
                             <rect width="100%" height="33%" fill="lightblue">
@@ -33,16 +46,6 @@ export default function Home() {
                         </svg>
                     </div>
                     <small>Earn reputation by Asking, Answering</small>
-                </div>
-            </div>
-
-            <div className="gap-4 col-span-3 md:col-span-1 border-2 border-gray-400 h-full m-2 p-4 flex flex-col">
-                <div className="text-lg font-semibold ">
-                    Your most watched tags
-                </div>
-                <div className="flex space-x-2">
-                    <TagLabel name="javascript" description={'a'}/>
-                    <TagLabel name="javascript" description={'a'}/>
                 </div>
             </div>
 

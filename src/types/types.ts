@@ -55,6 +55,24 @@ export interface AuthorResponse {
     profilePicture: string;
 }
 
+export interface VoteResponse {
+    currentUpvote: number,
+    currentDownvote: number,
+}
+
+export interface UserResponse {
+    id: string;
+    email: string;
+    username: string;
+    firstName: string;
+    lastName: string;
+    reputation: number;
+    profilePicture: string;
+    dateJoined: string;
+    lastActive: string;
+    bio: string;
+}
+
 export interface CommentResponse extends ResourceRightProps {
     id: string;
     createdAt: string;

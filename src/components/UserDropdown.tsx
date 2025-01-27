@@ -24,9 +24,9 @@ export default function UserDropdown(params: Readonly<{ profilePicture?: string 
             </button>
             <div
                 className={`${isOpen ? "" : "hidden"} z-10 origin-top-left shadow-xl border-[1px] absolute right-0 md:right-52 mt-2 w-56 rounded-md bg-white ring-1 ring-black ring-opacity-5`}>
-                <div className="py-2 p-2" role="menu" aria-orientation="vertical" aria-labelledby="dropdown-button">
+                <div role="menu" aria-orientation="vertical" aria-labelledby="dropdown-button">
                     <button onClick={logout}
-                            className="w-full text-left py-2 mb-1 text-sm text-gray-700 rounded-md bg-white hover:bg-gray-100"
+                            className="p-3 w-full text-left py-2 mb-1 text-sm text-gray-700 rounded-md bg-white hover:bg-gray-100"
                             role="menuitem">
                         Logout
                     </button>

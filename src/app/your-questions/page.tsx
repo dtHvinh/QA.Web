@@ -13,8 +13,8 @@ import getAuth from "@/helpers/auth-utils";
 
 export default function YourQuestionPage() {
     const auth = getAuth();
-    const validOrderValue = ['Newest', 'MostViewed', 'MostVoted'];
-    const validOrder = ['Newest', 'Most Viewed', 'Most Voted'];
+    const validOrderValue = ['Newest', 'MostViewed', 'MostVoted', 'Solved'];
+    const validOrder = ['Newest', 'Most Viewed', 'Most Voted', 'Solved'];
     const [orderBy, setOrderBy] = useState<string>(validOrderValue[0]);
     const [pageIndex, setPageIndex] = useState<number>(1);
     const pageSize = 10;

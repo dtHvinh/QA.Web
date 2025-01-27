@@ -39,3 +39,17 @@ export function notifySucceed(message: string, duration: number = 2) {
         transition: Flip,
     });
 }
+
+export function notifyInfo(message: string, duration: number = 2) {
+    toast['info'](message, {
+        position: "top-right",
+        autoClose: duration * 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Flip,
+    });
+}
