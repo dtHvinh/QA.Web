@@ -4,51 +4,43 @@ import {Apis, backendURL, Routes} from "@/utilities/Constants";
 import Link from "next/link";
 import React, {useState} from "react";
 import {setCookie} from "cookies-next/client";
-import {redirect} from "next/navigation";
+import {useRouter} from "next/navigation";
 import {ErrorResponse} from "@/props/ErrorResponse";
-import notifyError from "@/utilities/ToastrExtensions";
 
 export default function RegisterPage() {
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError] = useState<string>('');
     const [isLoading, setIsLoading] = useState(false);
     const requestUrl = `${backendURL}${Apis.Auth.Register}`;
+    const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        setError(null);
         setIsLoading(true);
 
-        try {
-            const formData = new FormData(e.currentTarget)
-            const data = {
-                email: formData.get('email') as string,
-                password: formData.get('password') as string,
-                confirmPassword: formData.get('confirmPassword') as string,
-            };
-            
-            const response = await fetch(requestUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            })
+        const formData = new FormData(e.currentTarget)
+        const data = {
+            email: formData.get('email') as string,
+            password: formData.get('password') as string,
+            confirmPassword: formData.get('confirmPassword') as string,
+        };
 
-            if (!response.ok) {
-                const error = (await response.json()) as ErrorResponse;
-                notifyError(error.title);
-            }
+        const response = await fetch(requestUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
 
+        if (!response.ok) {
+            const err = (await response.json()) as ErrorResponse;
+            setError(err.title);
+        } else {
             const body = await response.json();
-
             setCookie('auth', body)
-        } catch (err) {
-            setError(err instanceof Error ? err.message : 'Something went wrong');
-        } finally {
-            setIsLoading(false);
+            router.push('/');
         }
-
-        redirect('/')
+        setIsLoading(false);
     }
 
     return (
@@ -61,8 +53,8 @@ export default function RegisterPage() {
                     <h2 className="text-center font-semibold text-3xl lg:text-4xl text-gray-800">
                         Join us Now
                     </h2>
-
-                    <form className="mt-10" method="POST" onSubmit={handleSubmit}>
+                    <div className={'text-red-500 mt-5'}>{error}</div>
+                    <form onFocus={() => setError('')} className="mt-10" method="POST" onSubmit={handleSubmit}>
                         <label htmlFor="email"
                                className="block text-xs font-semibold text-gray-600 uppercase">E-mail</label>
                         <input id="email" type="email" name="email" placeholder="e-mail address" autoComplete="email"
@@ -85,7 +77,8 @@ export default function RegisterPage() {
                         <label htmlFor="confirmPassword"
                                className="block mt-2 text-xs font-semibold text-gray-600 uppercase">Confirm
                             Password</label>
-                        <input id="password" type="password" name="confirmPassword" placeholder="Confirm Password"
+                        <input id="confirm-password" type="password" name="confirmPassword"
+                               placeholder="Confirm Password"
                                autoComplete="current-password"
                                className="block w-full py-3 px-1 mt-2 mb-4
                     text-gray-800 appearance-none 
@@ -97,7 +90,7 @@ export default function RegisterPage() {
                                 className="w-full py-3 mt-10 bg-gray-800 rounded-sm
                     font-medium text-white uppercase
                     focus:outline-none hover:bg-gray-700 hover:shadow-none">
-                            SIGN UP
+                            {isLoading ? 'PROCESSING...' : 'SIGN UP'}
                         </button>
 
                         <div className="sm:flex sm:flex-wrap flex-col mt-8 sm:mb-4 text-sm text-center">

@@ -7,11 +7,9 @@ import {getFetcher} from "@/helpers/request-utils";
 import {UserResponse} from "@/types/types";
 
 export default function Home() {
-    const auth = getAuth();
-
     const requestUrl = `${backendURL}/api/user/`;
 
-    const {data, error, isLoading} = useSWR([requestUrl, auth!.accessToken], getFetcher);
+    const {data, error, isLoading} = useSWR([requestUrl, getAuth()!.accessToken], getFetcher);
 
     if (isLoading) {
         return <div>Loading...</div>
@@ -22,7 +20,7 @@ export default function Home() {
     return (
         <div className="grid grid-cols-3 gap-4 mt-2">
             <div className="text-2xl col-span-3">
-                Hello, {auth!.username}
+                Hello, {getAuth()!.username}
             </div>
 
             <div className="gap-4 col-span-3 md:col-span-1 border-2 border-gray-400 h-full m-2 p-4 flex flex-col">

@@ -3,7 +3,7 @@
 import TextEditor from "@/components/TextEditor";
 import TagInput from "@/components/TagInput";
 import React, {useState} from "react";
-import {Apis, backendURL} from "@/utilities/Constants";
+import {Apis, backendURL, Routes} from "@/utilities/Constants";
 import {fetcher, IsErrorResponse} from "@/helpers/request-utils";
 import notifyError, {notifySucceed} from "@/utilities/ToastrExtensions";
 import {CreateQuestionResponse} from "@/types/types";
@@ -17,6 +17,10 @@ export default function NewQuestion() {
     const [content, setContent] = useState<string>('');
     const auth = getAuth();
     const router = useRouter();
+
+    if (!auth) {
+        router.push(Routes.Auth.Login);
+    }
 
     const requestUrl = `${backendURL}${Apis.Question.Create}`;
 
