@@ -1,6 +1,6 @@
 'use client';
 
-import React, {Usable, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Apis, backendURL} from "@/utilities/Constants";
 import useSWR from "swr";
 import {getFetcher} from "@/helpers/request-utils";
@@ -18,14 +18,14 @@ import {isTrue} from "@/helpers/evaluate-utils";
 import hljs from "highlight.js";
 import 'highlight.js/styles/vs.min.css';
 
-export default function QuestionPage({params}: { params: Usable<{ path: string[] }> }) {
+export default function QuestionPage({params}: { params: { path: string[] } }) {
     const [tabValue, setTabValue] = useState(0);
     const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
         setTabValue(newValue);
     };
 
     const auth = getAuth();
-    const {path} = React.use(params);
+    const {path} = params;
     const requestUrl = `${backendURL}${Apis.Question.GetQuestionDetail}/view/${path[0]}`
 
     const {data, error, isLoading} = useSWR([requestUrl, auth?.accessToken], getFetcher);
