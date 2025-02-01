@@ -5,10 +5,13 @@ import Link from "next/link";
 import {usePathname} from "next/navigation";
 import UserDropdown from "./UserDropdown";
 import getAuth from "@/helpers/auth-utils";
+import SearchBar from "@/components/SearchBar";
+import {useState} from "react";
 
 export default function Appbar() {
     const authContext = getAuth();
     const currentPath = usePathname();
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
 
     return (
         !currentPath.startsWith('/auth') &&
@@ -26,12 +29,16 @@ export default function Appbar() {
 
             <div className="flex gap-4 items-center mt-4 md:mt-0 w-full md:w-auto justify-between md:justify-end">
                 <Link href={Routes.NewQuestion}
-                      className="text-sm text-gray-700 hover:bg-gray-300 p-2 rounded-full transition-colors">
+                      className="text-sm text-gray-600 hover:bg-gray-300 p-2 rounded-full transition-colors">
                     Ask <div className={'hidden md:inline'}>Question</div>
                 </Link>
                 <div className="w-full md:w-auto">
-                    <input type="text" placeholder="Search..."
-                           className="w-full md:w-auto text-gray-500 border p-2 outline-none rounded-full focus:border-black transition-colors"/>
+                    <button onClick={() => setIsSearchOpen(!isSearchOpen)}
+                            className="text-sm text-gray-700 hover:bg-gray-300 p-2 rounded-full transition-colors">
+                        Search
+                    </button>
+
+                    <SearchBar open={isSearchOpen} onClose={() => setIsSearchOpen(false)}/>
                 </div>
                 <UserDropdown profilePicture={authContext?.profilePicture}/>
             </div>

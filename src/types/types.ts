@@ -1,7 +1,18 @@
-export interface TagObject {
+export interface TagResponse {
     id: string,
     name: string,
     description: string,
+    wikiBody: string,
+    questionCount: number
+}
+
+export interface TagDetailResponse {
+    id: string,
+    name: string,
+    description: string,
+    questionCount: number
+    wikiBody: string,
+    questions: QuestionResponse[]
 }
 
 export interface ResourceRightProps {
@@ -15,7 +26,17 @@ export interface CreateQuestionResponse {
     title: string,
     content: string,
     slug: string,
-    tags: TagObject[],
+    tags: TagResponse[],
+}
+
+export interface PagedResponse<T> {
+    pageIndex: number,
+    pageSize: number,
+    hasNextPage: boolean,
+    hasPreviousPage: boolean,
+    totalCount: number,
+    totalPage: number,
+    items: T[],
 }
 
 export interface QuestionResponse extends ResourceRightProps {
@@ -23,7 +44,7 @@ export interface QuestionResponse extends ResourceRightProps {
     title: string,
     content: string,
     slug: string,
-    tags: TagObject[],
+    tags: TagResponse[],
 
     author: AuthorResponse,
 

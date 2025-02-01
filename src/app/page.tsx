@@ -5,6 +5,7 @@ import {backendURL} from "@/utilities/Constants";
 import useSWR from "swr";
 import {getFetcher} from "@/helpers/request-utils";
 import {UserResponse} from "@/types/types";
+import Loading from "@/app/loading";
 
 export default function Home() {
     const requestUrl = `${backendURL}/api/user/`;
@@ -12,19 +13,18 @@ export default function Home() {
 
     const {data, error, isLoading} = useSWR([requestUrl, auth?.accessToken], getFetcher);
 
-    if (isLoading) {
-        return <div>Loading...</div>
-    }
+    if (isLoading)
+        return <Loading/>
 
     const user = data as UserResponse;
 
     return (
         <div className="grid grid-cols-3 gap-4 mt-2">
             <div className="text-2xl col-span-3">
-                Hello, {getAuth()!.username}
+                Hello, {auth?.username}
             </div>
 
-            <div className="gap-4 col-span-3 md:col-span-1 border-2 border-gray-400 h-full m-2 p-4 flex flex-col">
+            <div className="gap-4 col-span-3 md:col-span-1 h-full m-2 p-4 flex flex-col">
                 <div className="text-lg font-semibold">
                     Reputation
                 </div>

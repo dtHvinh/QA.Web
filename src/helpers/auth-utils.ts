@@ -8,6 +8,6 @@ export interface AuthProps {
 }
 
 export default function getAuth() {
-    const authCookie = getCookie('auth');
-    return authCookie ? JSON.parse(authCookie) as AuthProps : null;
+    const authCookie = getCookie('auth')!;
+    return JSON.parse(authCookie) as AuthProps;
 }

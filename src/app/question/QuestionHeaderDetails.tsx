@@ -7,20 +7,20 @@ import ClosedLabel from "@/app/question/ClosedLabel";
 
 const QuestionHeaderDetails = memo(function QuestionHeaderDetails({question}: { question: QuestionResponse }) {
     return (
-        <div className={'flex flex-col space-y-1 text-gray-500'}>
+        <div className={'flex flex-col space-y-1 text-gray-400'}>
             <div></div>
             <div className={'flex flex-wrap gap-4'}>
-                <div>Asked at: {timeFromNow(question.createdAt)}</div>
+                <div>Asked at: <span className={'text-gray-700'}>{timeFromNow(question.createdAt)}</span></div>
                 {question.updatedAt !== DEFAULT_TIME ?
                     <div>
-                        Modified at: {timeFromNow(question.updatedAt)}
+                        Modified at: <span className={'text-gray-700'}>{timeFromNow(question.updatedAt)}</span>
                     </div> : ''
                 }
                 <div>
-                    Views: {formatNumber(question.viewCount)}
+                    Views: <span className={'text-gray-700'}>{formatNumber(question.viewCount)}</span>
                 </div>
                 <div>
-                    Answers: {question.answerCount}
+                    Answers: <span className={'text-gray-700'}>{question.answerCount}</span>
                 </div>
             </div>
             <div className={'flex gap-2'}>

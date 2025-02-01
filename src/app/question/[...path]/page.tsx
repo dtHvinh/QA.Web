@@ -17,15 +17,16 @@ import AnswerSection from "@/app/question/AnswerSection";
 import {isTrue} from "@/helpers/evaluate-utils";
 import hljs from "highlight.js";
 import 'highlight.js/styles/vs.min.css';
+import Loading from "@/app/loading";
 
 export default function QuestionPage({params}: { params: Promise<{ path: string[] }> }) {
+    const {path} = React.use(params);
     const [tabValue, setTabValue] = useState(0);
     const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
         setTabValue(newValue);
     };
 
     const auth = getAuth();
-    const {path} = React.use(params);
     const requestUrl = `${backendURL}${Apis.Question.GetQuestionDetail}/view/${path[0]}`
 
     const {data, error, isLoading} = useSWR([requestUrl, auth?.accessToken], getFetcher);
@@ -40,7 +41,7 @@ export default function QuestionPage({params}: { params: Promise<{ path: string[
     }, [error, question, tabValue]);
 
     if (isLoading) {
-        return <div>Loading...</div>
+        return <Loading/>
     }
 
     return (

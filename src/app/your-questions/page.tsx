@@ -60,7 +60,7 @@ export default function YourQuestionPage() {
                     <div>
                         You have not asked any questions yet,&nbsp;
                         <Link href={Routes.NewQuestion} className={'text-blue-500 underline'}>
-                            asking a question now
+                            ask a question now
                         </Link>!
                     </div>}
             </div>

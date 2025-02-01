@@ -42,9 +42,9 @@ export default function QuestionSection({question}: { question: QuestionResponse
 
     return (
         <div>
-            <div className={'grid grid-cols-12'}>
+            <div className={'-mx-12 md:-mx-0 grid grid-cols-12'}>
                 <div
-                    className={'col-span-1 row-span-full justify-items-center space-y-3'}>
+                    className={'col-span-2 md:col-span-1 row-span-full justify-items-center space-y-3'}>
                     <RoundedButton
                         title={'Upvote'}
                         svg={<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"

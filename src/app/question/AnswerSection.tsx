@@ -57,7 +57,7 @@ export default function AnswerSection({question}: { question: QuestionResponse }
     }
 
     return (
-        <div>
+        <div className={'-mx-12 md:-mx-0'}>
             <div className={'flex justify-between items-baseline'}>
                 <div className={'text-2xl mb-5'}>
                     Answers ({question.answerCount}):

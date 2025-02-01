@@ -32,15 +32,21 @@ export default function YourQuestionItem(params: Readonly<YourQuestionItemProps>
                                           description={tag.description} onClick={console.log}/>
                             )}
                         </div>
-                        <div className="text-xs text-end text-neutral-500">{timeFromNow(question.createdAt)}</div>
+                        <div className="flex justify-end text-xs space-x-2.5 text-neutral-600">
+                            <div className={'font-bold'}>
+                                Asked:
+                            </div>
+                            <div>
+                                {timeFromNow(question.createdAt)}
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <div className="mt-4 mb-6">
                     <p dangerouslySetInnerHTML={{__html: question.content}}
-                       className="text-sm text-neutral-400 max-h-16 overflow-y-hidden">
+                       className="text-sm text-neutral-400 line-clamp-3">
                     </p>
-                    <Link href={toQuestionDetail(question.id, question.slug)} className={'mt-4'}>...Read more</Link>
                 </div>
 
                 <div>
@@ -51,6 +57,9 @@ export default function YourQuestionItem(params: Readonly<YourQuestionItemProps>
                                 <span>{question.upvote - question.downvote}</span>
                             </div>
                         </div>
+                        <Link href={toQuestionDetail(question.id, question.slug)} className={'mt-4 text-black'}>
+                            Watch more
+                        </Link>
                     </div>
                 </div>
             </div>

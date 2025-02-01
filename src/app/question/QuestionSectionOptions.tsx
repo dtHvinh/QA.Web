@@ -15,7 +15,8 @@ interface QuestionSectionOptionsProps {
 
 export default function QuestionSectionOptions({question}: QuestionSectionOptionsProps) {
     const [isSettingOpen, setIsSettingOpen] = React.useState(false);
-    const [isAlertDialogOpen, setIsAlertDialogOpen] = React.useState(false);
+    const [deleteConfirmOpen, setDeleteConfirmOpen] = React.useState(false);
+    const [closeConfirmOpen, setCloseConfirmOpen] = React.useState(false);
     const auth = getAuth();
     const router = useRouter();
 
@@ -72,11 +73,17 @@ export default function QuestionSectionOptions({question}: QuestionSectionOption
 
     return (
         <div>
-            <AlertDialog open={isAlertDialogOpen}
+            <AlertDialog open={deleteConfirmOpen}
                          title={'Do you want to delete this question'}
                          description={'This action cannot be undone'}
-                         onClose={() => setIsAlertDialogOpen(false)}
+                         onClose={() => setDeleteConfirmOpen(false)}
                          onYes={handleDeleteQuestion}/>
+
+            <AlertDialog open={closeConfirmOpen}
+                         title={'Do you want to close this question'}
+                         description={'This action cannot be undone'}
+                         onClose={() => setCloseConfirmOpen(false)}
+                         onYes={handleCloseQuestion}/>
 
             <RoundedButton
                 title={'Settings'}
@@ -142,7 +149,7 @@ export default function QuestionSectionOptions({question}: QuestionSectionOption
                     <button
                         className="flex w-full items-center gap-2 p-2 mb-1 text-sm text-red-500 bg-white hover:bg-red-100"
                         role="menuitem"
-                        onClick={() => setIsAlertDialogOpen(true)}>
+                        onClick={() => setDeleteConfirmOpen(true)}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                              className="bi bi-trash3" viewBox="0 0 16 16">
                             <path

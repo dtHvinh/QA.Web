@@ -1,39 +1,42 @@
-// src/components/TagInput.tsx
-import React, {useEffect, useState} from 'react';
-import {Autocomplete, TextField} from '@mui/material';
-import TagLabel from './TagLabel';
+import React, {useEffect, useState} from "react";
+import {Autocomplete, Box, TextField, Typography} from "@mui/material";
 import {backendURL} from "@/utilities/Constants";
-import useSWR from "swr";
-import notifyError from "@/utilities/ToastrExtensions";
 import {getFetcher} from "@/helpers/request-utils";
-import {TagObject} from "@/types/types";
+import {PagedResponse, TagResponse} from "@/types/types";
 import getAuth from "@/helpers/auth-utils";
-
+import notifyError from "@/utilities/ToastrExtensions";
+import TagLabel from "@/components/TagLabel";
+import {useDebounce} from "use-debounce";
 
 export interface TagInputProps {
-    onTagChange?: (tagIds: string[]) => void
-    maxTags: number
+    onTagChange?: (tagIds: string[]) => void;
+    maxTags: number;
 }
 
 export default function TagInput({onTagChange, maxTags}: TagInputProps) {
-    const [tags, setTags] = useState<TagObject[]>([]);
-    const [selectedTags, setSelectedTags] = useState<TagObject[]>([]);
     const auth = getAuth();
+    const requestUrl = `${backendURL}/api/tag/search`;
 
-    const requestUrl = `${backendURL}/api/tag/all`;
-
-    const {data, error, isLoading} = useSWR([requestUrl, auth?.accessToken], getFetcher);
+    const [tags, setTags] = useState<TagResponse[]>([]);
+    const [selectedTags, setSelectedTags] = useState<TagResponse[]>([]);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [debouncedSearchTerm] = useDebounce(searchTerm, 700);
 
     useEffect(() => {
-        if (data) {
-            setTags(data);
+        if (debouncedSearchTerm.trim().length === 0) {
+            return;
         }
-        if (error) {
-            notifyError('Failed to fetch tags');
-        }
-    }, [data, error]);
 
-    const handleTagChange = (_event: React.SyntheticEvent, newTags: TagObject[]) => {
+        async function fetchTags() {
+            const searchTags = await getFetcher([`${requestUrl}/${debouncedSearchTerm}`, auth!.accessToken]) as PagedResponse<TagResponse>;
+            setTags(searchTags.items || []);
+        }
+
+        fetchTags().then();
+
+    }, [debouncedSearchTerm]);
+
+    const handleTagChange = (_event: React.SyntheticEvent, newTags: TagResponse[]) => {
         if (newTags.length > maxTags) {
             notifyError(`You can only select up to ${maxTags} tags`);
             return;
@@ -42,7 +45,7 @@ export default function TagInput({onTagChange, maxTags}: TagInputProps) {
         setSelectedTags(newTags);
 
         if (onTagChange) {
-            onTagChange(newTags.map(tag => tag.id));
+            onTagChange(newTags.map((tag) => tag.id));
         }
     };
 
@@ -54,25 +57,59 @@ export default function TagInput({onTagChange, maxTags}: TagInputProps) {
                 getOptionLabel={(option) => option.name}
                 value={selectedTags}
                 onChange={handleTagChange}
-                renderTags={(value: TagObject[], getTagProps) =>
-                    value.map((option: TagObject, index: number) => (
-                        <TagLabel {...getTagProps({index})}
-                                  {...option}
-                                  name={option.name}
-                                  key={option.id}
-                                  className={'mr-2'}
-                                  onClick={(name: string) => {
-                                      setSelectedTags(selectedTags.filter(tag => tag.name !== name))
-                                  }}/>
+                renderTags={(value: TagResponse[], getTagProps) =>
+                    value.map((option: TagResponse, index: number) => (
+                        <TagLabel
+                            {...getTagProps({index})}
+                            {...option}
+                            name={option.name}
+                            key={option.id}
+                            className={"mr-2"}
+                            onClick={(name: string) => {
+                                setSelectedTags(selectedTags.filter((tag) => tag.name !== name));
+                            }}
+                        />
                     ))
                 }
                 renderInput={(params) => (
                     <TextField
                         {...params}
                         variant="outlined"
-                        placeholder={isLoading ? 'Loading tags...' : 'Select up to 5 tags'}
+                        value={searchTerm}
+                        onChange={(event) => setSearchTerm(event.target.value)}
+                        placeholder={"Select up to 5 tags"}
                     />
                 )}
+                renderOption={(props, option) => (
+                    <li {...props} key={option.id}>
+                        <div>
+                            <Typography variant="subtitle1" fontWeight="bold">
+                                {option.name}
+                            </Typography>
+                            <Typography variant={'caption'} className={'text-gray-600 line-clamp-5'}>
+                                {option.description}
+                            </Typography>
+                        </div>
+                    </li>
+                )}
+                slotProps={{
+                    listbox: {
+                        component: (props) => (
+                            <Box
+                                component="ul"
+                                {...props}
+                                sx={{
+                                    display: "grid",
+                                    gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+                                    gap: 1,
+                                    padding: 2,
+                                }}
+                            >
+                                {props.children}
+                            </Box>
+                        ),
+                    },
+                }}
             />
         </div>
     );

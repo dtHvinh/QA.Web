@@ -38,6 +38,7 @@ export default function CommentSection({question}: { question: QuestionResponse 
             notifyError((response as ErrorResponse).title);
         } else {
             setComments([...comments, response as CommentResponse]);
+            console.log(response);
             setCurrentText('');
             question.commentCount++;
         }
