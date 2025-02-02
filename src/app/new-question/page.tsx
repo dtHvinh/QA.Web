@@ -11,12 +11,14 @@ import {ErrorResponse} from "@/props/ErrorResponse";
 import getAuth from "@/helpers/auth-utils";
 import {useRouter} from "next/navigation";
 import {toQuestionPage} from "@/helpers/route-utils";
+import {Checkbox, FormControlLabel} from "@mui/material";
 
 export default function NewQuestion() {
     const [tagIds, setTagIds] = useState<string[]>([]);
     const [content, setContent] = useState<string>('');
     const auth = getAuth();
     const router = useRouter();
+    const [isDraft, setIsDraft] = useState<boolean>(false);
 
     const requestUrl = `${backendURL}${Apis.Question.Create}`;
 
@@ -38,7 +40,7 @@ export default function NewQuestion() {
         const response = await fetcher<CreateQuestionResponse>(
             [
                 'POST',
-                requestUrl,
+                isDraft ? `${requestUrl}?isDraft=true` : requestUrl,
                 auth!.accessToken,
                 JSON.stringify({
                     title: title,
@@ -94,13 +96,11 @@ export default function NewQuestion() {
 
                 <div className={'flex justify-end'}>
                     <div className={'flex space-x-2.5'}>
-                        <button
-                            className={'border-[2px] border-gray-400 p-2 rounded-lg transition-all active:scale-95'}>
-                            Save as Draft
-                        </button>
+                        <FormControlLabel value={isDraft} onChange={() => setIsDraft(!isDraft)} control={<Checkbox/>}
+                                          label="Is Draft"/>
                         <button
                             className={'p-2 rounded-lg bg-[#5783db] hover:bg-[#5783db] transition-all text-white active:scale-95'}>
-                            Send
+                            {isDraft ? 'Save as draft' : 'Create question'}
                         </button>
                     </div>
                 </div>

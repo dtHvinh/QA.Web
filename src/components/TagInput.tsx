@@ -20,7 +20,7 @@ export default function TagInput({onTagChange, maxTags}: TagInputProps) {
     const [tags, setTags] = useState<TagResponse[]>([]);
     const [selectedTags, setSelectedTags] = useState<TagResponse[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
-    const [debouncedSearchTerm] = useDebounce(searchTerm, 700);
+    const [debouncedSearchTerm] = useDebounce(searchTerm, 400);
 
     useEffect(() => {
         if (debouncedSearchTerm.trim().length === 0) {

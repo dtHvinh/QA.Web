@@ -17,6 +17,6 @@ export default function timeFromNow(dateTimeString: string): string {
     } else if (diffInDays < 7) {
         return `${Math.floor(diffInDays)} day${Math.floor(diffInDays) !== 1 ? "s" : ""} ago`;
     } else {
-        return date.toLocaleDateString();
+        return date.toLocaleDateString() + " " + date.toLocaleTimeString();
     }
 }

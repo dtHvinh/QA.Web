@@ -6,6 +6,7 @@ import Link from "next/link";
 import toQuestionDetail from "@/helpers/path";
 import SolvedLabel from "@/app/question/SolvedLabel";
 import ClosedLabel from "@/app/question/ClosedLabel";
+import DraftLabel from "@/app/question/DraftLabel";
 
 interface YourQuestionItemProps {
     question: QuestionResponse
@@ -23,6 +24,7 @@ export default function YourQuestionItem(params: Readonly<YourQuestionItemProps>
                         <div className={'flex space-x-2.5'}>
                             {question.isSolved && <SolvedLabel/>}
                             {question.isClosed && <ClosedLabel/>}
+                            {question.isDraft && <DraftLabel/>}
                         </div>
                     </div>
                     <div className="flex flex-col">
