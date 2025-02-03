@@ -7,9 +7,12 @@ import {IsErrorResponse, putFetcher} from "@/helpers/request-utils";
 import notifyError, {notifySucceed} from "@/utilities/ToastrExtensions";
 import {ErrorResponse} from "@/props/ErrorResponse";
 import getAuth from "@/helpers/auth-utils";
+import TagInput from "@/components/TagInput";
 
 export default function EditSection({question}: { question: QuestionResponse }) {
     const [editContentValue, setEditContentValue] = useState(question.content);
+    const [editTitleValue, setEditTitleValue] = useState(question.title);
+    const [editTagIds, setEditTagIds] = useState(question.tags.map(e => e.id));
     const auth = getAuth();
 
     const handleSend = async () => {
@@ -17,9 +20,9 @@ export default function EditSection({question}: { question: QuestionResponse }) 
 
         const response = await putFetcher([requestUrl, auth!.accessToken, JSON.stringify({
             id: question.id,
-            title: question.title,
+            title: editTitleValue,
             content: editContentValue,
-            tags: question.tags.map(e => e.id)
+            tags: editTagIds
         })]);
 
         if (IsErrorResponse(response)) {
@@ -32,12 +35,28 @@ export default function EditSection({question}: { question: QuestionResponse }) 
 
     return (
         <div>
+            <div className="space-y-2 mb-5">
+                <label htmlFor="title" className="block text-xl font-medium text-gray-700">Edit Title</label>
+                <input
+                    defaultValue={editTitleValue}
+                    onChange={(e) => setEditTitleValue(e.target.value)}
+                    type="text"
+                    spellCheck={false}
+                    name="title"
+                    required
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-blue-600"/>
+            </div>
+
+            <label className="block text-xl mb-2 font-medium text-gray-700">Edit Content</label>
             <TextEditor currentText={editContentValue}
                         onTextChange={setEditContentValue}/>
-            <div className={'w-full text-end pr-4'}>
+            <label className="block text-xl mb-2 font-medium text-gray-700">Edit Tags</label>
+            <TagInput onTagChange={setEditTagIds} maxTags={5} defaultTags={question.tags}/>
+
+            <div className={'w-full text-end mt-5'}>
                 <button onClick={handleSend}
                         disabled={editContentValue.length == 0}
-                        className={'space-x-3 disabled:bg-gray-200 transition-all p-2 bg-blue-200 rounded-b-xl hover:bg-gray-300 active:scale-95'}>
+                        className={'space-x-3 disabled:bg-gray-200 p-2 bg-blue-200 rounded-lg hover:bg-blue-300 active:scale-95 transition-all'}>
                     <div className={'inline-block mt-1'}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                              viewBox="0 0 16 16">

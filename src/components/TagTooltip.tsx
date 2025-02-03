@@ -8,7 +8,7 @@ export interface TagTooltipProps {
     children: ReactElement;
 }
 
-const HtmlTooltip = styled(({className, ...props}: TooltipProps) => (
+export const HtmlTooltip = styled(({className, ...props}: TooltipProps) => (
     <Tooltip {...props} classes={{popper: className}}/>
 ))(() => ({
     [`& .${tooltipClasses.tooltip}`]: {

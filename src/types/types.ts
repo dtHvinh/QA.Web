@@ -62,6 +62,7 @@ export interface QuestionResponse extends ResourceRightProps {
     isClosed: boolean,
     isDraft: boolean,
     isSolved: boolean,
+    isBookmarked: boolean,
 
     comments: CommentResponse[],
     answers: AnswerResponse[],

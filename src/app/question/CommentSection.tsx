@@ -44,6 +44,13 @@ export default function CommentSection({question}: { question: QuestionResponse 
         }
     }
 
+    if (question.isDraft)
+        return (
+            <div>
+                Edit and publish the question to see comments
+            </div>
+        )
+
     return (
         <div className={'flex flex-col gap-2'}>
             <div className={'text-2xl mb-5'}>

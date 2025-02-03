@@ -10,15 +10,16 @@ import {useDebounce} from "use-debounce";
 
 export interface TagInputProps {
     onTagChange?: (tagIds: string[]) => void;
+    defaultTags?: TagResponse[];
     maxTags: number;
 }
 
-export default function TagInput({onTagChange, maxTags}: TagInputProps) {
+export default function TagInput({onTagChange, maxTags, defaultTags}: TagInputProps) {
     const auth = getAuth();
     const requestUrl = `${backendURL}/api/tag/search`;
 
     const [tags, setTags] = useState<TagResponse[]>([]);
-    const [selectedTags, setSelectedTags] = useState<TagResponse[]>([]);
+    const [selectedTags, setSelectedTags] = useState<TagResponse[]>(defaultTags ?? []);
     const [searchTerm, setSearchTerm] = useState("");
     const [debouncedSearchTerm] = useDebounce(searchTerm, 400);
 

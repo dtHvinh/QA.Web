@@ -1,68 +1,79 @@
 'use client'
 
-import {MenuItem, Pagination, Select, SelectChangeEvent} from "@mui/material";
-import React, {useState} from "react";
+import {Pagination} from "@mui/material";
+import React, {useEffect, useState} from "react";
 import {Apis, backendURL, Routes} from "@/utilities/Constants";
-import {getFetcher} from "@/helpers/request-utils";
-import useSWR from "swr";
 import {PagedResponse, QuestionResponse} from "@/types/types";
-import notifyError from "@/utilities/ToastrExtensions";
 import YourQuestionItem from "@/components/YourQuestionItem";
 import Link from "next/link";
 import getAuth from "@/helpers/auth-utils";
-import Loading from "@/app/loading";
+import ItemPerPage from "@/components/ItemPerPage";
+import useSWR from "swr";
+import {getFetcher} from "@/helpers/request-utils";
+import YQPSkeleton from "@/app/your-questions/YQPSkeleton";
+import FilterBar from "@/components/FilterBar";
 
 export default function YourQuestionPage() {
-    const auth = getAuth();
-    const validOrderValue = ['Newest', 'MostViewed', 'MostVoted', 'Solved'];
-    const validOrder = ['Newest', 'Most Viewed', 'Most Voted', 'Solved'];
+    const {accessToken} = getAuth()!;
+    const validOrderValue = ['Newest', 'MostViewed', 'MostVoted', 'Solved', 'Draft'];
+    const validOrder = ['Newest', 'Most Viewed', 'Most Voted', 'Solved', 'Draft'];
+    const orderDescription = [
+        'Newest question base on their creation date',
+        'Question has most view',
+        'Question has most total vote count',
+        'Question has been solved',
+        'Questions are still in the process of being refined, clarified, or finalized'
+    ];
     const [orderBy, setOrderBy] = useState<string>(validOrderValue[0]);
+    const [question, setQuestion] = useState<PagedResponse<QuestionResponse>>();
     const [pageIndex, setPageIndex] = useState<number>(1);
-    const pageSize = 10;
+    const [pageSize, setPageSize] = useState(16);
+    const [requestUrl, setRequestUrl] = useState<string>(`${backendURL}${Apis.Question.GetYourQuestions}`
+        + '/?order=' + orderBy
+        + `&pageIndex=${pageIndex}`
+        + `&pageSize=${pageSize}`);
+
+    const {data, isLoading} = useSWR([requestUrl, accessToken], getFetcher);
+
+    useEffect(() => {
+        if (data) {
+            setQuestion(data);
+        }
+    }, [data]);
+
+    useEffect(() => {
+        setRequestUrl(`${backendURL}${Apis.Question.GetYourQuestions}`
+            + '/?order=' + orderBy
+            + `&pageIndex=${1}`
+            + `&pageSize=${pageSize}`);
+    }, [pageSize]);
+
+    useEffect(() => {
+        setRequestUrl(`${backendURL}${Apis.Question.GetYourQuestions}`
+            + '/?order=' + orderBy
+            + `&pageIndex=${pageIndex}`
+            + `&pageSize=${pageSize}`);
+    }, [pageIndex, orderBy]);
 
     const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
         setPageIndex(value);
     }
 
-    const requestUrl =
-        `${backendURL}${Apis.Question.GetYourQuestions}`
-        + '/?order=' + orderBy
-        + `&pageIndex=${pageIndex}`
-        + `&pageSize=${pageSize}`;
-
-    const {data, error, isLoading} = useSWR([requestUrl, auth?.accessToken], getFetcher)
-
-    const question = data as PagedResponse<QuestionResponse>;
-
-    const handleOrderByChange = (event: SelectChangeEvent) => {
-        setOrderBy(event.target.value);
-    }
-
-    if (isLoading)
-        return <Loading/>
-
-    if (error) {
-        notifyError('Failed to fetch your questions');
+    const handleOrderByChange = (value: string) => {
+        setOrderBy(value);
     }
 
     return (
-        <div className={'flex flex-col'}>
-            <div className={'flex justify-between items-baseline'}>
-                <div className={'text-2xl mt-4'}> Your {question.totalCount} questions:</div>
-                <Select className={'focus:outline-0 focus:border-0'}
-                        value={orderBy}
-                        onChange={handleOrderByChange}
-                        variant={"standard"}
-                        disableUnderline={true}
-                >
-                    {validOrder.map((order, index) => (
-                        <MenuItem key={index} value={validOrderValue[index]}>{order}</MenuItem>
-                    ))}
-                </Select>
-            </div>
+        <>
+            <div className={'grid grid-cols-2 gap-5'}>
+                <div className={'col-span-full flex justify-between items-baseline'}>
+                    <div className={'text-2xl mt-4'}> Your {question?.totalCount} questions:</div>
+                    <FilterBar tabs={validOrder} tabValues={validOrderValue} tabDescriptions={orderDescription}
+                               onFilterValueChange={handleOrderByChange}/>
+                </div>
 
-            <div className={'flex flex-col gap-5 mb-5 mt-4'}>
-                {isLoading && <div>Loading...</div>}
+                {isLoading && <div className={'col-span-full'}><YQPSkeleton/></div>}
+
                 {question && question.items.map((question: QuestionResponse) => (
                     <YourQuestionItem key={question.id} question={question}/>
                 ))}
@@ -73,11 +84,14 @@ export default function YourQuestionPage() {
                             ask a question now
                         </Link>!
                     </div>}
-            </div>
 
-            <div className={'pb-5 flex justify-end'}>
-                <Pagination onChange={handlePageChange} count={Math.ceil(question.totalCount / pageSize)}/>
             </div>
-        </div>
+            {question && question.items.length !== 0 &&
+                <div className={'col-span-full items-center flex justify-between my-5'}>
+                    <ItemPerPage onPageSizeChange={setPageSize} values={[16, 32, 64]}/>
+                    <Pagination page={pageIndex} onChange={handlePageChange} count={question?.totalPage}/>
+                </div>
+            }
+        </>
     );
 }

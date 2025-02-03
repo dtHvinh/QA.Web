@@ -4,6 +4,7 @@ import StarterKit from '@tiptap/starter-kit'
 import {EditorContent, useEditor} from '@tiptap/react'
 import Image from '@tiptap/extension-image';
 import {TextEditorToolbar} from "@/components/TextEditorToolbar";
+import {useEffect} from "react";
 
 interface TextEditorProps {
     currentText: string
@@ -27,6 +28,10 @@ const TextEditor = (params: TextEditorProps) => {
         },
         immediatelyRender: false,
     })
+
+    useEffect(() => {
+        editor?.commands.setContent(params.currentText);
+    }, [params.currentText]);
 
     if (!editor) {
         return null

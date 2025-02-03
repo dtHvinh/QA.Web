@@ -37,7 +37,7 @@ export default function RootLayout({
     return (
         <html lang="en">
         <head>
-            <script src="https://unpkg.com/react-scan/dist/auto.global.js" async></script>
+            <script src={"https://unpkg.com/react-scan/dist/auto.global.js"} async></script>
             <title>A</title>
         </head>
         <body
@@ -51,7 +51,6 @@ export default function RootLayout({
                     {children}
                 </SubLayout>
             </SupabaseProvider>
-
             <ScrollToTopButton/>
         </div>
         <footer className="bg-gray-800 text-white py-4">

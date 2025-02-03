@@ -15,7 +15,10 @@ export default function timeFromNow(dateTimeString: string): string {
         }
         return `${Math.floor(diffInHours)} hour${Math.floor(diffInHours) !== 1 ? "s" : ""} ago`;
     } else if (diffInDays < 7) {
-        return `${Math.floor(diffInDays)} day${Math.floor(diffInDays) !== 1 ? "s" : ""} ago`;
+        return `${Math.floor(diffInDays)} day${Math.floor(diffInDays) !== 1 ? "s" : ""} ago, at ${date.toLocaleTimeString('vi', {
+            hour: '2-digit',
+            minute: '2-digit'
+        })}`;
     } else {
         return date.toLocaleDateString() + " " + date.toLocaleTimeString();
     }

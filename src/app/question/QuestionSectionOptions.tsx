@@ -56,21 +56,6 @@ export default function QuestionSectionOptions({question}: QuestionSectionOption
         setIsSettingOpen(false);
     }
 
-    const handleBookmarkQuestion = async () => {
-        const response = await fetcher([
-            'POST',
-            `${backendURL}/api/bookmark/${question.id}`,
-            auth!.accessToken, '']);
-
-        if (IsErrorResponse(response)) {
-            notifyError((response as ErrorResponse).errors);
-        } else {
-            notifySucceed('Question bookmarked');
-        }
-
-        setIsSettingOpen(false);
-    }
-
     return (
         <div>
             <AlertDialog open={deleteConfirmOpen}
@@ -98,17 +83,6 @@ export default function QuestionSectionOptions({question}: QuestionSectionOption
                 className={`${isSettingOpen ? "" : "hidden"} mt-3 z-10 shadow-xl absolute w-56 rounded-md bg-white ring-1 ring-black ring-opacity-5`}>
                 <div className="" role="menu" aria-orientation="vertical"
                      aria-labelledby="dropdown-button">
-                    <button
-                        className="flex w-full items-center gap-2 p-2 mb-1 text-sm text-gray-700 bg-white hover:bg-gray-100"
-                        role="menuitem"
-                        onClick={handleBookmarkQuestion}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                             className="bi bi-bookmark-plus-fill" viewBox="0 0 16 16">
-                            <path fillRule="evenodd"
-                                  d="M2 15.5V2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.74.439L8 13.069l-5.26 2.87A.5.5 0 0 1 2 15.5m6.5-11a.5.5 0 0 0-1 0V6H6a.5.5 0 0 0 0 1h1.5v1.5a.5.5 0 0 0 1 0V7H10a.5.5 0 0 0 0-1H8.5z"/>
-                        </svg>
-                        Bookmark
-                    </button>
                     <button
                         className="flex w-full items-center gap-2 p-2 mb-1 text-sm text-gray-700 bg-white hover:bg-gray-100"
                         role="menuitem">

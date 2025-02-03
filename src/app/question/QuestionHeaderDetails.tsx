@@ -4,6 +4,7 @@ import {QuestionResponse} from "@/types/types";
 import {formatNumber} from "@/helpers/evaluate-utils";
 import SolvedLabel from "@/app/question/SolvedLabel";
 import ClosedLabel from "@/app/question/ClosedLabel";
+import DraftLabel from "@/app/question/DraftLabel";
 
 const QuestionHeaderDetails = memo(function QuestionHeaderDetails({question}: { question: QuestionResponse }) {
     return (
@@ -30,6 +31,10 @@ const QuestionHeaderDetails = memo(function QuestionHeaderDetails({question}: { 
 
                 {question.isClosed &&
                     <ClosedLabel/>
+                }
+
+                {question.isDraft &&
+                    <DraftLabel/>
                 }
             </div>
         </div>

@@ -56,6 +56,13 @@ export default function AnswerSection({question}: { question: QuestionResponse }
         question.answerCount--;
     }
 
+    if (question.isDraft)
+        return (
+            <div>
+                Edit and publish the question to see answers
+            </div>
+        )
+
     return (
         <div className={'-mx-12 md:-mx-0'}>
             <div className={'flex justify-between items-baseline'}>

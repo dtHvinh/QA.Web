@@ -11,7 +11,7 @@ export default function Home() {
     const requestUrl = `${backendURL}/api/user/`;
     const auth = getAuth();
 
-    const {data, error, isLoading} = useSWR([requestUrl, auth?.accessToken], getFetcher);
+    const {data, isLoading} = useSWR([requestUrl, auth?.accessToken], getFetcher);
 
     if (isLoading)
         return <Loading/>

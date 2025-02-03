@@ -11,7 +11,7 @@ export default function RoundedButton({title, svg, onClick, className}: {
         <Tooltip placement={'top'} title={title}>
             <button
                 onClick={onClick}
-                className={`p-4 bg-gray-200 active:bg-gray-400 active:scale-95 hover:bg-gray-300 rounded-full ${className}`}>
+                className={`transition-all p-4 bg-gray-100 active:bg-gray-400 active:scale-95 hover:bg-gray-300 rounded-full ${className}`}>
                 {svg}
             </button>
         </Tooltip>
