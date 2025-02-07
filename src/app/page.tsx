@@ -44,7 +44,7 @@ export default function Home() {
                             </path>
                         </svg>
                     </div>
-                    <small>Earn reputation by Asking, Answering</small>
+                    <small>Earn reputation by ask and answer a question</small>
                 </div>
             </div>
 

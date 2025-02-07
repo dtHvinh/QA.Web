@@ -66,7 +66,7 @@ export default function QuestionsPage() {
 
     return (
         <>
-            <div className={'grid grid-cols-1 md:grid-cols-2 gap-5'}>
+            <div className={'grid grid-cols-1 gap-5'}>
                 <div className={'col-span-full flex flex-wrap justify-between items-baseline'}>
                     <div className={'text-2xl mt-4'}>{question?.totalCount} questions:</div>
                     <FilterBar tabs={validOrder} tabValues={validOrderValue} tabDescriptions={orderDescription}

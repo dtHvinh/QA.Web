@@ -11,13 +11,13 @@ import {Pagination, Typography} from "@mui/material";
 import BookmarkItem from "@/app/bookmarks/BookmarkItem";
 
 export default function BookmarkPage() {
-    const {accessToken} = getAuth()!;
+    const auth = getAuth();
     const [pageIndex, setPageIndex] = React.useState<number>(1);
     const [pageSize, setPageSize] = React.useState<number>(10);
     const [questions, setQuestions] = React.useState<BookmarkResponse[]>([]);
     const requestUrl = `${backendURL}/api/bookmark/?orderBy=Newest&pageIndex=${pageIndex}&pageSize=${pageSize}`;
 
-    const {data, isLoading} = useSWR([requestUrl, accessToken], getFetcher);
+    const {data, isLoading} = useSWR([requestUrl, auth?.accessToken], getFetcher);
 
     useEffect(() => {
         if (data) {
