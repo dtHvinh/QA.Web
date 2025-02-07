@@ -30,7 +30,7 @@ export default function Tags() {
         try {
             const response = await fetch(requestUrl, {
                 headers: {
-                    'Authorization': `Bearer ${auth.accessToken}`
+                    'Authorization': `Bearer ${auth?.accessToken}`
                 }
             });
             if (!response.ok) {
@@ -45,7 +45,7 @@ export default function Tags() {
         } finally {
             setIsLoading(false);
         }
-    }, [auth.accessToken, orderBy, pageIndex, pageSize]);
+    }, [orderBy, pageIndex, pageSize]);
 
     useEffect(() => {
         fetchTags().then();
