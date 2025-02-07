@@ -15,9 +15,9 @@ import FilterBar from "@/components/FilterBar";
 
 
 export default function QuestionsPage() {
-    const {accessToken} = getAuth()!;
-    const validOrderValue = ['Newest', 'MostViewed', 'MostVoted', 'Solved', 'Draft'];
-    const validOrder = ['Newest', 'Most Viewed', 'Most Voted', 'Solved', 'Draft'];
+    const auth = getAuth()!;
+    const validOrderValue = ['Newest', 'MostViewed', 'MostVoted', 'Solved'];
+    const validOrder = ['Newest', 'Most Viewed', 'Most Voted', 'Solved'];
     const orderDescription = [
         'Newest question base on their creation date',
         'Question has most view',
@@ -34,7 +34,7 @@ export default function QuestionsPage() {
         + `&pageIndex=${pageIndex}`
         + `&pageSize=${pageSize}`);
 
-    const {data, isLoading} = useSWR([requestUrl, accessToken], getFetcher);
+    const {data, isLoading} = useSWR([requestUrl, auth?.accessToken], getFetcher);
 
     useEffect(() => {
         if (data) {
