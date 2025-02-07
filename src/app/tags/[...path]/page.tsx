@@ -13,7 +13,7 @@ import TagQuestionDisplaySkeleton from "@/app/tags/[...path]/TagQuestionDisplayS
 
 export default function TagDetailPage({params}: { params: Promise<{ path: string[] }> }) {
     const {path} = React.use(params);
-    const {accessToken} = getAuth()!;
+    const auth = getAuth()!;
     const [pageIndex, setPageIndex] = React.useState<number>(1);
     const [tagQuestions, setTagQuestions] = React.useState<QuestionResponse[]>([]);
     const validOrderValue = ['Newest', 'MostViewed', 'MostVoted', 'Solved', 'Draft'];
@@ -28,7 +28,7 @@ export default function TagDetailPage({params}: { params: Promise<{ path: string
     const [selectedOrder, setSelectedOrder] = React.useState<string>(validOrderValue[0]);
     const requestUrl = `${backendURL}/api/tag/${path[0]}?orderBy=${selectedOrder}&pageIndex=${pageIndex}&pageSize=15`;
 
-    const {data, isLoading} = useSWR([requestUrl, accessToken], getFetcher);
+    const {data, isLoading} = useSWR([requestUrl, auth?.accessToken], getFetcher);
 
     useEffect(() => {
         if (data)

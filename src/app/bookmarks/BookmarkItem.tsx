@@ -22,7 +22,7 @@ const BookmarkItem = memo(function BookmarkItem(
     }>) {
     const {question} = bookmark;
     const [open, setOpen] = React.useState(false);
-    const {accessToken} = getAuth()!;
+    const auth = getAuth();
     const requestUrl = `${backendURL}/api/bookmark/${bookmark.id}`;
 
     const handleClickClose = () => {
@@ -35,7 +35,7 @@ const BookmarkItem = memo(function BookmarkItem(
     }
 
     const handleDelete = async () => {
-        const res = await deleteFetcher([requestUrl, accessToken]);
+        const res = await deleteFetcher([requestUrl, auth!.accessToken]);
 
         if (IsErrorResponse(res)) {
             notifyError((res as ErrorResponse).title);
