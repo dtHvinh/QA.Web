@@ -11,7 +11,7 @@ import {toTagDetail, toWikiPage} from "@/helpers/route-utils";
 import FilterBar from "@/components/FilterBar";
 
 export default function Tags() {
-    const {accessToken} = getAuth()!;
+    const auth = getAuth()!;
     const validOrderValue = ['Popular', 'Name'];
     const validOrder = ['Popular', 'Name'];
     const orderDescriptions = ['Order by number of question each tag has', 'Order by ascending alphabetically'];
@@ -30,7 +30,7 @@ export default function Tags() {
         try {
             const response = await fetch(requestUrl, {
                 headers: {
-                    'Authorization': `Bearer ${accessToken}`
+                    'Authorization': `Bearer ${auth.accessToken}`
                 }
             });
             if (!response.ok) {
@@ -45,7 +45,7 @@ export default function Tags() {
         } finally {
             setIsLoading(false);
         }
-    }, [accessToken, orderBy, pageIndex, pageSize]);
+    }, [auth.accessToken, orderBy, pageIndex, pageSize]);
 
     useEffect(() => {
         fetchTags().then();
