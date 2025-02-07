@@ -14,7 +14,7 @@ import YQPSkeleton from "@/app/your-questions/YQPSkeleton";
 import FilterBar from "@/components/FilterBar";
 
 export default function YourQuestionPage() {
-    const auth = getAuth()!;
+    const auth = getAuth();
     const validOrderValue = ['Newest', 'MostViewed', 'MostVoted', 'Solved', 'Draft'];
     const validOrder = ['Newest', 'Most Viewed', 'Most Voted', 'Solved', 'Draft'];
     const orderDescription = [
@@ -33,7 +33,7 @@ export default function YourQuestionPage() {
         + `&pageIndex=${pageIndex}`
         + `&pageSize=${pageSize}`);
 
-    const {data, isLoading} = useSWR([requestUrl, auth.accessToken], getFetcher);
+    const {data, isLoading} = useSWR([requestUrl, auth?.accessToken], getFetcher);
 
     useEffect(() => {
         if (data) {

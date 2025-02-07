@@ -36,10 +36,6 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-        <head>
-            <script src={"https://unpkg.com/react-scan/dist/auto.global.js"} async></script>
-            <title>A</title>
-        </head>
         <body
             className={`${dmSans.className} ${geistSans.variable} ${geistMono.variable} bg-white text-black antialiased`}
         >
