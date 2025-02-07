@@ -1,7 +1,7 @@
 import useLogout from "@/helpers/logout-hook";
-import Image from "next/image";
 import {useState} from "react";
 import LeftNav from "./LeftNav";
+import {Avatar} from "@mui/material";
 
 export default function UserDropdown(params: Readonly<{ profilePicture?: string }>) {
     const {profilePicture} = params;
@@ -12,14 +12,8 @@ export default function UserDropdown(params: Readonly<{ profilePicture?: string 
         <div>
             <button onClick={() => setIsOpen(!isOpen)}
                     className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-                <Image
-                    src={`${profilePicture}`}
-                    width={32}
-                    height={32}
-                    quality={100}
-                    className="rounded-full"
-                    alt="A"
-                    loading={'lazy'}
+                <Avatar
+                    src={`${profilePicture}`} sizes={'32'} sx={{width: 32, height: 32}}
                 />
             </button>
             <div
