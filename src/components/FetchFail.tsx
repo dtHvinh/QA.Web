@@ -1,7 +1,7 @@
-export default function FetchFail() {
+export default function FetchFail({error}: { error?: string }) {
     return (
         <div>
-            Failed to fetch
+            {error ? error : 'Failed to fetch data'}
         </div>
     );
 }

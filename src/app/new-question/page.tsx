@@ -90,7 +90,7 @@ export default function NewQuestion() {
                                 suggestions.
                             </small>
                         </div>
-                        <TagInput onTagChange={handleTagChange} maxTags={5}/>
+                        <TagInput onTagIdChange={handleTagChange} maxTags={5}/>
                     </div>
                 </div>
 

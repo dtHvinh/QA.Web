@@ -1,5 +1,5 @@
 import {AnswerResponse, QuestionResponse, VoteResponse} from "@/types/types";
-import React from "react";
+import React, {useEffect} from "react";
 import getAuth from "@/helpers/auth-utils";
 import {formatString} from "@/helpers/string-utils";
 import {Apis, backendURL} from "@/utilities/Constants";
@@ -7,36 +7,46 @@ import {deleteFetcher, IsErrorResponse, postFetcher, putFetcher} from "@/helpers
 import notifyError, {notifySucceed} from "@/utilities/ToastrExtensions";
 import {ErrorResponse} from "@/props/ErrorResponse";
 import AlertDialog from "@/components/AlertDialog";
-import {Avatar} from "@mui/material";
 import timeFromNow, {DEFAULT_TIME} from "@/helpers/time-utils";
 import TextEditor from "@/components/TextEditor";
 import RoundedButton from "@/components/RoundedButton";
 import AnswerContent from "@/app/question/AnswerContent";
+import {Avatar} from "@mui/material";
+import {formatReputation} from "@/helpers/evaluate-utils";
+import MarkAcceptedAnswerLabel from "@/app/question/MarkAcceptedAnswerLabel";
 
 export default function Answer(
     {
         answer,
         question,
-        isAnyAnswerAccepted,
+        isQuestionSolved,
         onAnswerDelete,
         onAnswerAccepted
     }: Readonly<{
         answer: AnswerResponse,
         question: QuestionResponse,
+        isQuestionSolved: boolean,
         onAnswerDelete: (id: string) => void,
-        isAnyAnswerAccepted: boolean,
         onAnswerAccepted: (id: string) => void,
     }>) {
-    const [isEditing, setIsEditing] = React.useState(false);
     const [currentText, setCurrentText] = React.useState(answer.content);
     const [editText, setEditText] = React.useState(answer.content);
+    const [isAnswerAccepted, setIsAnswerAccepted] = React.useState(answer.isAccepted);
+    const [currentVote, setCurrentVote] = React.useState(answer.upvote - answer.downvote);
+
     const [delAnsDialog, setDelAnsDialog] = React.useState(false);
+    const [isEditing, setIsEditing] = React.useState(false);
     const [isDeleting, setIsDeleting] = React.useState(false);
     const [isAllowUpdate, setIsAllowUpdate] = React.useState(false);
-    const [currentVote, setCurrentVote] = React.useState(answer.upvote - answer.downvote);
+
+    const [isAnyAnswerAccepted, setIsAnyAnswerAccepted] = React.useState(isQuestionSolved);
 
     const auth = getAuth();
     const acceptAnswerUrl = formatString(backendURL + Apis.Question.AcceptAnswer, question.id, answer.id);
+
+    useEffect(() => {
+        setIsAnyAnswerAccepted(isQuestionSolved);
+    }, [isQuestionSolved]);
 
     const handleClickOpen = () => {
         setDelAnsDialog(true);
@@ -69,7 +79,7 @@ export default function Answer(
         }
 
         onAnswerAccepted(answer.id);
-        answer.isAccepted = true;
+        setIsAnswerAccepted(true);
     }
 
     const handleDelete = async () => {
@@ -119,7 +129,12 @@ export default function Answer(
     }
 
     return (
-        <>
+        <div
+            className={`${isAnswerAccepted && "border-green-500 border-2 rounded-lg"}`}>
+            {isAnswerAccepted &&
+                <MarkAcceptedAnswerLabel/>
+            }
+
             <AlertDialog open={delAnsDialog}
                          onClose={handleClose}
                          onYes={handleDelete}
@@ -129,7 +144,7 @@ export default function Answer(
 
             <div
                 className={`relative grid grid-cols-6 gap-4 p-4 mb-8 rounded-lg bg-white 
-            ${isDeleting ? 'comment-exit comment-exit-active' : ''}`}>
+            ${isDeleting ? 'element-exit element-exit-active' : ''}`}>
 
                 <div className={'col-span-1 row-span-full justify-items-center space-y-3'}>
                     <div>
@@ -175,20 +190,7 @@ export default function Answer(
                 </div>
 
                 <div className={'col-span-5 row-span-full'}>
-                    <div className="relative justify-between flex gap-4">
-                        <div className="flex items-center gap-4">
-                            <Avatar alt={answer.author?.username} src={answer.author?.profilePicture}/>
-                            <div className="flex flex-col w-full">
-                                <div className="flex flex-row justify-between">
-                                    <p className="relative text-xl whitespace-nowrap truncate overflow-hidden">
-                                        {answer.author?.username}
-                                    </p>
-                                </div>
-                                <div className="text-gray-400 text-sm font-bold">
-                                    {answer.author?.reputation}
-                                </div>
-                            </div>
-                        </div>
+                    <div className="relative justify-end flex gap-4">
                         {answer.resourceRight == 'Owner'
                             &&
                             <div className={'flex flex-col'}>
@@ -219,24 +221,42 @@ export default function Answer(
                                 </div>
                                 <div className={'flex flex-col text-right'}>
                                     <span
-                                        className="text-gray-400 text-sm">Created: {timeFromNow(answer.createdAt)}</span>
+                                        className="text-gray-400 text-sm">Answered {timeFromNow(answer.createdAt)}</span>
                                     {answer.updatedAt !== DEFAULT_TIME &&
                                         <span
-                                            className="text-gray-400 text-sm">Edited: {timeFromNow(answer.updatedAt)}</span>
+                                            className="text-gray-400 text-sm">Edited {timeFromNow(answer.updatedAt)}</span>
                                     }
                                 </div>
                             </div>
                         }
                     </div>
-                    <div className={'mt-5'}>
+
+                    <div>
                         {isEditing
                             ? <TextEditor currentText={currentText} onTextChange={handleEditTextChange}/>
                             :
                             <AnswerContent content={currentText}/>
                         }
                     </div>
+
+                    <div className={'flex justify-end'}>
+                        <div className={'p-4 gap-4 flex text-sm items-center'}>
+                            <div>
+                                <div className={'text-gray-500'}>
+                                    {answer.author?.username}
+                                </div>
+                                <div className={'text-gray-500'}>
+                                    Reputation: <span
+                                    className={'font-bold'}>{formatReputation(answer.author?.reputation)}</span>
+                                </div>
+                            </div>
+                            <div>
+                                <Avatar sx={{width: 32, height: 32}} src={answer.author?.profilePicture}/>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </>
+        </div>
     );
 }

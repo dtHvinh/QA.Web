@@ -11,7 +11,7 @@ import {toTagDetail, toWikiPage} from "@/helpers/route-utils";
 import FilterBar from "@/components/FilterBar";
 
 export default function Tags() {
-    const {accessToken} = getAuth();
+    const {accessToken} = getAuth()!;
     const validOrderValue = ['Popular', 'Name'];
     const validOrder = ['Popular', 'Name'];
     const orderDescriptions = ['Order by number of question each tag has', 'Order by ascending alphabetically'];

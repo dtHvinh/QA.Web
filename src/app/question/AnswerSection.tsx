@@ -2,7 +2,7 @@
 
 import {AnswerResponse, QuestionResponse} from "@/types/types";
 import TextEditor from "@/components/TextEditor";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Apis, backendURL} from "@/utilities/Constants";
 import getAuth from "@/helpers/auth-utils";
 import {formatString} from "@/helpers/string-utils";
@@ -10,12 +10,22 @@ import Answer from "@/app/question/Answer";
 import {fetcher, IsErrorResponse} from "@/helpers/request-utils";
 import {ErrorResponse} from "@/props/ErrorResponse";
 import notifyError from "@/utilities/ToastrExtensions";
-import MarkAcceptedAnswerLabel from "@/app/question/MarkAcceptedAnswerLabel";
-import {MenuItem, Select, SelectChangeEvent} from "@mui/material";
+import FilterBar from "@/components/FilterBar";
 
-export default function AnswerSection({question}: { question: QuestionResponse }) {
+export default function AnswerSection(
+    {
+        question,
+        isClosed,
+        onAnswerAcceptAction,
+    }: {
+        question: QuestionResponse,
+        isClosed: boolean,
+        onAnswerAcceptAction: (answerId: string) => void
+    }) {
     const [currentText, setCurrentText] = React.useState('');
     const [answers, setAnswers] = React.useState(question.answers);
+    const [resetContentFlag, setResetContentFlag] = React.useState(false);
+    const [isQuestionSolved, setIsQuestionSolved] = React.useState(question.isSolved);
     const requestUrl = formatString(`${backendURL}${Apis.Question.CreateAnswer}`, question.id);
     const auth = getAuth();
     const validOrders = ['Newest', 'Most Voted'];
@@ -25,6 +35,10 @@ export default function AnswerSection({question}: { question: QuestionResponse }
     const handleTextChange = (text: string) => {
         setCurrentText(text);
     }
+
+    useEffect(() => {
+        // TODO: Implement sorting
+    }, [orderBy]);
 
     const handleSend = async () => {
         const response = await fetcher<AnswerResponse>([
@@ -40,15 +54,13 @@ export default function AnswerSection({question}: { question: QuestionResponse }
         } else {
             setAnswers([...answers, response as AnswerResponse]);
             question.answerCount++;
-            setCurrentText('');
+            setResetContentFlag(!resetContentFlag);
         }
     }
 
-    const handleOrderByChange = (event: SelectChangeEvent) => {
-        setOrderBy(event.target.value);
-    }
-
     const handleAnswerAccepted = (answerId: string) => {
+        setIsQuestionSolved(true);
+        onAnswerAcceptAction?.(answerId);
     }
 
     const handleAnswerDelete = (answerId: string) => {
@@ -66,19 +78,13 @@ export default function AnswerSection({question}: { question: QuestionResponse }
     return (
         <div className={'-mx-12 md:-mx-0'}>
             <div className={'flex justify-between items-baseline'}>
-                <div className={'text-2xl mb-5'}>
+                <div className={'text-xl mb-5'}>
                     Answers ({question.answerCount}):
                 </div>
-                <Select className={'focus:outline-0 focus:border-0'}
-                        value={orderBy}
-                        onChange={handleOrderByChange}
-                        variant={"standard"}
-                        disableUnderline={true}
-                >
-                    {validOrders.map(((order, idx) => (
-                        <MenuItem key={order} value={validOrdersValue[idx]}>{order}</MenuItem>
-                    )))}
-                </Select>
+                <FilterBar tabs={validOrders}
+                           tabValues={validOrdersValue}
+                           tabDescriptions={[]}
+                           onFilterValueChange={setOrderBy}/>
             </div>
 
             {question.answerCount == 0 &&
@@ -86,25 +92,20 @@ export default function AnswerSection({question}: { question: QuestionResponse }
 
             <div>
                 {answers.map(answer => (
-                    <div key={answer.id}
-                         className={`${answer.isAccepted && "border-green-500 border-2 rounded-lg"}`}>
-                        {answer.isAccepted &&
-                            <MarkAcceptedAnswerLabel/>
-                        }
-                        <hr className={'mb-5'}/>
-
-                        <Answer answer={answer}
-                                question={question}
-                                isAnyAnswerAccepted={question.isSolved}
-                                onAnswerDelete={handleAnswerDelete}
-                                onAnswerAccepted={handleAnswerAccepted}/>
-                    </div>
+                    <Answer key={answer.id}
+                            answer={answer}
+                            question={question}
+                            isQuestionSolved={isQuestionSolved}
+                            onAnswerDelete={handleAnswerDelete}
+                            onAnswerAccepted={handleAnswerAccepted}/>
                 ))}
             </div>
 
-            {!question.isClosed &&
+            {!isClosed &&
                 <div className={'mt-5'}>
-                    <TextEditor currentText={currentText} onTextChange={handleTextChange}/>
+                    <TextEditor currentText={currentText}
+                                onTextChange={handleTextChange}
+                                resetFlag={resetContentFlag}/>
                     <div className={'w-full text-end pr-4'}>
                         <button onClick={handleSend}
                                 disabled={currentText.length == 0}

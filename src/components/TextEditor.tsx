@@ -9,6 +9,7 @@ import {useEffect} from "react";
 interface TextEditorProps {
     currentText: string
     onTextChange: (text: string) => void
+    resetFlag?: boolean
 }
 
 const TextEditor = (params: TextEditorProps) => {
@@ -30,8 +31,8 @@ const TextEditor = (params: TextEditorProps) => {
     })
 
     useEffect(() => {
-        editor?.commands.setContent(params.currentText);
-    }, [params.currentText]);
+        editor?.commands.setContent('');
+    }, [params.resetFlag]);
 
     if (!editor) {
         return null

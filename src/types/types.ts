@@ -6,13 +6,19 @@ export interface TagResponse {
     questionCount: number
 }
 
+export interface BookmarkResponse {
+    id: string,
+    createdAt: string,
+    question: QuestionResponse
+}
+
 export interface TagDetailResponse {
     id: string,
     name: string,
     description: string,
     questionCount: number
     wikiBody: string,
-    questions: QuestionResponse[]
+    questions: PagedResponse<QuestionResponse>
 }
 
 export interface ResourceRightProps {

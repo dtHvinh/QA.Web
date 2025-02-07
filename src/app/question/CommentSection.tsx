@@ -9,9 +9,10 @@ import Comment from "@/app/question/Comment";
 import getAuth from "@/helpers/auth-utils";
 
 
-export default function CommentSection({question}: { question: QuestionResponse }) {
+export default function CommentSection({question, isClosed}: { question: QuestionResponse, isClosed: boolean }) {
     const [currentText, setCurrentText] = React.useState('');
     const [comments, setComments] = React.useState(question.comments);
+    const [isComment, setIsComment] = React.useState(false);
 
     const auth = getAuth();
     const requestUrl = `${backendURL}${Apis.Question.CreateComment}/${question.id}/comment`
@@ -53,27 +54,29 @@ export default function CommentSection({question}: { question: QuestionResponse 
 
     return (
         <div className={'flex flex-col gap-2'}>
-            <div className={'text-2xl mb-5'}>
-                Comments ({question.commentCount})
-            </div>
-
-            {question.comments.length == 0 &&
-                <div className={'text-gray-500'}>No comments yet</div>}
-
             <div>
                 {comments.map(comment => (
                     <Comment key={comment.id} comment={comment} onCommentDelete={handleCommentDelete}/>
                 ))}
             </div>
 
+            {!isClosed &&
+                <div>
+                    <button onClick={() => setIsComment(!isComment)}
+                            className={'my-5 text-gray-400 hover:text-blue-400 text-start block'}>
+                        Add Comment
+                    </button>
+                </div>
+            }
+
             <div>
-                {!question.isClosed &&
+                {!isClosed && isComment &&
                     <>
                         <TextEditor currentText={''} onTextChange={handleTextChange}/>
-                        <div className={'w-full text-end pr-4'}>
+                        <div className={'w-full text-end mt-5'}>
                             <button onClick={handleSend}
                                     disabled={currentText.length == 0}
-                                    className={'space-x-3 disabled:bg-gray-200 transition-all p-2 bg-blue-200 rounded-b-xl hover:bg-gray-300 active:scale-95'}>
+                                    className={'space-x-3 rounded-lg disabled:bg-gray-200 transition-all p-2 bg-blue-200 hover:bg-blue-300 active:scale-95'}>
                                 <div className={'inline-block mt-1'}>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                          viewBox="0 0 16 16">

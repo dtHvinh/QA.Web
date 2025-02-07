@@ -49,8 +49,8 @@ export default function YourQuestionPage() {
     }, [pageSize]);
 
     useEffect(() => {
-        setRequestUrl(`${backendURL}${Apis.Question.GetYourQuestions}`
-            + '/?order=' + orderBy
+        setRequestUrl(`${backendURL}/api/question/user`
+            + '/?orderBy=' + orderBy
             + `&pageIndex=${pageIndex}`
             + `&pageSize=${pageSize}`);
     }, [pageIndex, orderBy]);
@@ -65,8 +65,8 @@ export default function YourQuestionPage() {
 
     return (
         <>
-            <div className={'grid grid-cols-2 gap-5'}>
-                <div className={'col-span-full flex justify-between items-baseline'}>
+            <div className={'grid grid-cols-1 md:grid-cols-2 gap-5'}>
+                <div className={'col-span-full flex flex-wrap justify-between items-baseline'}>
                     <div className={'text-2xl mt-4'}> Your {question?.totalCount} questions:</div>
                     <FilterBar tabs={validOrder} tabValues={validOrderValue} tabDescriptions={orderDescription}
                                onFilterValueChange={handleOrderByChange}/>
@@ -77,6 +77,7 @@ export default function YourQuestionPage() {
                 {question && question.items.map((question: QuestionResponse) => (
                     <YourQuestionItem key={question.id} question={question}/>
                 ))}
+
                 {question && question.items.length === 0 &&
                     <div>
                         You have not asked any questions yet,&nbsp;

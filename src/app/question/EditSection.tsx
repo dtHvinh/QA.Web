@@ -1,4 +1,4 @@
-import {QuestionResponse} from "@/types/types";
+import {QuestionResponse, TagResponse} from "@/types/types";
 import TextEditor from "@/components/TextEditor";
 import React, {useState} from "react";
 import {formatString} from "@/helpers/string-utils";
@@ -9,10 +9,14 @@ import {ErrorResponse} from "@/props/ErrorResponse";
 import getAuth from "@/helpers/auth-utils";
 import TagInput from "@/components/TagInput";
 
-export default function EditSection({question}: { question: QuestionResponse }) {
+export default function EditSection({question, onEditSuccess}: {
+    question: QuestionResponse,
+    onEditSuccess?: (question: QuestionResponse) => void
+}) {
     const [editContentValue, setEditContentValue] = useState(question.content);
     const [editTitleValue, setEditTitleValue] = useState(question.title);
     const [editTagIds, setEditTagIds] = useState(question.tags.map(e => e.id));
+    const [editTags, setEditTags] = useState(question.tags);
     const auth = getAuth();
 
     const handleSend = async () => {
@@ -30,13 +34,23 @@ export default function EditSection({question}: { question: QuestionResponse }) 
         } else {
             question.content = editContentValue;
             notifySucceed('Question updated successfully');
+            onEditSuccess?.({
+                ...question,
+                title: editTitleValue,
+                content: editContentValue,
+                tags: editTags
+            });
         }
+    }
+
+    const handleTagChange = (tags: TagResponse[]) => {
+        setEditTags(tags);
     }
 
     return (
         <div>
             <div className="space-y-2 mb-5">
-                <label htmlFor="title" className="block text-xl font-medium text-gray-700">Edit Title</label>
+                <label htmlFor="title" className="block text-xl font-medium text-gray-700">Title</label>
                 <input
                     defaultValue={editTitleValue}
                     onChange={(e) => setEditTitleValue(e.target.value)}
@@ -47,11 +61,13 @@ export default function EditSection({question}: { question: QuestionResponse }) 
                     className="w-full p-2 border border-gray-300 rounded-lg focus:outline-blue-600"/>
             </div>
 
-            <label className="block text-xl mb-2 font-medium text-gray-700">Edit Content</label>
+            <label className="block text-xl mb-2 font-medium text-gray-700">Content</label>
             <TextEditor currentText={editContentValue}
                         onTextChange={setEditContentValue}/>
-            <label className="block text-xl mb-2 font-medium text-gray-700">Edit Tags</label>
-            <TagInput onTagChange={setEditTagIds} maxTags={5} defaultTags={question.tags}/>
+
+            <label className="block text-xl my-2 font-medium text-gray-700">Tags</label>
+            <TagInput onTagChange={handleTagChange} onTagIdChange={setEditTagIds} maxTags={5}
+                      defaultTags={question.tags}/>
 
             <div className={'w-full text-end mt-5'}>
                 <button onClick={handleSend}

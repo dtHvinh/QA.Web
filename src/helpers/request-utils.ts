@@ -56,5 +56,5 @@ export const IsErrorResponse = (response: any) => {
     // between ErrorResponse and the other types
     //
     // This is dumb, but I don't know how to do it better
-    return 'errors' in response;
+    return !response || 'errors' in response;
 }

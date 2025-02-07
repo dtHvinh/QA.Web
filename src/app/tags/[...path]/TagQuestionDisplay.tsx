@@ -4,6 +4,7 @@ import Link from 'next/link';
 import {toQuestionPage} from '@/helpers/route-utils';
 import timeFromNow from "@/helpers/time-utils";
 import TagLabel from "@/components/TagLabel";
+import QuestionStatusBar from "@/app/question/QuestionStatusBar";
 
 interface QuestionDisplayProps {
     question: QuestionResponse;
@@ -41,6 +42,7 @@ const QuestionDisplay: React.FC<QuestionDisplayProps> = ({question}) => {
                     <span>Asked by {question.author.username}</span>
                     <span className="ml-2">{timeFromNow(question.createdAt)}</span>
                 </div>
+                <QuestionStatusBar className={'mt-2'} {...question}/>
             </div>
         </div>
     );

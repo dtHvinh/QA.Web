@@ -4,10 +4,8 @@ import TagLabel from "@/components/TagLabel";
 import timeFromNow from "@/helpers/time-utils";
 import Link from "next/link";
 import toQuestionDetail from "@/helpers/path";
-import SolvedLabel from "@/app/question/SolvedLabel";
-import ClosedLabel from "@/app/question/ClosedLabel";
-import DraftLabel from "@/app/question/DraftLabel";
 import {formatNumber} from "@/helpers/evaluate-utils";
+import QuestionStatusBar from "@/app/question/QuestionStatusBar";
 
 interface YourQuestionItemProps {
     question: QuestionResponse
@@ -17,15 +15,13 @@ export default function YourQuestionItem(params: Readonly<YourQuestionItemProps>
     const {question} = params;
 
     return (
-        <div className='flex'>
+        <div className='flex flex-col'>
             <div className="rounded-xl border p-5 shadow-md w-full bg-white">
                 <div className="flex w-full items-center justify-between border-b pb-3">
                     <div className="flex flex-col">
                         <div className="text-lg font-bold text-slate-700">{question.title}</div>
                         <div className={'flex space-x-2.5'}>
-                            {question.isSolved && <SolvedLabel/>}
-                            {question.isClosed && <ClosedLabel/>}
-                            {question.isDraft && <DraftLabel/>}
+                            <QuestionStatusBar {...question}/>
                         </div>
                     </div>
                     <div className="flex flex-col">

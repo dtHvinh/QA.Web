@@ -1,7 +1,14 @@
 export const DEFAULT_TIME = "0001-01-01T00:00:00";
 
+const specificTime = (date: Date) => {
+    return date.toLocaleTimeString('vi', {
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
+
 export default function timeFromNow(dateTimeString: string): string {
-    const date = new Date(dateTimeString + 'Z'); // Ensure the date is treated as UTC
+    const date = new Date(dateTimeString + (dateTimeString.endsWith('Z') ? '' : 'Z')); // Ensure the date is treated as UTC
     const now = new Date();
     const diffInMs = now.getTime() - date.getTime();
     const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
@@ -13,12 +20,9 @@ export default function timeFromNow(dateTimeString: string): string {
             const diffInSeconds = Math.floor((diffInMs % (1000 * 60)) / 1000);
             return `${diffInMinutes} minute${diffInMinutes !== 1 ? "s" : ""} and ${diffInSeconds} second${diffInSeconds !== 1 ? "s" : ""} ago`;
         }
-        return `${Math.floor(diffInHours)} hour${Math.floor(diffInHours) !== 1 ? "s" : ""} ago`;
+        return `${Math.floor(diffInHours)} hour${Math.floor(diffInHours) !== 1 ? "s" : ""} ago, at ${specificTime(date)}`;
     } else if (diffInDays < 7) {
-        return `${Math.floor(diffInDays)} day${Math.floor(diffInDays) !== 1 ? "s" : ""} ago, at ${date.toLocaleTimeString('vi', {
-            hour: '2-digit',
-            minute: '2-digit'
-        })}`;
+        return `${Math.floor(diffInDays)} day${Math.floor(diffInDays) !== 1 ? "s" : ""} ago, at ${specificTime(date)}`;
     } else {
         return date.toLocaleDateString() + " " + date.toLocaleTimeString();
     }

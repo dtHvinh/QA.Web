@@ -54,7 +54,7 @@ export function TextEditorToolbar({editor}: Readonly<{
     }
 
     return (
-        <div className="toolbar flex-wrap w-full gap-3 md:gap-5">
+        <div className="toolbar flex-wrap w-full gap-1">
             <Dialog
                 open={isAddingImage}
                 onClose={onClose}
@@ -86,7 +86,7 @@ export function TextEditorToolbar({editor}: Readonly<{
                 </DialogActions>
             </Dialog>
 
-            <div className={'flex gap-1'}>
+            <div className={'flex'}>
                 <Tooltip title='Header'>
                     <button
                         type={"button"}

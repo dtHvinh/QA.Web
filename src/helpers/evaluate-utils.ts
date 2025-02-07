@@ -19,3 +19,10 @@ export function formatNumber(value: number): string {
 
     return value.toString();
 }
+
+export function formatReputation(value?: number): string {
+    if (!value) {
+        return 'N/A';
+    }
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}

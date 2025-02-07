@@ -2,6 +2,7 @@
 
 import LeftNav from "@/components/LeftNav";
 import {usePathname} from "next/navigation";
+import React from "react";
 
 export default function SubLayout({
                                       children,
@@ -15,11 +16,11 @@ export default function SubLayout({
             </div>
             :
             <div>
-                <div className="grid grid-cols-6">
-                    <div className="hidden md:flex flex-col gap-2 text-gray-500 divide-y">
+                <div className="grid grid-cols-12">
+                    <div className="hidden md:flex col-span-2 flex-col gap-2 text-gray-500 divide-y">
                         <LeftNav/>
                     </div>
-                    <div className="col-span-6 md:col-span-5">
+                    <div className="col-span-full md:col-span-10">
                         {children}
                     </div>
                 </div>

@@ -5,6 +5,7 @@ export interface AuthProps {
     accessToken: string;
     refreshToken: string;
     profilePicture: string;
+    role: 'Admin' | 'User';
 }
 
 export default function getAuth() {

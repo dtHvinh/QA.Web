@@ -1,4 +1,3 @@
-import {Avatar} from "@mui/material";
 import React from "react";
 import {CommentResponse} from "@/types/types";
 import TextEditor from "@/components/TextEditor";
@@ -82,74 +81,63 @@ export default function Comment({comment, onCommentDelete}: Readonly<CommentComp
 
     return (
         <div
-            className={`relative grid grid-cols-1 gap-4 p-4 mb-8 rounded-lg bg-white ${isDeleting ? 'comment-exit comment-exit-active' : ''}`}>
+            className={`relative grid grid-cols-1 gap-2 p-2 mb-4 rounded-lg bg-white ${isDeleting ? 'element-exit element-exit-active' : ''}`}>
             <hr/>
 
             <AlertDialog open={deleteDialogOpen}
                          onClose={handleClose}
                          onYes={handleDelete}
-                         title={'Do you want to delete this comment ?'}
-                         description={'This action can not undo'}/>
+                         title={'Do you want to delete this comment?'}
+                         description={'This action cannot be undone'}/>
 
-            <div className="relative justify-between flex gap-4">
-                <div className="flex items-center gap-4">
-                    <Avatar alt={comment.author?.username} src={comment.author?.profilePicture}/>
-                    <div className="flex flex-col w-full">
-                        <div className="flex flex-row justify-between">
-                            <p className="relative text-xl whitespace-nowrap truncate overflow-hidden">
-                                {comment.author?.username}
-                            </p>
-                        </div>
-                        <div className="text-gray-400 text-sm font-bold">
-                            {comment.author?.reputation}
-                        </div>
-                    </div>
-                </div>
-                {comment.resourceRight == 'Owner'
-                    &&
-                    <div className={'flex flex-col'}>
-                        <div className={'flex justify-end'}>
-                            {isEditing
-                                ?
-                                <div className={'flex gap-4'}>
-                                    <button className={'text-red-500'} onClick={handleDiscard}>
-                                        Discard
-                                    </button>
-                                    <button className={'text-blue-500 disabled:text-gray-500'}
-                                            disabled={!isSaveAllow}
-                                            onClick={handleUpdate}>
-                                        Save
-                                    </button>
-                                </div>
-                                :
-                                <div className={'flex gap-4'}>
-                                    <button type={"button"} onClick={handleStartEditing}>
-                                        Edit
-                                    </button>
-                                    <button type={"button"} className={'text-red-500'} onClick={handleClickOpen}>
-                                        Delete
-                                    </button>
-                                </div>
-                            }
-                        </div>
-                        <div>
-                            {comment.updatedAt == DEFAULT_TIME ?
-                                <span className="text-gray-400 text-sm">{timeFromNow(comment.createdAt)}</span> :
-                                <span className="text-gray-400 text-sm">(Edited) {timeFromNow(comment.updatedAt)}</span>
-                            }
-                        </div>
-                    </div>
-                }
-            </div>
             <div className={'transition-all duration-300 ease-in-out'}>
                 {isEditing
                     ? <TextEditor currentText={currentText as string} onTextChange={handleEditTextChange}/>
                     :
-                    <>
-                        <div className="text-gray-500"
+                    <div>
+                        <div className="text-black text-sm"
                              dangerouslySetInnerHTML={{__html: currentText as TrustedHTML}}></div>
-                    </>
+                        <div className="text-gray-400 inline text-xs">
+                            Commented by {comment.author?.username},
+                            {comment.updatedAt == DEFAULT_TIME ?
+                                <span className="text-gray-400 text-xs"> {timeFromNow(comment.createdAt)}</span> :
+                                <span className="text-gray-400 text-xs">(Edited) {timeFromNow(comment.updatedAt)}</span>
+                            }
+                        </div>
+                    </div>
                 }
+
+                <div className="relative justify-between flex gap-2">
+                    {comment.resourceRight == 'Owner'
+                        &&
+                        <div className={'flex flex-col'}>
+                            <div className={'flex justify-end'}>
+                                {isEditing
+                                    ?
+                                    <div className={'flex gap-2'}>
+                                        <button className={'text-red-500'} onClick={handleDiscard}>
+                                            Discard
+                                        </button>
+                                        <button className={'text-blue-500 disabled:text-gray-500'}
+                                                disabled={!isSaveAllow}
+                                                onClick={handleUpdate}>
+                                            Save
+                                        </button>
+                                    </div>
+                                    :
+                                    <div className={'flex gap-2'}>
+                                        <button type={"button"} onClick={handleStartEditing}>
+                                            Edit
+                                        </button>
+                                        <button type={"button"} className={'text-red-500'} onClick={handleClickOpen}>
+                                            Delete
+                                        </button>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
             </div>
         </div>
     );

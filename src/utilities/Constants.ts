@@ -32,7 +32,7 @@ export const Apis = {
         Update: "/api/question",
         Delete: "/api/question",
         Vote: "/api/question/vote",
-        Bookmark: "/api/question/bookmark",
+        Bookmark: "/api/question/bookmarks",
         CreateAnswer: "/api/question/{0}/answer",
         AcceptAnswer: "/api/question/{0}/accept/{1}",
     },

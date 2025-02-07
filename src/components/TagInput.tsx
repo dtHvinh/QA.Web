@@ -9,12 +9,13 @@ import TagLabel from "@/components/TagLabel";
 import {useDebounce} from "use-debounce";
 
 export interface TagInputProps {
-    onTagChange?: (tagIds: string[]) => void;
+    onTagIdChange?: (tagIds: string[]) => void;
+    onTagChange?: (tags: TagResponse[]) => void;
     defaultTags?: TagResponse[];
     maxTags: number;
 }
 
-export default function TagInput({onTagChange, maxTags, defaultTags}: TagInputProps) {
+export default function TagInput({onTagIdChange, maxTags, onTagChange, defaultTags}: TagInputProps) {
     const auth = getAuth();
     const requestUrl = `${backendURL}/api/tag/search`;
 
@@ -45,9 +46,8 @@ export default function TagInput({onTagChange, maxTags, defaultTags}: TagInputPr
 
         setSelectedTags(newTags);
 
-        if (onTagChange) {
-            onTagChange(newTags.map((tag) => tag.id));
-        }
+        onTagIdChange?.(newTags.map((tag) => tag.id));
+        onTagChange?.(newTags);
     };
 
     return (

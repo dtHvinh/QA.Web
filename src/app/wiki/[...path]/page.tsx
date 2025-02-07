@@ -9,18 +9,18 @@ import {TagDetailResponse} from "@/types/types";
 import {Typography} from "@mui/material";
 import Loading from "@/app/loading";
 import 'highlight.js/styles/github.css';
-import hljs from "highlight.js";
+import {highlightCode} from "@/helpers/utils";
 
 export default function TagWikiPage({params}: { params: Promise<{ path: string[] }> }) {
     const {path} = React.use(params);
-    const requestUrl = `${backendURL}/api/tag/${path[0]}`;
+    const requestUrl = `${backendURL}/api/tag/wiki/${path[0]}`;
     const auth = getAuth();
     const {data, error, isLoading} = useSWR([requestUrl, auth?.accessToken], getFetcher);
 
     const tagDetail = data as TagDetailResponse;
 
     useEffect(() => {
-        hljs.highlightAll();
+        highlightCode();
     }, [data]);
 
     if (isLoading) {

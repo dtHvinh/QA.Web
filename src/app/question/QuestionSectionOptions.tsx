@@ -10,10 +10,15 @@ import AlertDialog from "@/components/AlertDialog";
 import {useRouter} from "next/navigation";
 
 interface QuestionSectionOptionsProps {
-    question: QuestionResponse
+    question: QuestionResponse,
+    onQuestionClose?: () => void
 }
 
-export default function QuestionSectionOptions({question}: QuestionSectionOptionsProps) {
+export default function QuestionSectionOptions(
+    {
+        question,
+        onQuestionClose,
+    }: QuestionSectionOptionsProps) {
     const [isSettingOpen, setIsSettingOpen] = React.useState(false);
     const [deleteConfirmOpen, setDeleteConfirmOpen] = React.useState(false);
     const [closeConfirmOpen, setCloseConfirmOpen] = React.useState(false);
@@ -48,9 +53,9 @@ export default function QuestionSectionOptions({question}: QuestionSectionOption
 
         if (IsErrorResponse(response)) {
             notifyError((response as ErrorResponse).errors);
-            question.isClosed = true;
         } else {
-            notifySucceed('Question bookmarked');
+            notifySucceed('Question closed');
+            onQuestionClose?.();
         }
 
         setIsSettingOpen(false);
