@@ -4,7 +4,6 @@ import {AppName, Routes} from "@/utilities/Constants";
 import Link from "next/link";
 import {usePathname} from "next/navigation";
 import UserDropdown from "./UserDropdown";
-import getAuth from "@/helpers/auth-utils";
 import SearchBar from "@/components/SearchBar";
 import {useState} from "react";
 import AdminPrivilege from "@/components/AdminPrivilege";
@@ -12,7 +11,6 @@ import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import {Tooltip} from "@mui/material";
 
 export default function Appbar() {
-    const authContext = getAuth();
     const currentPath = usePathname();
     const [isSearchOpen, setIsSearchOpen] = useState(false);
 
