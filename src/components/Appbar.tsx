@@ -6,9 +6,6 @@ import {usePathname} from "next/navigation";
 import UserDropdown from "./UserDropdown";
 import SearchBar from "@/components/SearchBar";
 import {useState} from "react";
-import AdminPrivilege from "@/components/AdminPrivilege";
-import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
-import {Tooltip} from "@mui/material";
 
 export default function Appbar() {
     const currentPath = usePathname();
@@ -29,12 +26,6 @@ export default function Appbar() {
             </div>
 
             <div className="flex gap-4 items-center mt-4 md:mt-0 w-full md:w-auto justify-between md:justify-end">
-                <AdminPrivilege>
-                    <Tooltip title={'You are an admin'}>
-                        <AdminPanelSettingsIcon/>
-                    </Tooltip>
-                </AdminPrivilege>
-
                 <Link href={Routes.NewQuestion}
                       className="text-sm text-gray-600 hover:bg-gray-300 p-2 rounded-full transition-colors">
                     Ask <div className={'hidden md:inline'}>Question</div>
