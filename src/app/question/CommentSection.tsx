@@ -13,6 +13,7 @@ export default function CommentSection({question, isClosed}: { question: Questio
     const [currentText, setCurrentText] = React.useState('');
     const [comments, setComments] = React.useState(question.comments);
     const [isComment, setIsComment] = React.useState(false);
+    const [isReset, setIsReset] = React.useState(false);
 
     const auth = getAuth();
     const requestUrl = `${backendURL}${Apis.Question.CreateComment}/${question.id}/comment`
@@ -43,6 +44,8 @@ export default function CommentSection({question, isClosed}: { question: Questio
             setCurrentText('');
             question.commentCount++;
         }
+
+        setIsReset(!isReset);
     }
 
     if (question.isDraft)
@@ -72,7 +75,7 @@ export default function CommentSection({question, isClosed}: { question: Questio
             <div>
                 {!isClosed && isComment &&
                     <>
-                        <TextEditor currentText={''} onTextChange={handleTextChange}/>
+                        <TextEditor resetFlag={isReset} currentText={currentText} onTextChange={handleTextChange}/>
                         <div className={'w-full text-end mt-5'}>
                             <button onClick={handleSend}
                                     disabled={currentText.length == 0}

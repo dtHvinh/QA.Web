@@ -81,7 +81,7 @@ export default function Comment({comment, onCommentDelete}: Readonly<CommentComp
 
     return (
         <div
-            className={`relative grid grid-cols-1 gap-2 p-2 mb-4 rounded-lg bg-white ${isDeleting ? 'element-exit element-exit-active' : ''}`}>
+            className={`relative grid gap-1 grid-cols-1 p-2 mb-4 rounded-lg bg-white ${isDeleting ? 'element-exit element-exit-active' : ''}`}>
             <hr/>
 
             <AlertDialog open={deleteDialogOpen}

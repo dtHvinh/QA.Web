@@ -21,7 +21,7 @@ export function formatNumber(value: number): string {
 }
 
 export function formatReputation(value?: number): string {
-    if (!value) {
+    if (value === undefined) {
         return 'N/A';
     }
     return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");

@@ -19,6 +19,7 @@ export default function NewQuestion() {
     const auth = getAuth();
     const router = useRouter();
     const [isDraft, setIsDraft] = useState<boolean>(false);
+    const [isSendDisabled, setIsSendDisabled] = useState<boolean>(false);
 
     const requestUrl = `${backendURL}${Apis.Question.Create}`;
 
@@ -27,6 +28,8 @@ export default function NewQuestion() {
     };
 
     const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        setIsSendDisabled(true);
+
         event.preventDefault();
 
         const formData = new FormData(event.currentTarget);
@@ -51,6 +54,7 @@ export default function NewQuestion() {
 
         if (IsErrorResponse(response)) {
             notifyError((response as ErrorResponse).errors);
+            setIsSendDisabled(false);
         } else {
             notifySucceed('Question submitted successfully');
 
@@ -99,7 +103,8 @@ export default function NewQuestion() {
                         <FormControlLabel value={isDraft} onChange={() => setIsDraft(!isDraft)} control={<Checkbox/>}
                                           label="Is Draft"/>
                         <button
-                            className={'p-2 rounded-lg bg-[#5783db] hover:bg-[#5783db] transition-all text-white active:scale-95'}>
+                            disabled={isSendDisabled}
+                            className={'p-2 rounded-lg disabled:bg-gray-500 bg-[#5783db] hover:bg-[#5783db] transition-all text-white active:scale-95'}>
                             {isDraft ? 'Save as draft' : 'Create question'}
                         </button>
                     </div>

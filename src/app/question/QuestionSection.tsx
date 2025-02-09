@@ -12,6 +12,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import EditSection from "@/app/question/EditSection";
 import QuestionInteractivity from "@/app/question/QuestionInteractivity";
 import {formatReputation} from "@/helpers/evaluate-utils";
+import ResourceOwnerPrivilege from "@/components/ResourceOwnerPrivilege";
 
 export default function QuestionSection({questionInit}: { questionInit: QuestionResponse }) {
     const [isSolved, setIsSolved] = React.useState<boolean>(questionInit.isSolved);
@@ -68,13 +69,13 @@ export default function QuestionSection({questionInit}: { questionInit: Question
                 <div className={'col-span-9 row-span-full'}>
                     <div className={'flex justify-between text-2xl'}>
                         <div>{question.title}</div>
-                        {question.resourceRight === 'Owner' &&
+                        <ResourceOwnerPrivilege resourceRight={question.resourceRight}>
                             <div>
                                 <IconButton onClick={handleEditClick}>
                                     <EditIcon/>
                                 </IconButton>
                             </div>
-                        }
+                        </ResourceOwnerPrivilege>
                     </div>
 
                     <QuestionHeaderDetails {...question}

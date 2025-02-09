@@ -35,6 +35,7 @@ export default function LoginPage() {
             if (!response.ok) {
                 const error = (await response.json()) as ErrorResponse;
                 notifyError(error.title);
+                return;
             }
 
             const body = await response.json();

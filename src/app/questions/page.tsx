@@ -78,7 +78,7 @@ export default function QuestionsPage() {
                 {question && question.items.map((question: QuestionResponse) => (
                     <YourQuestionItem key={question.id} question={question}/>
                 ))}
-
+                
                 {question && question.items.length === 0 &&
                     <div>
                         You have not asked any questions yet,&nbsp;

@@ -16,7 +16,7 @@ export default function Loading() {
                     </svg>
                 </div>
                 <div>
-                    Loading
+                    Loading...
                 </div>
             </div>
         </div>

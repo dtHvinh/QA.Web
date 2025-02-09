@@ -6,6 +6,16 @@ export interface TagResponse {
     questionCount: number
 }
 
+export interface QuestionHistoryResponse {
+    id: string,
+    createdAt: string,
+    updatedAt: string,
+    authorId: string,
+    authorName: string,
+    comment: string,
+    questionHistoryType: 'Edit' | 'Close' | 'Reopen' | 'Add Comment' | 'Add Answer' | 'Accept Answer',
+}
+
 export interface BookmarkResponse {
     id: string,
     createdAt: string,
@@ -72,6 +82,7 @@ export interface QuestionResponse extends ResourceRightProps {
 
     comments: CommentResponse[],
     answers: AnswerResponse[],
+    histories: QuestionHistoryResponse[],
 }
 
 export interface AuthorResponse {
