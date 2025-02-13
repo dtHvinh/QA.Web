@@ -110,6 +110,9 @@ export interface UserResponse {
     dateJoined: string;
     lastActive: string;
     bio: string;
+    questionCount: number;
+    answerCount: number;
+    commentCount: number;
 }
 
 export interface CommentResponse extends ResourceRightProps {

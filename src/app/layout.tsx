@@ -53,7 +53,7 @@ export default function RootLayout({
             </SupabaseProvider>
             <ScrollToTopButton/>
         </div>
-        <footer className="bg-gray-800 text-white py-4">
+        <footer className="bg-gray-800 text-white py-4 mt-5">
             <div className="container mx-auto text-center">
                 <p>&copy; {new Date().getFullYear()} Q&A App. All rights reserved.</p>
             </div>

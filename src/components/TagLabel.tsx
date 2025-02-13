@@ -23,7 +23,7 @@ export default function TagLabel(params: Readonly<TagLabelProps>) {
                         </svg>
                         <div className={`flex-grow h-full -ml-px bg-gray-200 rounded-md rounded-l-none`}></div>
                     </div>
-                    <span className={`relative text-gray-500 uppercase font-semibold pr-px`}>
+                    <span className={`relative text-gray-500 p-1 pr-px`}>
                         <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>{name}<span>&nbsp;</span>
                     </span>
                 </div>

@@ -81,13 +81,13 @@ export default function Tags() {
                         <div>
                             <div className={'flex space-x-2.5'}>
                                 <Link href={toWikiPage(tag.id, tag.name)}
-                                      className={'hidden md:block text-lg border border-gray-500 p-1 rounded-lg px-2 hover:bg-gray-200 transition-all'}>
+                                      className={'hidden text-lg md:block p-1 px-2 hover:bg-gray-200 transition-all'}>
                                     Wiki
                                 </Link>
 
                                 <Link href={toTagDetail(tag.id, tag.name)}
                                       className={
-                                          'hidden md:block text-lg border p-1 rounded-lg px-2 transition-all bg-blue-400 text-white hover:bg-blue-600'
+                                          'hidden md:block text-lg p-1 px-2 transition-all hover:bg-gray-200'
                                       }>
                                     Watch
                                 </Link>

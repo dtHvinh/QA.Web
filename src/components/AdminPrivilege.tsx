@@ -2,9 +2,9 @@ import React from "react";
 import getAuth from "@/helpers/auth-utils";
 
 export default function AdminPrivilege({children}: Readonly<{ children: React.ReactNode }>) {
-    const {role} = getAuth()!;
+    const auth = getAuth()!;
 
-    if (role === undefined || role === null || role !== 'Admin') {
+    if (!auth || auth.role !== 'Admin') {
         return null;
     }
 

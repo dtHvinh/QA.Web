@@ -5,3 +5,7 @@ export function highlightCode() {
         hljs.highlightElement(block as HTMLElement);
     });
 }
+
+export function scrollToTop() {
+    window.scrollTo({top: 0, behavior: 'instant'});
+}

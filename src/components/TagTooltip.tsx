@@ -24,15 +24,20 @@ export default function TagTooltip(params: TagTooltipProps) {
     const {name, description, children} = params;
 
     return (
-        <div>
-            <HtmlTooltip title={
-                <div className={'text-xs'}>
-                    <div className={'font-semibold'}>{name}</div>
-                    <div className={'mt-2'}>{description}</div>
-                </div>
-            } placement="bottom">
+        !description || !name ?
+            <div>
                 {children}
-            </HtmlTooltip>
-        </div>
+            </div>
+            :
+            <div>
+                <HtmlTooltip title={
+                    <div className={'text-xs'}>
+                        <div className={'font-semibold'}>{name}</div>
+                        <div className={'mt-2'}>{description}</div>
+                    </div>
+                } placement="bottom">
+                    {children}
+                </HtmlTooltip>
+            </div>
     );
 }

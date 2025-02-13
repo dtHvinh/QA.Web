@@ -10,7 +10,6 @@ import {CreateQuestionResponse} from "@/types/types";
 import {ErrorResponse} from "@/props/ErrorResponse";
 import getAuth from "@/helpers/auth-utils";
 import {useRouter} from "next/navigation";
-import {toQuestionPage} from "@/helpers/route-utils";
 import {Checkbox, FormControlLabel} from "@mui/material";
 
 export default function NewQuestion() {
@@ -60,7 +59,7 @@ export default function NewQuestion() {
 
             const res = (response as CreateQuestionResponse);
 
-            router.push(toQuestionPage(res.id, res.slug));
+            router.push('/');
         }
     }
 

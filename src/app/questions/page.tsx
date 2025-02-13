@@ -12,6 +12,7 @@ import useSWR from "swr";
 import {getFetcher} from "@/helpers/request-utils";
 import YQPSkeleton from "@/app/your-questions/YQPSkeleton";
 import FilterBar from "@/components/FilterBar";
+import {scrollToTop} from "@/helpers/utils";
 
 
 export default function QuestionsPage() {
@@ -47,6 +48,8 @@ export default function QuestionsPage() {
             + '/?order=' + orderBy
             + `&pageIndex=${1}`
             + `&pageSize=${pageSize}`);
+
+        scrollToTop();
     }, [pageSize]);
 
     useEffect(() => {
@@ -54,6 +57,8 @@ export default function QuestionsPage() {
             + '/?orderBy=' + orderBy
             + `&pageIndex=${pageIndex}`
             + `&pageSize=${pageSize}`);
+
+        scrollToTop();
     }, [pageIndex, orderBy]);
 
     const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
@@ -78,7 +83,7 @@ export default function QuestionsPage() {
                 {question && question.items.map((question: QuestionResponse) => (
                     <YourQuestionItem key={question.id} question={question}/>
                 ))}
-                
+
                 {question && question.items.length === 0 &&
                     <div>
                         You have not asked any questions yet,&nbsp;

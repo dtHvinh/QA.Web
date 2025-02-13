@@ -2,10 +2,10 @@ import React from "react";
 import {QuestionResponse} from "@/types/types";
 import TagLabel from "@/components/TagLabel";
 import timeFromNow from "@/helpers/time-utils";
-import Link from "next/link";
-import toQuestionDetail from "@/helpers/path";
 import {formatNumber} from "@/helpers/evaluate-utils";
 import QuestionStatusBar from "@/app/question/QuestionStatusBar";
+import Link from "next/link";
+import toQuestionDetail from "@/helpers/path";
 
 interface YourQuestionItemProps {
     question: QuestionResponse
@@ -19,7 +19,8 @@ export default function YourQuestionItem(params: Readonly<YourQuestionItemProps>
             <div className="rounded-xl border p-5 shadow-md w-full bg-white">
                 <div className="flex w-full items-center justify-between border-b pb-3">
                     <div className="flex flex-col">
-                        <div className="text-lg font-bold text-slate-700">{question.title}</div>
+                        <Link href={toQuestionDetail(question.id, question.slug)}
+                              className="text-lg text-blue-500 hover:text-blue-700">{question.title}</Link>
                         <div className={'flex space-x-2.5'}>
                             <QuestionStatusBar {...question}/>
                         </div>
@@ -50,31 +51,27 @@ export default function YourQuestionItem(params: Readonly<YourQuestionItemProps>
 
                 <div>
                     <div className="flex items-center justify-between text-slate-500">
-                        <div className="flex space-x-4 md:space-x-8">
-                            <div className={'flex gap-1 items-baseline'}>
-                                <span>Vote</span>
-                                <span>{question.upvote - question.downvote}</span>
+                        <div className={'flex gap-5'}>
+                            <div className="flex space-x-4 md:space-x-8">
+                                <div className={'flex gap-1 items-baseline'}>
+                                    <span>Vote</span>
+                                    <span className={'font-bold'}>{question.upvote - question.downvote}</span>
+                                </div>
                             </div>
-                        </div>
 
-                        <div className="flex space-x-4 md:space-x-8">
-                            <div className={'flex gap-1 items-baseline'}>
-                                <span>View</span>
-                                <span>{formatNumber(question.viewCount)}</span>
+                            <div className="flex space-x-4 md:space-x-8">
+                                <div className={'flex gap-1 items-baseline'}>
+                                    <span>View</span>
+                                    <span className={'font-bold'}>{formatNumber(question.viewCount)}</span>
+                                </div>
                             </div>
-                        </div>
 
-                        <div className="flex space-x-4 md:space-x-8">
-                            <div className={'flex gap-1 items-baseline'}>
-                                <span>Answer</span>
-                                <span>{formatNumber(question.answerCount)}</span>
+                            <div className="flex space-x-4 md:space-x-8">
+                                <div className={'flex gap-1 items-baseline'}>
+                                    <span>Answer</span>
+                                    <span className={'font-bold'}>{formatNumber(question.answerCount)}</span>
+                                </div>
                             </div>
-                        </div>
-
-                        <div>
-                            <Link href={toQuestionDetail(question.id, question.slug)} className={'mt-4 text-black'}>
-                                Watch more
-                            </Link>
                         </div>
                     </div>
                 </div>
