@@ -27,7 +27,7 @@ export default function QuestionHistoryPage() {
     return (
         <div>
             <div className={'font-bold text-xl pb-5'}>
-                {history.length} events
+                {histories.length} events
             </div>
 
             <table className="min-w-full bg-white border border-gray-200 text-sm">

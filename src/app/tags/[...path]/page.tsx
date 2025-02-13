@@ -16,14 +16,13 @@ export default function TagDetailPage({params}: { params: Promise<{ path: string
     const auth = getAuth()!;
     const [pageIndex, setPageIndex] = React.useState<number>(1);
     const [tagQuestions, setTagQuestions] = React.useState<QuestionResponse[]>([]);
-    const validOrderValue = ['Newest', 'MostViewed', 'MostVoted', 'Solved', 'Draft'];
-    const validOrder = ['Newest', 'Most Viewed', 'Most Voted', 'Solved', 'Draft'];
+    const validOrderValue = ['Newest', 'MostViewed', 'MostVoted', 'Solved'];
+    const validOrder = ['Newest', 'Most Viewed', 'Most Voted', 'Solved'];
     const orderDescription = [
         'Newest question base on their creation date',
         'Question has most view',
         'Question has most total vote count',
-        'Question has been solved',
-        'Questions are still in the process of being refined, clarified, or finalized'
+        'Question has been solved'
     ];
     const [selectedOrder, setSelectedOrder] = React.useState<string>(validOrderValue[0]);
     const requestUrl = `${backendURL}/api/tag/${path[0]}?orderBy=${selectedOrder}&pageIndex=${pageIndex}&pageSize=15`;

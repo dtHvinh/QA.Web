@@ -61,12 +61,12 @@ export default function QuestionSection({questionInit}: { questionInit: Question
                 </DialogContent>
             </Dialog>
 
-            <div className={'-mx-12 md:-mx-0 grid grid-cols-12'}>
+            <div className={'grid grid-cols-12'}>
 
                 <QuestionInteractivity question={question}
                                        onQuestionClose={handleQuestionClose}/>
 
-                <div className={'col-span-9 row-span-full'}>
+                <div className={'col-span-12 row-span-full'}>
                     <div className={'flex justify-between text-2xl'}>
                         <div>{question.title}</div>
                         <ResourceOwnerPrivilege resourceRight={question.resourceRight}>
