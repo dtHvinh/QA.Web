@@ -1,12 +1,13 @@
 'use client'
 
-import {ArrowUpward, AutoAwesome} from "@mui/icons-material";
-import {FormEvent, useState} from "react";
+import {ArrowUpward} from "@mui/icons-material";
+import {FormEvent, useEffect, useRef, useState} from "react";
 import StopIcon from '@mui/icons-material/Stop';
 import {backendURL} from "@/utilities/Constants";
 import getAuth from "@/helpers/auth-utils";
+import Message from "@/components/Message";
 
-interface ChatMessage {
+export interface ChatMessage {
     content: string;
     role: "assistant" | "user";
 }
@@ -19,6 +20,7 @@ export default function ChatBotPage() {
         content: "Hello im your assistant, how can I help you?",
         role: "assistant"
     }]);
+    const bottomOfChatRef = useRef<HTMLDivElement>(null)
     const [isProcessing, setIsProcessing] = useState<boolean>(false);
     const abortController = new AbortController();
 
@@ -53,26 +55,44 @@ export default function ChatBotPage() {
 
             const reader = response.body?.getReader();
             const decoder = new TextDecoder();
-            let assistantMessage = "";
+            let resultContent = '';
 
             while (reader) {
-                const {value, done} = await reader.read();
-                if (done) break;
+                try {
+                    const {value, done} = await reader.read();
+                    if (done) break;
 
-                assistantMessage += decoder.decode(value, {stream: true});
+                    const char = decoder.decode(value, {stream: true});
 
-                setChatMessages([...chatMessages, {content: userMessage, role: "user"}, {
-                    content: assistantMessage,
-                    role: "assistant"
-                }]);
+                    setCurrentMessage((prev) => {
+                        resultContent = prev + char;
+                        return resultContent;
+                    });
+                } catch {
+                    setIsProcessing(false);
+                }
             }
 
+            setTimeout(() => {
+                setChatMessages([...chatMessages, {content: userMessage, role: "user"}, {
+                    content: resultContent,
+                    role: "assistant"
+                }]);
+
+                setCurrentMessage('')
+            }, 1)
         } catch (error) {
             console.error("Error sending message:", error);
         } finally {
             setIsProcessing(false);
         }
     };
+
+    useEffect(() => {
+        if (bottomOfChatRef.current) {
+            bottomOfChatRef.current.scrollIntoView({behavior: 'smooth'})
+        }
+    }, [chatMessages, currentMessage]);
 
     return (
         <div className={'grid grid-cols-10'}>
@@ -85,22 +105,13 @@ export default function ChatBotPage() {
                         </div>
                     </div>
 
-                    <div className="space-y-4 flex-grow overflow-y-auto px-2 max-h-[85%]">
+                    <div className="space-y-4 flex-grow overflow-y-auto px-2 md:max-h-[650px]">
                         {chatMessages.map((message, index) => (
-                            <div key={index}
-                                 className={`flex items-baseline ${message.role === 'user' ? 'justify-end' : ''}`}>
-                                {message.role === 'assistant' &&
-                                    <div className={'p-1'}>
-                                        <AutoAwesome/>
-                                    </div>}
-                                <div
-                                    className={`ml-3 p-3 rounded-lg  max-w-[75%] ${message.role === 'assistant' ? 'bg-gray-100 text-gray-800' : 'bg-blue-500 text-white'}`}>
-                                    <div
-                                        className={'text-sm break-words code-section'}
-                                        dangerouslySetInnerHTML={{__html: message.content}}></div>
-                                </div>
-                            </div>
+                            <Message {...message} key={index}/>
                         ))}
+
+                        {currentMessage && <Message content={currentMessage} role={"assistant"}/>}
+                        <div ref={bottomOfChatRef}></div>
                     </div>
 
                     <form onSubmit={handleSendMessage}

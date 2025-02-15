@@ -1,7 +1,7 @@
 $border-radius: 10px;
 $code-background: #f6f6f6;
 
-@mixin code-display {
+@mixin text-display {
   ul,
   ol {
     padding: 0 1rem;
@@ -53,6 +53,27 @@ $code-background: #f6f6f6;
     font-size: 1rem;
   }
 
+  blockquote {
+    border-left: 3px solid var(--gray-3);
+    margin: 1.5rem 0;
+    padding-left: 1rem;
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid var(--gray-2);
+    margin: 2rem 0;
+  }
+
+  a {
+    color: blue;
+    text-decoration: underline;
+  }
+}
+
+@mixin code-display {
+  @include text-display;
+
   code {
     background: $code-background;
     color: black;
@@ -75,23 +96,6 @@ $code-background: #f6f6f6;
       font-size: 0.8rem;
       padding: 0;
     }
-  }
-
-  blockquote {
-    border-left: 3px solid var(--gray-3);
-    margin: 1.5rem 0;
-    padding-left: 1rem;
-  }
-
-  hr {
-    border: none;
-    border-top: 1px solid var(--gray-2);
-    margin: 2rem 0;
-  }
-
-  a {
-    color: blue;
-    text-decoration: underline;
   }
 }
 
@@ -162,4 +166,8 @@ $code-background: #f6f6f6;
 
 .code-section {
   @include code-display;
+}
+
+.text-section {
+  @include text-display;
 }
