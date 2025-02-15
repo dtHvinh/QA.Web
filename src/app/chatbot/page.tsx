@@ -95,9 +95,9 @@ export default function ChatBotPage() {
     }, [chatMessages, currentMessage]);
 
     return (
-        <div className={'grid grid-cols-10'}>
+        <div className={'grid grid-cols-12'}>
             <div
-                className="min-h-[calc(100vh-var(--appbar-height)-var(--appbar-height))] flex flex-col col-span-full md:col-span-8">
+                className="min-h-[calc(100vh-var(--appbar-height)-var(--appbar-height))] flex flex-col col-span-full md:col-span-full">
                 <div className="bg-white rounded-lg flex flex-col p-4 flex-grow">
                     <div className="flex items-center mb-4">
                         <div className="ml-3">
