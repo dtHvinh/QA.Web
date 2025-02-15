@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 :root {
+    --appbar-height: 58px;
     --background: #ffffff;
     --foreground: #171717;
     --purple-light: #e0e0ff;

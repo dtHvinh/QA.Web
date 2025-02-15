@@ -1,7 +1,7 @@
 import TagLabel from "@/components/TagLabel";
 import React, {useEffect} from "react";
 import {QuestionResponse} from "@/types/types";
-import 'highlight.js/styles/github.css';
+import 'highlight.js/styles/atom-one-dark.css';
 import QuestionHeaderDetails from "@/app/question/QuestionHeaderDetails";
 import QuestionContent from "@/app/question/QuestionContent";
 import {Avatar, Dialog, DialogContent, DialogTitle, IconButton} from "@mui/material";

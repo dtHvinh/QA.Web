@@ -54,7 +54,7 @@ export default function QuestionPage({params}: { params: Promise<{ path: string[
                             <QuestionSection questionInit={question}/>
                         </div>
                         <div className={'col-span-3'}>
-                            <span className={'text-xl'}>Related questions</span>
+                            <span className={'text-xl'}>Relate questions</span>
 
                             <div className={'flex mt-5 flex-col gap-5'}>
                                 {relateQuestions && relateQuestions.items.map((question: QuestionResponse) => (
