@@ -32,7 +32,7 @@ export default function Home() {
                     <div className="flex flex-col gap-4">
                         <div className="flex">
                             <div className="w-3/4 -ml-4 text-center">
-                                {user.reputation}
+                                {user?.reputation}
                             </div>
                             <svg viewBox="0 0 180 30" xmlns="http://www.w3.org/2000/svg">
                                 <rect width="100%" height="33%" fill="lightblue">

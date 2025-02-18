@@ -85,6 +85,11 @@ export interface QuestionResponse extends ResourceRightProps {
     histories: QuestionHistoryResponse[],
 }
 
+export interface AuthRefreshResponse {
+    accessToken: string,
+    refreshToken: string,
+}
+
 export interface AuthorResponse {
     id: string;
     firstName?: string;

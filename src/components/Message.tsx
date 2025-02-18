@@ -13,7 +13,7 @@ export default function Message(message: ChatMessage) {
                     </div>}
                 <div
                     className={`ml-3 p-3 rounded-lg  ${message.role === 'assistant' ? 'border-l-2 text-gray-800' : ' text-black border-r-2 '}`}>
-                    <Markdown>{message.content}</Markdown>
+                    <Markdown className={'code-section'}>{message.content}</Markdown>
                 </div>
             </div>
         </div>

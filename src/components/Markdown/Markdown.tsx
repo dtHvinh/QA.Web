@@ -6,7 +6,6 @@ import ReactMarkdown, {ExtraProps} from 'react-markdown'
 import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter'
 import {vscDarkPlus} from 'react-syntax-highlighter/dist/esm/styles/prism'
 import rehypeKatex from 'rehype-katex'
-import rehypeRaw from 'rehype-raw'
 import rehypeStringify from 'rehype-stringify'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
@@ -14,13 +13,14 @@ import remarkParse from 'remark-parse'
 import remarkRehype from 'remark-rehype'
 
 import './index.scss'
+import rehypeRaw from "rehype-raw";
 
 export interface MarkdownProps {
     className?: string
     children: string
 }
 
-const HighlightCode = (
+export const HighlightCode = (
     props: ClassAttributes<HTMLElement> & HTMLAttributes<HTMLElement> & ExtraProps
 ) => {
     const {children, className, ref, ...rest} = props
@@ -44,7 +44,7 @@ const HighlightCode = (
 export const Markdown = ({className, children}: MarkdownProps) => {
     return (
         <ReactMarkdown
-            className={cs('prose dark:prose-invert max-w-none text-section', className)}
+            className={cs('prose dark:prose-invert max-w-none', className)}
             remarkPlugins={[remarkParse, remarkMath, remarkRehype, remarkGfm]}
             rehypePlugins={[rehypeRaw, rehypeKatex, rehypeStringify]}
             components={{

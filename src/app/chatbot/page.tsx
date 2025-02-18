@@ -6,6 +6,11 @@ import StopIcon from '@mui/icons-material/Stop';
 import {backendURL} from "@/utilities/Constants";
 import getAuth from "@/helpers/auth-utils";
 import Message from "@/components/Message";
+import {refreshToken} from "@/helpers/request-utils";
+import {Checkbox} from "@mui/material";
+import LightbulbIcon from '@mui/icons-material/Lightbulb';
+import LightbulbOutlinedIcon from '@mui/icons-material/LightbulbOutlined';
+import {LightTooltip} from "@/components/LightToolTip";
 
 export interface ChatMessage {
     content: string;
@@ -14,12 +19,14 @@ export interface ChatMessage {
 
 export default function ChatBotPage() {
     const auth = getAuth();
+    const [isReasoning, setIsReasoning] = useState<boolean>(false);
     const [currentMessage, setCurrentMessage] = useState<string>("");
     const [messageInput, setMessageInput] = useState<string>("");
-    const [chatMessages, setChatMessages] = useState<ChatMessage[]>([{
-        content: "Hello im your assistant, how can I help you?",
-        role: "assistant"
-    }]);
+    const [chatMessages, setChatMessages] = useState<ChatMessage[]>(
+        [{
+            content: "Hello im your assistant, how can I help you?",
+            role: "assistant"
+        }]);
     const bottomOfChatRef = useRef<HTMLDivElement>(null)
     const [isProcessing, setIsProcessing] = useState<boolean>(false);
     const abortController = new AbortController();
@@ -28,6 +35,10 @@ export default function ChatBotPage() {
         abortController.abort();
         setIsProcessing(false);
     }
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setIsReasoning(event.target.checked);
+    };
 
     const handleSendMessage = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -40,53 +51,64 @@ export default function ChatBotPage() {
         setIsProcessing(true);
 
         try {
-            const response = await fetch(`${backendURL}/api/ai/chat`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${auth?.accessToken}`
-                },
-                body: JSON.stringify({
-                    messages: chatMessages,
-                    newMessage: userMessage
-                }),
-                signal: abortController.signal
-            });
+            const response = await sendChat(userMessage);
 
-            const reader = response.body?.getReader();
-            const decoder = new TextDecoder();
-            let resultContent = '';
-
-            while (reader) {
-                try {
-                    const {value, done} = await reader.read();
-                    if (done) break;
-
-                    const char = decoder.decode(value, {stream: true});
-
-                    setCurrentMessage((prev) => {
-                        resultContent = prev + char;
-                        return resultContent;
-                    });
-                } catch {
-                    setIsProcessing(false);
-                }
+            if (!response.ok && response.status == 401) {
+                refreshToken(auth!);
+                window.location.reload();
             }
 
-            setTimeout(() => {
-                setChatMessages([...chatMessages, {content: userMessage, role: "user"}, {
-                    content: resultContent,
-                    role: "assistant"
-                }]);
-
-                setCurrentMessage('')
-            }, 1)
+            await renderChatStream(response, userMessage);
         } catch (error) {
             console.error("Error sending message:", error);
         } finally {
             setIsProcessing(false);
         }
     };
+
+    const sendChat = (userMessage: string) => fetch(`${backendURL}/api/ai/chat?isReasoning=${isReasoning}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${auth?.accessToken}`
+        },
+        body: JSON.stringify({
+            messages: chatMessages,
+            newMessage: userMessage
+        }),
+        signal: abortController.signal
+    });
+
+    const renderChatStream = async (response: Response, userMessage: string) => {
+        const reader = response.body?.getReader();
+        const decoder = new TextDecoder();
+        let resultContent = '';
+
+        while (reader) {
+            try {
+                const {value, done} = await reader.read();
+                if (done) break;
+
+                const char = decoder.decode(value, {stream: true});
+
+                setCurrentMessage((prev) => {
+                    resultContent = prev + char;
+                    return resultContent;
+                });
+            } catch {
+                setIsProcessing(false);
+            }
+        }
+
+        setTimeout(() => {
+            setChatMessages([...chatMessages, {content: userMessage, role: "user"}, {
+                content: resultContent,
+                role: "assistant"
+            }]);
+
+            setCurrentMessage('')
+        }, 1)
+    }
 
     useEffect(() => {
         if (bottomOfChatRef.current) {
@@ -115,7 +137,7 @@ export default function ChatBotPage() {
                     </div>
 
                     <form onSubmit={handleSendMessage}
-                          className="flex items-center mt-5 z-20">
+                          className="flex items-center mt-5 z-20 space-x-3">
                         <input
                             spellCheck={false}
                             autoComplete={"off"}
@@ -127,6 +149,15 @@ export default function ChatBotPage() {
                             className="flex-1 py-3 px-5 rounded-full bg-gray-100 focus:outline-none transition-all"
                             disabled={isProcessing}
                         />
+
+                        <LightTooltip placement={'top'} title={'Thinking before responding'}>
+                            <Checkbox icon={<LightbulbOutlinedIcon/>}
+                                      checkedIcon={<LightbulbIcon/>}
+                                      value={isReasoning}
+                                      onChange={handleChange}
+                                      sx={{'& .MuiSvgIcon-root': {fontSize: 24}}}/>
+                        </LightTooltip>
+
                         {!isProcessing ?
                             <button type={"submit"}
                                     className="bg-blue-500 text-white p-2 rounded-full ml-3 hover:bg-blue-600"
@@ -140,6 +171,7 @@ export default function ChatBotPage() {
                                 <StopIcon/>
                             </button>
                         }
+
                     </form>
                 </div>
             </div>

@@ -167,6 +167,12 @@ export default function SearchPage() {
             <div className={'col-span-full mt-5 space-y-3'}>
                 {isFetching && <Loading/>}
 
+                {searchResults.length === 0 &&
+                    <div>
+                        No results found
+                    </div>
+                }
+
                 {searchResults.length !== 0 && (
                     <div className={'text-gray-500'}>
                         {`Showing ${pageSize} of ${totalCount} results`}
