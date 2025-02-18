@@ -14,6 +14,7 @@ import {LightTooltip} from "@/components/LightToolTip";
 
 export interface ChatMessage {
     content: string;
+    thinking?: string;
     role: "assistant" | "user";
 }
 
@@ -22,6 +23,7 @@ export default function ChatBotPage() {
     const [isReasoning, setIsReasoning] = useState<boolean>(false);
     const [currentMessage, setCurrentMessage] = useState<string>("");
     const [messageInput, setMessageInput] = useState<string>("");
+    const [currentThinking, setCurrentThinking] = useState<string>("");
     const [chatMessages, setChatMessages] = useState<ChatMessage[]>(
         [{
             content: "Hello im your assistant, how can I help you?",
@@ -79,8 +81,7 @@ export default function ChatBotPage() {
         signal: abortController.signal
     });
 
-    const renderChatStream = async (response: Response, userMessage: string) => {
-        const reader = response.body?.getReader();
+    const renderThinkingStream = async (reader: ReadableStreamDefaultReader<Uint8Array<ArrayBufferLike>>) => {
         const decoder = new TextDecoder();
         let resultContent = '';
 
@@ -90,6 +91,38 @@ export default function ChatBotPage() {
                 if (done) break;
 
                 const char = decoder.decode(value, {stream: true});
+
+                if (char === "</think>") break;
+
+                setCurrentThinking((prev) => {
+                    resultContent = prev + char;
+                    return resultContent;
+                });
+            } catch {
+                return resultContent;
+            }
+        }
+
+        return resultContent;
+    }
+
+    const renderChatStream = async (response: Response, userMessage: string) => {
+        const reader = response.body?.getReader();
+        const decoder = new TextDecoder();
+        let resultContent = '';
+        let thinkingContent = '';
+
+        while (reader) {
+            try {
+                const {value, done} = await reader.read();
+                if (done) break;
+
+                const char = decoder.decode(value, {stream: true});
+
+                if (char === "<think>") {
+                    thinkingContent = await renderThinkingStream(reader);
+                    continue;
+                }
 
                 setCurrentMessage((prev) => {
                     resultContent = prev + char;
@@ -103,10 +136,12 @@ export default function ChatBotPage() {
         setTimeout(() => {
             setChatMessages([...chatMessages, {content: userMessage, role: "user"}, {
                 content: resultContent,
+                thinking: thinkingContent,
                 role: "assistant"
             }]);
 
             setCurrentMessage('')
+            setCurrentThinking('')
         }, 1)
     }
 
@@ -132,7 +167,8 @@ export default function ChatBotPage() {
                             <Message {...message} key={index}/>
                         ))}
 
-                        {currentMessage && <Message content={currentMessage} role={"assistant"}/>}
+                        {(currentMessage || currentThinking) &&
+                            <Message thinking={currentThinking} content={currentMessage} role={"assistant"}/>}
                         <div ref={bottomOfChatRef}></div>
                     </div>
 
@@ -155,6 +191,7 @@ export default function ChatBotPage() {
                                       checkedIcon={<LightbulbIcon/>}
                                       value={isReasoning}
                                       onChange={handleChange}
+                                      disabled={isProcessing}
                                       sx={{'& .MuiSvgIcon-root': {fontSize: 24}}}/>
                         </LightTooltip>
 
