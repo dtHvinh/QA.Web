@@ -1,7 +1,7 @@
 'use client'
 
 import {ArrowUpward} from "@mui/icons-material";
-import {FormEvent, useEffect, useRef, useState} from "react";
+import React, {FormEvent, useEffect, useRef, useState} from "react";
 import StopIcon from '@mui/icons-material/Stop';
 import {backendURL} from "@/utilities/Constants";
 import getAuth from "@/helpers/auth-utils";
@@ -11,10 +11,11 @@ import {Checkbox} from "@mui/material";
 import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import LightbulbOutlinedIcon from '@mui/icons-material/LightbulbOutlined';
 import {LightTooltip} from "@/components/LightToolTip";
+import notifyError from "@/utilities/ToastrExtensions";
 
 export interface ChatMessage {
     content: string;
-    thinking?: string;
+    thought?: string;
     role: "assistant" | "user";
 }
 
@@ -31,15 +32,17 @@ export default function ChatBotPage() {
         }]);
     const bottomOfChatRef = useRef<HTMLDivElement>(null)
     const [isProcessing, setIsProcessing] = useState<boolean>(false);
-    const abortController = new AbortController();
-
-    const handleAbort = () => {
-        abortController.abort();
-        setIsProcessing(false);
-    }
+    const abortControllerRef = useRef(new AbortController());
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setIsReasoning(event.target.checked);
+    };
+    const handleAbort = () => {
+        // abortControllerRef.current.abort();
+        // setIsProcessing(false);
+        // abortControllerRef.current = new AbortController();
+
+        notifyError("This feature is not yet implemented");
     };
 
     const handleSendMessage = async (event: FormEvent<HTMLFormElement>) => {
@@ -78,7 +81,7 @@ export default function ChatBotPage() {
             messages: chatMessages,
             newMessage: userMessage
         }),
-        signal: abortController.signal
+        signal: abortControllerRef.current.signal
     });
 
     const renderThinkingStream = async (reader: ReadableStreamDefaultReader<Uint8Array<ArrayBufferLike>>) => {
@@ -133,16 +136,14 @@ export default function ChatBotPage() {
             }
         }
 
-        setTimeout(() => {
-            setChatMessages([...chatMessages, {content: userMessage, role: "user"}, {
-                content: resultContent,
-                thinking: thinkingContent,
-                role: "assistant"
-            }]);
+        setChatMessages([...chatMessages, {content: userMessage, role: "user"}, {
+            content: resultContent,
+            thought: thinkingContent,
+            role: "assistant"
+        }]);
 
-            setCurrentMessage('')
-            setCurrentThinking('')
-        }, 1)
+        setCurrentMessage('')
+        setCurrentThinking('')
     }
 
     useEffect(() => {
@@ -168,8 +169,7 @@ export default function ChatBotPage() {
                         ))}
 
                         {(currentMessage || currentThinking) &&
-                            <Message thinking={currentThinking} content={currentMessage} role={"assistant"}/>}
-                        <div ref={bottomOfChatRef}></div>
+                            <Message thought={currentThinking} content={currentMessage} role={"assistant"}/>}
                     </div>
 
                     <form onSubmit={handleSendMessage}
