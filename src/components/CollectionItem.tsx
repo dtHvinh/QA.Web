@@ -49,7 +49,7 @@ export default function CollectionItem({collection}: { collection: GetCollection
                                              className={'flex items-center gap-1'}>
                                         <div>
                                             <AccessTimeIcon fontSize={'small'}/>
-                                            <small className={'text-gray-600'}>
+                                            <small className={'text-gray-600 text-nowrap text-ellipsis'}>
                                                 {timeFromNow(collection.createdAt)}
                                             </small>
                                         </div>

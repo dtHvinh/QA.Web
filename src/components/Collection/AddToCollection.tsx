@@ -51,7 +51,7 @@ export default function AddToCollection({questionId}: Readonly<{ questionId: str
         } else {
             enqueueSnackbar(
                 <div>
-                    Added to {collectionName}
+                    {action} {action === 'add' ? 'to' : 'from'} {collectionName}
                 </div>, {variant: 'success'});
         }
     }

@@ -2,7 +2,8 @@ import {SvgIcon, Tooltip} from "@mui/material";
 import Link from "next/link";
 import AddIcon from "@mui/icons-material/Add";
 import SearchIcon from "@mui/icons-material/Search";
-import {AutoAwesome, AutoStories} from "@mui/icons-material";
+import {AutoStories} from "@mui/icons-material";
+import ChatBot from "@/components/ChatBot";
 
 export default function AppbarActionButtons({className}: { className?: string }) {
     return (
@@ -22,10 +23,7 @@ export default function AppbarActionButtons({className}: { className?: string })
             </Tooltip>
 
             <Tooltip title={'Ask ai'}>
-                <Link href={'/chatbot'}
-                      className="text-sm block text-gray-700 hover:bg-gray-300 p-2 rounded-full transition-colors active:scale-95">
-                    <AutoAwesome/>
-                </Link>
+                <ChatBot/>
             </Tooltip>
 
             <Tooltip title={'Your questions'}>

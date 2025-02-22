@@ -92,8 +92,10 @@ export default function CollectionDetailPage({params}: Readonly<{ params: Promis
                                 <div className={'text-2xl mb-5'}>Questions ({collection.questions.items.length}):
                                 </div>
 
-                                {collection.questions.items.map((question, index) => (
-                                    <YourQuestionItem key={index} question={question}/>))}
+                                <div className={'flex flex-col gap-5'}>
+                                    {collection.questions.items.map((question, index) => (
+                                        <YourQuestionItem key={index} question={question}/>))}
+                                </div>
                             </div>
                         </TabsContent>
                         <TabsContent className="tab-content" value={'settings'}>

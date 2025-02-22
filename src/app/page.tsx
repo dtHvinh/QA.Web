@@ -45,7 +45,7 @@ export default function Home() {
                 <div className="text-2xl col-span-3">
                     Hello, {auth?.username}
                 </div>
-
+                
                 <div className="gap-4 col-span-3 md:col-span-1 h-full m-2 p-4 flex flex-col">
                     <div className="text-lg font-semibold">
                         Reputation
