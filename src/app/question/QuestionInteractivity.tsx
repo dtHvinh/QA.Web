@@ -9,8 +9,9 @@ import {fetcher, IsErrorResponse, postFetcher} from "@/helpers/request-utils";
 import {ErrorResponse} from "@/props/ErrorResponse";
 import getAuth from "@/helpers/auth-utils";
 import AlertDialog from "@/components/AlertDialog";
-import ResourceOwnerPrivilege from "@/components/ResourceOwnerPrivilege";
+import ResourceOwnerPrivilege from "@/components/Privilege/ResourceOwnerPrivilege";
 import {useRouter} from "next/navigation";
+import AddToCollection from "@/components/Collection/AddToCollection";
 
 export default function QuestionInteractivity(
     {
@@ -175,6 +176,9 @@ export default function QuestionInteractivity(
                         onChange={handleBookmarkQuestion}
                     />
                 </Tooltip>
+            </div>
+            <div>
+                <AddToCollection questionId={question.id}/>
             </div>
             <ResourceOwnerPrivilege resourceRight={question.resourceRight}>
                 <div>

@@ -9,6 +9,7 @@ export const Routes = {
     NewQuestion: "/new-question",
     Questions: "/questions",
     Question: "/question",
+    Collections: "/collections",
     Wiki: "/wiki",
     YourQuestions: "/your-questions",
     Tags: "/tags",

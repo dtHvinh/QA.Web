@@ -1,5 +1,5 @@
 import {AnswerResponse, QuestionResponse, VoteResponse} from "@/types/types";
-import React, {useEffect} from "react";
+import React from "react";
 import getAuth from "@/helpers/auth-utils";
 import {formatString} from "@/helpers/string-utils";
 import {Apis, backendURL} from "@/utilities/Constants";
@@ -14,6 +14,7 @@ import AnswerContent from "@/app/question/AnswerContent";
 import {Avatar} from "@mui/material";
 import {formatReputation} from "@/helpers/evaluate-utils";
 import MarkAcceptedAnswerLabel from "@/app/question/MarkAcceptedAnswerLabel";
+import AdminPrivilege from "@/components/Privilege/AdminPrivilege";
 
 export default function Answer(
     {
@@ -39,14 +40,8 @@ export default function Answer(
     const [isDeleting, setIsDeleting] = React.useState(false);
     const [isAllowUpdate, setIsAllowUpdate] = React.useState(false);
 
-    const [isAnyAnswerAccepted, setIsAnyAnswerAccepted] = React.useState(isQuestionSolved);
-
     const auth = getAuth();
     const acceptAnswerUrl = formatString(backendURL + Apis.Question.AcceptAnswer, question.id, answer.id);
-
-    useEffect(() => {
-        setIsAnyAnswerAccepted(isQuestionSolved);
-    }, [isQuestionSolved]);
 
     const handleClickOpen = () => {
         setDelAnsDialog(true);
@@ -129,12 +124,7 @@ export default function Answer(
     }
 
     return (
-        <div
-            className={`${isAnswerAccepted && "border-green-500 border-2 rounded-lg"}`}>
-            {isAnswerAccepted &&
-                <MarkAcceptedAnswerLabel/>
-            }
-
+        <div className={'border-b'}>
             <AlertDialog open={delAnsDialog}
                          onClose={handleClose}
                          onYes={handleDelete}
@@ -172,21 +162,26 @@ export default function Answer(
                             onClick={() => handleVote(false)}
                         />
                     </div>
-                    {
-                        !isAnyAnswerAccepted &&
-                        question.resourceRight == 'Owner' &&
-                        <div>
-                            <RoundedButton
-                                onClick={handleAnswerAccepted}
-                                title={'Mark as answer'}
-                                className={'bg-green-300 text-black hover:bg-green-400 active:bg-green-500'}
-                                svg={<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                          className="bi bi-check2" viewBox="0 0 16 16">
-                                    <path
-                                        d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
-                                </svg>}
-                            />
-                        </div>}
+                    {isAnswerAccepted &&
+                        <MarkAcceptedAnswerLabel/>
+                    }
+                    <AdminPrivilege>
+                        {!isAnswerAccepted &&
+                            <div>
+                                <RoundedButton
+                                    onClick={handleAnswerAccepted}
+                                    title={'Mark as answer'}
+                                    className={'bg-green-300 text-black hover:bg-green-400 active:bg-green-500'}
+                                    svg={<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                              fill="currentColor"
+                                              className="bi bi-check2" viewBox="0 0 16 16">
+                                        <path
+                                            d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
+                                    </svg>}
+                                />
+                            </div>
+                        }
+                    </AdminPrivilege>
                 </div>
 
                 <div className={'col-span-5 row-span-full'}>

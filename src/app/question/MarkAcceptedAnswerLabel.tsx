@@ -1,11 +1,13 @@
 import React from "react";
+import CheckIcon from '@mui/icons-material/Check';
+import {Tooltip} from "@mui/material";
 
 export default function MarkAcceptedAnswerLabel() {
     return (
-        <div>
-            <div className={'bg-green-500 text-white p-2'}>
-                This answer is marked as accepted
+        <Tooltip title={'Accepted Answer'} arrow>
+            <div className={'text-green-600 p-3 rounded-full'}>
+                <CheckIcon/>
             </div>
-        </div>
+        </Tooltip>
     );
 }

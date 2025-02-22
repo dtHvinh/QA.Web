@@ -4,11 +4,11 @@ import {usePathname} from "next/navigation";
 
 export default function LeftNav() {
     const pathname = usePathname();
-    const buttonStyle = "mt-4 flex gap-2 items-center text-sm";
-    const selectedStyle = "text-black font-semibold";
+    const buttonStyle = "flex gap-2 items-center text-sm py-2 px-4 rounded-l-lg hover:bg-gray-100 transition";
+    const selectedStyle = "text-black font-semibold bg-gray-200";
 
     return (
-        <div>
+        <div className={'flex flex-col gap-3'}>
             <Link href={Routes.Home} className={`${buttonStyle} ${pathname === Routes.Home ? selectedStyle : ""}`}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                     <path
@@ -33,6 +33,14 @@ export default function LeftNav() {
                         d="M9.83 3a2 2 0 0 0-1.42.59l-6 6a2 2 0 0 0 0 2.82L6.6 16.6a2 2 0 0 0 2.82 0l6-6A2 2 0 0 0 16 9.17V5a2 2 0 0 0-2-2zM12 9a2 2 0 1 1 0-4 2 2 0 0 1 0 4"></path>
                 </svg>
                 Tags
+            </Link>
+            <Link href={Routes.Collections}
+                  className={`${buttonStyle} ${pathname === Routes.Collections ? selectedStyle : ""}`}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path
+                        d="M0 13a1.5 1.5 0 0 0 1.5 1.5h13A1.5 1.5 0 0 0 16 13V6a1.5 1.5 0 0 0-1.5-1.5h-13A1.5 1.5 0 0 0 0 6zM2 3a.5.5 0 0 0 .5.5h11a.5.5 0 0 0 0-1h-11A.5.5 0 0 0 2 3m2-2a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 0-1h-7A.5.5 0 0 0 4 1"/>
+                </svg>
+                Collections
             </Link>
 
             <hr className="mt-4"/>

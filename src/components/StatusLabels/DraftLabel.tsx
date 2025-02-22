@@ -5,7 +5,7 @@ export default function DraftLabel() {
     return (
         <div>
             <Tooltip arrow title={'This question is a draft'}>
-                <div className={'bg-gray-500 text-white px-2'}>
+                <div className={'text-gray-500 text-sm border rounded-full px-2 border-gray-500'}>
                     Draft
                 </div>
             </Tooltip>

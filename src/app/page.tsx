@@ -3,15 +3,36 @@
 import getAuth from "@/helpers/auth-utils";
 import {backendURL} from "@/utilities/Constants";
 import useSWR from "swr";
-import {getFetcher} from "@/helpers/request-utils";
-import {UserResponse} from "@/types/types";
+import {getFetcher, IsErrorResponse} from "@/helpers/request-utils";
+import {PagedResponse, QuestionResponse, UserResponse} from "@/types/types";
 import Loading from "@/app/loading";
+import React, {useEffect, useState} from "react";
+import notifyError from "@/utilities/ToastrExtensions";
+import YourQuestionItem from "@/components/YourQuestionItem";
 
 export default function Home() {
-    const requestUrl = `${backendURL}/api/user/`;
+    const userInfoRequestUrl = `${backendURL}/api/user/`;
+    const getQuestionRequestUrl = `${backendURL}/api/question/you_may_like?pageIndex=1&pageSize=30`;
     const auth = getAuth();
+    const [questionResults, setQuestionResults] = useState<PagedResponse<QuestionResponse>>();
 
-    const {data, isLoading} = useSWR([requestUrl, auth?.accessToken], getFetcher);
+    const {data, isLoading} = useSWR([userInfoRequestUrl, auth?.accessToken], getFetcher);
+
+    useEffect(() => {
+        async function fetchQuestions() {
+            const fetchResult = await getFetcher([getQuestionRequestUrl, auth!.accessToken]);
+            if (IsErrorResponse(fetchResult)) {
+                notifyError("Error");
+                return;
+            }
+
+            setQuestionResults(fetchResult as PagedResponse<QuestionResponse>);
+
+            console.log(fetchResult);
+        }
+
+        fetchQuestions().then();
+    }, []);
 
     if (isLoading)
         return <Loading/>
@@ -47,6 +68,14 @@ export default function Home() {
                         </div>
                         <small>Earn reputation by ask and answer a question</small>
                     </div>
+                </div>
+
+                <div className={'col-span-full space-y-5 mb-5'}>
+                    <div className={'text-2xl mt-5 font-bold'}>Question for you</div>
+
+                    {questionResults?.items.map((question) => (
+                        <YourQuestionItem question={question} key={question.id}/>
+                    ))}
                 </div>
             </div>
         </div>

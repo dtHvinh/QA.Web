@@ -50,7 +50,8 @@ export default function QuestionPage({params}: { params: Promise<{ path: string[
             <div className="container mx-auto">
                 <div className="bg-white p-6 rounded-lg">
                     <div className={'grid grid-cols-12 gap-4'}>
-                        <div className={'col-span-full md:col-span-9'}>
+                        <div
+                            className={'col-span-full md:col-span-9 border-r min-h-[calc(100vh-var(--appbar-height))]'}>
                             <QuestionSection questionInit={question}/>
                         </div>
                         <div className={'col-span-3'}>

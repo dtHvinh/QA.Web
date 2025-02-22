@@ -5,7 +5,7 @@ export default function SolvedLabel() {
     return (
         <div>
             <Tooltip arrow title={'This question has been solved'}>
-                <div className={'bg-green-500 text-white px-2'}>
+                <div className={'text-green-500 text-sm border rounded-full px-2 border-green-500'}>
                     Solved
                 </div>
             </Tooltip>

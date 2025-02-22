@@ -8,7 +8,7 @@ import {getFetcher} from "@/helpers/request-utils";
 import {UserResponse} from "@/types/types";
 import Loading from "@/app/loading";
 import FetchFail from "@/components/FetchFail";
-import timeFromNow from "@/helpers/time-utils";
+import {countTotalDays} from "@/helpers/time-utils";
 import Link from "next/link";
 
 export default function ProfilePage() {
@@ -44,7 +44,8 @@ export default function ProfilePage() {
                                 </div>
 
                                 <div>
-                                    <span className={'mt-2 text-gray-500'}>Joined {timeFromNow(user.dateJoined)}</span>
+                                    <span
+                                        className={'mt-2 text-gray-500'}>Joined {countTotalDays(user.dateJoined)}</span>
                                 </div>
                             </div>
                         </div>
@@ -87,7 +88,7 @@ export default function ProfilePage() {
 
                 <div className="mt-6 bg-white p-6 rounded-lg shadow-md">
                     <h2 className="text-xl font-semibold mb-4">Activity Summary</h2>
-                    <div className="grid grid-cols-3 gap-4">
+                    <div className="grid grid-cols-4 gap-4">
                         <Link href={'/your-questions'} className="text-center">
                             <p className="text-gray-600">Questions</p>
                             <p className="text-2xl font-bold">{user.questionCount}</p>
@@ -100,6 +101,10 @@ export default function ProfilePage() {
                             <p className="text-gray-600">Comments</p>
                             <p className="text-2xl font-bold">{user.commentCount}</p>
                         </div>
+                        <Link href={'/your-collections'} className="text-center">
+                            <p className="text-gray-600">Collections</p>
+                            <p className="text-2xl font-bold">{user.collectionCount}</p>
+                        </Link>
                     </div>
                 </div>
 

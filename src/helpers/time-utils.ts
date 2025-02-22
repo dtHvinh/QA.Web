@@ -27,3 +27,10 @@ export default function timeFromNow(dateTimeString: string): string {
         return date.toLocaleDateString() + " " + date.toLocaleTimeString();
     }
 }
+
+export function countTotalDays(dateString: string): string {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInMs = now.getTime() - date.getTime();
+    return date.toLocaleString("en-US") + " - " + Math.floor(diffInMs / (1000 * 60 * 60 * 24)) + " days";
+}

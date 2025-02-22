@@ -85,6 +85,35 @@ export interface QuestionResponse extends ResourceRightProps {
     histories: QuestionHistoryResponse[],
 }
 
+export interface GetCollectionResponse {
+    id: string,
+    name: string,
+    description: string,
+    likeCount: number,
+    isPublic: boolean,
+    createdAt: string,
+    author: AuthorResponse
+}
+
+export interface GetCollectionWithAddStatusResponse {
+    id: string,
+    name: string,
+    isPublic: boolean,
+    isAdded: boolean,
+}
+
+export interface GetCollectionDetailResponse {
+    id: string,
+    name: string,
+    description: string,
+    likeCount: number,
+    isPublic: boolean,
+    createdAt: string,
+    author: AuthorResponse
+    resourceRight: ResourceRight,
+    questions: PagedResponse<QuestionResponse>
+}
+
 export interface AuthRefreshResponse {
     accessToken: string,
     refreshToken: string,
@@ -118,6 +147,7 @@ export interface UserResponse {
     questionCount: number;
     answerCount: number;
     commentCount: number;
+    collectionCount: number;
 }
 
 export interface CommentResponse extends ResourceRightProps {

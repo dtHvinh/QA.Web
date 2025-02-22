@@ -1,10 +1,9 @@
-import Appbar from "@/components/Appbar";
+import Appbar from "@/components/AppBar/Appbar";
 import type {Metadata} from "next";
 import {DM_Sans, Geist, Geist_Mono} from "next/font/google";
 import "./globals.css";
 import "./globals.scss";
 import SubLayout from "./layouts/sub-layout";
-import {ToastContainer} from "react-toastify";
 import React from "react";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
 import {SupabaseProvider} from "@/context/SupabaseClientContext";
@@ -42,11 +41,15 @@ export default function RootLayout({
             className={`${dmSans.className} ${geistSans.variable} ${geistMono.variable} bg-white text-black antialiased`}
         >
         <main>
+            <div className={'border-b'}>
+                <div className="container mx-auto">
+                    <Appbar/>
+                </div>
+            </div>
+
             <div className="container mx-auto px-4 min-h-[calc(100vh-var(--appbar-height))]">
-                <Appbar/>
                 <SupabaseProvider>
                     <SubLayout>
-                        <ToastContainer/>
                         {children}
                         <Analytics/>
                         <SpeedInsights/>

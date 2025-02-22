@@ -1,6 +1,6 @@
-import SolvedLabel from "@/app/question/SolvedLabel";
-import ClosedLabel from "@/app/question/ClosedLabel";
-import DraftLabel from "@/app/question/DraftLabel";
+import SolvedLabel from "@/components/StatusLabels/SolvedLabel";
+import ClosedLabel from "@/components/StatusLabels/ClosedLabel";
+import DraftLabel from "@/components/StatusLabels/DraftLabel";
 import React from "react";
 
 export default function QuestionStatusBar({className, isClosed, isDraft, isSolved}: {

@@ -67,7 +67,8 @@ export default function YourQuestionItem(params: Readonly<YourQuestionItemProps>
                             </div>
 
                             <div className="flex space-x-4 md:space-x-8">
-                                <div className={'flex gap-1 items-baseline'}>
+                                <div
+                                    className={`flex gap-1 items-baseline ${question.isSolved ? 'text-white px-2 bg-green-500' : ''}`}>
                                     <span>Answer</span>
                                     <span className={'font-bold'}>{formatNumber(question.answerCount)}</span>
                                 </div>
