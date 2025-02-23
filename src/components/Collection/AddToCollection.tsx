@@ -4,12 +4,13 @@ import React from "react";
 import getAuth from "@/helpers/auth-utils";
 import {backendURL} from "@/utilities/Constants";
 import {GetCollectionWithAddStatusResponse} from "@/types/types";
-import {getFetcher, IsErrorResponse, postFetcher} from "@/helpers/request-utils";
+import {getFetcher, IsErrorResponse} from "@/helpers/request-utils";
 import notifyError from "@/utilities/ToastrExtensions";
 import {ErrorResponse} from "@/props/ErrorResponse";
 import {Lock, Public} from "@mui/icons-material";
 import {useSnackbar} from "notistack";
 import CreateCollectionDialog from "@/components/CreateCollectionDialog";
+import {addQuestionToCollection, deleteQuestionFromCollection} from "@/helpers/requests";
 
 export default function AddToCollection({questionId}: Readonly<{ questionId: string }>) {
     const requestUrl = `${backendURL}/api/collection/with_question/${questionId}`;
@@ -42,9 +43,9 @@ export default function AddToCollection({questionId}: Readonly<{ questionId: str
     const handleCheck = async (e: React.ChangeEvent<HTMLInputElement>, collectionId: string, collectionName: string) => {
         const action = e.target.checked ? 'add' : 'delete';
 
-        const res = await postFetcher([
-            `${backendURL}/api/collection/${collectionId}/${action}/${questionId}`,
-            auth!.accessToken, ''])
+        const res = e.target.checked ?
+            await addQuestionToCollection(questionId, collectionId) :
+            await deleteQuestionFromCollection(questionId, collectionId);
 
         if (IsErrorResponse(res)) {
             notifyError((res as ErrorResponse).title);

@@ -8,7 +8,7 @@ export default function LeftNav() {
     const selectedStyle = "text-black font-semibold bg-gray-200";
 
     return (
-        <div className={'flex flex-col gap-3'}>
+        <div className={'flex flex-col gap-1'}>
             <Link href={Routes.Home} className={`${buttonStyle} ${pathname === Routes.Home ? selectedStyle : ""}`}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                     <path
