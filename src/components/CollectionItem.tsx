@@ -1,16 +1,16 @@
-import {GetCollectionResponse} from "@/types/types";
+import { GetCollectionResponse } from "@/types/types";
 import React from "react";
 import UserInfoPopup from "@/components/UserInfoPopup";
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import {Tooltip} from "@mui/material";
+import { Tooltip } from "@mui/material";
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import timeFromNow from "@/helpers/time-utils";
-import {formatNumber} from "@/helpers/evaluate-utils";
+import { formatNumber } from "@/helpers/evaluate-utils";
 import Link from "next/link";
 import LockIcon from '@mui/icons-material/Lock';
 import PublicIcon from '@mui/icons-material/Public';
 
-export default function CollectionItem({collection}: { collection: GetCollectionResponse }) {
+export default function CollectionItem({ collection }: { collection: GetCollectionResponse }) {
     return (
         <Link href={`/collection/${collection.id}`}>
             <div className="overflow-hidden hover:scale-[1.01] transition">
@@ -21,7 +21,7 @@ export default function CollectionItem({collection}: { collection: GetCollection
                             <p>Created by&nbsp;</p>
                             <UserInfoPopup
                                 user={collection.author}
-                                className="hover:text-black transition duration-300 ease-in-out"/>
+                                className="hover:text-black transition duration-300 ease-in-out" />
 
                         </div>
 
@@ -36,7 +36,7 @@ export default function CollectionItem({collection}: { collection: GetCollection
                                 <div className={'flex items-center gap-1'}>
                                     <Tooltip title={'Like'} className={'flex items-center gap-1'}>
                                         <div>
-                                            <FavoriteBorderIcon fontSize={'small'}/>
+                                            <FavoriteBorderIcon fontSize={'small'} />
                                             <small className={'text-gray-600'}>
                                                 {formatNumber(collection.likeCount)}
                                             </small>
@@ -46,9 +46,9 @@ export default function CollectionItem({collection}: { collection: GetCollection
 
                                 <div className={'flex items-center gap-1'}>
                                     <Tooltip title={`Created ${timeFromNow(collection.createdAt)}`}
-                                             className={'flex items-center gap-1'}>
+                                        className={'flex items-center gap-1'}>
                                         <div>
-                                            <AccessTimeIcon fontSize={'small'}/>
+                                            <AccessTimeIcon fontSize={'small'} />
                                             <small className={'text-gray-600 text-nowrap text-ellipsis'}>
                                                 {timeFromNow(collection.createdAt)}
                                             </small>
@@ -60,17 +60,17 @@ export default function CollectionItem({collection}: { collection: GetCollection
                                     {collection.isPublic
                                         ?
                                         <Tooltip title={'This collection is public'}
-                                                 className={'flex items-center gap-1 text-green-700'}>
+                                            className={'flex items-center gap-1 text-green-700'}>
                                             <div>
-                                                <PublicIcon fontSize={'small'}/>
+                                                <PublicIcon fontSize={'small'} />
                                                 Public
                                             </div>
                                         </Tooltip>
                                         :
                                         <Tooltip title={'This collection is private'}
-                                                 className={'flex items-center gap-1 text-red-700'}>
+                                            className={'flex items-center gap-1 text-red-700'}>
                                             <div>
-                                                <LockIcon fontSize={'small'}/>
+                                                <LockIcon fontSize={'small'} />
                                                 Private
                                             </div>
                                         </Tooltip>}

@@ -1,6 +1,6 @@
 'use client'
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { backendURL } from "@/utilities/Constants";
 import getAuth from "@/helpers/auth-utils";
 import { GetCollectionDetailResponse } from "@/types/types";
@@ -15,11 +15,12 @@ import { ImportContacts, Info, Settings } from "@mui/icons-material";
 import CollectionSettings from "@/app/collection/CollectionSettings";
 import ResourceOwnerPrivilege from "@/components/Privilege/ResourceOwnerPrivilege";
 import CollectionQuestion from "@/app/collection/CollectionQuestion";
+import { useDebounce } from "use-debounce";
 
 export default function CollectionDetailPage({ params }: Readonly<{ params: Promise<{ id: string }> }>) {
     const { id } = React.use(params);
-    const [pageIndex, setPageIndex] = React.useState(1);
-    const [pageSize, setPageSize] = React.useState(20);
+    const [pageIndex, setPageIndex] = useState(1);
+    const [pageSize, setPageSize] = useState(15);
     const requestUrl = `${backendURL}/api/collection/${id}/?pageIndex=1&pageSize=${pageSize}`;
     const auth = getAuth();
     const { data, isLoading } = useSWR<GetCollectionDetailResponse>([requestUrl, auth?.accessToken], getFetcher);

@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import getAuth from "@/helpers/auth-utils";
 
-export default function AdminPrivilege({children}: Readonly<{ children: React.ReactNode }>) {
+export default function AdminPrivilege({ children }: Readonly<{ children: React.ReactNode }>) {
     const [isAdmin, setIsAdmin] = useState(false);
 
     useEffect(() => {
@@ -16,8 +16,8 @@ export default function AdminPrivilege({children}: Readonly<{ children: React.Re
     }
 
     return (
-        <div>
+        <>
             {children}
-        </div>
+        </>
     );
 }

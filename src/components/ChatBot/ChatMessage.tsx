@@ -1,13 +1,14 @@
-import React from "react";
+import React, { memo } from "react";
 import Markdown from "react-markdown";
 
 interface ChatMessageProps {
     role: 'assistant' | 'user';
     content: string;
-    thought?: string; // Add thought prop
+    thought?: string;
+    thoughtInSeconds?: number;
 }
 
-const ChatMessage: React.FC<ChatMessageProps> = ({ role, content, thought }) => {
+const ChatMessage: React.FC<ChatMessageProps> = ({ role, content, thought, thoughtInSeconds }) => {
     const isAssistant = role === "assistant";
 
     return (
@@ -28,7 +29,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ role, content, thought }) => 
                 <span className="block font-bold text-gray-700">{role === "assistant" ? "AI" : "You"} </span>
                 {thought && (
                     <details open={true} className={'mb-4 text-gray-400'}>
-                        <summary className={'cursor-pointer text-sm mb-2'}>Thought</summary>
+                        <summary className={'cursor-pointer text-sm mb-2'}> {thoughtInSeconds ? `Thought in ${thoughtInSeconds.toFixed(2)} seconds` : 'Thinking...'}</summary>
                         <Markdown className={'code-section think'}>{thought}</Markdown>
                     </details>
                 )}
@@ -38,4 +39,4 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ role, content, thought }) => 
     );
 };
 
-export default ChatMessage;
+export default memo(ChatMessage);

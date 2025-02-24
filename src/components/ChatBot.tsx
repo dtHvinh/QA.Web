@@ -8,7 +8,7 @@ import ChatMessage from "./ChatBot/ChatMessage";
 import { useEditor } from "@tiptap/react";
 import { LightTooltip } from "./LightToolTip";
 
-export default function ChatBot() {
+export default function ChatBot({ className }: { className?: string }) {
     const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
@@ -52,7 +52,7 @@ export default function ChatBot() {
         <div>
             <button
                 onClick={handleClick}
-                className="text-sm block text-gray-700 hover:bg-gray-300 p-2 rounded-full transition-colors active:scale-95">
+                className={className}>
                 <AutoAwesome />
             </button>
             <Dialog
@@ -67,7 +67,7 @@ export default function ChatBot() {
 
                     <div className="pr-4 h-[474px] min-w-[100%] table">
                         {messages.map((message, index) => (
-                            <ChatMessage thought={message.thought} key={index} role={message.role} content={message.content} />
+                            <ChatMessage thought={message.thought} key={index} role={message.role} content={message.content} thoughtInSeconds={message.thoughtInSeconds} />
                         ))}
 
                         {(currentMessage || thinking) &&

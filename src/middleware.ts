@@ -1,6 +1,8 @@
-import type {NextRequest} from 'next/server';
-import {NextResponse} from 'next/server';
-import {Routes} from "@/utilities/Constants";
+import { Routes } from "@/utilities/Constants";
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
+
+type Environment = "production" | "development" | "other";
 
 export function middleware(request: NextRequest) {
     if (!request.nextUrl.pathname.startsWith('/auth')) {
