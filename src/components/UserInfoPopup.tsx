@@ -1,8 +1,8 @@
-import {AuthorResponse} from "@/types/types";
+import { AuthorResponse } from "@/types/types";
 import React from "react";
-import {Avatar, Popover} from "@mui/material";
+import { Avatar, Popover } from "@mui/material";
 
-export default function UserInfoPopup({user, className}: { user: AuthorResponse, className?: string }) {
+export default function UserInfoPopup({ user, className }: { user: AuthorResponse, className?: string }) {
     const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 
     const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -27,7 +27,7 @@ export default function UserInfoPopup({user, className}: { user: AuthorResponse,
 
             <Popover
                 id="mouse-over-popover"
-                sx={{pointerEvents: 'none'}}
+                sx={{ pointerEvents: 'none' }}
                 open={open}
                 anchorEl={anchorEl}
                 anchorOrigin={{
@@ -41,10 +41,10 @@ export default function UserInfoPopup({user, className}: { user: AuthorResponse,
                 onClose={handlePopoverClose}
                 disableRestoreFocus
             >
-                <div className="p-3">
-                    <div className="flex items-center justify-between mb-2 min-w-[300px]">
+                <div className="p-4 pl-8">
+                    <div className="flex items-center justify-between mb-4 min-w-[300px]">
                         <div>
-                            <Avatar src={user.profilePicture}/>
+                            <Avatar src={user.profilePicture} />
                         </div>
                     </div>
                     <div className="text-base font-semibold leading-none">

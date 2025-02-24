@@ -39,7 +39,9 @@ export const makeRequest = async (config: RequestConfig) => {
                 }
             }
         }
-        throw error;
+        const err = error as ErrorResponse;
+        notifyError(err.title)
+        return err;
     }
 };
 

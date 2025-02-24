@@ -2,15 +2,15 @@
 
 import TextEditor from "@/components/TextEditor";
 import TagInput from "@/components/TagInput";
-import React, {useState} from "react";
-import {Apis, backendURL} from "@/utilities/Constants";
-import {fetcher, IsErrorResponse} from "@/helpers/request-utils";
-import notifyError, {notifySucceed} from "@/utilities/ToastrExtensions";
-import {CreateQuestionResponse} from "@/types/types";
-import {ErrorResponse} from "@/props/ErrorResponse";
+import React, { useState } from "react";
+import { Apis, backendURL } from "@/utilities/Constants";
+import { IsErrorResponse, postFetcher } from "@/helpers/request-utils";
+import notifyError, { notifySucceed } from "@/utilities/ToastrExtensions";
+import { CreateQuestionResponse } from "@/types/types";
+import { ErrorResponse } from "@/props/ErrorResponse";
 import getAuth from "@/helpers/auth-utils";
-import {useRouter} from "next/navigation";
-import {Checkbox, FormControlLabel} from "@mui/material";
+import { useRouter } from "next/navigation";
+import { Checkbox, FormControlLabel } from "@mui/material";
 
 export default function NewQuestion() {
     const [tagIds, setTagIds] = useState<string[]>([]);
@@ -39,9 +39,8 @@ export default function NewQuestion() {
             return;
         }
 
-        const response = await fetcher<CreateQuestionResponse>(
+        const response = await postFetcher(
             [
-                'POST',
                 isDraft ? `${requestUrl}?isDraft=true` : requestUrl,
                 auth!.accessToken,
                 JSON.stringify({
@@ -52,7 +51,6 @@ export default function NewQuestion() {
             ]);
 
         if (IsErrorResponse(response)) {
-            notifyError((response as ErrorResponse).errors);
             setIsSendDisabled(false);
         } else {
             notifySucceed('Question submitted successfully');
@@ -75,12 +73,12 @@ export default function NewQuestion() {
                         name="title"
                         placeholder="e.g. How to use React Query?"
                         required
-                        className="w-full p-2 border border-gray-300 rounded-lg focus:outline-blue-600"/>
+                        className="w-full p-2 border border-gray-300 rounded-lg focus:outline-blue-600" />
                 </div>
 
                 <div className="space-y-2 w-full">
                     <label htmlFor="details" className="block text-xl font-medium text-gray-700">Details</label>
-                    <TextEditor currentText={''} onTextChange={setContent}/>
+                    <TextEditor currentText={''} onTextChange={setContent} />
                 </div>
 
 
@@ -93,14 +91,14 @@ export default function NewQuestion() {
                                 suggestions.
                             </small>
                         </div>
-                        <TagInput onTagIdChange={handleTagChange} maxTags={5}/>
+                        <TagInput onTagIdChange={handleTagChange} maxTags={5} />
                     </div>
                 </div>
 
                 <div className={'flex justify-end'}>
                     <div className={'flex space-x-2.5'}>
-                        <FormControlLabel value={isDraft} onChange={() => setIsDraft(!isDraft)} control={<Checkbox/>}
-                                          label="Is Draft"/>
+                        <FormControlLabel value={isDraft} onChange={() => setIsDraft(!isDraft)} control={<Checkbox />}
+                            label="Is Draft" />
                         <button
                             disabled={isSendDisabled}
                             className={'p-2 rounded-lg disabled:bg-gray-500 bg-[#5783db] hover:bg-[#5783db] transition-all text-white active:scale-95'}>

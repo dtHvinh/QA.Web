@@ -11,7 +11,7 @@ import { Tabs } from "radix-ui";
 import { TabsContent } from "@radix-ui/react-tabs";
 import RoundedButton from "@/components/RoundedButton";
 import { Avatar, Pagination } from "@mui/material";
-import { ImportContacts, Info, Settings } from "@mui/icons-material";
+import { Description, ImportContacts, Info, Settings } from "@mui/icons-material";
 import CollectionSettings from "@/app/collection/CollectionSettings";
 import ResourceOwnerPrivilege from "@/components/Privilege/ResourceOwnerPrivilege";
 import CollectionQuestion from "@/app/collection/CollectionQuestion";
@@ -21,7 +21,7 @@ export default function CollectionDetailPage({ params }: Readonly<{ params: Prom
     const { id } = React.use(params);
     const [pageIndex, setPageIndex] = useState(1);
     const [pageSize, setPageSize] = useState(15);
-    const requestUrl = `${backendURL}/api/collection/${id}/?pageIndex=1&pageSize=${pageSize}`;
+    const requestUrl = `/api/collection/${id}/?pageIndex=1&pageSize=${pageSize}`;
     const auth = getAuth();
     const { data, isLoading } = useSWR<GetCollectionDetailResponse>([requestUrl, auth?.accessToken], getFetcher);
 
@@ -67,7 +67,10 @@ export default function CollectionDetailPage({ params }: Readonly<{ params: Prom
                         <TabsContent className="tab-content" value={'details'}>
                             <div>
                                 <div className={'text-4xl font-bold'}>{collection.name}</div>
-                                <div className={'m-5'}>{collection.description}</div>
+                                <div className={'m-5 text-gray-500 flex gap-2'}>
+                                    <Description />
+                                    {collection.description}
+                                </div>
 
                                 <div className={'flex space-x-6 items-center mt-8'}>
                                     <Avatar variant={'square'}

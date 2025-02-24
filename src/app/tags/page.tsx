@@ -1,14 +1,15 @@
 'use client';
 
 import getAuth from "@/helpers/auth-utils";
-import {backendURL} from "@/utilities/Constants";
-import React, {useCallback, useEffect, useState} from "react";
-import {Pagination, Typography} from "@mui/material";
-import {PagedResponse, TagResponse} from "@/types/types";
+import React, { useState } from "react";
+import { Pagination, Typography } from "@mui/material";
+import { PagedResponse, TagResponse } from "@/types/types";
 import notifyError from "@/utilities/ToastrExtensions";
 import Link from "next/link";
-import {toTagDetail, toWikiPage} from "@/helpers/route-utils";
+import { toTagDetail, toWikiPage } from "@/helpers/route-utils";
 import FilterBar from "@/components/FilterBar";
+import { getFetcher, IsErrorResponse } from "@/helpers/request-utils";
+import useSWR from "swr";
 
 export default function Tags() {
     const auth = getAuth()!;
@@ -18,38 +19,14 @@ export default function Tags() {
 
     const [orderBy, setOrderBy] = useState<string>(validOrderValue[0]);
     const [pageIndex, setPageIndex] = useState<number>(1);
-    const [data, setData] = useState<PagedResponse<TagResponse>>();
-    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [pageSize, setPageSize] = useState(12);
 
-    const fetchTags = useCallback(async () => {
-        setIsLoading(true);
-
-        const requestUrl = `${backendURL}/api/tag/${orderBy}?skip=${(pageIndex - 1) * pageSize}&take=${pageSize}`;
-
-        try {
-            const response = await fetch(requestUrl, {
-                headers: {
-                    'Authorization': `Bearer ${auth?.accessToken}`
-                }
-            });
-            if (!response.ok) {
-                notifyError('Failed to fetch tags');
-                return;
-            }
-            const result = await response.json();
-
-            setData(result);
-        } catch {
-            notifyError('Failed to fetch your questions');
-        } finally {
-            setIsLoading(false);
-        }
-    }, [orderBy, pageIndex, pageSize]);
-
-    useEffect(() => {
-        fetchTags().then();
-    }, [fetchTags]);
+    const requestUrl = `/api/tag/${orderBy}?skip=${(pageIndex - 1) * pageSize}&take=${pageSize}`;
+    const { data, error, isLoading } = useSWR<PagedResponse<TagResponse>>([requestUrl, auth?.accessToken], getFetcher, {
+        revalidateOnFocus: false,
+        revalidateOnReconnect: false,
+        revalidateIfStale: false,
+    });
 
     const handleOrderByChange = (value: string) => {
         setOrderBy(value);
@@ -67,28 +44,28 @@ export default function Tags() {
                 </div>
                 <div>
                     <FilterBar tabs={validOrder}
-                               tabValues={validOrderValue}
-                               tabDescriptions={orderDescriptions}
-                               onFilterValueChange={handleOrderByChange}/>
+                        tabValues={validOrderValue}
+                        tabDescriptions={orderDescriptions}
+                        onFilterValueChange={handleOrderByChange} />
                 </div>
             </div>
 
             {isLoading && <div>Loading...</div>}
-            {!isLoading && data && data.items.map((tag: TagResponse) => (
+            {!isLoading && data && !IsErrorResponse(data) && data.items.map((tag: TagResponse) => (
                 <div key={tag.id} className={'flex flex-col'}>
                     <div className={'flex justify-between text-2xl'}>
                         <div>{tag.name}</div>
                         <div>
                             <div className={'flex space-x-2.5'}>
                                 <Link href={toWikiPage(tag.id, tag.name)}
-                                      className={'hidden text-lg md:block p-1 px-2 hover:bg-gray-200 transition-all'}>
+                                    className={'hidden text-lg md:block p-1 px-2 hover:bg-gray-200 transition-all'}>
                                     Wiki
                                 </Link>
 
                                 <Link href={toTagDetail(tag.id, tag.name)}
-                                      className={
-                                          'hidden md:block text-lg p-1 px-2 transition-all hover:bg-gray-200'
-                                      }>
+                                    className={
+                                        'hidden md:block text-lg p-1 px-2 transition-all hover:bg-gray-200'
+                                    }>
                                     Watch
                                 </Link>
                             </div>
@@ -97,16 +74,16 @@ export default function Tags() {
                     <div className={'line-clamp-4 my-6 text-md text-gray-500'}>{tag.description}</div>
                     <div className={'w-full mt-auto flex flex-col gap-3'}>
                         <Link href={toTagDetail(tag.id, tag.name)}
-                              className={'text-gray-500'}>{tag.questionCount} questions</Link>
+                            className={'text-gray-500'}>{tag.questionCount} questions</Link>
                         <Link href={toWikiPage(tag.id, tag.name)}
-                              className={'block md:hidden text-lg text-center border p-1 rounded-lg px-2'}>
+                            className={'block md:hidden text-lg text-center border p-1 rounded-lg px-2'}>
                             See wiki
                         </Link>
 
                         <Link href={toWikiPage(tag.id, tag.name)}
-                              className={
-                                  'block md:hidden text-center text-lg border p-1 rounded-lg px-2 transition-all bg-blue-400 text-white hover:bg-blue-600'
-                              }>
+                            className={
+                                'block md:hidden text-center text-lg border p-1 rounded-lg px-2 transition-all bg-blue-400 text-white hover:bg-blue-600'
+                            }>
                             Watch
                         </Link>
                     </div>
@@ -114,7 +91,7 @@ export default function Tags() {
             ))}
 
             <div className={'col-span-full flex justify-end mb-6'}>
-                <Pagination count={data?.totalPage} onChange={handlePageChange}/>
+                <Pagination count={data?.totalPage} onChange={handlePageChange} />
             </div>
         </div>
     );

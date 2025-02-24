@@ -13,9 +13,9 @@ import PublicIcon from '@mui/icons-material/Public';
 export default function CollectionItem({ collection }: { collection: GetCollectionResponse }) {
     return (
         <Link href={`/collection/${collection.id}`}>
-            <div className="overflow-hidden hover:scale-[1.01] transition">
-                <div className="relative border border-black hover:bg-blue-50">
-                    <div className="py-10 px-8">
+            <div className="overflow-hidden border-l-2 border-black hover:scale-[1.01] rounded-r-2xl transition shadow-md bg-teal-50">
+                <div className="relatives hover:bg-teal-100">
+                    <div className="py-4 pl-8">
                         <h3 className="text-2xl font-bold">{collection.name}</h3>
                         <div className="text-gray-600 text-sm font-medium flex mb-4 mt-2">
                             <p>Created by&nbsp;</p>
