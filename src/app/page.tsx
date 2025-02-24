@@ -1,22 +1,21 @@
 'use client'
 
-import getAuth from "@/helpers/auth-utils";
-import {backendURL} from "@/utilities/Constants";
-import useSWR from "swr";
-import {getFetcher, IsErrorResponse} from "@/helpers/request-utils";
-import {PagedResponse, QuestionResponse, UserResponse} from "@/types/types";
 import Loading from "@/app/loading";
-import React, {useEffect, useState} from "react";
-import notifyError from "@/utilities/ToastrExtensions";
 import YourQuestionItem from "@/components/YourQuestionItem";
+import getAuth from "@/helpers/auth-utils";
+import { getFetcher, IsErrorResponse } from "@/helpers/request-utils";
+import { PagedResponse, QuestionResponse, UserResponse } from "@/types/types";
+import notifyError from "@/utilities/ToastrExtensions";
+import { useEffect, useState } from "react";
+import useSWR from "swr";
 
 export default function Home() {
-    const userInfoRequestUrl = `${backendURL}/api/user/`;
-    const getQuestionRequestUrl = `${backendURL}/api/question/you_may_like?pageIndex=1&pageSize=30`;
+    const userInfoRequestUrl = `/api/user/`;
+    const getQuestionRequestUrl = `/api/question/you_may_like?pageIndex=1&pageSize=30`;
     const auth = getAuth();
     const [questionResults, setQuestionResults] = useState<PagedResponse<QuestionResponse>>();
 
-    const {data, isLoading} = useSWR([userInfoRequestUrl, auth?.accessToken], getFetcher);
+    const { data, isLoading } = useSWR([userInfoRequestUrl, auth?.accessToken], getFetcher);
 
     useEffect(() => {
         async function fetchQuestions() {
@@ -35,7 +34,7 @@ export default function Home() {
     }, []);
 
     if (isLoading)
-        return <Loading/>
+        return <Loading />
 
     const user = data as UserResponse;
 
@@ -45,7 +44,7 @@ export default function Home() {
                 <div className="text-2xl col-span-3">
                     Hello, {auth?.username}
                 </div>
-                
+
                 <div className="gap-4 col-span-3 md:col-span-1 h-full m-2 p-4 flex flex-col">
                     <div className="text-lg font-semibold">
                         Reputation
@@ -74,7 +73,7 @@ export default function Home() {
                     <div className={'text-2xl mt-5 font-bold'}>Question for you</div>
 
                     {questionResults?.items.map((question) => (
-                        <YourQuestionItem question={question} key={question.id}/>
+                        <YourQuestionItem question={question} key={question.id} />
                     ))}
                 </div>
             </div>

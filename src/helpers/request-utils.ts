@@ -4,113 +4,76 @@ import getAuth, { AuthProps } from "@/helpers/auth-utils";
 import { AuthRefreshResponse } from "@/types/types";
 import { setCookie } from "cookies-next/client";
 import notifyError, { notifySucceed } from "@/utilities/ToastrExtensions";
+import { createAxiosInstance } from './axios-config';
 
-export const getFetcher
-    = ([url, token]: [string, string]) => fetch(url, {
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
-    }).then(res => {
-        if (!res.ok && res.status == 401) {
-            throw new Error('Network response was not ok', {
-                cause: res.status
-            });
-        }
-        return res.json();
-    })
-        .catch((error: Error) => {
-            const auth = getAuth()!;
+const axios = createAxiosInstance();
 
-            if (error.cause === 401) {
-                refreshToken(auth);
+interface RequestConfig {
+    url: string;
+    method?: string;
+    headers?: Record<string, string>;
+    data?: any;
+}
+
+export const makeRequest = async (config: RequestConfig) => {
+    try {
+        const response = await axios(config);
+        return response.data;
+    } catch (error: any) {
+        if (error.response?.status === 401) {
+            const auth = getAuth();
+            if (auth) {
+                try {
+                    const newToken = await refreshToken(auth);
+                    if (newToken) {
+                        config.headers = {
+                            ...config.headers,
+                            Authorization: `Bearer ${newToken}`
+                        };
+                        const retryResponse = await axios(config);
+                        return retryResponse.data;
+                    }
+                } catch (refreshError) {
+                    window.location.href = '/login';
+                    return null;
+                }
             }
-        });
-
-export const postFetcher = ([url, token, jsonBody]: [string, string, string]) => fetch(url, {
-    method: 'POST',
-    headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-    },
-    body: jsonBody,
-}).then(res => {
-    if (!res.ok && res.status == 401) {
-        throw new Error('Network response was not ok', {
-            cause: res.status
-        });
-    }
-    return res.json();
-})
-    .catch((error: Error) => {
-        const auth = getAuth()!;
-
-        if (error.cause === 401) {
-            refreshToken(auth);
         }
+        throw error;
+    }
+};
+
+export const getFetcher = ([url, token]: [string, string]) =>
+    makeRequest({
+        url,
+        method: 'GET',
+        headers: { Authorization: `Bearer ${token}` }
     });
 
-export const deleteFetcher
-    = ([url, token]: [string, string]) => fetch(url, {
-        method: 'DELETE',
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
-    }).then(res => {
-        if (!res.ok && res.status == 401) {
-            throw new Error('Network response was not ok', {
-                cause: res.status
-            });
-        }
-        return res.json();
-    })
-        .catch((error: Error) => {
-            const auth = getAuth()!;
+export const postFetcher = ([url, token, jsonBody]: [string, string, string]) =>
+    makeRequest({
+        url,
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        data: JSON.parse(jsonBody)
+    });
 
-            if (error.cause === 401) {
-                refreshToken(auth);
-            }
-        });
-
-export const putFetcher
-    = ([url, token, jsonBody]: [string, string, string]) => fetch(url, {
+export const putFetcher = ([url, token, jsonBody]: [string, string, string]) =>
+    makeRequest({
+        url,
         method: 'PUT',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-        },
-        body: jsonBody,
-    }).then(res => {
-        if (!res.ok && res.status == 401) {
-            throw new Error('Network response was not ok', {
-                cause: res.status
-            });
-        }
-        return res.json();
-    })
-        .catch((error: Error) => {
-            const auth = getAuth()!;
+        headers: { Authorization: `Bearer ${token}` },
+        data: JSON.parse(jsonBody)
+    });
 
-            if (error.cause === 401) {
-                refreshToken(auth);
-            }
-        });
-
-export const fetcher
-    = <T>([method, url, token, jsonBody]: [string, string, string, string])
-        : Promise<T | ErrorResponse> => fetch(url, {
-            method: method,
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            },
-            body: jsonBody,
-        }).then(res => res.json() as T);
+export const deleteFetcher = ([url, token]: [string, string]) =>
+    makeRequest({
+        url,
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+    });
 
 export const IsErrorResponse = (response: any) => {
-    // The type ErrorResponse has a field called 'errors' so we can use it to differentiate
-    // between ErrorResponse and the other types
-    //
-    // This is dumb, but I don't know how to do it better
     return !response || 'errors' in response;
 }
 
@@ -139,18 +102,12 @@ export async function refreshToken(auth?: AuthProps) {
     isRefreshing = true;
 
     try {
-        const response = await fetch(`${backendURL}/api/auth/refresh`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                accessToken: auth.accessToken,
-                refreshToken: auth.refreshToken
-            })
+        const response = await axios.post(`${backendURL}/api/auth/refresh`, {
+            accessToken: auth.accessToken,
+            refreshToken: auth.refreshToken
         });
 
-        const data = await response.json();
+        const data = response.data;
 
         if (IsErrorResponse(data)) {
             notifyError((data as ErrorResponse).title);
