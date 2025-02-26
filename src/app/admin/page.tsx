@@ -5,14 +5,17 @@ import getAuth from '@/helpers/auth-utils';
 import { formatNumber } from '@/helpers/evaluate-utils';
 import {
     Info,
+    LocalOfferOutlined,
     PeopleOutline,
     QuestionAnswer,
     QuestionMark,
     QuestionMarkOutlined,
+    ReportProblemOutlined,
+    SettingsOutlined,
     TrendingDown,
     TrendingUp,
 } from '@mui/icons-material';
-import { Typography } from '@mui/material';
+import { Card, Typography } from '@mui/material';
 import { Tooltip } from '@mui/material';
 
 export default function AdminDashboard() {
@@ -100,26 +103,52 @@ export default function AdminDashboard() {
                         </div>
                     </div>
                     <div className="p-4">
-                        <Typography variant="h6" className="mb-4">Quick Actions</Typography>
+                        <Typography variant="h6" className="mb-4">Actions</Typography>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2">
-                            <button className="w-full p-4 text-left hover:bg-gray-50 rounded">
-                                <Typography variant="subtitle1">User Management</Typography>
-                                <Typography color="textSecondary">
-                                    Manage users and roles
-                                </Typography>
-                            </button>
-                            <button className="w-full p-4 text-left hover:bg-gray-50 rounded">
-                                <Typography variant="subtitle1">Content Moderation</Typography>
-                                <Typography color="textSecondary">
-                                    Review reported content
-                                </Typography>
-                            </button>
-                            <button className="w-full p-4 text-left hover:bg-gray-50 rounded">
-                                <Typography variant="subtitle1">System Settings</Typography>
-                                <Typography color="textSecondary">
-                                    Configure platform settings
-                                </Typography>
-                            </button>
+                            <Card className='border-l-2 border-purple-500'>
+                                <button className="w-full p-4 text-left hover:bg-gray-50 rounded">
+                                    <div className="flex items-center gap-2 mb-1">
+                                        <PeopleOutline className="text-purple-500" />
+                                        <Typography variant="subtitle1">User Management</Typography>
+                                    </div>
+                                    <Typography color="textSecondary">
+                                        Manage users and roles
+                                    </Typography>
+                                </button>
+                            </Card>
+                            <Card className='border-l-2 border-orange-500'>
+                                <button className="w-full p-4 text-left hover:bg-gray-50 rounded">
+                                    <div className="flex items-center gap-2 mb-1">
+                                        <ReportProblemOutlined className="text-orange-500" />
+                                        <Typography variant="subtitle1">Content Moderation</Typography>
+                                    </div>
+                                    <Typography color="textSecondary">
+                                        Review reported content
+                                    </Typography>
+                                </button>
+                            </Card>
+                            <Card className='border-l-2 border-yellow-500'>
+                                <button className="w-full p-4 text-left hover:bg-gray-50 rounded">
+                                    <div className="flex items-center gap-2 mb-1">
+                                        <LocalOfferOutlined className="text-yellow-500" />
+                                        <Typography variant="subtitle1">Tag Management</Typography>
+                                    </div>
+                                    <Typography color="textSecondary">
+                                        Create or edit tags
+                                    </Typography>
+                                </button>
+                            </Card>
+                            <Card className='border-l-2 border-violet-500'>
+                                <button className="w-full p-4 text-left hover:bg-gray-50 rounded">
+                                    <div className="flex items-center gap-2 mb-1">
+                                        <SettingsOutlined className="text-violet-500" />
+                                        <Typography variant="subtitle1">System Settings</Typography>
+                                    </div>
+                                    <Typography color="textSecondary">
+                                        Configure platform settings
+                                    </Typography>
+                                </button>
+                            </Card>
                         </div>
                     </div>
 

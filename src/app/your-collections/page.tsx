@@ -67,10 +67,12 @@ export default function YourCollectionsPage() {
                     <CollectionItem key={collection.id} collection={collection} />
                 ))}
             </div>
-
-            <div className={'mt-5 flex justify-end'}>
-                <Pagination count={data?.totalPage} page={pageIndex} onChange={(_, num) => setPageIndex(num)} />
-            </div>
+            {
+                data?.totalPage !== 0 &&
+                <div className={'mt-5 flex justify-end'}>
+                    <Pagination count={data?.totalPage} page={pageIndex} onChange={(_, num) => setPageIndex(num)} />
+                </div>
+            }
         </div>
     );
 }

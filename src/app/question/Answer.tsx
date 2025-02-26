@@ -1,20 +1,22 @@
-import {AnswerResponse, QuestionResponse, VoteResponse} from "@/types/types";
+import { AnswerResponse, QuestionResponse, VoteResponse } from "@/types/types";
 import React from "react";
 import getAuth from "@/helpers/auth-utils";
-import {formatString} from "@/helpers/string-utils";
-import {Apis, backendURL} from "@/utilities/Constants";
-import {deleteFetcher, IsErrorResponse, postFetcher, putFetcher} from "@/helpers/request-utils";
-import notifyError, {notifySucceed} from "@/utilities/ToastrExtensions";
-import {ErrorResponse} from "@/props/ErrorResponse";
+import { formatString } from "@/helpers/string-utils";
+import { Apis, backendURL } from "@/utilities/Constants";
+import { deleteFetcher, IsErrorResponse, postFetcher, putFetcher } from "@/helpers/request-utils";
+import notifyError, { notifySucceed } from "@/utilities/ToastrExtensions";
+import { ErrorResponse } from "@/props/ErrorResponse";
 import AlertDialog from "@/components/AlertDialog";
-import timeFromNow, {DEFAULT_TIME} from "@/helpers/time-utils";
+import timeFromNow, { DEFAULT_TIME } from "@/helpers/time-utils";
 import TextEditor from "@/components/TextEditor";
 import RoundedButton from "@/components/RoundedButton";
 import AnswerContent from "@/app/question/AnswerContent";
-import {Avatar} from "@mui/material";
-import {formatReputation} from "@/helpers/evaluate-utils";
+import { Avatar } from "@mui/material";
+import { formatReputation } from "@/helpers/evaluate-utils";
 import MarkAcceptedAnswerLabel from "@/app/question/MarkAcceptedAnswerLabel";
 import AdminPrivilege from "@/components/Privilege/AdminPrivilege";
+import ModeratorPrivilege from "@/components/Privilege/ModeratorPrivilege";
+import ResourceOwnerPrivilege from "@/components/Privilege/ResourceOwnerPrivilege";
 
 export default function Answer(
     {
@@ -126,10 +128,10 @@ export default function Answer(
     return (
         <div className={'border-b'}>
             <AlertDialog open={delAnsDialog}
-                         onClose={handleClose}
-                         onYes={handleDelete}
-                         title={'Do you want to delete this answer ?'}
-                         description={'This action can not undo'}/>
+                onClose={handleClose}
+                onYes={handleDelete}
+                title={'Do you want to delete this answer ?'}
+                description={'This action can not undo'} />
 
 
             <div
@@ -141,10 +143,10 @@ export default function Answer(
                         <RoundedButton
                             title={'Upvote'}
                             svg={<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                      fill="currentColor"
-                                      viewBox="0 0 16 16">
+                                fill="currentColor"
+                                viewBox="0 0 16 16">
                                 <path fillRule="evenodd"
-                                      d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
+                                    d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2" />
                             </svg>}
                             onClick={() => handleVote(true)}
                         />
@@ -154,18 +156,18 @@ export default function Answer(
                         <RoundedButton
                             title={'Downvote'}
                             svg={<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                      fill="currentColor"
-                                      viewBox="0 0 16 16">
+                                fill="currentColor"
+                                viewBox="0 0 16 16">
                                 <path fillRule="evenodd"
-                                      d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8"/>
+                                    d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8" />
                             </svg>}
                             onClick={() => handleVote(false)}
                         />
                     </div>
                     {isAnswerAccepted &&
-                        <MarkAcceptedAnswerLabel/>
+                        <MarkAcceptedAnswerLabel />
                     }
-                    <AdminPrivilege>
+                    <ModeratorPrivilege>
                         {!isAnswerAccepted &&
                             <div>
                                 <RoundedButton
@@ -173,20 +175,20 @@ export default function Answer(
                                     title={'Mark as answer'}
                                     className={'bg-green-300 text-black hover:bg-green-400 active:bg-green-500'}
                                     svg={<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                              fill="currentColor"
-                                              className="bi bi-check2" viewBox="0 0 16 16">
+                                        fill="currentColor"
+                                        className="bi bi-check2" viewBox="0 0 16 16">
                                         <path
-                                            d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
+                                            d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0" />
                                     </svg>}
                                 />
                             </div>
                         }
-                    </AdminPrivilege>
+                    </ModeratorPrivilege>
                 </div>
 
                 <div className={'col-span-5 row-span-full'}>
                     <div className="relative justify-end flex gap-4">
-                        {answer.resourceRight == 'Owner'
+                        <ResourceOwnerPrivilege resourceRight={answer.resourceRight}>
                             &&
                             <div className={'flex flex-col'}>
                                 <div className={'flex justify-end'}>
@@ -197,8 +199,8 @@ export default function Answer(
                                                 Discard
                                             </button>
                                             <button className={'text-blue-500 disabled:text-gray-500'}
-                                                    disabled={!isAllowUpdate}
-                                                    onClick={handleEdit}>
+                                                disabled={!isAllowUpdate}
+                                                onClick={handleEdit}>
                                                 Save
                                             </button>
                                         </div>
@@ -208,7 +210,7 @@ export default function Answer(
                                                 Edit
                                             </button>
                                             <button type={"button"} className={'text-red-500'}
-                                                    onClick={handleClickOpen}>
+                                                onClick={handleClickOpen}>
                                                 Delete
                                             </button>
                                         </div>
@@ -223,14 +225,14 @@ export default function Answer(
                                     }
                                 </div>
                             </div>
-                        }
+                        </ResourceOwnerPrivilege>
                     </div>
 
                     <div>
                         {isEditing
-                            ? <TextEditor currentText={currentText} onTextChange={handleEditTextChange}/>
+                            ? <TextEditor currentText={currentText} onTextChange={handleEditTextChange} />
                             :
-                            <AnswerContent content={currentText}/>
+                            <AnswerContent content={currentText} />
                         }
                     </div>
 
@@ -242,11 +244,11 @@ export default function Answer(
                                 </div>
                                 <div className={'text-gray-500'}>
                                     Reputation: <span
-                                    className={'font-bold'}>{formatReputation(answer.author?.reputation)}</span>
+                                        className={'font-bold'}>{formatReputation(answer.author?.reputation)}</span>
                                 </div>
                             </div>
                             <div>
-                                <Avatar sx={{width: 32, height: 32}} src={answer.author?.profilePicture}/>
+                                <Avatar sx={{ width: 32, height: 32 }} src={answer.author?.profilePicture} />
                             </div>
                         </div>
                     </div>

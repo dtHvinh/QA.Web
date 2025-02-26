@@ -1,3 +1,7 @@
+export interface TextResponse {
+    message: string
+}
+
 export interface TagResponse {
     id: string,
     name: string,

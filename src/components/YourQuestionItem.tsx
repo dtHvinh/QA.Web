@@ -1,8 +1,8 @@
 import React from "react";
-import {QuestionResponse} from "@/types/types";
+import { QuestionResponse } from "@/types/types";
 import TagLabel from "@/components/TagLabel";
 import timeFromNow from "@/helpers/time-utils";
-import {formatNumber} from "@/helpers/evaluate-utils";
+import { formatNumber } from "@/helpers/evaluate-utils";
 import QuestionStatusBar from "@/app/question/QuestionStatusBar";
 import Link from "next/link";
 import toQuestionDetail from "@/helpers/path";
@@ -12,24 +12,24 @@ interface YourQuestionItemProps {
 }
 
 export default function YourQuestionItem(params: Readonly<YourQuestionItemProps>) {
-    const {question} = params;
+    const { question } = params;
 
     return (
         <div className='flex flex-col'>
-            <div className="rounded-xl border p-5 shadow-md w-full bg-white">
+            <div className="rounded-xl px-5 py-3 shadow-lg w-full bg-white">
                 <div className="flex w-full items-center justify-between border-b pb-3">
                     <div className="flex flex-col">
                         <Link href={toQuestionDetail(question.id, question.slug)}
-                              className="text-lg text-blue-500 hover:text-blue-700">{question.title}</Link>
+                            className="text-lg text-blue-500 hover:text-blue-700">{question.title}</Link>
                         <div className={'flex space-x-2.5'}>
-                            <QuestionStatusBar {...question}/>
+                            <QuestionStatusBar {...question} />
                         </div>
                     </div>
                     <div className="flex flex-col">
                         <div className={'flex justify-end flex-wrap space-x-2'}>
                             {question.tags?.map(tag =>
                                 <TagLabel key={tag.id} name={tag.name}
-                                          description={tag.description} onClick={console.log}/>
+                                    description={tag.description} onClick={console.log} />
                             )}
                         </div>
                         <div className="flex justify-end text-xs space-x-2.5 text-neutral-600">
@@ -44,8 +44,8 @@ export default function YourQuestionItem(params: Readonly<YourQuestionItemProps>
                 </div>
 
                 <div className="mt-4 mb-2">
-                    <p dangerouslySetInnerHTML={{__html: question.content}}
-                       className="text-sm text-neutral-400 line-clamp-2">
+                    <p dangerouslySetInnerHTML={{ __html: question.content }}
+                        className="text-sm text-neutral-400 line-clamp-2">
                     </p>
                 </div>
 

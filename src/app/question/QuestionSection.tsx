@@ -1,24 +1,26 @@
 import TagLabel from "@/components/TagLabel";
-import React, {useEffect} from "react";
-import {QuestionResponse} from "@/types/types";
+import React, { useEffect } from "react";
+import { QuestionResponse } from "@/types/types";
 import 'highlight.js/styles/atom-one-dark.css';
 import QuestionHeaderDetails from "@/app/question/QuestionHeaderDetails";
 import QuestionContent from "@/app/question/QuestionContent";
-import {Avatar, Dialog, DialogContent, DialogTitle, IconButton} from "@mui/material";
+import { Avatar, Dialog, DialogContent, DialogTitle, IconButton, Tooltip, Typography, useMediaQuery, useTheme } from "@mui/material";
 import CommentSection from "@/app/question/CommentSection";
 import AnswerSection from "@/app/question/AnswerSection";
-import {highlightCode} from "@/helpers/utils";
+import { highlightCode } from "@/helpers/utils";
 import EditIcon from '@mui/icons-material/Edit';
 import EditSection from "@/app/question/EditSection";
-import QuestionInteractivity from "@/app/question/QuestionInteractivity";
-import {formatReputation} from "@/helpers/evaluate-utils";
-import ResourceOwnerPrivilege from "@/components/Privilege/ResourceOwnerPrivilege";
+import QuestionActions from "@/app/question/QuestionActions";
+import { formatReputation } from "@/helpers/evaluate-utils";
+import ModeratorPrivilege from "@/components/Privilege/ModeratorPrivilege";
 
-export default function QuestionSection({questionInit}: { questionInit: QuestionResponse }) {
+export default function QuestionSection({ questionInit }: { questionInit: QuestionResponse }) {
     const [isSolved, setIsSolved] = React.useState<boolean>(questionInit.isSolved);
     const [isClosed, setIsClosed] = React.useState<boolean>(questionInit.isClosed);
     const [isEditing, setIsEditing] = React.useState<boolean>(false);
     const [question, setQuestion] = React.useState<QuestionResponse>(questionInit);
+    const theme = useTheme();
+    const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
 
     const handleEditClick = () => {
         setIsEditing(!isEditing);
@@ -48,6 +50,7 @@ export default function QuestionSection({questionInit}: { questionInit: Question
     return (
         <div>
             <Dialog
+                fullScreen={fullScreen}
                 open={isEditing}
                 onClose={handleEditingClose}
                 hideBackdrop={true}
@@ -55,44 +58,47 @@ export default function QuestionSection({questionInit}: { questionInit: Question
                 aria-describedby="alert-dialog-description"
             >
                 <DialogTitle id="alert-dialog-title">
+                    <Typography typography='h4'>
+                        Edit
+                    </Typography>
                 </DialogTitle>
-                <DialogContent>
-                    <EditSection question={question} onEditSuccess={handleQuestionEdit}/>
+                <DialogContent >
+                    <EditSection question={question} onEditSuccess={handleQuestionEdit} />
                 </DialogContent>
             </Dialog>
 
             <div className={'grid grid-cols-12'}>
 
                 <div className={'col-span-1'}>
-                    <QuestionInteractivity question={question}
-                                           onQuestionClose={handleQuestionClose}/>
+                    <QuestionActions question={question}
+                        onQuestionClose={handleQuestionClose} />
                 </div>
 
                 <div className={'col-span-11 row-span-full'}>
                     <div className={'flex justify-between text-2xl'}>
                         <div>{question.title}</div>
-                        <ResourceOwnerPrivilege resourceRight={question.resourceRight}>
-                            <div>
+                        <ModeratorPrivilege>
+                            <Tooltip title='Edit this question'>
                                 <IconButton onClick={handleEditClick}>
-                                    <EditIcon/>
+                                    <EditIcon />
                                 </IconButton>
-                            </div>
-                        </ResourceOwnerPrivilege>
+                            </Tooltip>
+                        </ModeratorPrivilege>
                     </div>
 
                     <QuestionHeaderDetails {...question}
-                                           isSolved={isSolved}
-                                           isClosed={isClosed}/>
+                        isSolved={isSolved}
+                        isClosed={isClosed} />
 
                     <div className={'mt-5'}>
-                        <QuestionContent content={question.content}/>
+                        <QuestionContent content={question.content} />
 
                         <div className={'mt-2'}>
                             <div className={'text-gray-500  flex flex-wrap gap-2'}>
                                 {question.tags?.map(tag =>
                                     <TagLabel key={tag.id}
-                                              name={tag.name}
-                                              description={tag.description}/>
+                                        name={tag.name}
+                                        description={tag.description} />
                                 )}
                             </div>
                         </div>
@@ -107,24 +113,24 @@ export default function QuestionSection({questionInit}: { questionInit: Question
                                 </div>
                                 <div className={'text-gray-500'}>
                                     Reputation: <span
-                                    className={'font-bold'}>{formatReputation(question.author.reputation)}</span>
+                                        className={'font-bold'}>{formatReputation(question.author.reputation)}</span>
                                 </div>
                             </div>
                             <div>
-                                <Avatar sx={{width: 32, height: 32}} src={question.author.profilePicture}/>
+                                <Avatar sx={{ width: 32, height: 32 }} src={question.author.profilePicture} />
                             </div>
                         </div>
                     </div>
 
                     <div>
                         <CommentSection question={question}
-                                        isClosed={isClosed}/>
+                            isClosed={isClosed} />
                     </div>
 
                     <div className={'mt-5'}>
                         <AnswerSection question={question}
-                                       isClosed={isClosed}
-                                       onAnswerAcceptAction={handleAnswerAcceptAction}/>
+                            isClosed={isClosed}
+                            onAnswerAcceptAction={handleAnswerAcceptAction} />
                     </div>
                 </div>
             </div>

@@ -10,7 +10,7 @@ import Link from "next/link";
 import ItemPerPage from "@/components/ItemPerPage";
 import useSWR from "swr";
 import { getFetcher } from "@/helpers/request-utils";
-import YQPSkeleton from "@/app/your-questions/YQPSkeleton";
+import QuestionCardListSkeleton from "@/components/Skeletons/YQPSkeleton";
 import FilterBar from "@/components/FilterBar";
 import { scrollToTop } from "@/helpers/utils";
 
@@ -80,7 +80,7 @@ export default function QuestionsPage() {
                         onFilterValueChange={handleOrderByChange} />
                 </div>
 
-                {isLoading && <div className={'col-span-full'}><YQPSkeleton /></div>}
+                {isLoading && <div className={'col-span-full'}><QuestionCardListSkeleton /></div>}
 
                 {!isLoading && questions && questions.map((question: QuestionResponse) => (
                     <YourQuestionItem key={question.id} question={question} />

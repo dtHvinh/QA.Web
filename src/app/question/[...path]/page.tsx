@@ -14,6 +14,7 @@ import { ErrorResponse } from "@/props/ErrorResponse";
 import notifyError from "@/utilities/ToastrExtensions";
 import Link from "next/link";
 import toQuestionDetail from "@/helpers/path";
+import { scrollToTop } from "@/helpers/utils";
 
 export default function QuestionPage({ params }: { params: Promise<{ path: string[] }> }) {
     const { path } = React.use(params);
@@ -26,6 +27,7 @@ export default function QuestionPage({ params }: { params: Promise<{ path: strin
     const question = data as QuestionResponse;
 
     useEffect(() => {
+        scrollToTop()
         getFetcher([relatedQuestionRequestUrl, auth!.accessToken]).then((response: PagedResponse<QuestionResponse> | ErrorResponse) => {
             if (!IsErrorResponse(response)) {
                 setRelateQuestion(response as PagedResponse<QuestionResponse>);

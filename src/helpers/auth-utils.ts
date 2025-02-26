@@ -1,12 +1,14 @@
-import {getCookie} from "cookies-next/client";
+import { getCookie } from "cookies-next/client";
 
 export interface AuthProps {
     username: string;
     accessToken: string;
     refreshToken: string;
     profilePicture: string;
-    role: 'Admin' | 'User';
+    roles: Role[];
 }
+
+declare type Role = 'Admin' | 'User' | 'Moderator';
 
 export default function getAuth() {
     const authCookie = getCookie('auth');

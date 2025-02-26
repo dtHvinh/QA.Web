@@ -1,20 +1,19 @@
-import { QuestionResponse, VoteResponse } from "@/types/types";
+import AlertDialog from "@/components/AlertDialog";
+import AddToCollection from "@/components/Collection/AddToCollection";
+import ModeratorPrivilege from "@/components/Privilege/ModeratorPrivilege";
 import RoundedButton from "@/components/RoundedButton";
-import { Checkbox, Tooltip } from "@mui/material";
-import { BookmarkAdded, BookmarkAddOutlined } from "@mui/icons-material";
-import React from "react";
-import notifyError, { notifyInfo, notifySucceed } from "@/utilities/ToastrExtensions";
-import { backendURL, Routes } from "@/utilities/Constants";
+import getAuth from "@/helpers/auth-utils";
 import { deleteFetcher, IsErrorResponse, postFetcher, putFetcher } from "@/helpers/request-utils";
 import { ErrorResponse } from "@/props/ErrorResponse";
-import getAuth from "@/helpers/auth-utils";
-import AlertDialog from "@/components/AlertDialog";
-import ResourceOwnerPrivilege from "@/components/Privilege/ResourceOwnerPrivilege";
+import { QuestionResponse, VoteResponse } from "@/types/types";
+import { backendURL, Routes } from "@/utilities/Constants";
+import notifyError, { notifyInfo, notifySucceed } from "@/utilities/ToastrExtensions";
+import { BookmarkAdded, BookmarkAddOutlined } from "@mui/icons-material";
+import { Checkbox, Tooltip } from "@mui/material";
 import { useRouter } from "next/navigation";
-import AddToCollection from "@/components/Collection/AddToCollection";
-import AdminPrivilege from "@/components/Privilege/AdminPrivilege";
+import React from "react";
 
-export default function QuestionInteractivity(
+export default function QuestionActions(
     {
         question,
         onQuestionClose,
@@ -31,7 +30,7 @@ export default function QuestionInteractivity(
 
     const handleCloseQuestion = async () => {
         const response = await putFetcher([
-            `${backendURL}/api/question/${question.id}/close`,
+            `/api/question/${question.id}/close`,
             auth!.accessToken, '']);
 
         if (IsErrorResponse(response)) {
@@ -44,14 +43,14 @@ export default function QuestionInteractivity(
 
     const handleDeleteQuestion = async () => {
         const response = await deleteFetcher([
-            `${backendURL}/api/question/${question.id}`,
+            `/api/question/${question.id}`,
             auth!.accessToken]);
 
         if (IsErrorResponse(response)) {
             notifyError((response as ErrorResponse).errors);
         } else {
             notifySucceed('Question deleted');
-            router.push(Routes.YourQuestions);
+            window.history.go(-1);
         }
     }
 
@@ -69,9 +68,7 @@ export default function QuestionInteractivity(
 
         const response = await postFetcher([requestUrl, auth!.accessToken, '']);
 
-        if (IsErrorResponse(response)) {
-            notifyError((response as ErrorResponse).title);
-        } else {
+        if (!IsErrorResponse(response)) {
             const voteResponse = response as VoteResponse;
             setCurrentVote(voteResponse.currentUpvote - voteResponse.currentDownvote);
         }
@@ -79,12 +76,10 @@ export default function QuestionInteractivity(
 
     const handleBookmarkQuestion = async () => {
         const response = await postFetcher([
-            `${backendURL}/api/bookmark/${question.id}`,
+            `/api/bookmark/${question.id}`,
             auth!.accessToken, '']);
 
-        if (IsErrorResponse(response)) {
-            notifyError((response as ErrorResponse).errors);
-        } else {
+        if (!IsErrorResponse(response)) {
             notifySucceed('Question bookmarked');
             setIsBookmarked(!isBookmarked);
         }
@@ -179,7 +174,7 @@ export default function QuestionInteractivity(
                 <AddToCollection questionId={question.id} />
             </div>
             <div>
-                <AdminPrivilege>
+                <ModeratorPrivilege>
                     <RoundedButton
                         title={'Delete this question'}
                         className="flex w-full items-center gap-2 p-2 mb-1 text-sm bg-red-100 text-red-700 hover:bg-red-200"
@@ -192,17 +187,17 @@ export default function QuestionInteractivity(
                             </svg>
                         }>
                     </RoundedButton>
-                </AdminPrivilege>
+                </ModeratorPrivilege>
             </div>
 
             <div>
-                <ResourceOwnerPrivilege resourceRight={question.resourceRight}>
+                <ModeratorPrivilege>
                     {!question.isClosed &&
                         <RoundedButton
                             title={'Close this question'}
                             onClick={() => setCloseConfirmOpen(true)}
                             svg={
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red"
                                     viewBox="0 0 16 16">
                                     <path
                                         d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z" />
@@ -224,7 +219,7 @@ export default function QuestionInteractivity(
                             }>
                         </RoundedButton>
                     }
-                </ResourceOwnerPrivilege>
+                </ModeratorPrivilege>
             </div>
         </div>
 

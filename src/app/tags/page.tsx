@@ -10,6 +10,7 @@ import { toTagDetail, toWikiPage } from "@/helpers/route-utils";
 import FilterBar from "@/components/FilterBar";
 import { getFetcher, IsErrorResponse } from "@/helpers/request-utils";
 import useSWR from "swr";
+import TagSkeleton from "@/components/Skeletons/TagSkeleton";
 
 export default function Tags() {
     const auth = getAuth()!;
@@ -50,7 +51,14 @@ export default function Tags() {
                 </div>
             </div>
 
-            {isLoading && <div>Loading...</div>}
+            {isLoading && (
+                <>
+                    {[...Array(12)].map((_, index) => (
+                        <TagSkeleton key={index} />
+                    ))}
+                </>
+            )}
+
             {!isLoading && data && !IsErrorResponse(data) && data.items.map((tag: TagResponse) => (
                 <div key={tag.id} className={'flex flex-col'}>
                     <div className={'flex justify-between text-2xl'}>

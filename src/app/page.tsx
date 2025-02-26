@@ -1,6 +1,7 @@
 'use client'
 
 import Loading from "@/app/loading";
+import QuestionCardListSkeleton from "@/components/Skeletons/YQPSkeleton";
 import YourQuestionItem from "@/components/YourQuestionItem";
 import getAuth from "@/helpers/auth-utils";
 import { getFetcher, IsErrorResponse } from "@/helpers/request-utils";
@@ -71,6 +72,8 @@ export default function Home() {
 
                 <div className={'col-span-full space-y-5 mb-5'}>
                     <div className={'text-2xl mt-5 font-bold'}>Question for you</div>
+
+                    {questionResults == null && <QuestionCardListSkeleton />}
 
                     {questionResults?.items.map((question) => (
                         <YourQuestionItem question={question} key={question.id} />

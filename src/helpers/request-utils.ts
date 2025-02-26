@@ -34,13 +34,13 @@ export const makeRequest = async (config: RequestConfig) => {
                         return retryResponse.data;
                     }
                 } catch (refreshError) {
-                    window.location.href = '/login';
+                    window.location.href = '/auth/login';
                     return null;
                 }
             }
         }
-        const err = error as ErrorResponse;
-        notifyError(err.title)
+        const err = error.response.data as ErrorResponse;
+        notifyError(err.title);
         return err;
     }
 };
@@ -52,20 +52,20 @@ export const getFetcher = ([url, token]: [string, string]) =>
         headers: { Authorization: `Bearer ${token}` }
     });
 
-export const postFetcher = ([url, token, jsonBody]: [string, string, string]) =>
+export const postFetcher = ([url, token, jsonBody]: [string, string, string?]) =>
     makeRequest({
         url,
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
-        data: JSON.parse(jsonBody)
+        data: jsonBody ? JSON.parse(jsonBody) : null
     });
 
-export const putFetcher = ([url, token, jsonBody]: [string, string, string]) =>
+export const putFetcher = ([url, token, jsonBody]: [string, string, string?]) =>
     makeRequest({
         url,
         method: 'PUT',
         headers: { Authorization: `Bearer ${token}` },
-        data: JSON.parse(jsonBody)
+        data: jsonBody ? JSON.parse(jsonBody) : null
     });
 
 export const deleteFetcher = ([url, token]: [string, string]) =>

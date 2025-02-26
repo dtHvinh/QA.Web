@@ -6,7 +6,7 @@ export default function AdminPrivilege({ children }: Readonly<{ children: React.
 
     useEffect(() => {
         const auth = getAuth();
-        if (auth && auth.role === 'Admin') {
+        if (auth && auth.roles.some(e => e === 'Admin')) {
             setIsAdmin(true);
         }
     }, []);
