@@ -21,13 +21,20 @@ export default function UserInfoPopup({ user, className }: { user: AuthorRespons
                 aria-owns={open ? 'mouse-over-popover' : undefined}
                 aria-haspopup="true"
                 onMouseEnter={handlePopoverOpen}
-                onMouseLeave={handlePopoverClose}>
+                onMouseLeave={handlePopoverClose}
+                className="text-blue-600 hover:text-blue-800 cursor-pointer">
                 {user.username}
             </div>
 
             <Popover
                 id="mouse-over-popover"
-                sx={{ pointerEvents: 'none' }}
+                sx={{
+                    pointerEvents: 'none',
+                    '& .MuiPaper-root': {
+                        borderRadius: '12px',
+                        boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+                    }
+                }}
                 open={open}
                 anchorEl={anchorEl}
                 anchorOrigin={{
@@ -41,16 +48,23 @@ export default function UserInfoPopup({ user, className }: { user: AuthorRespons
                 onClose={handlePopoverClose}
                 disableRestoreFocus
             >
-                <div className="p-4 pl-8">
-                    <div className="flex items-center justify-between mb-4 min-w-[300px]">
+                <div className="p-6 min-w-[320px]">
+                    <div className="flex items-center gap-4 mb-4">
+                        <Avatar
+                            src={user.profilePicture}
+                            sx={{ width: 64, height: 64 }}
+                        />
                         <div>
-                            <Avatar src={user.profilePicture} />
+                            <div className="text-lg font-semibold">{user.username}</div>
+                            <div className="text-sm text-gray-600 mt-1">Member</div>
                         </div>
                     </div>
-                    <div className="text-base font-semibold leading-none">
-                        <div>{user.username}</div>
-                    </div>
-                    <div className="my-4 text-sm">Reputation: {user.reputation}
+
+                    <div className="flex items-center gap-2 mt-4 p-3 bg-gray-50 rounded-lg">
+                        <div className="text-sm font-medium">
+                            <div className="text-gray-900">{user.reputation}</div>
+                            <div className="text-gray-500">Reputation</div>
+                        </div>
                     </div>
                 </div>
             </Popover>

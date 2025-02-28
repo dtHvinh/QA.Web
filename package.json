@@ -24,6 +24,7 @@
     "axios": "^1.7.9",
     "classnames": "^2.5.1",
     "cookies-next": "^5.1.0",
+    "framer-motion": "^12.4.7",
     "highlight.js": "^11.11.1",
     "highlightjs": "^9.16.2",
     "marked": "^15.0.7",

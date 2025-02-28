@@ -54,6 +54,7 @@ export default function ChatBot({ className }: { className?: string }) {
                 onClick={handleClick}
                 className={className}>
                 <AutoAwesome />
+                <div>Chat bot</div>
             </button>
             <Dialog
                 fullScreen={fullScreen}

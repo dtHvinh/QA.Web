@@ -1,10 +1,10 @@
 'use client'
 
-import React, { useEffect, useState } from "react";
+import React, { useActionState, useEffect, useState, useTransition } from "react";
 import { backendURL } from "@/utilities/Constants";
 import getAuth from "@/helpers/auth-utils";
 import { GetCollectionDetailResponse } from "@/types/types";
-import { getFetcher } from "@/helpers/request-utils";
+import { deleteFetcher, getFetcher, IsErrorResponse, postFetcher } from "@/helpers/request-utils";
 import useSWR from "swr";
 import Loading from "@/app/loading";
 import { Tabs } from "radix-ui";
@@ -16,6 +16,9 @@ import CollectionSettings from "@/app/collection/CollectionSettings";
 import ResourceOwnerPrivilege from "@/components/Privilege/ResourceOwnerPrivilege";
 import CollectionQuestion from "@/app/collection/CollectionQuestion";
 import { useDebounce } from "use-debounce";
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import { notifySucceed } from "@/utilities/ToastrExtensions";
 
 export default function CollectionDetailPage({ params }: Readonly<{ params: Promise<{ id: string }> }>) {
     const { id } = React.use(params);
@@ -24,96 +27,134 @@ export default function CollectionDetailPage({ params }: Readonly<{ params: Prom
     const requestUrl = `/api/collection/${id}/?pageIndex=1&pageSize=${pageSize}`;
     const auth = getAuth();
     const { data, isLoading } = useSWR<GetCollectionDetailResponse>([requestUrl, auth?.accessToken], getFetcher);
+    const [likeCount, setLikeCount] = useState(0);
+    const [isLiked, setIsLiked] = useState(false);
+
+    useEffect(() => {
+        if (data) {
+            setLikeCount(data.likeCount);
+            setIsLiked(data.isLikedByUser);
+        }
+    }, [data]);
 
     if (isLoading)
         return <Loading />
 
-    const collection = data as GetCollectionDetailResponse;
+    const handleLike = async () => {
+        if (!data) return;
+
+        setIsLiked(true);
+
+        const res = await postFetcher([`/api/collection/${data.id}/like`, auth!.accessToken, '']);
+
+        if (!IsErrorResponse(res)) {
+            setIsLiked(true);
+            setLikeCount(pre => pre + 1)
+            notifySucceed("Done");
+        }
+    };
+
+    const handleUnlike = async () => {
+        if (!data) return;
+        setIsLiked(false);
+
+        const res = await deleteFetcher([`/api/collection/${data.id}/unlike`, auth!.accessToken]);
+
+        if (!IsErrorResponse(res)) {
+            setIsLiked(false);
+            setLikeCount(pre => pre - 1)
+            notifySucceed("Done");
+        }
+    }
 
     return (
         <div>
-            <div className={'grid grid-cols-12'}>
-                <div
-                    className={'col-span-1 flex -ml-4 md:ml-0 flex-col gap-5 items-center min-h-[calc(100vh-var(--appbar-height))]'}>
-                    <RoundedButton title={'Like this collection'}
-                        svg={<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                            fill="currentColor"
-                            className="bi bi-heart" viewBox="0 0 16 16">
-                            <path
-                                d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15" />
-                        </svg>}
-                    />
-                </div>
-
-                <div className={'col-span-11'}>
-                    <Tabs.Root defaultValue={'details'}>
-                        <Tabs.List className="tabs-list">
-                            <Tabs.TabsTrigger className="tab-trigger flex items-center gap-2" defaultChecked={true}
-                                value={'details'}>
-                                <Info />
-                                Details
-                            </Tabs.TabsTrigger>
-                            <Tabs.TabsTrigger className="tab-trigger flex items-center gap-2" value={'questions'}>
-                                <ImportContacts />
-                                Questions
-                            </Tabs.TabsTrigger>
-                            <ResourceOwnerPrivilege resourceRight={collection.resourceRight}>
-                                <Tabs.TabsTrigger className="tab-trigger flex items-center gap-2" value={'settings'}>
-                                    <Settings />
-                                    Settings
+            {data &&
+                <div className={'grid grid-cols-12'}>
+                    <div className={'col-span-11'}>
+                        <Tabs.Root defaultValue={'details'}>
+                            <Tabs.List className="tabs-list">
+                                <Tabs.TabsTrigger className="tab-trigger flex items-center gap-2" defaultChecked={true}
+                                    value={'details'}>
+                                    <Info />
+                                    Details
                                 </Tabs.TabsTrigger>
-                            </ResourceOwnerPrivilege>
-                        </Tabs.List>
-                        <TabsContent className="tab-content" value={'details'}>
-                            <div>
-                                <div className={'text-4xl font-bold'}>{collection.name}</div>
-                                <div className={'m-5 text-gray-500 flex gap-2'}>
-                                    <Description />
-                                    {collection.description}
-                                </div>
-
-                                <div className={'flex space-x-6 items-center mt-8'}>
-                                    <Avatar variant={'square'}
-                                        src={collection.author.profilePicture}
-                                        component={'div'}
-                                        alt="Profile Picture"
-                                        sx={{ width: 80, height: 80 }} />
-                                    <div>
-                                        <h1 className="text-2xl font-bold">{collection.author.username}</h1>
-                                        <div className="mt-2 space-x-2.5">
-                                            <span className={'text-gray-500'}>external links:</span>
-                                            <a href="#" className="text-blue-500 hover:underline">Website</a>
-                                            <a href="#" className="text-blue-500 hover:underline">GitHub</a>
+                                <Tabs.TabsTrigger className="tab-trigger flex items-center gap-2" value={'questions'}>
+                                    <ImportContacts />
+                                    Questions
+                                </Tabs.TabsTrigger>
+                                <ResourceOwnerPrivilege resourceRight={data.resourceRight}>
+                                    <Tabs.TabsTrigger className="tab-trigger flex items-center gap-2" value={'settings'}>
+                                        <Settings />
+                                        Settings
+                                    </Tabs.TabsTrigger>
+                                </ResourceOwnerPrivilege>
+                            </Tabs.List>
+                            <TabsContent className="tab-content" value={'details'}>
+                                <div>
+                                    <div className="flex justify-between items-start">
+                                        <div className={'text-4xl font-bold'}>{data.name}</div>
+                                        <div className="flex items-center gap-2">
+                                            <button
+                                                className="flex items-center gap-1"
+                                                onClick={isLiked ? handleUnlike : handleLike}
+                                            >
+                                                {isLiked ? (
+                                                    <FavoriteIcon className="text-blue-500" />
+                                                ) : (
+                                                    <FavoriteBorderIcon className="text-white-500" />
+                                                )}
+                                                <span className="text-gray-700">{likeCount}</span>
+                                            </button>
                                         </div>
+                                    </div>
+                                    <div className={'m-5 text-gray-500 flex gap-2'}>
+                                        <Description />
+                                        {data.description}
+                                    </div>
+                                    <div className={'flex space-x-6 items-center mt-8'}>
+                                        <Avatar variant={'square'}
+                                            src={data.author.profilePicture}
+                                            component={'div'}
+                                            alt="Profile Picture"
+                                            sx={{ width: 80, height: 80 }} />
                                         <div>
+                                            <h1 className="text-2xl font-bold">{data.author.username}</h1>
+                                            <div className="mt-2 space-x-2.5">
+                                                <span className={'text-gray-500'}>external links:</span>
+                                                <a href="#" className="text-blue-500 hover:underline">Website</a>
+                                                <a href="#" className="text-blue-500 hover:underline">GitHub</a>
+                                            </div>
+                                            <div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </TabsContent>
-                        <TabsContent className="tab-content" value={'questions'}>
-                            <div>
-                                <div className={'text-2xl mb-5'}>Questions ({collection.questions.totalCount}):
-                                </div>
+                            </TabsContent>
+                            <TabsContent className="tab-content" value={'questions'}>
+                                <div>
+                                    <div className={'text-2xl mb-5'}>Questions ({data.questions.totalCount}):
+                                    </div>
 
-                                <CollectionQuestion collectionId={collection.id}
-                                    questionInit={collection.questions.items}
-                                    pageIndex={pageIndex}
-                                    pageSize={pageSize} />
+                                    <CollectionQuestion collectionId={data.id}
+                                        questionInit={data.questions.items}
+                                        pageIndex={pageIndex}
+                                        pageSize={pageSize} />
 
-                                <div className={'my-5'}>
-                                    <Pagination count={collection.questions.totalPage}
-                                        page={pageIndex}
-                                        onChange={(e, n) => setPageIndex(n)} />
+                                    <div className={'my-5'}>
+                                        <Pagination count={data.questions.totalPage}
+                                            page={pageIndex}
+                                            onChange={(e, n) => setPageIndex(n)} />
+                                    </div>
                                 </div>
-                            </div>
-                        </TabsContent>
-                        <TabsContent className="tab-content" value={'settings'}>
-                            <CollectionSettings collection={collection} />
-                        </TabsContent>
-                    </Tabs.Root>
+                            </TabsContent>
+                            <TabsContent className="tab-content" value={'settings'}>
+                                <CollectionSettings collection={data} />
+                            </TabsContent>
+                        </Tabs.Root>
+                    </div>
                 </div>
-            </div>
+            }
         </div>
     );
 }

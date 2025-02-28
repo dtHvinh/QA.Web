@@ -43,7 +43,7 @@ export default function RootLayout({
                 className={`${dmSans.className} ${geistSans.variable} ${geistMono.variable} bg-white text-black antialiased`}
             >
                 <main>
-                    <div className={'border-b'}>
+                    <div className={'border-b border-gray-300'}>
                         <div className="container mx-auto">
                             <Appbar />
                         </div>

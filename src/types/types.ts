@@ -95,6 +95,7 @@ export interface GetCollectionResponse {
     description: string,
     likeCount: number,
     isPublic: boolean,
+    isLikedByUser: boolean,
     createdAt: string,
     author: AuthorResponse
 }
@@ -112,6 +113,7 @@ export interface GetCollectionDetailResponse {
     description: string,
     likeCount: number,
     isPublic: boolean,
+    isLikedByUser: boolean,
     createdAt: string,
     author: AuthorResponse
     resourceRight: ResourceRight,

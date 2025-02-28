@@ -1,11 +1,11 @@
 'use client'
 
-import LeftNav from "@/components/LeftNav";
 import { usePathname } from "next/navigation";
 import React from "react";
 import { SnackbarProvider } from "notistack";
 import { ThemeProvider } from "@emotion/react";
 import { theme } from "@/theme/theme";
+import SideNav from "@/components/AppBar/SideNav";
 
 export default function SubLayout({
     children,
@@ -28,12 +28,11 @@ export default function SubLayout({
                 :
                 <div>
                     <SnackbarProvider autoHideDuration={6000}>
-                        <div className="grid grid-cols-12 gap-5">
-                            <div
-                                className="hidden md:flex col-span-2 flex-col text-gray-500 divide-y border-r min-h-[calc(100vh-var(--appbar-height))]">
-                                <LeftNav />
+                        <div className="flex">
+                            <div className="hidden md:block fixed left-0 top-[var(--appbar-height)] w-16 border-r">
+                                <SideNav />
                             </div>
-                            <div className="col-span-full md:col-span-10 mt-2">
+                            <div className="flex-1 ml-0 md:ml-16 p-4">
                                 {children}
                             </div>
                         </div>

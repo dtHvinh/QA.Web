@@ -46,7 +46,7 @@ export default function QuestionsPage() {
     }, [data]);
 
     useEffect(() => {
-        setRequestUrl(`${backendURL}/api/question`
+        setRequestUrl(`/api/question`
             + '/?orderBy=' + orderBy
             + `&pageIndex=${1}`
             + `&pageSize=${pageSize}`);
@@ -55,7 +55,7 @@ export default function QuestionsPage() {
     }, [pageSize]);
 
     useEffect(() => {
-        setRequestUrl(`${backendURL}/api/question`
+        setRequestUrl(`/api/question`
             + '/?orderBy=' + orderBy
             + `&pageIndex=${pageIndex}`
             + `&pageSize=${pageSize}`);

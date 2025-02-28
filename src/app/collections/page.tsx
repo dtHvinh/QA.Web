@@ -30,11 +30,7 @@ export default function CollectionsPage() {
     const requestUrl = `/api/collection?orderBy=${sortOrder}&pageIndex=${pageIndex}&pageSize=${pageSize}`;
     const auth = getAuth();
 
-    const { data, isLoading } = useSWR<PagedResponse<GetCollectionResponse>>([requestUrl, auth?.accessToken], getFetcher, {
-        revalidateOnFocus: false,
-        revalidateOnReconnect: false,
-        revalidateIfStale: false,
-    })
+    const { data } = useSWR<PagedResponse<GetCollectionResponse>>([requestUrl, auth?.accessToken], getFetcher)
 
     useEffect(() => {
         const searchTerm = debouncedSearchTerm.trim();
@@ -46,8 +42,10 @@ export default function CollectionsPage() {
     }, [debouncedSearchTerm])
 
     useEffect(() => {
-        setCollections(data?.items || [])
-        setCachedCollections(data?.items || [])
+        if (data) {
+            setCollections(data.items || [])
+            setCachedCollections(data.items || [])
+        }
     }, [data])
 
     async function searchCollections() {
@@ -57,10 +55,6 @@ export default function CollectionsPage() {
             const response = res as PagedResponse<GetCollectionResponse>
             setCollections(response.items)
         }
-    }
-
-    if (isLoading) {
-        return <Loading />;
     }
 
     return (
@@ -99,7 +93,7 @@ export default function CollectionsPage() {
                 <FilterBar tabs={tab} tabValues={tabValues} tabDescriptions={tabDescriptions} onFilterValueChange={setSortOrder} />
             </div>
 
-            <div className='grid grid-cols-1 md:grid-cols-3'>
+            <div className='grid grid-cols-1 md:grid-cols-3 gap-5'>
                 {collections.map(collection => (
                     <CollectionItem key={collection.id} collection={collection} />
                 ))}

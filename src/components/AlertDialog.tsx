@@ -1,7 +1,7 @@
-import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import React from "react";
 
-export default function AlertDialog({open, onClose, onYes, title, description, yesText, noText}: {
+export default function AlertDialog({ open, onClose, onYes, title, description, yesText, noText }: {
     open: boolean,
     onClose: () => void,
     onYes?: () => void,
@@ -27,6 +27,13 @@ export default function AlertDialog({open, onClose, onYes, title, description, y
                 hideBackdrop={true}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
+                slotProps={{
+                    paper: {
+                        style: {
+                            minWidth: '400px'  // You can adjust this value
+                        }
+                    }
+                }}
             >
                 <DialogTitle id="alert-dialog-title">
                     {title}

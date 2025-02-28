@@ -1,18 +1,20 @@
 'use client'
 
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import getAuth from "@/helpers/auth-utils";
 import useSWR from "swr";
-import {backendURL} from "@/utilities/Constants";
-import {getFetcher} from "@/helpers/request-utils";
-import {QuestionResponse, TagDetailResponse} from "@/types/types";
+import { backendURL } from "@/utilities/Constants";
+import { getFetcher } from "@/helpers/request-utils";
+import { QuestionResponse, TagDetailResponse } from "@/types/types";
 import TagQuestionDisplay from "@/app/tags/[...path]/TagQuestionDisplay";
-import {Pagination} from "@mui/material";
+import { Pagination } from "@mui/material";
 import FilterBar from "@/components/FilterBar";
 import TagQuestionDisplaySkeleton from "@/app/tags/[...path]/TagQuestionDisplaySkeleton";
+import { toWikiPage } from "@/helpers/route-utils";
+import Link from "next/link";
 
-export default function TagDetailPage({params}: { params: Promise<{ path: string[] }> }) {
-    const {path} = React.use(params);
+export default function TagDetailPage({ params }: { params: Promise<{ path: string[] }> }) {
+    const { path } = React.use(params);
     const auth = getAuth()!;
     const [pageIndex, setPageIndex] = React.useState<number>(1);
     const [tagQuestions, setTagQuestions] = React.useState<QuestionResponse[]>([]);
@@ -27,7 +29,7 @@ export default function TagDetailPage({params}: { params: Promise<{ path: string
     const [selectedOrder, setSelectedOrder] = React.useState<string>(validOrderValue[0]);
     const requestUrl = `${backendURL}/api/tag/${path[0]}?orderBy=${selectedOrder}&pageIndex=${pageIndex}&pageSize=15`;
 
-    const {data, isLoading} = useSWR([requestUrl, auth?.accessToken], getFetcher);
+    const { data, isLoading } = useSWR([requestUrl, auth?.accessToken], getFetcher);
 
     useEffect(() => {
         if (data)
@@ -39,6 +41,7 @@ export default function TagDetailPage({params}: { params: Promise<{ path: string
     return (
         <div className={'flex flex-col'}>
             <div className={'text-3xl'}>{tag?.name}</div>
+
             <div className={'text-md mt-5'}>{tag?.description}</div>
 
             <div className={'mt-5'}>
@@ -48,23 +51,23 @@ export default function TagDetailPage({params}: { params: Promise<{ path: string
                     </div>
 
                     <FilterBar tabs={validOrder}
-                               tabValues={validOrderValue}
-                               tabDescriptions={orderDescription}
-                               onFilterValueChange={setSelectedOrder}/>
+                        tabValues={validOrderValue}
+                        tabDescriptions={orderDescription}
+                        onFilterValueChange={setSelectedOrder} />
                 </div>
 
-                {isLoading && <TagQuestionDisplaySkeleton/>}
+                {isLoading && <TagQuestionDisplaySkeleton />}
 
                 {tag && tagQuestions.map(question => (
-                    <TagQuestionDisplay key={question.id} question={question}/>
+                    <TagQuestionDisplay key={question.id} question={question} />
                 ))}
 
                 <div className={'my-5 flex justify-end'}>
                     <Pagination count={tag?.questions.totalPage}
-                                onChange={
-                                    ((e, page) =>
-                                        setPageIndex(page))
-                                }/>
+                        onChange={
+                            ((e, page) =>
+                                setPageIndex(page))
+                        } />
                 </div>
             </div>
         </div>
