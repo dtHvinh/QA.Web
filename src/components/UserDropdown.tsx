@@ -1,18 +1,14 @@
 'use client'
 
-import useLogout from "@/helpers/logout-hook";
-import React, { useEffect, useState } from "react";
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import Link from "next/link";
-import { Avatar, Popover, SvgIcon, Tooltip } from "@mui/material";
-import PersonIcon from '@mui/icons-material/Person';
-import LogoutIcon from '@mui/icons-material/Logout';
 import getAuth from "@/helpers/auth-utils";
 import { Routes } from "@/utilities/Constants";
+import { Add, AutoStories, Search } from "@mui/icons-material";
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { Avatar, Popover, SvgIcon } from "@mui/material";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Add, AdminPanelSettings, AutoStories, Search, VerifiedUser } from "@mui/icons-material";
+import React, { useEffect, useState } from "react";
 import ChatBot from "./ChatBot";
-import AdminPrivilege from "./Privilege/AdminPrivilege";
 
 export default function UserDropdown() {
     const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
@@ -20,6 +16,7 @@ export default function UserDropdown() {
     const buttonStyle = "flex gap-2 items-center text-sm py-2 px-4 rounded-l-lg hover:bg-gray-50 transition";
     const selectedStyle = "text-black font-semibold bg-gray-100";
     const pathname = usePathname();
+    const auth = getAuth();
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
@@ -70,7 +67,9 @@ export default function UserDropdown() {
                             className="flex items-center p-2 rounded-lg hover:bg-gray-100 transition-colors">
                             <Avatar src={profileImage} alt="Profile" sx={{ width: 40, height: 40 }} />
                             <div className="ml-3">
-                                <div className="font-semibold text-[15px]">{getAuth()?.username}</div>
+                                {auth &&
+                                    <div className="font-semibold text-[15px]">{auth?.username}</div>
+                                }
                                 <div className="text-sm text-gray-500">View your profile</div>
                             </div>
                         </Link>

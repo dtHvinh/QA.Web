@@ -51,10 +51,10 @@ export default function QuestionPage({ params }: { params: Promise<{ path: strin
                 <div className="bg-white p-6 rounded-lg">
                     <div className={'grid grid-cols-12 gap-4'}>
                         <div
-                            className={'col-span-full md:col-span-9 border-r min-h-[calc(100vh-var(--appbar-height))]'}>
+                            className={'col-span-full md:col-span-9 md:border-r min-h-[calc(100vh-var(--appbar-height))]'}>
                             <QuestionSection questionInit={question} />
                         </div>
-                        <div className={'col-span-3'}>
+                        <div className={'col-span-full md:col-span-3'}>
                             <span className={'text-xl'}>Relate questions</span>
 
                             <div className={'flex mt-5 flex-col gap-5'}>

@@ -48,89 +48,99 @@ export default function QuestionSection({ questionInit }: { questionInit: Questi
     }
 
     return (
-        <div>
+        <div className="max-w-5xl mx-auto">
             <Dialog
                 fullScreen={fullScreen}
                 open={isEditing}
                 onClose={handleEditingClose}
                 hideBackdrop={true}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
+                sx={{
+                    '& .MuiDialog-paper': {
+                        borderRadius: '12px',
+                        maxWidth: '800px',
+                        width: '100%'
+                    }
+                }}
             >
-                <DialogTitle id="alert-dialog-title">
-                    <Typography typography='h4'>
-                        Edit
-                    </Typography>
+                <DialogTitle className="border-b">
+                    <div className="font-semibold text-2xl">
+                        Edit Question
+                    </div>
                 </DialogTitle>
-                <DialogContent >
+                <DialogContent>
                     <EditSection question={question} onEditSuccess={handleQuestionEdit} />
                 </DialogContent>
             </Dialog>
 
-            <div className={'grid grid-cols-12'}>
-
-                <div className={'col-span-1'}>
-                    <QuestionActions question={question}
-                        onQuestionClose={handleQuestionClose} />
+            <div className="grid grid-cols-12 gap-6">
+                <div className="col-span-1">
+                    <QuestionActions
+                        question={question}
+                        onQuestionClose={handleQuestionClose}
+                        className="md:sticky top-4"
+                    />
                 </div>
 
-                <div className={'col-span-11 row-span-full'}>
-                    <div className={'flex justify-between text-2xl'}>
-                        <div>{question.title}</div>
+                <div className="col-span-11 space-y-6">
+                    <div className="flex items-start justify-between">
+                        <h1 className="text-2xl font-semibold text-gray-900">{question.title}</h1>
                         <ModeratorPrivilege>
-                            <Tooltip title='Edit this question'>
-                                <IconButton onClick={handleEditClick}>
-                                    <EditIcon />
+                            <Tooltip title="Edit this question" arrow>
+                                <IconButton
+                                    onClick={handleEditClick}
+                                    className="hover:bg-gray-100"
+                                >
+                                    <EditIcon className="text-gray-600" />
                                 </IconButton>
                             </Tooltip>
                         </ModeratorPrivilege>
                     </div>
 
-                    <QuestionHeaderDetails {...question}
-                        isSolved={isSolved}
-                        isClosed={isClosed} />
+                    <QuestionHeaderDetails {...question} isSolved={isSolved} isClosed={isClosed} />
 
-                    <div className={'mt-5'}>
-                        <QuestionContent content={question.content} />
+                    <div className="space-y-6">
+                        <div className="prose max-w-none">
+                            <QuestionContent content={question.content} />
+                        </div>
 
-                        <div className={'mt-2'}>
-                            <div className={'text-gray-500  flex flex-wrap gap-2'}>
-                                {question.tags?.map(tag =>
-                                    <TagLabel key={tag.id}
-                                        name={tag.name}
-                                        description={tag.description} />
-                                )}
+                        <div className="flex flex-wrap gap-2">
+                            {question.tags?.map(tag => (
+                                <TagLabel
+                                    key={tag.id}
+                                    name={tag.name}
+                                    description={tag.description}
+                                />
+                            ))}
+                        </div>
+
+                        <div className="flex justify-end border-t pt-4">
+                            <div className="flex items-center gap-4 bg-gray-50 rounded-lg p-4">
+                                <div className="text-right">
+                                    <div className="text-sm font-medium text-gray-900">
+                                        {question.author.username}
+                                    </div>
+                                    <div className="text-sm text-gray-500">
+                                        Reputation: <span className="font-medium">
+                                            {formatReputation(question.author.reputation)}
+                                        </span>
+                                    </div>
+                                </div>
+                                <Avatar
+                                    sx={{ width: 40, height: 40 }}
+                                    src={question.author.profilePicture}
+                                    className="border-2 border-white shadow-sm"
+                                />
                             </div>
                         </div>
                     </div>
 
-                    <div className={'flex justify-end'}>
-
-                        <div className={'p-4 gap-4 flex text-sm items-center'}>
-                            <div>
-                                <div className={'text-gray-500'}>
-                                    {question.author.username}
-                                </div>
-                                <div className={'text-gray-500'}>
-                                    Reputation: <span
-                                        className={'font-bold'}>{formatReputation(question.author.reputation)}</span>
-                                </div>
-                            </div>
-                            <div>
-                                <Avatar sx={{ width: 32, height: 32 }} src={question.author.profilePicture} />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <CommentSection question={question}
-                            isClosed={isClosed} />
-                    </div>
-
-                    <div className={'mt-5'}>
-                        <AnswerSection question={question}
+                    <div className="space-y-6">
+                        <CommentSection question={question} isClosed={isClosed} />
+                        <AnswerSection
+                            question={question}
                             isClosed={isClosed}
-                            onAnswerAcceptAction={handleAnswerAcceptAction} />
+                            onAnswerAcceptAction={handleAnswerAcceptAction}
+                        />
                     </div>
                 </div>
             </div>

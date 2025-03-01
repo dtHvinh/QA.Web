@@ -1,11 +1,11 @@
-import React from "react";
-import { QuestionResponse } from "@/types/types";
-import TagLabel from "@/components/TagLabel";
-import timeFromNow from "@/helpers/time-utils";
-import { formatNumber } from "@/helpers/evaluate-utils";
 import QuestionStatusBar from "@/app/question/QuestionStatusBar";
-import Link from "next/link";
+import TagLabel from "@/components/TagLabel";
+import { formatNumber } from "@/helpers/evaluate-utils";
 import toQuestionDetail from "@/helpers/path";
+import timeFromNow from "@/helpers/time-utils";
+import { QuestionResponse } from "@/types/types";
+import Link from "next/link";
+import UserInfoPopup from "./UserInfoPopup";
 
 interface YourQuestionItemProps {
     question: QuestionResponse
@@ -41,7 +41,7 @@ export default function YourQuestionItem(params: Readonly<YourQuestionItemProps>
                     </div>
                 </div>
 
-                <div className="my-4">
+                <div className="my-3">
                     <p dangerouslySetInnerHTML={{ __html: question.content }}
                         className="text-gray-600 line-clamp-2 leading-relaxed">
                     </p>
@@ -65,6 +65,12 @@ export default function YourQuestionItem(params: Readonly<YourQuestionItemProps>
                             }`}>
                             <span className="text-sm">Answers</span>
                             <span className="font-semibold">{formatNumber(question.answerCount)}</span>
+                        </div>
+
+                        <div className="flex items-center gap-2 text-gray-600">
+                            <span className="text-sm">Author</span>
+                            <UserInfoPopup user={question.author} />
+
                         </div>
                     </div>
                 </div>

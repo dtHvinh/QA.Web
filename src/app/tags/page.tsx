@@ -1,16 +1,15 @@
 'use client';
 
-import getAuth from "@/helpers/auth-utils";
-import React, { useState } from "react";
-import { Pagination, Typography } from "@mui/material";
-import { PagedResponse, TagResponse } from "@/types/types";
-import notifyError from "@/utilities/ToastrExtensions";
-import Link from "next/link";
-import { toTagDetail, toWikiPage } from "@/helpers/route-utils";
 import FilterBar from "@/components/FilterBar";
-import { getFetcher, IsErrorResponse } from "@/helpers/request-utils";
-import useSWR from "swr";
 import TagSkeleton from "@/components/Skeletons/TagSkeleton";
+import getAuth from "@/helpers/auth-utils";
+import { getFetcher } from "@/helpers/request-utils";
+import { toTagDetail } from "@/helpers/route-utils";
+import { PagedResponse, TagResponse } from "@/types/types";
+import { Pagination, Typography } from "@mui/material";
+import Link from "next/link";
+import React, { useState } from "react";
+import useSWR from "swr";
 
 export default function Tags() {
     const auth = getAuth()!;
@@ -60,7 +59,7 @@ export default function Tags() {
             )}
 
             {!isLoading && data && data.items.map((tag: TagResponse) => (
-                <Link href={toTagDetail(tag.id, tag.name)} key={tag.id} className={'flex flex-col border p-8 rounded-2xl'}>
+                <Link href={toTagDetail(tag.id, tag.name)} key={tag.id} className={'flex flex-col shadow hover:shadow-lg p-8 active:shadow-sm rounded-2xl transition-shadow'}>
                     <div className={'flex justify-between text-2xl'}>
                         <div>{tag.name}</div>
                     </div>

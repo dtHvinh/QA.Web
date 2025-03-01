@@ -14,7 +14,6 @@ import AnswerContent from "@/app/question/AnswerContent";
 import { Avatar } from "@mui/material";
 import { formatReputation } from "@/helpers/evaluate-utils";
 import MarkAcceptedAnswerLabel from "@/app/question/MarkAcceptedAnswerLabel";
-import AdminPrivilege from "@/components/Privilege/AdminPrivilege";
 import ModeratorPrivilege from "@/components/Privilege/ModeratorPrivilege";
 import ResourceOwnerPrivilege from "@/components/Privilege/ResourceOwnerPrivilege";
 
@@ -22,7 +21,6 @@ export default function Answer(
     {
         answer,
         question,
-        isQuestionSolved,
         onAnswerDelete,
         onAnswerAccepted
     }: Readonly<{
@@ -126,130 +124,116 @@ export default function Answer(
     }
 
     return (
-        <div className={'border-b'}>
-            <AlertDialog open={delAnsDialog}
+        <div className="border-b last:border-b-0">
+            <AlertDialog
+                open={delAnsDialog}
                 onClose={handleClose}
                 onYes={handleDelete}
-                title={'Do you want to delete this answer ?'}
-                description={'This action can not undo'} />
+                title="Delete Answer"
+                description="Are you sure you want to delete this answer? This action cannot be undone."
+            />
 
+            <div className={`relative grid grid-cols-12 gap-6 p-6 bg-white transition-all duration-300
+                ${isDeleting ? 'opacity-0 transform translate-x-full' : 'opacity-100'}`}>
 
-            <div
-                className={`relative grid grid-cols-6 gap-4 p-4 mb-8 rounded-lg bg-white 
-            ${isDeleting ? 'element-exit element-exit-active' : ''}`}>
+                {/* Vote Section */}
+                <div className="col-span-1 flex flex-col items-center gap-2">
+                    <RoundedButton
+                        title="Upvote"
+                        className="hover:bg-blue-50 active:bg-blue-100"
+                        svg={<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z" />
+                        </svg>}
+                        onClick={() => handleVote(true)}
+                    />
+                    <span className="text-lg font-semibold text-gray-700">{currentVote}</span>
+                    <RoundedButton
+                        title="Downvote"
+                        className="hover:bg-red-50 active:bg-red-100"
+                        svg={<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z" />
+                        </svg>}
+                        onClick={() => handleVote(false)}
+                    />
 
-                <div className={'col-span-1 row-span-full justify-items-center space-y-3'}>
-                    <div>
-                        <RoundedButton
-                            title={'Upvote'}
-                            svg={<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                fill="currentColor"
-                                viewBox="0 0 16 16">
-                                <path fillRule="evenodd"
-                                    d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2" />
-                            </svg>}
-                            onClick={() => handleVote(true)}
-                        />
-                    </div>
-                    <div>{currentVote}</div>
-                    <div>
-                        <RoundedButton
-                            title={'Downvote'}
-                            svg={<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                fill="currentColor"
-                                viewBox="0 0 16 16">
-                                <path fillRule="evenodd"
-                                    d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8" />
-                            </svg>}
-                            onClick={() => handleVote(false)}
-                        />
-                    </div>
-                    {isAnswerAccepted &&
-                        <MarkAcceptedAnswerLabel />
-                    }
+                    {isAnswerAccepted && <MarkAcceptedAnswerLabel />}
+
                     <ModeratorPrivilege>
-                        {!isAnswerAccepted &&
-                            <div>
-                                <RoundedButton
-                                    onClick={handleAnswerAccepted}
-                                    title={'Mark as answer'}
-                                    className={'bg-green-300 text-black hover:bg-green-400 active:bg-green-500'}
-                                    svg={<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                        fill="currentColor"
-                                        className="bi bi-check2" viewBox="0 0 16 16">
-                                        <path
-                                            d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0" />
-                                    </svg>}
-                                />
-                            </div>
-                        }
+                        {!isAnswerAccepted && (
+                            <RoundedButton
+                                onClick={handleAnswerAccepted}
+                                title="Mark as answer"
+                                className="bg-green-100 text-green-700 hover:bg-green-200 active:bg-green-300"
+                                svg={<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" />
+                                </svg>}
+                            />
+                        )}
                     </ModeratorPrivilege>
                 </div>
 
-                <div className={'col-span-5 row-span-full'}>
-                    <div className="relative justify-end flex gap-4">
+                {/* Content Section */}
+                <div className="col-span-11 space-y-4">
+                    <div className="flex justify-between items-start">
                         <ResourceOwnerPrivilege resourceRight={answer.resourceRight}>
-                            &&
-                            <div className={'flex flex-col'}>
-                                <div className={'flex justify-end'}>
-                                    {isEditing
-                                        ?
-                                        <div className={'flex gap-4'}>
-                                            <button className={'text-red-500'} onClick={handleDiscard}>
-                                                Discard
-                                            </button>
-                                            <button className={'text-blue-500 disabled:text-gray-500'}
-                                                disabled={!isAllowUpdate}
-                                                onClick={handleEdit}>
-                                                Save
-                                            </button>
-                                        </div>
-                                        :
-                                        <div className={'flex gap-4'}>
-                                            <button type={"button"} onClick={handleStartEditing}>
-                                                Edit
-                                            </button>
-                                            <button type={"button"} className={'text-red-500'}
-                                                onClick={handleClickOpen}>
-                                                Delete
-                                            </button>
-                                        </div>
-                                    }
-                                </div>
-                                <div className={'flex flex-col text-right'}>
-                                    <span
-                                        className="text-gray-400 text-sm">Answered {timeFromNow(answer.createdAt)}</span>
-                                    {answer.updatedAt !== DEFAULT_TIME &&
-                                        <span
-                                            className="text-gray-400 text-sm">Edited {timeFromNow(answer.updatedAt)}</span>
-                                    }
+                            <div className="flex flex-col items-end gap-2">
+                                {isEditing ? (
+                                    <div className="flex gap-3">
+                                        <button className="px-3 py-1.5 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                                            onClick={handleDiscard}>
+                                            Discard
+                                        </button>
+                                        <button className="px-3 py-1.5 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors disabled:bg-gray-300"
+                                            disabled={!isAllowUpdate}
+                                            onClick={handleEdit}>
+                                            Save Changes
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div className="flex gap-3">
+                                        <button className="px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-100 rounded-md transition-colors"
+                                            onClick={handleStartEditing}>
+                                            Edit
+                                        </button>
+                                        <button className="px-3 py-1.5 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                                            onClick={handleClickOpen}>
+                                            Delete
+                                        </button>
+                                    </div>
+                                )}
+                                <div className="text-sm text-gray-500 space-y-1">
+                                    <div>Answered {timeFromNow(answer.createdAt)}</div>
+                                    {answer.updatedAt !== DEFAULT_TIME && (
+                                        <div>Edited {timeFromNow(answer.updatedAt)}</div>
+                                    )}
                                 </div>
                             </div>
                         </ResourceOwnerPrivilege>
                     </div>
 
-                    <div>
-                        {isEditing
-                            ? <TextEditor currentText={currentText} onTextChange={handleEditTextChange} />
-                            :
+                    <div className="prose max-w-none">
+                        {isEditing ? (
+                            <TextEditor currentText={currentText} onTextChange={handleEditTextChange} />
+                        ) : (
                             <AnswerContent content={currentText} />
-                        }
+                        )}
                     </div>
 
-                    <div className={'flex justify-end'}>
-                        <div className={'p-4 gap-4 flex text-sm items-center'}>
-                            <div>
-                                <div className={'text-gray-500'}>
+                    <div className="flex justify-end pt-4">
+                        <div className="flex items-center gap-4 bg-gray-50 rounded-lg p-3">
+                            <div className="text-right">
+                                <div className="text-sm font-medium text-gray-900">
                                     {answer.author?.username}
                                 </div>
-                                <div className={'text-gray-500'}>
-                                    Reputation: <span
-                                        className={'font-bold'}>{formatReputation(answer.author?.reputation)}</span>
+                                <div className="text-sm text-gray-500">
+                                    Reputation: <span className="font-medium">{formatReputation(answer.author?.reputation)}</span>
                                 </div>
                             </div>
-                            <div>
-                                <Avatar sx={{ width: 32, height: 32 }} src={answer.author?.profilePicture} />
-                            </div>
+                            <Avatar
+                                sx={{ width: 40, height: 40 }}
+                                src={answer.author?.profilePicture}
+                                className="border-2 border-white shadow-sm"
+                            />
                         </div>
                     </div>
                 </div>

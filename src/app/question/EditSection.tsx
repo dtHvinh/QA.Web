@@ -29,9 +29,7 @@ export default function EditSection({ question, onEditSuccess }: {
             tags: editTagIds
         })]);
 
-        if (IsErrorResponse(response)) {
-            notifyError((response as ErrorResponse).title);
-        } else {
+        if (!IsErrorResponse(response)) {
             question.content = editContentValue;
             notifySucceed('Question updated successfully');
             onEditSuccess?.({

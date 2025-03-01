@@ -17,9 +17,11 @@ export default function QuestionActions(
     {
         question,
         onQuestionClose,
+        className
     }: {
         question: QuestionResponse,
-        onQuestionClose?: () => void
+        onQuestionClose?: () => void,
+        className?: string
     }) {
     const auth = getAuth();
     const [currentVote, setCurrentVote] = React.useState<number>(question.upvote - question.downvote);
@@ -49,9 +51,7 @@ export default function QuestionActions(
             `/api/question/${question.id}`,
             auth!.accessToken]);
 
-        if (IsErrorResponse(response)) {
-            notifyError((response as ErrorResponse).errors);
-        } else {
+        if (!IsErrorResponse(response)) {
             notifySucceed('Question deleted');
             window.history.go(-1);
         }
@@ -94,7 +94,7 @@ export default function QuestionActions(
 
     return (
         <div
-            className={'col-span-2 md:col-span-1 row-span-full justify-items-center space-y-5'}>
+            className={`${className} col-span-2 md:col-span-1 row-span-full justify-items-center space-y-5`}>
             <AlertDialog open={deleteConfirmOpen}
                 title={'Do you want to delete this question'}
                 description={'This action cannot be undone'}

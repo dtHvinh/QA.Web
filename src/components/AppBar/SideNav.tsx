@@ -19,7 +19,9 @@ export default function SideNav() {
     return (
         <>
             <aside className="flex flex-col 
-                items-center bg-white text-gray-700 shadow h-full border-t border-gray-300
+                items-center bg-white text-gray-700 h-full border-gray-300
+                shadow-lg
+                rounded-r-3xl
                 max-h-[calc(100vh-var(--appbar-height)*2)]">
                 <div className="h-16 flex items-center w-full">
                     <Link href={Routes.Home} className="h-6 w-6 mx-auto">

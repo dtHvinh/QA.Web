@@ -5,7 +5,7 @@ import QuestionCardListSkeleton from "@/components/Skeletons/YQPSkeleton";
 import YourQuestionItem from "@/components/YourQuestionItem";
 import getAuth from "@/helpers/auth-utils";
 import { getFetcher, IsErrorResponse } from "@/helpers/request-utils";
-import { PagedResponse, QuestionResponse, UserResponse } from "@/types/types";
+import { PagedResponse, QuestionResponse } from "@/types/types";
 import notifyError from "@/utilities/ToastrExtensions";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
@@ -16,7 +16,7 @@ export default function Home() {
     const auth = getAuth();
     const [questionResults, setQuestionResults] = useState<PagedResponse<QuestionResponse>>();
 
-    const { data, isLoading } = useSWR([userInfoRequestUrl, auth?.accessToken], getFetcher);
+    const { data: user, isLoading } = useSWR([userInfoRequestUrl, auth?.accessToken], getFetcher);
 
     useEffect(() => {
         async function fetchQuestions() {
@@ -34,50 +34,72 @@ export default function Home() {
         fetchQuestions().then();
     }, []);
 
-    if (isLoading)
-        return <Loading />
-
-    const user = data as UserResponse;
+    if (isLoading) return <Loading />;
+    if (!user) return null;
 
     return (
-        <div>
-            <div className="grid grid-cols-3 gap-4 mt-2">
-                <div className="text-2xl col-span-3">
-                    Hello, {auth?.username}
+        <div className="max-w-7xl mx-auto px-4 py-8">
+            <div className="grid grid-cols-12 gap-6">
+                <div className="col-span-full">
+                    <h1 className="text-3xl font-bold text-gray-900">
+                        Welcome back, <span className="text-blue-600">{auth?.username}</span>
+                    </h1>
                 </div>
 
-                <div className="gap-4 col-span-3 md:col-span-1 h-full m-2 p-4 flex flex-col">
-                    <div className="text-lg font-semibold">
-                        Reputation
-                    </div>
-                    <div className="flex flex-col gap-4">
-                        <div className="flex">
-                            <div className="w-3/4 -ml-4 text-center">
-                                {user?.reputation}
+                <div className="col-span-full md:col-span-4 lg:col-span-3">
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                        <div className="space-y-6">
+                            <div>
+                                <h2 className="text-lg font-semibold text-gray-900">
+                                    Your Reputation
+                                </h2>
+                                <p className="text-3xl font-bold text-blue-600 mt-2">
+                                    {user.reputation}
+                                </p>
                             </div>
-                            <svg viewBox="0 0 180 30" xmlns="http://www.w3.org/2000/svg">
-                                <rect width="100%" height="33%" fill="lightblue">
-                                </rect>
-                                <rect y="20" width="100%" height="33%" fill="lightblue">
-                                </rect>
-                                <path
-                                    d="M0 27 L90 9.857142857142858 L108 13.285714285714285 L126 9.857142857142858 L144 13.285714285714285 L180 3"
-                                    stroke="blue" strokeDasharray="6, 6" strokeWidth="3" fill="none">
-                                </path>
-                            </svg>
+
+                            <div className="relative">
+                                <svg className="w-full h-20" viewBox="0 0 180 30" xmlns="http://www.w3.org/2000/svg">
+                                    <rect width="100%" height="33%" className="fill-blue-100" />
+                                    <rect y="20" width="100%" height="33%" className="fill-blue-100" />
+                                    <path
+                                        d="M0 27 L90 9.857142857142858 L108 13.285714285714285 L126 9.857142857142858 L144 13.285714285714285 L180 3"
+                                        className="stroke-blue-500"
+                                        strokeDasharray="6, 6"
+                                        strokeWidth="3"
+                                        fill="none"
+                                    />
+                                </svg>
+                            </div>
+
+                            <p className="text-sm text-gray-500">
+                                Earn reputation by asking and answering questions in the community
+                            </p>
                         </div>
-                        <small>Earn reputation by ask and answer a question</small>
                     </div>
                 </div>
 
-                <div className={'col-span-full space-y-5 mb-5'}>
-                    <div className={'text-2xl mt-5 font-bold'}>Question for you</div>
+                <div className="col-span-full md:col-span-8 lg:col-span-9">
+                    <div className="space-y-6">
+                        <div className="flex items-center justify-between">
+                            <h2 className="text-2xl font-bold text-gray-900">
+                                Recommended Questions
+                            </h2>
+                        </div>
 
-                    {questionResults == null && <QuestionCardListSkeleton />}
-
-                    {questionResults?.items.map((question) => (
-                        <YourQuestionItem question={question} key={question.id} />
-                    ))}
+                        {questionResults == null ? (
+                            <QuestionCardListSkeleton />
+                        ) : (
+                            <div className="space-y-4">
+                                {questionResults.items.map((question) => (
+                                    <YourQuestionItem
+                                        question={question}
+                                        key={question.id}
+                                    />
+                                ))}
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>
