@@ -1,10 +1,10 @@
 'use client'
 
-import StarterKit from '@tiptap/starter-kit'
-import {EditorContent, useEditor} from '@tiptap/react'
+import { TextEditorToolbar } from "@/components/TextEditorToolbar";
 import Image from '@tiptap/extension-image';
-import {TextEditorToolbar} from "@/components/TextEditorToolbar";
-import {useEffect} from "react";
+import { EditorContent, useEditor } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import { useEffect, useState } from "react";
 
 interface TextEditorProps {
     currentText: string
@@ -13,11 +13,13 @@ interface TextEditorProps {
 }
 
 const TextEditor = (params: TextEditorProps) => {
+    const [currentImages, setCurrentImages] = useState<string[]>([])
+
     const editor = useEditor({
         extensions: [StarterKit, Image],
         editable: true,
         content: params.currentText,
-        onUpdate: ({editor}) => {
+        onUpdate: ({ editor }) => {
             let content = editor.getHTML();
             const json = editor.getJSON().content;
 
@@ -34,15 +36,21 @@ const TextEditor = (params: TextEditorProps) => {
         editor?.commands.setContent('');
     }, [params.resetFlag]);
 
+    useEffect(() => {
+        return () => {
+            console.log('destroy')
+        }
+    }, []);
+
     if (!editor) {
         return null
     }
 
     return (
         <div className='text-editor'>
-            <TextEditorToolbar editor={editor}/>
-            <hr/>
-            <EditorContent spellCheck='false' editor={editor}/>
+            <TextEditorToolbar editor={editor} onImageAdd={(url) => setCurrentImages([...currentImages, url])} />
+            <hr />
+            <EditorContent spellCheck='false' editor={editor} />
         </div>
     )
 }

@@ -80,7 +80,6 @@ export interface QuestionResponse extends ResourceRightProps {
 
     isDuplicate: boolean,
     isClosed: boolean,
-    isDraft: boolean,
     isSolved: boolean,
     isBookmarked: boolean,
 
@@ -94,6 +93,7 @@ export interface GetCollectionResponse {
     name: string,
     description: string,
     likeCount: number,
+    questionCount: number,
     isPublic: boolean,
     isLikedByUser: boolean,
     createdAt: string,
@@ -152,8 +152,18 @@ export interface UserResponse {
     bio: string;
     questionCount: number;
     answerCount: number;
+    totalUpvotes: number;
+    acceptedAnswerCount: number;
     commentCount: number;
     collectionCount: number;
+    externalLinks: ExternalLinkResponse[];
+    resourceRight: ResourceRight;
+}
+
+export interface ExternalLinkResponse {
+    id: string,
+    provider: string,
+    url: string
 }
 
 export interface CommentResponse extends ResourceRightProps {

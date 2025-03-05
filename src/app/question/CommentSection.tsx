@@ -1,17 +1,15 @@
-import { CommentResponse, QuestionResponse } from "@/types/types";
-import TextEditor from "@/components/TextEditor";
-import React from "react";
-import { Apis, backendURL } from "@/utilities/Constants";
-import { IsErrorResponse, postFetcher } from "@/helpers/request-utils";
-import notifyError from "@/utilities/ToastrExtensions";
-import { ErrorResponse } from "@/props/ErrorResponse";
 import Comment from "@/app/question/Comment";
+import TextEditor from "@/components/TextEditor";
 import getAuth from "@/helpers/auth-utils";
+import { IsErrorResponse, postFetcher } from "@/helpers/request-utils";
+import { CommentResponse, QuestionResponse } from "@/types/types";
+import { Apis, backendURL } from "@/utilities/Constants";
+import React from "react";
 
 
 export default function CommentSection({ question, isClosed }: { question: QuestionResponse, isClosed: boolean }) {
     const [currentText, setCurrentText] = React.useState('');
-    const [comments, setComments] = React.useState(question.comments);
+    const [comments, setComments] = React.useState(question.comments ?? []);
     const [isComment, setIsComment] = React.useState(false);
     const [isReset, setIsReset] = React.useState(false);
 
@@ -35,11 +33,8 @@ export default function CommentSection({ question, isClosed }: { question: Quest
                 content: currentText
             })]);
 
-        if (IsErrorResponse(response)) {
-            notifyError((response as ErrorResponse).title);
-        } else {
+        if (!IsErrorResponse(response)) {
             setComments([...comments, response as CommentResponse]);
-            console.log(response);
             setCurrentText('');
             question.commentCount++;
         }
@@ -47,18 +42,10 @@ export default function CommentSection({ question, isClosed }: { question: Quest
         setIsReset(!isReset);
     }
 
-    if (question.isDraft) {
-        return (
-            <div className="p-4 bg-gray-50 rounded-lg text-gray-600 text-sm">
-                Edit and publish the question to see comments
-            </div>
-        )
-    }
-
     return (
         <div className="space-y-4">
             {comments.length > 0 && (
-                <div className="space-y-2 divide-y divide-gray-100">
+                <div className="space-y-2 divide-gray-100">
                     {comments.map(comment => (
                         <Comment
                             key={comment.id}

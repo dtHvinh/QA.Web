@@ -2,18 +2,17 @@ import getAuth from '@/helpers/auth-utils';
 import { getFetcher } from '@/helpers/request-utils';
 import { TagResponse } from '@/types/types';
 import { backendURL } from '@/utilities/Constants';
-import { notifyWarning } from '@/utilities/ToastrExtensions';
 import { Popover } from '@mui/material';
 import React, { FormEvent, useState } from 'react';
 import { useDebounce } from 'use-debounce';
 
 interface SearchInputProps {
-    onSearch: (searchTerm: string, selectedTag: TagResponse) => void;
+    onSearch: (searchTerm: string, selectedTag?: TagResponse) => void;
 }
 
 export default function SearchInput({ onSearch }: SearchInputProps) {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const [tagSelectText, setTagSelectText] = useState("Select a tag");
+    const [tagSelectText, setTagSelectText] = useState("All");
     const [selectedTag, setSelectedTag] = useState<TagResponse>();
     const [tagSearchTerm, setTagSearchTerm] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
@@ -38,10 +37,7 @@ export default function SearchInput({ onSearch }: SearchInputProps) {
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
-        if (!selectedTag)
-            notifyWarning("Please select a tag", { vertical: 'top', horizontal: 'center' });
-        else
-            onSearch(searchTerm, selectedTag);
+        onSearch(searchTerm, selectedTag);
     };
 
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);

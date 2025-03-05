@@ -1,19 +1,17 @@
+import useLogout from "@/helpers/logout-hook";
 import { Routes } from "@/utilities/Constants";
-import { Bookmark, Logout, Psychology, PsychologyOutlined, QuestionMarkSharp } from "@mui/icons-material";
+import { AdminPanelSettings, Bookmark, Logout, PsychologyOutlined, QuestionMarkSharp } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LightTooltip } from "../LightToolTip";
-import AlertDialog from "../AlertDialog";
-import useLogout from "@/helpers/logout-hook";
-import { useState } from "react";
+import AdminPrivilege from "../Privilege/AdminPrivilege";
 
 export default function SideNav() {
     const pathname = usePathname();
     const logOut = useLogout();
 
     const theme = {
-        "selected": 'bg-gray-200 font-semibold'
+        "selected": 'bg-blue-100 font-semibold text-blue-500'
     }
 
     return (
@@ -87,9 +85,22 @@ export default function SideNav() {
                         </Tooltip>
                     </li>
 
+                    <AdminPrivilege>
+                        <hr className="mx-4" />
+                        <li>
+                            <Tooltip title='Admin Panel' placement="right" arrow>
+                                <Link href={'/admin'}
+                                    className={`h-16 px-6 flex justify-center items-center w-full hover:bg-gray-100
+                                    ${pathname === 'admin' ? theme.selected : ''}`}>
+                                    <AdminPanelSettings fontSize="small" />
+                                </Link>
+                            </Tooltip>
+                        </li>
+                    </AdminPrivilege>
+
                     <li className="mt-auto border-t">
                         <Tooltip title='Leave' placement="right" arrow>
-                            <button onClick={logOut} className="h-16 px-6 flex justify-center items-center w-full text-red-500 hover:bg-red-200">
+                            <button onClick={logOut} className="h-16 px-6 flex justify-center items-center w-full text-red-500">
                                 <Logout fontSize="small" />
                             </button>
                         </Tooltip>

@@ -1,18 +1,17 @@
-import TagLabel from "@/components/TagLabel";
-import React, { useEffect } from "react";
-import { QuestionResponse } from "@/types/types";
-import 'highlight.js/styles/atom-one-dark.css';
-import QuestionHeaderDetails from "@/app/question/QuestionHeaderDetails";
-import QuestionContent from "@/app/question/QuestionContent";
-import { Avatar, Dialog, DialogContent, DialogTitle, IconButton, Tooltip, Typography, useMediaQuery, useTheme } from "@mui/material";
-import CommentSection from "@/app/question/CommentSection";
 import AnswerSection from "@/app/question/AnswerSection";
-import { highlightCode } from "@/helpers/utils";
-import EditIcon from '@mui/icons-material/Edit';
+import CommentSection from "@/app/question/CommentSection";
 import EditSection from "@/app/question/EditSection";
 import QuestionActions from "@/app/question/QuestionActions";
+import QuestionContent from "@/app/question/QuestionContent";
+import QuestionHeaderDetails from "@/app/question/QuestionHeaderDetails";
+import TagLabel from "@/components/TagLabel";
 import { formatReputation } from "@/helpers/evaluate-utils";
-import ModeratorPrivilege from "@/components/Privilege/ModeratorPrivilege";
+import { highlightCode } from "@/helpers/utils";
+import { QuestionResponse } from "@/types/types";
+import EditIcon from '@mui/icons-material/Edit';
+import { Avatar, Dialog, DialogContent, DialogTitle, IconButton, Tooltip, useMediaQuery, useTheme } from "@mui/material";
+import 'highlight.js/styles/atom-one-dark.css';
+import React, { useEffect } from "react";
 
 export default function QuestionSection({ questionInit }: { questionInit: QuestionResponse }) {
     const [isSolved, setIsSolved] = React.useState<boolean>(questionInit.isSolved);
@@ -84,19 +83,17 @@ export default function QuestionSection({ questionInit }: { questionInit: Questi
                 <div className="col-span-11 space-y-6">
                     <div className="flex items-start justify-between">
                         <h1 className="text-2xl font-semibold text-gray-900">{question.title}</h1>
-                        <ModeratorPrivilege>
-                            <Tooltip title="Edit this question" arrow>
-                                <IconButton
-                                    onClick={handleEditClick}
-                                    className="hover:bg-gray-100"
-                                >
-                                    <EditIcon className="text-gray-600" />
-                                </IconButton>
-                            </Tooltip>
-                        </ModeratorPrivilege>
+                        <Tooltip title="Edit this question" arrow>
+                            <IconButton
+                                onClick={handleEditClick}
+                                className="hover:bg-gray-100"
+                            >
+                                <EditIcon className="text-gray-600" />
+                            </IconButton>
+                        </Tooltip>
                     </div>
 
-                    <QuestionHeaderDetails {...question} isSolved={isSolved} isClosed={isClosed} />
+                    <QuestionHeaderDetails  {...question} isSolved={isSolved} isClosed={isClosed} />
 
                     <div className="space-y-6">
                         <div className="prose max-w-none">

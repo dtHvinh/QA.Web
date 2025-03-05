@@ -1,7 +1,7 @@
-import timeFromNow, {DEFAULT_TIME} from "@/helpers/time-utils";
-import React, {memo} from "react";
-import {formatNumber} from "@/helpers/evaluate-utils";
 import QuestionStatusBar from "@/app/question/QuestionStatusBar";
+import { formatNumber } from "@/helpers/evaluate-utils";
+import timeFromNow, { DEFAULT_TIME } from "@/helpers/time-utils";
+import { memo } from "react";
 
 interface QuestionHeaderDetailsProps {
     createdAt: string,
@@ -10,7 +10,6 @@ interface QuestionHeaderDetailsProps {
     answerCount: number,
     isSolved: boolean,
     isClosed: boolean,
-    isDraft: boolean
 }
 
 const QuestionHeaderDetails = memo(
@@ -22,7 +21,6 @@ const QuestionHeaderDetails = memo(
             answerCount,
             isSolved,
             isClosed,
-            isDraft
         }: QuestionHeaderDetailsProps) {
 
         return (
@@ -43,7 +41,7 @@ const QuestionHeaderDetails = memo(
                     </div>
                 </div>
                 <div>
-                    <QuestionStatusBar isClosed={isClosed} isDraft={isDraft} isSolved={isSolved}/>
+                    <QuestionStatusBar isClosed={isClosed} isSolved={isSolved} />
                 </div>
             </div>
         );

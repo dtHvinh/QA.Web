@@ -18,11 +18,11 @@ export default function timeFromNow(dateTimeString: string): string {
         if (diffInHours < 1) {
             const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
             const diffInSeconds = Math.floor((diffInMs % (1000 * 60)) / 1000);
-            return `${diffInMinutes} minute${diffInMinutes !== 1 ? "s" : ""} and ${diffInSeconds} second${diffInSeconds !== 1 ? "s" : ""} ago`;
+            return `${diffInMinutes}m ${diffInSeconds}s`;
         }
-        return `${Math.floor(diffInHours)} hour${Math.floor(diffInHours) !== 1 ? "s" : ""} ago, at ${specificTime(date)}`;
+        return `${Math.floor(diffInHours)}h, at ${specificTime(date)}`;
     } else if (diffInDays < 7) {
-        return `${Math.floor(diffInDays)} day${Math.floor(diffInDays) !== 1 ? "s" : ""} ago, at ${specificTime(date)}`;
+        return `${Math.floor(diffInDays)}d, at ${specificTime(date)}`;
     } else {
         return date.toLocaleDateString() + " " + date.toLocaleTimeString();
     }

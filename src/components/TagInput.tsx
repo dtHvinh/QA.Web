@@ -1,12 +1,12 @@
-import React, {useEffect, useState} from "react";
-import {Autocomplete, Box, TextField, Typography} from "@mui/material";
-import {backendURL} from "@/utilities/Constants";
-import {getFetcher} from "@/helpers/request-utils";
-import {PagedResponse, TagResponse} from "@/types/types";
-import getAuth from "@/helpers/auth-utils";
-import notifyError from "@/utilities/ToastrExtensions";
 import TagLabel from "@/components/TagLabel";
-import {useDebounce} from "use-debounce";
+import getAuth from "@/helpers/auth-utils";
+import { getFetcher } from "@/helpers/request-utils";
+import { PagedResponse, TagResponse } from "@/types/types";
+import { backendURL } from "@/utilities/Constants";
+import notifyError from "@/utilities/ToastrExtensions";
+import { Autocomplete, Box, TextField, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { useDebounce } from "use-debounce";
 
 export interface TagInputProps {
     onTagIdChange?: (tagIds: string[]) => void;
@@ -15,7 +15,7 @@ export interface TagInputProps {
     maxTags: number;
 }
 
-export default function TagInput({onTagIdChange, maxTags, onTagChange, defaultTags}: TagInputProps) {
+export default function TagInput({ onTagIdChange, maxTags, onTagChange, defaultTags }: TagInputProps) {
     const auth = getAuth();
     const requestUrl = `${backendURL}/api/tag/search`;
 
@@ -61,7 +61,7 @@ export default function TagInput({onTagIdChange, maxTags, onTagChange, defaultTa
                 renderTags={(value: TagResponse[], getTagProps) =>
                     value.map((option: TagResponse, index: number) => (
                         <TagLabel
-                            {...getTagProps({index})}
+                            {...getTagProps({ index })}
                             {...option}
                             name={option.name}
                             key={option.id}
@@ -100,6 +100,8 @@ export default function TagInput({onTagIdChange, maxTags, onTagChange, defaultTa
                                 component="ul"
                                 {...props}
                                 sx={{
+                                    border: '.5px solid gray',
+                                    borderRadius: '8px',
                                     display: "grid",
                                     gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
                                     gap: 1,

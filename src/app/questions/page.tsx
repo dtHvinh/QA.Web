@@ -1,18 +1,18 @@
 'use client'
 
-import getAuth from "@/helpers/auth-utils";
-import { Pagination } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { backendURL, Routes } from "@/utilities/Constants";
-import { PagedResponse, QuestionResponse } from "@/types/types";
-import YourQuestionItem from "@/components/YourQuestionItem";
-import Link from "next/link";
-import ItemPerPage from "@/components/ItemPerPage";
-import useSWR from "swr";
-import { getFetcher } from "@/helpers/request-utils";
-import QuestionCardListSkeleton from "@/components/Skeletons/YQPSkeleton";
 import FilterBar from "@/components/FilterBar";
+import ItemPerPage from "@/components/ItemPerPage";
+import QuestionCardListSkeleton from "@/components/Skeletons/YQPSkeleton";
+import YourQuestionItem from "@/components/YourQuestionItem";
+import getAuth from "@/helpers/auth-utils";
+import { getFetcher } from "@/helpers/request-utils";
 import { scrollToTop } from "@/helpers/utils";
+import { PagedResponse, QuestionResponse } from "@/types/types";
+import { backendURL, Routes } from "@/utilities/Constants";
+import { Pagination } from "@mui/material";
+import Link from "next/link";
+import React, { useEffect, useState } from "react";
+import useSWR from "swr";
 
 
 export default function QuestionsPage() {
@@ -32,7 +32,7 @@ export default function QuestionsPage() {
     const [pageIndex, setPageIndex] = useState<number>(1);
     const [pageSize, setPageSize] = useState(16);
     const [requestUrl, setRequestUrl] = useState<string>(`${backendURL}/api/question`
-        + '/?order=' + orderBy
+        + '/?orderBy=' + orderBy
         + `&pageIndex=${pageIndex}`
         + `&pageSize=${pageSize}`);
 
@@ -72,35 +72,79 @@ export default function QuestionsPage() {
     }
 
     return (
-        <>
-            <div className={'grid grid-cols-1 gap-5'}>
-                <div className={'col-span-full flex flex-wrap justify-between items-baseline'}>
-                    <div className={'text-2xl mt-4'}>{response?.totalCount} questions:</div>
-                    <FilterBar tabs={validOrder} tabValues={validOrderValue} tabDescriptions={orderDescription}
-                        onFilterValueChange={handleOrderByChange} />
+        <div className="page-container mx-auto space-y-8">
+            <div className="flex flex-col sm:flex-row justify-between items-start gap-4 sm:items-center">
+                <div className="space-y-1">
+                    <h1 className="text-3xl font-bold text-gray-900">
+                        All Questions
+                    </h1>
+                    {response?.totalCount !== undefined && (
+                        <p className="text-gray-600">
+                            {response.totalCount.toLocaleString()} questions
+                        </p>
+                    )}
                 </div>
 
-                {isLoading && <div className={'col-span-full'}><QuestionCardListSkeleton /></div>}
-
-                {!isLoading && questions && questions.map((question: QuestionResponse) => (
-                    <YourQuestionItem key={question.id} question={question} />
-                ))}
-
-                {!isLoading && (!questions || questions.length === 0) &&
-                    <div>
-                        You have not asked any questions yet,&nbsp;
-                        <Link href={Routes.NewQuestion} className={'text-blue-500 underline'}>
-                            ask a question now
-                        </Link>!
-                    </div>}
+                <Link
+                    href={Routes.NewQuestion}
+                    className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                    <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Ask Question
+                </Link>
             </div>
 
-            {response && questions && questions.length > 0 &&
-                <div className={'col-span-full items-center flex justify-between my-5'}>
-                    <ItemPerPage onPageSizeChange={setPageSize} values={[16, 32, 64]} />
-                    <Pagination page={pageIndex} onChange={handlePageChange} count={response?.totalPage} />
+            <div className="flex">
+                <FilterBar
+                    tabs={validOrder}
+                    tabValues={validOrderValue}
+                    tabDescriptions={orderDescription}
+                    onFilterValueChange={handleOrderByChange}
+                />
+            </div>
+
+            <div className="space-y-4">
+                {isLoading ? (
+                    <QuestionCardListSkeleton />
+                ) : questions && questions.length > 0 ? (
+                    questions.map((question: QuestionResponse) => (
+                        <YourQuestionItem key={question.id} question={question} />
+                    ))
+                ) : (
+                    <div className="text-center py-16 bg-gray-50 rounded-lg">
+                        <div className="mb-4">
+                            <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">No questions found</h3>
+                        <p className="text-gray-500">
+                            Be the first to
+                            <Link href={Routes.NewQuestion} className="ml-1 text-blue-600 hover:underline">
+                                ask a question
+                            </Link>
+                        </p>
+                    </div>
+                )}
+            </div>
+
+            {response && questions && questions.length > 0 && (
+                <div className="flex flex-col sm:flex-row justify-between items-center gap-4 py-4 border-t border-gray-200">
+                    <ItemPerPage
+                        onPageSizeChange={setPageSize}
+                        values={[16, 32, 64]}
+                    />
+                    <Pagination
+                        page={pageIndex}
+                        onChange={handlePageChange}
+                        count={response?.totalPage}
+                        shape="rounded"
+                        size="large"
+                    />
                 </div>
-            }
-        </>
+            )}
+        </div>
     );
 }

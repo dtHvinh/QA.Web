@@ -1,23 +1,23 @@
-import { AnswerResponse, QuestionResponse, VoteResponse } from "@/types/types";
-import React from "react";
-import getAuth from "@/helpers/auth-utils";
-import { formatString } from "@/helpers/string-utils";
-import { Apis, backendURL } from "@/utilities/Constants";
-import { deleteFetcher, IsErrorResponse, postFetcher, putFetcher } from "@/helpers/request-utils";
-import notifyError, { notifySucceed } from "@/utilities/ToastrExtensions";
-import { ErrorResponse } from "@/props/ErrorResponse";
-import AlertDialog from "@/components/AlertDialog";
-import timeFromNow, { DEFAULT_TIME } from "@/helpers/time-utils";
-import TextEditor from "@/components/TextEditor";
-import RoundedButton from "@/components/RoundedButton";
 import AnswerContent from "@/app/question/AnswerContent";
-import { Avatar } from "@mui/material";
-import { formatReputation } from "@/helpers/evaluate-utils";
 import MarkAcceptedAnswerLabel from "@/app/question/MarkAcceptedAnswerLabel";
+import AlertDialog from "@/components/AlertDialog";
 import ModeratorPrivilege from "@/components/Privilege/ModeratorPrivilege";
 import ResourceOwnerPrivilege from "@/components/Privilege/ResourceOwnerPrivilege";
+import RoundedButton from "@/components/RoundedButton";
+import TextEditor from "@/components/TextEditor";
+import getAuth from "@/helpers/auth-utils";
+import { formatReputation } from "@/helpers/evaluate-utils";
+import { deleteFetcher, IsErrorResponse, postFetcher, putFetcher } from "@/helpers/request-utils";
+import { formatString } from "@/helpers/string-utils";
+import timeFromNow, { DEFAULT_TIME } from "@/helpers/time-utils";
+import { AnswerResponse, QuestionResponse, VoteResponse } from "@/types/types";
+import { Apis, backendURL } from "@/utilities/Constants";
+import { notifySucceed } from "@/utilities/ToastrExtensions";
+import { Delete } from "@mui/icons-material";
+import { Avatar } from "@mui/material";
+import React, { memo } from "react";
 
-export default function Answer(
+const Answer = (
     {
         answer,
         question,
@@ -29,7 +29,7 @@ export default function Answer(
         isQuestionSolved: boolean,
         onAnswerDelete: (id: string) => void,
         onAnswerAccepted: (id: string) => void,
-    }>) {
+    }>) => {
     const [currentText, setCurrentText] = React.useState(answer.content);
     const [editText, setEditText] = React.useState(answer.content);
     const [isAnswerAccepted, setIsAnswerAccepted] = React.useState(answer.isAccepted);
@@ -68,13 +68,10 @@ export default function Answer(
     const handleAnswerAccepted = async () => {
         const response = await putFetcher([acceptAnswerUrl, auth!.accessToken, '']);
 
-        if (IsErrorResponse(response)) {
-            notifyError((response as ErrorResponse).title);
-            return;
+        if (!IsErrorResponse(response)) {
+            onAnswerAccepted(answer.id);
+            setIsAnswerAccepted(true);
         }
-
-        onAnswerAccepted(answer.id);
-        setIsAnswerAccepted(true);
     }
 
     const handleDelete = async () => {
@@ -82,9 +79,7 @@ export default function Answer(
 
         const response = await deleteFetcher([requestUrl, auth!.accessToken]);
 
-        if (IsErrorResponse(response)) {
-            notifyError((response as ErrorResponse).title);
-        } else {
+        if (!IsErrorResponse(response)) {
             setIsDeleting(true);
             setTimeout(() => {
                 onAnswerDelete(answer.id);
@@ -98,9 +93,7 @@ export default function Answer(
             content: editText
         })]);
 
-        if (IsErrorResponse(response)) {
-            notifyError((response as ErrorResponse).title);
-        } else {
+        if (!IsErrorResponse(response)) {
             answer = response as AnswerResponse;
             setCurrentText(editText);
             setIsEditing(false);
@@ -114,9 +107,7 @@ export default function Answer(
 
         const response = await postFetcher([requestUrl, auth!.accessToken, '']);
 
-        if (IsErrorResponse(response)) {
-            notifyError((response as ErrorResponse).title);
-        } else {
+        if (!IsErrorResponse(response)) {
             notifySucceed('Done');
             const voteResponse = response as VoteResponse;
             setCurrentVote(voteResponse.currentUpvote - voteResponse.currentDownvote);
@@ -134,9 +125,8 @@ export default function Answer(
             />
 
             <div className={`relative grid grid-cols-12 gap-6 p-6 bg-white transition-all duration-300
-                ${isDeleting ? 'opacity-0 transform translate-x-full' : 'opacity-100'}`}>
+                ${isDeleting ? 'opacity-0 transform' : 'opacity-100'}`}>
 
-                {/* Vote Section */}
                 <div className="col-span-1 flex flex-col items-center gap-2">
                     <RoundedButton
                         title="Upvote"
@@ -170,9 +160,17 @@ export default function Answer(
                             />
                         )}
                     </ModeratorPrivilege>
+
+                    <ModeratorPrivilege>
+                        <RoundedButton
+                            onClick={handleClickOpen}
+                            title="Moderator considered this answer should be deleted"
+                            className=" text-red-500 bg-transparent hover:bg-red-50"
+                            svg={<Delete fontSize="small" />}
+                        />
+                    </ModeratorPrivilege>
                 </div>
 
-                {/* Content Section */}
                 <div className="col-span-11 space-y-4">
                     <div className="flex justify-between items-start">
                         <ResourceOwnerPrivilege resourceRight={answer.resourceRight}>
@@ -201,12 +199,6 @@ export default function Answer(
                                         </button>
                                     </div>
                                 )}
-                                <div className="text-sm text-gray-500 space-y-1">
-                                    <div>Answered {timeFromNow(answer.createdAt)}</div>
-                                    {answer.updatedAt !== DEFAULT_TIME && (
-                                        <div>Edited {timeFromNow(answer.updatedAt)}</div>
-                                    )}
-                                </div>
                             </div>
                         </ResourceOwnerPrivilege>
                     </div>
@@ -216,6 +208,13 @@ export default function Answer(
                             <TextEditor currentText={currentText} onTextChange={handleEditTextChange} />
                         ) : (
                             <AnswerContent content={currentText} />
+                        )}
+                    </div>
+
+                    <div className="text-sm text-gray-400 space-y-1">
+                        <div>Answered {timeFromNow(answer.createdAt)}</div>
+                        {answer.updatedAt !== DEFAULT_TIME && (
+                            <div>Edited {timeFromNow(answer.updatedAt)}</div>
                         )}
                     </div>
 
@@ -241,3 +240,5 @@ export default function Answer(
         </div>
     );
 }
+
+export default memo(Answer);

@@ -1,84 +1,79 @@
-import { GetCollectionResponse } from "@/types/types";
-import React from "react";
 import UserInfoPopup from "@/components/UserInfoPopup";
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import { Tooltip } from "@mui/material";
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import timeFromNow from "@/helpers/time-utils";
 import { formatNumber } from "@/helpers/evaluate-utils";
-import Link from "next/link";
+import timeFromNow from "@/helpers/time-utils";
+import { GetCollectionResponse } from "@/types/types";
+import { Numbers } from "@mui/icons-material";
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import LockIcon from '@mui/icons-material/Lock';
 import PublicIcon from '@mui/icons-material/Public';
+import { Tooltip } from "@mui/material";
+import Link from "next/link";
 
 export default function CollectionItem({ collection }: { collection: GetCollectionResponse }) {
     return (
         <Link href={`/collection/${collection.id}`}>
-            <div className="overflow-hidden border-l-2 border-black hover:scale-[1.01] rounded-r-2xl transition shadow-md bg-teal-50 active:scale-100">
-                <div className="relatives hover:bg-teal-100">
-                    <div className="py-4 pl-8">
-                        <h3 className="text-2xl font-bold">{collection.name}</h3>
-                        <div className="text-gray-600 text-sm font-medium flex mb-4 mt-2">
-                            <p>Created by&nbsp;</p>
-                            <UserInfoPopup
-                                user={collection.author}
-                                className="hover:text-black transition duration-300 ease-in-out" />
-
-                        </div>
-
-                        <div className={'py-2'}>
-                            <p className="leading-7 line-clamp-2 border-l-2 text-gray-500 border-gray-400 pl-5 min-h-[3.5rem]">
-                                {collection.description}
-                            </p>
-                        </div>
-
-                        <div className="mt-4 flex justify-between items-center">
-                            <div className={'flex items-center gap-5'}>
-                                <div className={'flex items-center gap-1'}>
-                                    <Tooltip title={'Like'} className={'flex items-center gap-1'}>
-                                        <div>
-                                            <FavoriteBorderIcon fontSize={'small'} />
-                                            <small className={'text-gray-600'}>
-                                                {formatNumber(collection.likeCount)}
-                                            </small>
-                                        </div>
-                                    </Tooltip>
+            <div className="group relative bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-200">
+                <div className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+                            {collection.name}
+                        </h3>
+                        {collection.isPublic ? (
+                            <Tooltip title="Public collection">
+                                <div className="flex items-center gap-1 text-green-600 text-sm">
+                                    <PublicIcon className="w-4 h-4" />
+                                    <span className="font-medium">Public</span>
                                 </div>
-
-                                <div className={'flex items-center gap-1'}>
-                                    <Tooltip title={`Created ${timeFromNow(collection.createdAt)}`}
-                                        className={'flex items-center gap-1'}>
-                                        <div>
-                                            <AccessTimeIcon fontSize={'small'} />
-                                            <small className={'text-gray-600 text-nowrap text-ellipsis'}>
-                                                {timeFromNow(collection.createdAt)}
-                                            </small>
-                                        </div>
-                                    </Tooltip>
+                            </Tooltip>
+                        ) : (
+                            <Tooltip title="Private collection">
+                                <div className="flex items-center gap-1 text-gray-500 text-sm">
+                                    <LockIcon className="w-4 h-4" />
+                                    <span className="font-medium">Private</span>
                                 </div>
+                            </Tooltip>
+                        )}
+                    </div>
 
-                                <div>
-                                    {collection.isPublic
-                                        ?
-                                        <Tooltip title={'This collection is public'}
-                                            className={'flex items-center gap-1 text-green-700'}>
-                                            <div>
-                                                <PublicIcon fontSize={'small'} />
-                                                Public
-                                            </div>
-                                        </Tooltip>
-                                        :
-                                        <Tooltip title={'This collection is private'}
-                                            className={'flex items-center gap-1 text-red-700'}>
-                                            <div>
-                                                <LockIcon fontSize={'small'} />
-                                                Private
-                                            </div>
-                                        </Tooltip>}
-                                </div>
+                    <div className="flex items-center gap-1 text-sm text-gray-600 mb-4">
+                        <span>Created by</span>
+                        <UserInfoPopup
+                            element="div"
+                            user={collection.author}
+                            className="font-medium text-gray-900 hover:text-blue-600 transition-colors"
+                        />
+                    </div>
+
+                    <p className="text-gray-600 line-clamp-2 mb-6 min-h-[3rem]">
+                        {collection.description}
+                    </p>
+
+                    <div className="flex items-center gap-4 text-sm">
+                        <Tooltip title="Likes">
+                            <div className="flex items-center gap-1 text-gray-500">
+                                <FavoriteBorderIcon className="w-4 h-4" />
+                                <span>{formatNumber(collection.likeCount)}</span>
                             </div>
-                        </div>
+                        </Tooltip>
+
+                        <Tooltip title={`Created ${timeFromNow(collection.createdAt)}`}>
+                            <div className="flex items-center gap-1 text-gray-500">
+                                <AccessTimeIcon className="w-4 h-4" />
+                                <span>{timeFromNow(collection.createdAt)}</span>
+                            </div>
+                        </Tooltip>
+
+                        <Tooltip title={`${collection.questionCount} question(s) in this collection`}>
+                            <div className="flex items-center gap-1 text-gray-500">
+                                <Numbers className="w-4 h-4" />
+                                <span>{collection.questionCount}</span>
+                            </div>
+                        </Tooltip>
                     </div>
                 </div>
+
+                <div className="absolute inset-0 border-2 border-transparent group-hover:border-blue-500 rounded-xl pointer-events-none transition-colors" />
             </div>
         </Link>
     );

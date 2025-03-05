@@ -82,3 +82,11 @@ body {
     padding: 16px;
     background-color: #fff;
 }
+
+.page-container {
+    max-width: 64rem;
+}
+
+input:focus-visible {
+    outline: none;
+}

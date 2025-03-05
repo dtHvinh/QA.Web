@@ -27,22 +27,19 @@ export default function Home() {
             }
 
             setQuestionResults(fetchResult as PagedResponse<QuestionResponse>);
-
-            console.log(fetchResult);
         }
 
         fetchQuestions().then();
     }, []);
 
     if (isLoading) return <Loading />;
-    if (!user) return null;
 
     return (
         <div className="max-w-7xl mx-auto px-4 py-8">
             <div className="grid grid-cols-12 gap-6">
                 <div className="col-span-full">
                     <h1 className="text-3xl font-bold text-gray-900">
-                        Welcome back, <span className="text-blue-600">{auth?.username}</span>
+                        Welcome back, <span className="text-blue-600">{user.username}</span>
                     </h1>
                 </div>
 
@@ -95,6 +92,7 @@ export default function Home() {
                                     <YourQuestionItem
                                         question={question}
                                         key={question.id}
+                                        showAuthor={false}
                                     />
                                 ))}
                             </div>

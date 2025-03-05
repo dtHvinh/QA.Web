@@ -2,6 +2,8 @@
 
 import { TagResponse } from "@/types/types";
 import { AppName } from "@/utilities/Constants";
+import { Add } from "@mui/icons-material";
+import { Tooltip } from "@mui/material";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
@@ -15,9 +17,10 @@ export default function Appbar() {
 
     if (currentPath.startsWith('/auth')) return null;
 
-    const handleSearch = (searchTerm: string, selectedTag: TagResponse) => {
+    const handleSearch = (searchTerm: string, selectedTag?: TagResponse) => {
         if (searchTerm) {
-            router.push(`/search?q=${searchTerm}&tag=${selectedTag.id}`);
+            let url = `/search?q=${searchTerm}&tag=${selectedTag ? selectedTag.id : 0}`;
+            router.push(url);
         }
     };
 
@@ -36,7 +39,13 @@ export default function Appbar() {
 
                     <SearchInput onSearch={handleSearch} />
 
-                    <div className="flex items-center gap-6">
+
+                    <div className="flex items-center gap-2">
+                        <Tooltip title='Ask a question'>
+                            <Link href={'/new-question'} className="hover:bg-gray-200 p-1 rounded-full transition-colors active:scale-95">
+                                <Add />
+                            </Link>
+                        </Tooltip>
                         <UserDropdown />
                     </div>
                 </div>

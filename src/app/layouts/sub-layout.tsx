@@ -16,12 +16,11 @@ export default function SubLayout({
 }>) {
     const noLayoutPathPrefix = [
         '/auth',
-        '/admin'
     ];
 
     return (
-        <ErrorBoundary FallbackComponent={ErrorFallback}>
-            <ThemeProvider theme={theme}>
+        <ThemeProvider theme={theme}>
+            <ErrorBoundary FallbackComponent={ErrorFallback}>
                 {noLayoutPathPrefix.some(prefix => usePathname().startsWith(prefix)) ?
                     <div>
                         <SnackbarProvider autoHideDuration={6000}>
@@ -41,8 +40,8 @@ export default function SubLayout({
                             </div>
                         </SnackbarProvider>
                     </div>}
-            </ThemeProvider>
-        </ErrorBoundary>
+            </ErrorBoundary>
+        </ThemeProvider>
     );
 }
 

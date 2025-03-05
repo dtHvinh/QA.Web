@@ -1,21 +1,21 @@
-import React from "react";
-import {CommentResponse} from "@/types/types";
-import TextEditor from "@/components/TextEditor";
 import AlertDialog from "@/components/AlertDialog";
-import timeFromNow, {DEFAULT_TIME} from "@/helpers/time-utils";
-import {Apis, backendURL} from "@/utilities/Constants";
-import {formatString} from "@/helpers/string-utils";
-import {deleteFetcher, IsErrorResponse, putFetcher} from "@/helpers/request-utils";
-import {ErrorResponse} from "@/props/ErrorResponse";
-import notifyError, {notifySucceed} from "@/utilities/ToastrExtensions";
+import TextEditor from "@/components/TextEditor";
 import getAuth from "@/helpers/auth-utils";
+import { deleteFetcher, IsErrorResponse, putFetcher } from "@/helpers/request-utils";
+import { formatString } from "@/helpers/string-utils";
+import timeFromNow, { DEFAULT_TIME } from "@/helpers/time-utils";
+import { ErrorResponse } from "@/props/ErrorResponse";
+import { CommentResponse } from "@/types/types";
+import { Apis, backendURL } from "@/utilities/Constants";
+import notifyError, { notifySucceed } from "@/utilities/ToastrExtensions";
+import React from "react";
 
 interface CommentComponentProps {
     comment: CommentResponse;
     onCommentDelete: (commentId: string) => void;
 }
 
-export default function Comment({comment, onCommentDelete}: Readonly<CommentComponentProps>) {
+export default function Comment({ comment, onCommentDelete }: Readonly<CommentComponentProps>) {
     const [isEditing, setIsEditing] = React.useState(false);
     const [currentText, setCurrentText] = React.useState(comment.content);
     const [editText, setEditText] = React.useState(comment.content);
@@ -47,7 +47,7 @@ export default function Comment({comment, onCommentDelete}: Readonly<CommentComp
     }
 
     const handleDelete = async () => {
-        const requestUrl = formatString(backendURL + Apis.Comment.Delete, comment.id);
+        const requestUrl = formatString(Apis.Comment.Delete, comment.id);
 
         const response = await deleteFetcher([requestUrl, auth!.accessToken]);
 
@@ -82,21 +82,21 @@ export default function Comment({comment, onCommentDelete}: Readonly<CommentComp
     return (
         <div
             className={`relative grid gap-1 grid-cols-1 p-2 mb-4 rounded-lg bg-white ${isDeleting ? 'element-exit element-exit-active' : ''}`}>
-            <hr/>
+            <hr />
 
             <AlertDialog open={deleteDialogOpen}
-                         onClose={handleClose}
-                         onYes={handleDelete}
-                         title={'Do you want to delete this comment?'}
-                         description={'This action cannot be undone'}/>
+                onClose={handleClose}
+                onYes={handleDelete}
+                title={'Do you want to delete this comment?'}
+                description={'This action cannot be undone'} />
 
             <div className={'transition-all duration-300 ease-in-out'}>
                 {isEditing
-                    ? <TextEditor currentText={currentText as string} onTextChange={handleEditTextChange}/>
+                    ? <TextEditor currentText={currentText as string} onTextChange={handleEditTextChange} />
                     :
                     <div>
                         <div className="text-black text-sm"
-                             dangerouslySetInnerHTML={{__html: currentText as TrustedHTML}}></div>
+                            dangerouslySetInnerHTML={{ __html: currentText as TrustedHTML }}></div>
                         <div className="text-gray-400 inline text-xs">
                             Commented by {comment.author?.username},
                             {comment.updatedAt == DEFAULT_TIME ?
@@ -119,8 +119,8 @@ export default function Comment({comment, onCommentDelete}: Readonly<CommentComp
                                             Discard
                                         </button>
                                         <button className={'text-blue-500 disabled:text-gray-500'}
-                                                disabled={!isSaveAllow}
-                                                onClick={handleUpdate}>
+                                            disabled={!isSaveAllow}
+                                            onClick={handleUpdate}>
                                             Save
                                         </button>
                                     </div>

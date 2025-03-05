@@ -1,26 +1,19 @@
-import SolvedLabel from "@/components/StatusLabels/SolvedLabel";
 import ClosedLabel from "@/components/StatusLabels/ClosedLabel";
-import DraftLabel from "@/components/StatusLabels/DraftLabel";
-import React from "react";
+import SolvedLabel from "@/components/StatusLabels/SolvedLabel";
 
-export default function QuestionStatusBar({className, isClosed, isDraft, isSolved}: {
+export default function QuestionStatusBar({ className, isClosed, isSolved }: {
     className?: string,
     isClosed: boolean,
-    isDraft: boolean,
     isSolved: boolean
 }) {
     return (
         <div className={`${className} flex gap-2`}>
             {isSolved &&
-                <SolvedLabel/>
+                <SolvedLabel />
             }
 
             {isClosed &&
-                <ClosedLabel/>
-            }
-
-            {isDraft &&
-                <DraftLabel/>
+                <ClosedLabel />
             }
         </div>
     );

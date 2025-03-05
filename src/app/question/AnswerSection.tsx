@@ -1,16 +1,16 @@
 'use client'
 
-import { AnswerResponse, QuestionResponse } from "@/types/types";
-import TextEditor from "@/components/TextEditor";
-import React, { useEffect, useState } from "react";
-import { Apis, backendURL } from "@/utilities/Constants";
-import getAuth from "@/helpers/auth-utils";
-import { formatString } from "@/helpers/string-utils";
 import Answer from "@/app/question/Answer";
-import { IsErrorResponse, postFetcher } from "@/helpers/request-utils";
-import { ErrorResponse } from "@/props/ErrorResponse";
-import notifyError from "@/utilities/ToastrExtensions";
 import FilterBar from "@/components/FilterBar";
+import TextEditor from "@/components/TextEditor";
+import getAuth from "@/helpers/auth-utils";
+import { IsErrorResponse, postFetcher } from "@/helpers/request-utils";
+import { formatString } from "@/helpers/string-utils";
+import { ErrorResponse } from "@/props/ErrorResponse";
+import { AnswerResponse, QuestionResponse } from "@/types/types";
+import { Apis, backendURL } from "@/utilities/Constants";
+import notifyError from "@/utilities/ToastrExtensions";
+import React, { useEffect, useState } from "react";
 
 export default function AnswerSection(
     {
@@ -66,13 +66,6 @@ export default function AnswerSection(
         setAnswers(answers.filter(answer => answer.id !== answerId));
         question.answerCount--;
     }
-
-    if (question.isDraft)
-        return (
-            <div>
-                Edit and publish the question to see answers
-            </div>
-        )
 
     return (
         <div className={'-mx-12 md:-mx-0'}>

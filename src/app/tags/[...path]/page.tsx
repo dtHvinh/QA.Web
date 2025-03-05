@@ -1,17 +1,15 @@
 'use client'
 
-import React, { useEffect } from "react";
-import getAuth from "@/helpers/auth-utils";
-import useSWR from "swr";
-import { backendURL } from "@/utilities/Constants";
-import { getFetcher } from "@/helpers/request-utils";
-import { QuestionResponse, TagDetailResponse } from "@/types/types";
 import TagQuestionDisplay from "@/app/tags/[...path]/TagQuestionDisplay";
-import { Pagination } from "@mui/material";
-import FilterBar from "@/components/FilterBar";
 import TagQuestionDisplaySkeleton from "@/app/tags/[...path]/TagQuestionDisplaySkeleton";
-import { toWikiPage } from "@/helpers/route-utils";
-import Link from "next/link";
+import FilterBar from "@/components/FilterBar";
+import ObjectNotfound from "@/components/ObjectNotFound";
+import getAuth from "@/helpers/auth-utils";
+import { getFetcher, IsErrorResponse } from "@/helpers/request-utils";
+import { QuestionResponse, TagDetailResponse } from "@/types/types";
+import { Pagination } from "@mui/material";
+import React, { useEffect } from "react";
+import useSWR from "swr";
 
 export default function TagDetailPage({ params }: { params: Promise<{ path: string[] }> }) {
     const { path } = React.use(params);
@@ -27,49 +25,80 @@ export default function TagDetailPage({ params }: { params: Promise<{ path: stri
         'Question has been solved'
     ];
     const [selectedOrder, setSelectedOrder] = React.useState<string>(validOrderValue[0]);
-    const requestUrl = `${backendURL}/api/tag/${path[0]}?orderBy=${selectedOrder}&pageIndex=${pageIndex}&pageSize=15`;
+    const requestUrl = `/api/tag/${path[0]}?orderBy=${selectedOrder}&pageIndex=${pageIndex}&pageSize=15`;
+    const titleRef = React.useRef<HTMLHeadingElement>(null);
 
-    const { data, isLoading } = useSWR([requestUrl, auth?.accessToken], getFetcher);
+    const { data: tag, isLoading } = useSWR<TagDetailResponse>([requestUrl, auth?.accessToken], getFetcher);
 
     useEffect(() => {
-        if (data)
-            setTagQuestions((data as TagDetailResponse).questions.items);
-    }, [data]);
+        if (!IsErrorResponse(tag)) {
+            setTagQuestions((tag as TagDetailResponse).questions.items);
+            titleRef.current?.scrollIntoView({ behavior: 'instant' });
+        }
+    }, [tag]);
 
-    const tag = data as TagDetailResponse;
+    if (IsErrorResponse(tag)) {
+        return <ObjectNotfound title="Tag Not Found" message="The tag you're looking for doesn't exist or has been removed." />
+    }
 
     return (
-        <div className={'flex flex-col'}>
-            <div className={'text-3xl'}>{tag?.name}</div>
-
-            <div className={'text-md mt-5'}>{tag?.description}</div>
-
-            <div className={'mt-5'}>
-                <div className={'text-xl font-bold flex justify-between'}>
-                    <div>
-                        {tag?.questionCount} Questions:
+        <div className="max-w-5xl mx-auto space-y-8">
+            {tag && (
+                <div className="bg-white border border-gray-200 rounded-xl p-6">
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-3">
+                            <h1 className="text-3xl font-bold text-gray-900">{tag.name}</h1>
+                            <span className="px-3 py-1 text-sm font-medium text-blue-600 bg-blue-50 rounded-full">
+                                {tag.questionCount} questions
+                            </span>
+                        </div>
+                        <p className="text-gray-600">{tag.description}</p>
                     </div>
+                </div>
+            )}
 
-                    <FilterBar tabs={validOrder}
+            <div className="space-y-6">
+                <div ref={titleRef} className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <h2 className="text-xl font-semibold text-gray-900">
+                        Questions Tagged [{tag?.name}]
+                    </h2>
+                    <FilterBar
+                        tabs={validOrder}
                         tabValues={validOrderValue}
                         tabDescriptions={orderDescription}
-                        onFilterValueChange={setSelectedOrder} />
+                        onFilterValueChange={setSelectedOrder}
+                    />
                 </div>
 
-                {isLoading && <TagQuestionDisplaySkeleton />}
-
-                {tag && tagQuestions.map(question => (
-                    <TagQuestionDisplay key={question.id} question={question} />
-                ))}
-
-                <div className={'my-5 flex justify-end'}>
-                    <Pagination count={tag?.questions.totalPage}
-                        onChange={
-                            ((e, page) =>
-                                setPageIndex(page))
-                        } />
+                <div className="space-y-4">
+                    {isLoading ? (
+                        <TagQuestionDisplaySkeleton />
+                    ) : tagQuestions.length === 0 ? (
+                        <div className="text-center py-12 bg-gray-50 rounded-lg">
+                            <p className="text-gray-500">No questions found with this tag</p>
+                        </div>
+                    ) : (
+                        tagQuestions.map(question => (
+                            <TagQuestionDisplay
+                                key={question.id}
+                                question={question}
+                            />
+                        ))
+                    )}
                 </div>
+
+                {tag?.questions && tag.questions.totalPage > 1 && (
+                    <div className="flex justify-center pt-6 border-t">
+                        <Pagination
+                            count={tag.questions.totalPage}
+                            page={pageIndex}
+                            onChange={(_, page) => setPageIndex(page)}
+                            shape="rounded"
+                            size="large"
+                        />
+                    </div>
+                )}
             </div>
-        </div>
-    )
+        </div >
+    );
 }

@@ -1,18 +1,18 @@
-import {GetCollectionDetailResponse} from "@/types/types";
-import React, {FormEvent} from "react";
-import {FormControlLabel, Radio, RadioGroup} from "@mui/material";
-import {Lock, Public} from "@mui/icons-material";
-import {deleteFetcher, IsErrorResponse, putFetcher} from "@/helpers/request-utils";
-import {backendURL} from "@/utilities/Constants";
 import getAuth from "@/helpers/auth-utils";
-import notifyError, {notifySucceed} from "@/utilities/ToastrExtensions";
-import {ErrorResponse} from "@/props/ErrorResponse";
-import {AlertDialog} from "radix-ui";
+import { deleteFetcher, IsErrorResponse, putFetcher } from "@/helpers/request-utils";
+import { ErrorResponse } from "@/props/ErrorResponse";
+import { GetCollectionDetailResponse } from "@/types/types";
+import { backendURL } from "@/utilities/Constants";
+import notifyError, { notifySucceed } from "@/utilities/ToastrExtensions";
+import { Lock, Public } from "@mui/icons-material";
+import { FormControlLabel, Radio, RadioGroup } from "@mui/material";
+import { AlertDialog } from "radix-ui";
+import React, { FormEvent } from "react";
 
+import { useRouter } from "next/navigation";
 import './collection-settings.css';
-import {useRouter} from "next/navigation";
 
-export default function CollectionSettings({collection}: { collection: GetCollectionDetailResponse }) {
+export default function CollectionSettings({ collection }: { collection: GetCollectionDetailResponse }) {
     const [anyChange, setAnyChange] = React.useState(false);
     const [isPublic, setIsPublic] = React.useState(collection.isPublic ? 'true' : 'false');
     const [inputValue, setInputValue] = React.useState('');
@@ -55,139 +55,166 @@ export default function CollectionSettings({collection}: { collection: GetCollec
     }
 
     return (
-        <div>
-            <form onSubmit={handleUpdate} className={'flex flex-col gap-2'}>
-                <div className={'text-2xl font-bold'}>
-                    General
-                </div>
+        <div className="max-w-3xl mx-auto space-y-8">
+            <form onSubmit={handleUpdate} className="space-y-8">
+                <div className="bg-white rounded-xl border border-gray-200 p-6">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-6">General Settings</h2>
 
-                <div className={'flex flex-col'}>
-                    <label htmlFor="name" className={'mt-2'}>Collection name</label>
-                    <div className={'flex items-baseline gap-2'}>
-                        <input className={'border p-1 px-3 mt-2 border-black rounded-lg'} type="text" id="name"
-                               name="name"
-                               maxLength={25}
-                               spellCheck={false}
-                               onChange={() => setAnyChange(true)}
-                               defaultValue={collection.name}/>
+                    <div className="space-y-6">
+                        <div>
+                            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                                Collection name
+                            </label>
+                            <input
+                                type="search"
+                                id="name"
+                                name="name"
+                                maxLength={25}
+                                spellCheck={false}
+                                onChange={() => setAnyChange(true)}
+                                defaultValue={collection.name}
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg transition-colors"
+                            />
+                        </div>
+
+                        <div>
+                            <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
+                                Description
+                            </label>
+                            <textarea
+                                id="description"
+                                name="description"
+                                spellCheck={false}
+                                onChange={() => setAnyChange(true)}
+                                defaultValue={collection.description}
+                                rows={4}
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg transition-colors resize-none"
+                            />
+                        </div>
                     </div>
                 </div>
 
-                <div className={'flex flex-col'}>
-                    <label htmlFor="description" className={'mt-2'}>Description</label>
-                    <div className={'flex items-end gap-2'}>
-                        <textarea className={'border p-1 px-3 mt-2 border-black rounded-lg flex-grow min-h-9'}
-                                  id="name"
-                                  name="description"
-                                  spellCheck={'false'}
-                                  onChange={() => setAnyChange(true)}
-                                  defaultValue={collection.description}/>
-                    </div>
-                </div>
+                <div className="bg-red-50 rounded-xl border-2 border-red-200 p-6">
+                    <h2 className="text-2xl font-bold text-red-700 mb-6">Danger Zone</h2>
 
-
-                <div className={'mt-5'}>
-                    <div className={'text-2xl font-bold'}>
-                        Danger Zone
-                    </div>
-
-                    <div className={'flex flex-col gap-4 p-8 border-2 border-red-600 rounded-lg mt-5'}>
-
-                        <div className={'flex flex-col'}>
-                            <label htmlFor="visitbility" className={'mt-2 font-bold'}>Visibility</label>
+                    <div className="space-y-6">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-4">
+                                Visibility
+                            </label>
                             <RadioGroup
                                 value={isPublic}
                                 onChange={(e) => {
                                     setIsPublic(e.target.value);
                                     setAnyChange(true);
                                 }}
+                                className="space-y-3"
                             >
-                                <FormControlLabel value="true"
-                                                  className={`
-                                                ${isPublic === 'false' ? 'text-gray-300' : ''} hover:bg-gray-100 p-2 rounded-lg
-                                              `}
-                                                  control={<Radio icon={<Public/>}
-                                                                  checkedIcon={<Public/>}
-                                                                  checked={isPublic === 'true'}/>}
-                                                  label={
-                                                      <div className={'flex flex-col'}>
-                                                          <span className={'font-bold'}>Public</span>
-                                                          <small>
-                                                              This collection will visible for
-                                                              everyone
-                                                          </small>
-                                                      </div>}/>
-                                <FormControlLabel value="false"
-                                                  className={`
-                                                ${isPublic === 'true' ? 'text-gray-300' : ''} hover:bg-gray-100 p-2 rounded-lg
-                                              `}
-                                                  control={<Radio icon={<Lock/>}
-                                                                  color={'error'}
-                                                                  checkedIcon={<Lock/>}
-                                                                  checked={isPublic === 'false'}/>}
-                                                  label={
-                                                      <div className={'flex flex-col'}>
-                                                          <span className={'font-bold'}>Private</span>
-                                                          <small>
-                                                              This collection will not visible for
-                                                              everyone
-                                                          </small>
-                                                      </div>
-                                                  }/>
+                                <FormControlLabel
+                                    value="true"
+                                    className={`w-full rounded-lg p-3 transition-colors ${isPublic === 'true' ? 'bg-white shadow-sm' : 'hover:bg-white/50'
+                                        }`}
+                                    control={
+                                        <Radio
+                                            icon={<Public className="text-gray-400" />}
+                                            checkedIcon={<Public className="text-blue-600" />}
+                                        />
+                                    }
+                                    label={
+                                        <div className="ml-2">
+                                            <div className="font-medium text-gray-900">Public</div>
+                                            <div className="text-sm text-gray-500">
+                                                This collection will be visible to everyone
+                                            </div>
+                                        </div>
+                                    }
+                                />
+                                <FormControlLabel
+                                    value="false"
+                                    className={`w-full rounded-lg p-3 transition-colors ${isPublic === 'false' ? 'bg-white shadow-sm' : 'hover:bg-white/50'
+                                        }`}
+                                    control={
+                                        <Radio
+                                            icon={<Lock className="text-gray-400" />}
+                                            checkedIcon={<Lock className="text-red-600" />}
+                                        />
+                                    }
+                                    label={
+                                        <div className="ml-2">
+                                            <div className="font-medium text-gray-900">Private</div>
+                                            <div className="text-sm text-gray-500">
+                                                This collection will not be visible to others
+                                            </div>
+                                        </div>
+                                    }
+                                />
                             </RadioGroup>
                         </div>
 
-                        <div className={'flex flex-col'}>
-                            <label htmlFor="delete" className={'mt-2 font-bold'}>Delete Collection</label>
+                        <div className="pt-4 border-t border-red-200">
+                            <label className="block text-sm font-medium text-gray-700 mb-4">
+                                Delete Collection
+                            </label>
                             <AlertDialog.Root>
                                 <AlertDialog.Trigger asChild>
-                                    <button
-                                        className={'border p-1 px-3 mt-2 border-red-600 bg-red-200 text-red-600 rounded-lg'}>
-                                        Delete
+                                    <button className="px-4 py-2 bg-red-100 text-red-700 border border-red-300 rounded-lg hover:bg-red-200 transition-colors">
+                                        Delete Collection
                                     </button>
                                 </AlertDialog.Trigger>
                                 <AlertDialog.Portal>
-                                    <AlertDialog.Overlay className="alert-overlay"/>
-                                    <AlertDialog.Content className="alert-content">
-                                        <AlertDialog.Title className="alert-title">Are you sure?</AlertDialog.Title>
-                                        <AlertDialog.Description className="alert-description">
+                                    <AlertDialog.Overlay className="fixed inset-0 bg-black/50" />
+                                    <AlertDialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 max-w-md w-full bg-white rounded-xl p-6 shadow-xl">
+                                        <AlertDialog.Title className="text-xl font-bold text-gray-900 mb-4">
+                                            Delete Collection?
+                                        </AlertDialog.Title>
+                                        <AlertDialog.Description className="text-gray-600 mb-6">
                                             This action cannot be undone. This will permanently delete the collection.
                                         </AlertDialog.Description>
 
-                                        <label htmlFor="delete"
-                                               className={'mt-2'}>{`To confirm, type "${collection.name}" in the box below`}</label>
-                                        <input
-                                            type="text"
-                                            value={inputValue}
-                                            required={true}
-                                            onChange={(e) => setInputValue(e.target.value)}
-                                            className="border border-red-500 rounded-lg p-2 w-full mb-2"
-                                        />
+                                        <div className="space-y-4">
+                                            <div>
+                                                <label className="block text-sm text-gray-700 mb-2">
+                                                    Type "{collection.name}" to confirm
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    value={inputValue}
+                                                    onChange={(e) => setInputValue(e.target.value)}
+                                                    className="w-full px-4 py-2 border border-red-300 rounded-lg focus-visible:outline-none"
+                                                />
+                                            </div>
 
-                                        <div className="alert-buttons">
-                                            <AlertDialog.Cancel asChild>
-                                                <button className="alert-button cancel">Cancel</button>
-                                            </AlertDialog.Cancel>
-                                            <AlertDialog.Action asChild>
-                                                <button disabled={inputValue !== collection.name}
-                                                        className="alert-button confirm transition"
-                                                        onClick={handleDelete}>Delete
-                                                </button>
-                                            </AlertDialog.Action>
+                                            <div className="flex justify-end gap-3">
+                                                <AlertDialog.Cancel asChild>
+                                                    <button className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                                                        Cancel
+                                                    </button>
+                                                </AlertDialog.Cancel>
+                                                <AlertDialog.Action asChild>
+                                                    <button
+                                                        disabled={inputValue !== collection.name}
+                                                        onClick={handleDelete}
+                                                        className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                </AlertDialog.Action>
+                                            </div>
                                         </div>
                                     </AlertDialog.Content>
                                 </AlertDialog.Portal>
                             </AlertDialog.Root>
                         </div>
-
                     </div>
-
                 </div>
 
-                <div className={'flex justify-end mt-5'}>
+                <div className="flex justify-end">
                     <button
+                        type="submit"
                         disabled={!anyChange}
-                        className={'p-1 px-4 border disabled:border-gray-600 disabled:bg-gray-200 disabled:text-gray-600 border-green-600 bg-green-200 text-green-600 rounded-lg'}>Update
+                        className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                        Save Changes
                     </button>
                 </div>
             </form>

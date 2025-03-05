@@ -1,17 +1,17 @@
 'use client'
 
-import { IconButton, Pagination, Tooltip } from "@mui/material";
-import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
-import React, { useEffect } from "react";
+import CollectionItem from "@/components/CollectionItem";
 import CreateCollectionDialog from "@/components/CreateCollectionDialog";
-import { backendURL } from "@/utilities/Constants";
+import FilterBar from "@/components/FilterBar";
 import getAuth from "@/helpers/auth-utils";
 import { getFetcher } from "@/helpers/request-utils";
-import useSWR from "swr";
-import FilterBar from "@/components/FilterBar";
 import { GetCollectionResponse, PagedResponse } from "@/types/types";
-import CollectionItem from "@/components/CollectionItem";
+import { backendURL } from "@/utilities/Constants";
 import { notifySucceed } from "@/utilities/ToastrExtensions";
+import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
+import { Pagination } from "@mui/material";
+import React, { useEffect } from "react";
+import useSWR from "swr";
 
 export default function YourCollectionsPage() {
     const [open, setOpen] = React.useState(false);
@@ -40,39 +40,60 @@ export default function YourCollectionsPage() {
     }
 
     return (
-        <div>
+        <div className="page-container mx-auto px-4 py-8">
             <CreateCollectionDialog open={open} onClose={() => setOpen(false)} onCreated={handleCreated} />
 
-            <div className={'flex justify-between items-center'}>
-                <div className={'text-2xl mt-4'}>
+            <div className="flex flex-col sm:flex-row justify-between items-center mb-8">
+                <h1 className="text-3xl font-bold text-gray-900">
                     Your Collections
-                </div>
+                </h1>
 
-                <div>
-                    <Tooltip title={'Add CollectionItem'} arrow>
-                        <IconButton onClick={() => setOpen(true)}>
-                            <PlaylistAddIcon />
-                        </IconButton>
-                    </Tooltip>
-                </div>
+                <button
+                    onClick={() => setOpen(true)}
+                    className="flex items-center gap-2 px-4 py-2 mt-4 sm:mt-0 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                    <PlaylistAddIcon sx={{ fontSize: 20 }} />
+                    <span>New Collection</span>
+                </button>
             </div>
 
-            <div className={'flex justify-end'}>
-                <FilterBar tabs={tabs} tabValues={tabValues} tabDescriptions={tabDescriptions}
-                    onFilterValueChange={setFilterValue} />
+            <div className="p-4 border-b border-gray-100">
+                <FilterBar
+                    tabs={tabs}
+                    tabValues={tabValues}
+                    tabDescriptions={tabDescriptions}
+                    onFilterValueChange={setFilterValue}
+                />
             </div>
 
-            <div className={'grid grid-cols-1 md:grid-cols-3 gap-4 mt-5'}>
-                {collections.map((collection) => (
-                    <CollectionItem key={collection.id} collection={collection} />
-                ))}
-            </div>
-            {
-                data?.totalPage !== 0 &&
-                <div className={'mt-5 flex justify-end'}>
-                    <Pagination count={data?.totalPage} page={pageIndex} onChange={(_, num) => setPageIndex(num)} />
+            {collections.length > 0 ? (
+                <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {collections.map((collection) => (
+                            <CollectionItem key={collection.id} collection={collection} />
+                        ))}
+                    </div>
+
+                    {data?.totalPage !== 0 && (
+                        <div className="flex justify-center border-t border-gray-100 p-4">
+                            <Pagination
+                                count={data?.totalPage}
+                                page={pageIndex}
+                                onChange={(_, num) => setPageIndex(num)}
+                                size="large"
+                            />
+                        </div>
+                    )}
+                </>
+            ) : (
+                <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
+                    <svg className="w-16 h-16 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                    </svg>
+                    <h3 className="text-lg font-medium text-gray-900 mb-1">No collections yet</h3>
+                    <p className="text-gray-500">Create your first collection to get started</p>
                 </div>
-            }
+            )}
         </div>
     );
 }

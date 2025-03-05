@@ -1,9 +1,9 @@
-import { ErrorResponse } from "@/props/ErrorResponse";
-import { backendURL } from "@/utilities/Constants";
 import getAuth, { AuthProps } from "@/helpers/auth-utils";
+import { ErrorResponse } from "@/props/ErrorResponse";
 import { AuthRefreshResponse } from "@/types/types";
-import { setCookie } from "cookies-next/client";
+import { backendURL } from "@/utilities/Constants";
 import notifyError, { notifySucceed } from "@/utilities/ToastrExtensions";
+import { setCookie } from "cookies-next/client";
 import { createAxiosInstance } from './axios-config';
 
 const axios = createAxiosInstance();
@@ -23,19 +23,14 @@ export const makeRequest = async (config: RequestConfig) => {
         if (error.response?.status === 401) {
             const auth = getAuth();
             if (auth) {
-                try {
-                    const newToken = await refreshToken(auth);
-                    if (newToken) {
-                        config.headers = {
-                            ...config.headers,
-                            Authorization: `Bearer ${newToken}`
-                        };
-                        const retryResponse = await axios(config);
-                        return retryResponse.data;
-                    }
-                } catch (refreshError) {
-                    window.location.href = '/auth/login';
-                    return null;
+                const newToken = await refreshToken(auth);
+                if (newToken) {
+                    config.headers = {
+                        ...config.headers,
+                        Authorization: `Bearer ${newToken}`
+                    };
+                    const retryResponse = await axios(config);
+                    return retryResponse.data;
                 }
             }
         }
@@ -138,6 +133,7 @@ export async function refreshToken(auth?: AuthProps) {
         return authRefreshResponse.accessToken;
     } catch (error) {
         notifyError("Failed to refresh token");
+        window.location.href = '/auth/login';
         return null;
     } finally {
         isRefreshing = false;

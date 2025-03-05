@@ -1,10 +1,12 @@
 import { AuthorResponse } from "@/types/types";
-import React from "react";
 import { Avatar, Popover } from "@mui/material";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import React from "react";
 
-export default function UserInfoPopup({ user, className }: { user: AuthorResponse, className?: string }) {
+export default function UserInfoPopup({ user, className, element = 'a' }: { user: AuthorResponse, className?: string, element?: string }) {
     const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
-
+    const router = useRouter();
     const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
     };
@@ -15,8 +17,8 @@ export default function UserInfoPopup({ user, className }: { user: AuthorRespons
 
     const open = Boolean(anchorEl);
 
-    return (
-        <div className={className}>
+    const Inner = (
+        <>
             <div
                 aria-owns={open ? 'mouse-over-popover' : undefined}
                 aria-haspopup="true"
@@ -68,6 +70,20 @@ export default function UserInfoPopup({ user, className }: { user: AuthorRespons
                     </div>
                 </div>
             </Popover>
-        </div>
+        </>
+    )
+
+    return (
+        <>
+            {element === 'a' && (
+                <Link href={`/profile/${user.username}`} className={className}>
+                    {Inner}
+                </Link>
+            )}
+
+            {React.createElement(element, {
+                className: className
+            }, Inner)}
+        </>
     );
 }

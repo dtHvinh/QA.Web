@@ -1,37 +1,33 @@
 'use client';
 
-import React, { useEffect, useState } from "react";
-import { Apis, backendURL } from "@/utilities/Constants";
-import useSWR from "swr";
-import { getFetcher, IsErrorResponse } from "@/helpers/request-utils";
-import { PagedResponse, QuestionResponse } from "@/types/types";
-import getAuth from "@/helpers/auth-utils";
-import QuestionSection from "@/app/question/QuestionSection";
-import 'highlight.js/styles/vs.min.css';
 import Loading from "@/app/loading";
-import FetchFail from "@/components/FetchFail";
-import { ErrorResponse } from "@/props/ErrorResponse";
-import notifyError from "@/utilities/ToastrExtensions";
-import Link from "next/link";
+import QuestionSection from "@/app/question/QuestionSection";
+import ObjectNotfound from "@/components/ObjectNotFound";
+import getAuth from "@/helpers/auth-utils";
 import toQuestionDetail from "@/helpers/path";
-import { scrollToTop } from "@/helpers/utils";
+import { getFetcher, IsErrorResponse } from "@/helpers/request-utils";
+import { ErrorResponse } from "@/props/ErrorResponse";
+import { PagedResponse, QuestionResponse } from "@/types/types";
+import { Apis } from "@/utilities/Constants";
+import 'highlight.js/styles/github.min.css';
+import Link from "next/link";
+import React, { useEffect, useState } from "react";
+import useSWR from "swr";
 
 export default function QuestionPage({ params }: { params: Promise<{ path: string[] }> }) {
     const { path } = React.use(params);
     const auth = getAuth();
-    const requestUrl = `${backendURL}${Apis.Question.GetQuestionDetail}/view/${path[0]}`
-    const relatedQuestionRequestUrl = `${backendURL}/api/question/${path[0]}/similar?skip=0&take=10`;
-    const [relateQuestions, setRelateQuestion] = useState<PagedResponse<QuestionResponse>>()
+    const requestUrl = `${Apis.Question.GetQuestionDetail}/view/${path[0]}`
+    const relatedQuestionRequestUrl = `/api/question/${path[0]}/similar?skip=0&take=10`;
+    const [relatedQuestions, setRelatedQuestions] = useState<PagedResponse<QuestionResponse>>()
     const { data, isLoading } = useSWR([requestUrl, auth?.accessToken], getFetcher);
 
     const question = data as QuestionResponse;
 
     useEffect(() => {
-        scrollToTop()
         getFetcher([relatedQuestionRequestUrl, auth!.accessToken]).then((response: PagedResponse<QuestionResponse> | ErrorResponse) => {
             if (!IsErrorResponse(response)) {
-                setRelateQuestion(response as PagedResponse<QuestionResponse>);
-                return;
+                setRelatedQuestions(response as PagedResponse<QuestionResponse>);
             }
         })
     }, []);
@@ -41,29 +37,41 @@ export default function QuestionPage({ params }: { params: Promise<{ path: strin
     }
 
     if (IsErrorResponse(data)) {
-        return <FetchFail error={'Question not found!'} />
+        return <ObjectNotfound title="Question not found" message="The question you are looking for does not exist." />
     }
 
     return (
         <>
             <title>{question.title}</title>
-            <div className="container mx-auto">
-                <div className="bg-white p-6 rounded-lg">
-                    <div className={'grid grid-cols-12 gap-4'}>
-                        <div
-                            className={'col-span-full md:col-span-9 md:border-r min-h-[calc(100vh-var(--appbar-height))]'}>
+            <div className="max-w-7xl mx-auto px-4 py-6">
+                <div className="flex flex-col lg:flex-row gap-8">
+                    <div className="w-full lg:w-3/4">
+                        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                             <QuestionSection questionInit={question} />
                         </div>
-                        <div className={'col-span-full md:col-span-3'}>
-                            <span className={'text-xl'}>Relate questions</span>
+                    </div>
 
-                            <div className={'flex mt-5 flex-col gap-5'}>
-                                {relateQuestions && relateQuestions.items.map((question: QuestionResponse) => (
-                                    <div key={question.id} className={'flex flex-col gap-2'}>
-                                        <Link
-                                            href={toQuestionDetail(question.id, question.slug)}
-                                            className={'text-blue-500 hover:text-blue-800 text-sm'}>{question.title}</Link>
-                                    </div>))}
+                    <div className="w-full lg:w-1/4">
+                        <div className="sticky top-24">
+                            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden p-5">
+                                <h3 className="text-lg font-semibold text-gray-900 mb-4">Related Questions</h3>
+
+                                {relatedQuestions && relatedQuestions.items.length > 0 ? (
+                                    <div className="space-y-4">
+                                        {relatedQuestions.items.map((relatedQuestion: QuestionResponse) => (
+                                            <div key={relatedQuestion.id} className="group">
+                                                <Link
+                                                    href={toQuestionDetail(relatedQuestion.id, relatedQuestion.slug)}
+                                                    className="block text-gray-700 group-hover:text-blue-600 transition-colors text-sm font-medium"
+                                                >
+                                                    {relatedQuestion.title}
+                                                </Link>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="text-gray-500 text-sm">No related questions found</div>
+                                )}
                             </div>
                         </div>
                     </div>

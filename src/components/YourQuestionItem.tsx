@@ -8,24 +8,22 @@ import Link from "next/link";
 import UserInfoPopup from "./UserInfoPopup";
 
 interface YourQuestionItemProps {
-    question: QuestionResponse
+    question: QuestionResponse,
+    showAuthor?: boolean,
 }
 
-export default function YourQuestionItem(params: Readonly<YourQuestionItemProps>) {
-    const { question } = params;
+export default function YourQuestionItem({ question, showAuthor = true }: Readonly<YourQuestionItemProps>) {
 
     return (
         <div className='flex flex-col'>
-            <div className="rounded-xl p-6 hover:shadow-lg transition-all duration-200 border border-gray-100 w-full bg-white group">
-                <div className="flex w-full items-start justify-between pb-4">
-                    <div className="flex flex-col gap-3">
+            <div className="rounded-xl p-6 hover:border-blue-500 hover:shadow-lg duration-200 border border-gray-100 w-full bg-white group">
+                <div className="flex w-full items-start justify-between pb-3">
+                    <div className="flex items-center gap-3 max-w-[85%]">
                         <Link href={toQuestionDetail(question.id, question.slug)}
                             className="text-lg font-semibold text-gray-800 hover:text-blue-600 transition-colors">
                             {question.title}
                         </Link>
-                        <div className="flex items-center gap-3">
-                            <QuestionStatusBar {...question} />
-                        </div>
+                        <QuestionStatusBar {...question} />
                     </div>
                     <div className="flex flex-col gap-3">
                         <div className="flex justify-end flex-wrap gap-2">
@@ -41,7 +39,7 @@ export default function YourQuestionItem(params: Readonly<YourQuestionItemProps>
                     </div>
                 </div>
 
-                <div className="my-3">
+                <div className="">
                     <p dangerouslySetInnerHTML={{ __html: question.content }}
                         className="text-gray-600 line-clamp-2 leading-relaxed">
                     </p>
@@ -67,11 +65,12 @@ export default function YourQuestionItem(params: Readonly<YourQuestionItemProps>
                             <span className="font-semibold">{formatNumber(question.answerCount)}</span>
                         </div>
 
-                        <div className="flex items-center gap-2 text-gray-600">
-                            <span className="text-sm">Author</span>
-                            <UserInfoPopup user={question.author} />
-
-                        </div>
+                        {showAuthor &&
+                            <div className="flex items-center gap-2 text-gray-600">
+                                <span className="text-sm">Author</span>
+                                <UserInfoPopup user={question.author} />
+                            </div>
+                        }
                     </div>
                 </div>
             </div>

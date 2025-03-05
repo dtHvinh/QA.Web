@@ -1,24 +1,21 @@
 'use client'
 
-import React, { useActionState, useEffect, useState, useTransition } from "react";
-import { backendURL } from "@/utilities/Constants";
-import getAuth from "@/helpers/auth-utils";
-import { GetCollectionDetailResponse } from "@/types/types";
-import { deleteFetcher, getFetcher, IsErrorResponse, postFetcher } from "@/helpers/request-utils";
-import useSWR from "swr";
-import Loading from "@/app/loading";
-import { Tabs } from "radix-ui";
-import { TabsContent } from "@radix-ui/react-tabs";
-import RoundedButton from "@/components/RoundedButton";
-import { Avatar, Pagination } from "@mui/material";
-import { Description, ImportContacts, Info, Settings } from "@mui/icons-material";
+import CollectionQuestions from "@/app/collection/CollectionQuestions";
 import CollectionSettings from "@/app/collection/CollectionSettings";
+import Loading from "@/app/loading";
 import ResourceOwnerPrivilege from "@/components/Privilege/ResourceOwnerPrivilege";
-import CollectionQuestion from "@/app/collection/CollectionQuestion";
-import { useDebounce } from "use-debounce";
+import getAuth from "@/helpers/auth-utils";
+import { deleteFetcher, getFetcher, IsErrorResponse, postFetcher } from "@/helpers/request-utils";
+import { GetCollectionDetailResponse } from "@/types/types";
+import { notifySucceed } from "@/utilities/ToastrExtensions";
+import { Description, ImportContacts, Info, Settings } from "@mui/icons-material";
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import { notifySucceed } from "@/utilities/ToastrExtensions";
+import { Avatar, Pagination } from "@mui/material";
+import { TabsContent } from "@radix-ui/react-tabs";
+import { Tabs } from "radix-ui";
+import React, { useEffect, useState } from "react";
+import useSWR from "swr";
 
 export default function CollectionDetailPage({ params }: Readonly<{ params: Promise<{ id: string }> }>) {
     const { id } = React.use(params);
@@ -68,93 +65,121 @@ export default function CollectionDetailPage({ params }: Readonly<{ params: Prom
     }
 
     return (
-        <div>
-            {data &&
-                <div className={'grid grid-cols-12'}>
-                    <div className={'col-span-11'}>
-                        <Tabs.Root defaultValue={'details'}>
-                            <Tabs.List className="tabs-list">
-                                <Tabs.TabsTrigger className="tab-trigger flex items-center gap-2" defaultChecked={true}
-                                    value={'details'}>
-                                    <Info />
+        <div className="max-w-6xl mx-auto">
+            {data && (
+                <div className="space-y-6">
+                    <Tabs.Root defaultValue="details" className="w-full">
+                        <Tabs.List className="flex space-x-1 border-b border-gray-200 mb-6">
+                            <Tabs.TabsTrigger
+                                className="px-4 py-2 -mb-px text-sm font-medium text-gray-500 hover:text-gray-700 focus:outline-none data-[state=active]:text-blue-600 data-[state=active]:border-b-2 data-[state=active]:border-blue-600"
+                                value="details"
+                            >
+                                <div className="flex items-center gap-2">
+                                    <Info className="w-4 h-4" />
                                     Details
-                                </Tabs.TabsTrigger>
-                                <Tabs.TabsTrigger className="tab-trigger flex items-center gap-2" value={'questions'}>
-                                    <ImportContacts />
+                                </div>
+                            </Tabs.TabsTrigger>
+                            <Tabs.TabsTrigger
+                                className="px-4 py-2 -mb-px text-sm font-medium text-gray-500 hover:text-gray-700 focus:outline-none data-[state=active]:text-blue-600 data-[state=active]:border-b-2 data-[state=active]:border-blue-600"
+                                value="questions"
+                            >
+                                <div className="flex items-center gap-2">
+                                    <ImportContacts className="w-4 h-4" />
                                     Questions
-                                </Tabs.TabsTrigger>
-                                <ResourceOwnerPrivilege resourceRight={data.resourceRight}>
-                                    <Tabs.TabsTrigger className="tab-trigger flex items-center gap-2" value={'settings'}>
-                                        <Settings />
+                                </div>
+                            </Tabs.TabsTrigger>
+                            <ResourceOwnerPrivilege resourceRight={data.resourceRight}>
+                                <Tabs.TabsTrigger
+                                    className="px-4 py-2 -mb-px text-sm font-medium text-gray-500 hover:text-gray-700 focus:outline-none data-[state=active]:text-blue-600 data-[state=active]:border-b-2 data-[state=active]:border-blue-600"
+                                    value="settings"
+                                >
+                                    <div className="flex items-center gap-2">
+                                        <Settings className="w-4 h-4" />
                                         Settings
-                                    </Tabs.TabsTrigger>
-                                </ResourceOwnerPrivilege>
-                            </Tabs.List>
-                            <TabsContent className="tab-content" value={'details'}>
-                                <div>
-                                    <div className="flex justify-between items-start">
-                                        <div className={'text-4xl font-bold'}>{data.name}</div>
-                                        <div className="flex items-center gap-2">
-                                            <button
-                                                className="flex items-center gap-1"
-                                                onClick={isLiked ? handleUnlike : handleLike}
-                                            >
-                                                {isLiked ? (
-                                                    <FavoriteIcon className="text-blue-500" />
-                                                ) : (
-                                                    <FavoriteBorderIcon className="text-white-500" />
-                                                )}
-                                                <span className="text-gray-700">{likeCount}</span>
-                                            </button>
-                                        </div>
                                     </div>
-                                    <div className={'m-5 text-gray-500 flex gap-2'}>
-                                        <Description />
-                                        {data.description}
+                                </Tabs.TabsTrigger>
+                            </ResourceOwnerPrivilege>
+                        </Tabs.List>
+
+                        <TabsContent value="details" className="focus:outline-none">
+                            <div className="space-y-8">
+                                <div className="flex justify-between items-start">
+                                    <h1 className="text-4xl font-bold text-gray-900">{data.name}</h1>
+                                    <button
+                                        onClick={isLiked ? handleUnlike : handleLike}
+                                        className="flex items-center gap-2 px-4 py-2 rounded-full border border-gray-200 hover:bg-gray-50 transition-colors"
+                                    >
+                                        {isLiked ? (
+                                            <FavoriteIcon className="w-5 h-5 text-red-500" />
+                                        ) : (
+                                            <FavoriteBorderIcon className="w-5 h-5 text-gray-400" />
+                                        )}
+                                        <span className="text-sm font-medium text-gray-700">{likeCount}</span>
+                                    </button>
+                                </div>
+
+                                <div className="bg-gray-100 rounded-xl p-6">
+                                    <div className="flex items-start gap-3 text-gray-600">
+                                        <Description className="w-5 h-5 mt-1" />
+                                        <p className="text-lg">{data.description}</p>
                                     </div>
-                                    <div className={'flex space-x-6 items-center mt-8'}>
-                                        <Avatar variant={'square'}
-                                            src={data.author.profilePicture}
-                                            component={'div'}
-                                            alt="Profile Picture"
-                                            sx={{ width: 80, height: 80 }} />
-                                        <div>
-                                            <h1 className="text-2xl font-bold">{data.author.username}</h1>
-                                            <div className="mt-2 space-x-2.5">
-                                                <span className={'text-gray-500'}>external links:</span>
-                                                <a href="#" className="text-blue-500 hover:underline">Website</a>
-                                                <a href="#" className="text-blue-500 hover:underline">GitHub</a>
-                                            </div>
-                                            <div>
-                                            </div>
+                                </div>
+
+                                <div className="flex items-start gap-6 p-6 bg-white rounded-xl border border-gray-200">
+                                    <Avatar
+                                        variant="rounded"
+                                        src={data.author.profilePicture}
+                                        alt={data.author.username}
+                                        sx={{ width: 80, height: 80 }}
+                                    />
+                                    <div className="space-y-3">
+                                        <h2 className="text-2xl font-bold text-gray-900">
+                                            {data.author.username}
+                                        </h2>
+                                        <div className="flex items-center gap-4 text-sm">
+                                            <span className="text-gray-500">External links:</span>
+                                            <a href="#" className="text-blue-600 hover:underline">Website</a>
+                                            <a href="#" className="text-blue-600 hover:underline">GitHub</a>
                                         </div>
                                     </div>
                                 </div>
-                            </TabsContent>
-                            <TabsContent className="tab-content" value={'questions'}>
-                                <div>
-                                    <div className={'text-2xl mb-5'}>Questions ({data.questions.totalCount}):
-                                    </div>
+                            </div>
+                        </TabsContent>
 
-                                    <CollectionQuestion collectionId={data.id}
-                                        questionInit={data.questions.items}
-                                        pageIndex={pageIndex}
-                                        pageSize={pageSize} />
+                        <TabsContent value="questions" className="focus:outline-none">
+                            <div className="space-y-6">
+                                <h2 className="text-2xl font-semibold text-gray-900">
+                                    Questions ({data.questions.totalCount})
+                                </h2>
 
-                                    <div className={'my-5'}>
-                                        <Pagination count={data.questions.totalPage}
+                                <CollectionQuestions
+                                    resourceRight={data.resourceRight}
+                                    collectionId={data.id}
+                                    questionInit={data.questions.items}
+                                    pageIndex={pageIndex}
+                                    pageSize={pageSize}
+                                />
+
+                                {data.questions.totalPage > 1 && (
+                                    <div className="flex justify-center py-6">
+                                        <Pagination
+                                            count={data.questions.totalPage}
                                             page={pageIndex}
-                                            onChange={(e, n) => setPageIndex(n)} />
+                                            onChange={(_, n) => setPageIndex(n)}
+                                            shape="rounded"
+                                            size="large"
+                                        />
                                     </div>
-                                </div>
-                            </TabsContent>
-                            <TabsContent className="tab-content" value={'settings'}>
-                                <CollectionSettings collection={data} />
-                            </TabsContent>
-                        </Tabs.Root>
-                    </div>
+                                )}
+                            </div>
+                        </TabsContent>
+
+                        <TabsContent value="settings" className="focus:outline-none">
+                            <CollectionSettings collection={data} />
+                        </TabsContent>
+                    </Tabs.Root>
                 </div>
-            }
+            )}
         </div>
     );
 }

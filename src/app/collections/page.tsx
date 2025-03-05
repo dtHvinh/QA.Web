@@ -1,19 +1,17 @@
 'use client'
 
-import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
-import { IconButton, Pagination, Tooltip } from "@mui/material";
-import React, { useEffect } from "react";
+import NoCollection from '@/components/Collection/NoCollection';
+import CollectionItem from '@/components/CollectionItem';
 import CreateCollectionDialog from "@/components/CreateCollectionDialog";
 import FilterBar from '@/components/FilterBar';
-import useSWR from 'swr';
 import getAuth from '@/helpers/auth-utils';
 import { getFetcher, IsErrorResponse } from '@/helpers/request-utils';
 import { GetCollectionResponse, PagedResponse } from '@/types/types';
-import Loading from '../loading';
-import CollectionItem from '@/components/CollectionItem';
+import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
+import { Pagination, Tooltip } from "@mui/material";
+import React, { useEffect } from "react";
+import useSWR from 'swr';
 import { useDebounce } from 'use-debounce';
-import notifyError from '@/utilities/ToastrExtensions';
-import { ErrorResponse } from '@/props/ErrorResponse';
 
 export default function CollectionsPage() {
     const [open, setOpen] = React.useState(false);
@@ -48,6 +46,10 @@ export default function CollectionsPage() {
         }
     }, [data])
 
+    const handleOnCreated = () => {
+        window.location.reload();
+    }
+
     async function searchCollections() {
         const res = await getFetcher([`/api/collection/search/${searchTerm}?pageIndex=1&pageSize=100`, auth!.accessToken])
 
@@ -58,53 +60,75 @@ export default function CollectionsPage() {
     }
 
     return (
-        <div>
-            <div className={'flex justify-between items-center'}>
-                <div className={'text-2xl mt-4'}>
-                    Collections
-                </div>
-
-                <div>
-                    <div>
-                        <CreateCollectionDialog open={open} onClose={() => setOpen(false)} />
-                    </div>
-                </div>
-
-                <div>
-                    <Tooltip title={'Add CollectionItem'} arrow>
-                        <IconButton onClick={() => setOpen(true)}>
-                            <PlaylistAddIcon />
-                        </IconButton>
+        <div className="page-container mx-auto px-4">
+            <div className="flex flex-col space-y-6">
+                <div className="flex items-center justify-between">
+                    <h1 className="text-3xl font-bold text-gray-900">Collections</h1>
+                    <Tooltip title="Create Collection" arrow placement="left">
+                        <button
+                            onClick={() => setOpen(true)}
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                        >
+                            <PlaylistAddIcon className="w-5 h-5" />
+                            <span className="hidden sm:inline">New Collection</span>
+                        </button>
                     </Tooltip>
                 </div>
 
-            </div>
-
-            <div className='flex justify-between my-2'>
-                <div className="relative">
-                    <input
-                        type="text"
-                        placeholder="Search collections..."
-                        className="px-4 py-2 border rounded-full focus:outline-none"
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        value={searchTerm}
+                <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
+                    <div className="w-full sm:w-auto relative">
+                        <div className="relative">
+                            <input
+                                type="text"
+                                placeholder="Search collections..."
+                                className="w-full sm:w-80 pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                value={searchTerm}
+                            />
+                            <svg
+                                className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <FilterBar
+                        tabs={tab}
+                        tabValues={tabValues}
+                        tabDescriptions={tabDescriptions}
+                        onFilterValueChange={setSortOrder}
                     />
                 </div>
-                <FilterBar tabs={tab} tabValues={tabValues} tabDescriptions={tabDescriptions} onFilterValueChange={setSortOrder} />
-            </div>
 
-            <div className='grid grid-cols-1 md:grid-cols-3 gap-5'>
-                {collections.map(collection => (
-                    <CollectionItem key={collection.id} collection={collection} />
-                ))}
-
-                <div className='col-span-full mt-5'>
-                    {
-                        collections.length !== 0 &&
-                        <Pagination page={pageIndex} count={data?.totalPage} onChange={(e, n) => setPageIndex(n)} />
-                    }
+                <div className="min-h-[400px]">
+                    {collections.length === 0 ? (
+                        <NoCollection />
+                    ) : (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {collections.map(collection => (
+                                <CollectionItem key={collection.id} collection={collection} />
+                            ))}
+                        </div>
+                    )}
                 </div>
+
+                {collections.length > 0 && data && data?.totalPage > 1 && (
+                    <div className="flex justify-center py-6">
+                        <Pagination
+                            page={pageIndex}
+                            count={data?.totalPage}
+                            onChange={(_, n) => setPageIndex(n)}
+                            shape="rounded"
+                            size="large"
+                        />
+                    </div>
+                )}
             </div>
+
+            <CreateCollectionDialog open={open} onClose={() => setOpen(false)} onCreated={handleOnCreated} />
         </div>
     );
 }

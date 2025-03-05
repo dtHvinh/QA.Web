@@ -1,7 +1,12 @@
-import React, { useEffect, useState } from "react";
 import getAuth from "@/helpers/auth-utils";
+import React, { useEffect, useState } from "react";
 
-export default function AdminPrivilege({ children }: Readonly<{ children: React.ReactNode }>) {
+interface AdminPrivilegeProps {
+    children: React.ReactNode;
+    fallBackComponent?: React.ReactNode;
+}
+
+export default function AdminPrivilege({ children, fallBackComponent }: Readonly<AdminPrivilegeProps>) {
     const [isAdmin, setIsAdmin] = useState(false);
 
     useEffect(() => {
@@ -12,6 +17,9 @@ export default function AdminPrivilege({ children }: Readonly<{ children: React.
     }, []);
 
     if (!isAdmin) {
+        if (fallBackComponent)
+            return fallBackComponent;
+
         return null;
     }
 
