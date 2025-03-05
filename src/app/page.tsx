@@ -35,7 +35,7 @@ export default function Home() {
     if (isLoading) return <Loading />;
 
     return (
-        <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="page-container mx-auto px-4">
             <div className="grid grid-cols-12 gap-6">
                 <div className="col-span-full">
                     <h1 className="text-3xl font-bold text-gray-900">
