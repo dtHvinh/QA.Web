@@ -1,10 +1,11 @@
 'use client';
 
+import ObjectNotfound from "@/components/Error/ObjectNotFound";
 import FilterBar from "@/components/FilterBar";
 import PermissionAction from "@/components/PermissionAction";
 import TagSkeleton from "@/components/Skeletons/TagSkeleton";
 import getAuth from "@/helpers/auth-utils";
-import { getFetcher } from "@/helpers/request-utils";
+import { getFetcher, IsErrorResponse } from "@/helpers/request-utils";
 import { toTagDetail } from "@/helpers/route-utils";
 import { PagedResponse, TagResponse } from "@/types/types";
 import { Pagination } from "@mui/material";
@@ -17,9 +18,9 @@ export default function Tags() {
     const router = useRouter();
 
     const auth = getAuth()!;
-    const validOrderValue = ['Popular', 'Name'];
-    const validOrder = ['Popular', 'Name'];
-    const orderDescriptions = ['Order by number of question each tag has', 'Order by ascending alphabetically'];
+    const validOrderValue = ['Popular', 'Name', "Newest"];
+    const validOrder = ['Popular', 'Name', "Newest"];
+    const orderDescriptions = ['Order by number of question each tag has', 'Order by ascending alphabetically', 'Order by creation date'];
 
     const [orderBy, setOrderBy] = useState<string>(validOrderValue[0]);
     const [pageIndex, setPageIndex] = useState<number>(1);
@@ -31,6 +32,10 @@ export default function Tags() {
         revalidateOnReconnect: false,
         revalidateIfStale: false,
     });
+
+    if (IsErrorResponse(data)) {
+        return <ObjectNotfound title="Error" message="No tags found" />
+    }
 
     const handleOrderByChange = (value: string) => {
         setOrderBy(value);
@@ -51,7 +56,7 @@ export default function Tags() {
                     )}
 
                     <PermissionAction
-                        action="CreateTags"
+                        action="createTag"
                         allowedHref='/tags/create'
                         className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                     >

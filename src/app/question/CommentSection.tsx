@@ -1,4 +1,5 @@
 import Comment from "@/app/question/Comment";
+import PermissionAction from "@/components/PermissionAction";
 import TextEditor from "@/components/TextEditor";
 import getAuth from "@/helpers/auth-utils";
 import { IsErrorResponse, postFetcher } from "@/helpers/request-utils";
@@ -59,8 +60,9 @@ export default function CommentSection({ question, isClosed }: { question: Quest
             {!isClosed && (
                 <div className="space-y-4">
                     {!isComment ? (
-                        <button
-                            onClick={() => setIsComment(true)}
+                        <PermissionAction
+                            action="comment"
+                            callback={() => setIsComment(true)}
                             className="flex items-center gap-2 text-gray-500 hover:text-blue-600 transition-colors text-sm font-medium"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
@@ -68,7 +70,7 @@ export default function CommentSection({ question, isClosed }: { question: Quest
                                 <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                             </svg>
                             Add a comment
-                        </button>
+                        </PermissionAction>
                     ) : (
                         <div className="space-y-4">
                             <TextEditor

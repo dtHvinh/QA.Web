@@ -2,7 +2,7 @@
 
 import TextEditor from "@/components/TextEditor";
 import getAuth from "@/helpers/auth-utils";
-import { postFetcher } from "@/helpers/request-utils";
+import { IsErrorResponse, postFetcher } from "@/helpers/request-utils";
 import notifyError, { notifySucceed } from "@/utilities/ToastrExtensions";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -25,15 +25,17 @@ export default function CreateTagPage() {
         setIsSubmitting(true);
 
         const response = await postFetcher([
-            '/api/tag/create',
+            '/api/tag',
             auth!.accessToken,
             JSON.stringify({ name, description, wikiBody })
         ]);
 
-        if (response.id) {
+        if (!IsErrorResponse(response)) {
             notifySucceed('Tag created successfully');
             router.push('/tags');
         }
+        else
+            setIsSubmitting(false);
     };
 
     return (

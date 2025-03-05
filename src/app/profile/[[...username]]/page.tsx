@@ -1,7 +1,7 @@
 'use client'
 
 import Loading from "@/app/loading";
-import ObjectNotfound from "@/components/ObjectNotFound";
+import ObjectNotfound from "@/components/Error/ObjectNotFound";
 import ResourceOwnerPrivilege from "@/components/Privilege/ResourceOwnerPrivilege";
 import getAuth from "@/helpers/auth-utils";
 import { getFetcher, IsErrorResponse } from "@/helpers/request-utils";

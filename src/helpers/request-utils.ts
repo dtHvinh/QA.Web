@@ -2,7 +2,7 @@ import getAuth, { AuthProps } from "@/helpers/auth-utils";
 import { ErrorResponse } from "@/props/ErrorResponse";
 import { AuthRefreshResponse } from "@/types/types";
 import { backendURL } from "@/utilities/Constants";
-import notifyError, { notifySucceed } from "@/utilities/ToastrExtensions";
+import notifyError from "@/utilities/ToastrExtensions";
 import { setCookie } from "cookies-next/client";
 import { createAxiosInstance } from './axios-config';
 
@@ -129,7 +129,6 @@ export async function refreshToken(auth?: AuthProps) {
         });
 
         onRefreshed(authRefreshResponse.accessToken);
-        notifySucceed('Session refreshed');
         return authRefreshResponse.accessToken;
     } catch (error) {
         notifyError("Failed to refresh token");

@@ -36,12 +36,6 @@ const TextEditor = (params: TextEditorProps) => {
         editor?.commands.setContent('');
     }, [params.resetFlag]);
 
-    useEffect(() => {
-        return () => {
-            console.log('destroy')
-        }
-    }, []);
-
     if (!editor) {
         return null
     }

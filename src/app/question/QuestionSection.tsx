@@ -8,8 +8,9 @@ import TagLabel from "@/components/TagLabel";
 import { formatReputation } from "@/helpers/evaluate-utils";
 import { highlightCode } from "@/helpers/utils";
 import { QuestionResponse } from "@/types/types";
+import { Close } from "@mui/icons-material";
 import EditIcon from '@mui/icons-material/Edit';
-import { Avatar, Dialog, DialogContent, DialogTitle, IconButton, Tooltip, useMediaQuery, useTheme } from "@mui/material";
+import { Avatar, Dialog, DialogContent, IconButton, Tooltip, useTheme } from "@mui/material";
 import 'highlight.js/styles/atom-one-dark.css';
 import React, { useEffect } from "react";
 
@@ -19,7 +20,6 @@ export default function QuestionSection({ questionInit }: { questionInit: Questi
     const [isEditing, setIsEditing] = React.useState<boolean>(false);
     const [question, setQuestion] = React.useState<QuestionResponse>(questionInit);
     const theme = useTheme();
-    const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
 
     const handleEditClick = () => {
         setIsEditing(!isEditing);
@@ -49,23 +49,29 @@ export default function QuestionSection({ questionInit }: { questionInit: Questi
     return (
         <div className="max-w-5xl mx-auto">
             <Dialog
-                fullScreen={fullScreen}
+                fullScreen={true}
                 open={isEditing}
                 onClose={handleEditingClose}
                 hideBackdrop={true}
                 sx={{
                     '& .MuiDialog-paper': {
-                        borderRadius: '12px',
-                        maxWidth: '800px',
-                        width: '100%'
+                        maxWidth: 'none',
                     }
                 }}
             >
-                <DialogTitle className="border-b">
-                    <div className="font-semibold text-2xl">
-                        Edit Question
-                    </div>
-                </DialogTitle>
+                <IconButton
+                    aria-label="close"
+                    onClick={handleEditingClose}
+                    sx={(theme) => ({
+                        position: 'absolute',
+                        right: 8,
+                        top: 8,
+                        color: theme.palette.grey[500],
+                    })}
+                >
+                    <Close />
+                </IconButton>
+
                 <DialogContent>
                     <EditSection question={question} onEditSuccess={handleQuestionEdit} />
                 </DialogContent>

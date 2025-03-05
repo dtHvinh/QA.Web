@@ -1,13 +1,12 @@
-import { QuestionResponse, TagResponse } from "@/types/types";
-import TextEditor from "@/components/TextEditor";
-import React, { useState } from "react";
-import { formatString } from "@/helpers/string-utils";
-import { Apis, backendURL } from "@/utilities/Constants";
-import { IsErrorResponse, putFetcher } from "@/helpers/request-utils";
-import notifyError, { notifySucceed } from "@/utilities/ToastrExtensions";
-import { ErrorResponse } from "@/props/ErrorResponse";
-import getAuth from "@/helpers/auth-utils";
 import TagInput from "@/components/TagInput";
+import TextEditor from "@/components/TextEditor";
+import getAuth from "@/helpers/auth-utils";
+import { IsErrorResponse, putFetcher } from "@/helpers/request-utils";
+import { formatString } from "@/helpers/string-utils";
+import { QuestionResponse, TagResponse } from "@/types/types";
+import { Apis, backendURL } from "@/utilities/Constants";
+import { notifySucceed } from "@/utilities/ToastrExtensions";
+import { useEffect, useState } from "react";
 
 export default function EditSection({ question, onEditSuccess }: {
     question: QuestionResponse,
@@ -17,6 +16,9 @@ export default function EditSection({ question, onEditSuccess }: {
     const [editTitleValue, setEditTitleValue] = useState(question.title);
     const [editTagIds, setEditTagIds] = useState(question.tags.map(e => e.id));
     const [editTags, setEditTags] = useState(question.tags);
+    const [editComment, setEditComment] = useState('');
+    const [isAnyChange, setIsAnyChange] = useState(false);
+
     const auth = getAuth();
 
     const handleSend = async () => {
@@ -26,7 +28,8 @@ export default function EditSection({ question, onEditSuccess }: {
             id: question.id,
             title: editTitleValue,
             content: editContentValue,
-            tags: editTagIds
+            tags: editTagIds,
+            comment: editComment
         })]);
 
         if (!IsErrorResponse(response)) {
@@ -41,46 +44,112 @@ export default function EditSection({ question, onEditSuccess }: {
         }
     }
 
+    useEffect(() => {
+        setIsAnyChange(
+            editContentValue !== question.content
+            || editTitleValue !== question.title);
+    }, [editContentValue, editTitleValue])
+
     const handleTagChange = (tags: TagResponse[]) => {
         setEditTags(tags);
+        setIsAnyChange(true);
+        console.log(tags)
     }
 
     return (
-        <div>
-            <div className="space-y-2 mb-5">
-                <label htmlFor="title" className="block text-xl font-medium text-gray-700">Title</label>
-                <input
-                    defaultValue={editTitleValue}
-                    onChange={(e) => setEditTitleValue(e.target.value)}
-                    type="text"
-                    spellCheck={false}
-                    name="title"
-                    required
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-blue-600" />
-            </div>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="flex justify-between items-center">
+                <div className="p-6 border-b border-gray-100">
+                    <h2 className="text-xl font-bold text-gray-900">Edit Question</h2>
+                    <p className="mt-1 text-sm text-gray-500">Update your question details</p>
+                </div>
 
-            <label className="block text-xl mb-2 font-medium text-gray-700">Content</label>
-            <TextEditor currentText={editContentValue}
-                onTextChange={setEditContentValue} />
-
-            <label className="block text-xl my-2 font-medium text-gray-700">Tags</label>
-            <TagInput onTagChange={handleTagChange} onTagIdChange={setEditTagIds} maxTags={5}
-                defaultTags={question.tags} />
-
-            <div className={'w-full text-end mt-5'}>
-                <button onClick={handleSend}
-                    disabled={editContentValue.length == 0}
-                    className={'space-x-3 flex disabled:bg-gray-200 p-2 bg-blue-200 rounded-lg hover:bg-blue-300 active:scale-95 transition-all'}>
-                    <div className={'inline-block mt-1'}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                            viewBox="0 0 16 16">
+                <div className="gap-3">
+                    <button
+                        onClick={handleSend}
+                        disabled={!isAnyChange}
+                        className="flex items-center px-2 py-1 rounded-lg text-white bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+                    >
+                        <svg
+                            className="w-5 h-5 mr-2"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
                             <path
-                                d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z" />
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M5 13l4 4L19 7"
+                            />
                         </svg>
-                    </div>
+                        Update
+                    </button>
+                </div>
+            </div>
+            <div className="px-6 space-y-6">
+                <div className="space-y-2">
+                    <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+                        Question Title
+                        <span className="text-red-500 ml-1">*</span>
+                    </label>
+                    <input
+                        id="title"
+                        value={editTitleValue}
+                        onChange={(e) => setEditTitleValue(e.target.value)}
+                        type="text"
+                        spellCheck={false}
+                        name="title"
+                        required
+                        placeholder="Enter your question title"
+                        className="w-full px-4 py-2.5 rounded-lg border border-gray-200 transition-all"
+                    />
+                </div>
 
-                    <span className={'inline-block'}>Send</span>
-                </button>
+                <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700">
+                        Question Content
+                        <span className="text-red-500 ml-1">*</span>
+                    </label>
+                    <div className="border border-gray-200 rounded-lg overflow-hidden">
+                        <TextEditor
+                            currentText={editContentValue}
+                            onTextChange={setEditContentValue}
+                        />
+                    </div>
+                </div>
+
+                <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700">
+                        Tags
+                        <span className="text-xs text-gray-500 ml-2">(Max 5 tags)</span>
+                    </label>
+                    <TagInput
+                        onTagChange={handleTagChange}
+                        onTagIdChange={setEditTagIds}
+                        maxTags={5}
+                        defaultTags={question.tags}
+                    />
+                </div>
+
+                <div className="space-y-2">
+                    <label htmlFor="comment" className="block text-sm font-medium text-gray-700">
+                        Comment
+                        <span className="text-red-500 ml-1">*</span>
+                    </label>
+                    <input
+                        id="comment"
+                        value={editComment}
+                        onChange={(e) => setEditComment(e.target.value)}
+                        type="text"
+                        spellCheck={false}
+                        autoComplete="off"
+                        name="comment"
+                        required
+                        placeholder="Enter your comment"
+                        className="w-full px-4 py-2.5 rounded-lg border border-gray-200 transition-all"
+                    />
+                </div>
             </div>
         </div>
     );

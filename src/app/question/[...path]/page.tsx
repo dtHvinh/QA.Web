@@ -2,7 +2,7 @@
 
 import Loading from "@/app/loading";
 import QuestionSection from "@/app/question/QuestionSection";
-import ObjectNotfound from "@/components/ObjectNotFound";
+import ObjectNotfound from "@/components/Error/ObjectNotFound";
 import getAuth from "@/helpers/auth-utils";
 import toQuestionDetail from "@/helpers/path";
 import { getFetcher, IsErrorResponse } from "@/helpers/request-utils";
@@ -46,7 +46,7 @@ export default function QuestionPage({ params }: { params: Promise<{ path: strin
             <div className="max-w-7xl mx-auto px-4 py-6">
                 <div className="flex flex-col lg:flex-row gap-8">
                     <div className="w-full lg:w-3/4">
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div className="bg-white overflow-hidden">
                             <QuestionSection questionInit={question} />
                         </div>
                     </div>

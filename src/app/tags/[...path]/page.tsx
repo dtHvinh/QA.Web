@@ -2,8 +2,8 @@
 
 import TagQuestionDisplay from "@/app/tags/[...path]/TagQuestionDisplay";
 import TagQuestionDisplaySkeleton from "@/app/tags/[...path]/TagQuestionDisplaySkeleton";
+import ObjectNotfound from "@/components/Error/ObjectNotFound";
 import FilterBar from "@/components/FilterBar";
-import ObjectNotfound from "@/components/ObjectNotFound";
 import getAuth from "@/helpers/auth-utils";
 import { getFetcher, IsErrorResponse } from "@/helpers/request-utils";
 import { QuestionResponse, TagDetailResponse } from "@/types/types";

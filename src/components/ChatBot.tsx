@@ -1,12 +1,11 @@
-import { AutoAwesome, Lightbulb, LightbulbSharp } from "@mui/icons-material";
-import React, { useEffect, useRef, useState } from "react";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import { Checkbox, Dialog, DialogContent, IconButton, useTheme } from "@mui/material";
 import { useStreamingChat } from "@/helpers/streaming-chat-bot-hook";
 import { backendURL } from "@/utilities/Constants";
+import { AutoAwesome, Lightbulb } from "@mui/icons-material";
+import { Checkbox, Dialog, DialogContent, useTheme } from "@mui/material";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import React, { useEffect, useRef, useState } from "react";
 import ChatMessage from "./ChatBot/ChatMessage";
-import { useEditor } from "@tiptap/react";
-import { LightTooltip } from "./LightToolTip";
+import { LightTooltip } from "./Tooltip/LightToolTip";
 
 export default function ChatBot({ className }: { className?: string }) {
     const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);

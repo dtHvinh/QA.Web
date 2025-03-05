@@ -1,5 +1,6 @@
 import AlertDialog from "@/components/AlertDialog";
 import AddToCollection from "@/components/Collection/AddToCollection";
+import PermissionAction from "@/components/PermissionAction";
 import ModeratorPrivilege from "@/components/Privilege/ModeratorPrivilege";
 import getAuth from "@/helpers/auth-utils";
 import { deleteFetcher, IsErrorResponse, postFetcher, putFetcher } from "@/helpers/request-utils";
@@ -86,27 +87,27 @@ export default function QuestionActions({ question, onQuestionClose, className }
     return (
         <div className={`${className} flex flex-col items-center gap-2 p-4`}>
             <div className="flex flex-col items-center gap-2">
-                <button
-                    onClick={() => handleVote(true)}
+                <PermissionAction
+                    action="upvote"
+                    callback={() => handleVote(true)}
                     className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-                    title="Upvote"
                 >
                     <svg className="w-6 h-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
                     </svg>
-                </button>
+                </PermissionAction>
 
                 <span className="text-lg font-semibold text-gray-900">{currentVote}</span>
 
-                <button
-                    onClick={() => handleVote(false)}
+                <PermissionAction
+                    action="downvote"
+                    callback={() => handleVote(false)}
                     className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-                    title="Downvote"
                 >
                     <svg className="w-6 h-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
-                </button>
+                </PermissionAction>
             </div>
 
             <div className="w-full h-px bg-gray-200 my-2"></div>

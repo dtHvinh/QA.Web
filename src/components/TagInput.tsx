@@ -43,7 +43,6 @@ export default function TagInput({ onTagIdChange, maxTags, onTagChange, defaultT
             notifyError(`You can only select up to ${maxTags} tags`);
             return;
         }
-
         setSelectedTags(newTags);
 
         onTagIdChange?.(newTags.map((tag) => tag.id));

@@ -1,12 +1,10 @@
 import { AuthorResponse } from "@/types/types";
 import { Avatar, Popover } from "@mui/material";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import React from "react";
 
 export default function UserInfoPopup({ user, className, element = 'a' }: { user: AuthorResponse, className?: string, element?: string }) {
     const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
-    const router = useRouter();
     const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
     };
@@ -75,15 +73,13 @@ export default function UserInfoPopup({ user, className, element = 'a' }: { user
 
     return (
         <>
-            {element === 'a' && (
+            {element === 'a' ? (
                 <Link href={`/profile/${user.username}`} className={className}>
                     {Inner}
-                </Link>
-            )}
-
-            {React.createElement(element, {
-                className: className
-            }, Inner)}
+                </Link>)
+                : React.createElement(element, {
+                    className: className
+                }, Inner)}
         </>
     );
 }
