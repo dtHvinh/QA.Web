@@ -1,14 +1,14 @@
-import {AutoAwesome} from "@mui/icons-material";
-import {ChatMessage} from "@/app/chatbot/page";
-import {Markdown} from "./Markdown/Markdown";
-import {useEffect, useRef} from "react";
+import { ChatMessage } from "@/helpers/streaming-chat-bot-hook";
+import { AutoAwesome } from "@mui/icons-material";
+import { useEffect, useRef } from "react";
+import { Markdown } from "./Markdown/Markdown";
 
 export default function Message(message: ChatMessage) {
     const bottomRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (bottomRef.current)
-            bottomRef.current.scrollIntoView({behavior: "smooth"});
+            bottomRef.current.scrollIntoView({ behavior: "smooth" });
     }, [message.thought]);
 
     return (
@@ -17,7 +17,7 @@ export default function Message(message: ChatMessage) {
                 className={`flex items-baseline ${message.role === 'user' ? 'justify-end' : ''}`}>
                 {message.role === 'assistant' &&
                     <div className={'p-1'}>
-                        <AutoAwesome/>
+                        <AutoAwesome />
                     </div>}
                 <div
                     className={`ml-3 p-3 rounded-lg  ${message.role === 'assistant' ? 'border-l-2 text-gray-800' : ' text-black border-r-2 '}`}>
