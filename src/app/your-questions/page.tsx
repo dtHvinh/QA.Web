@@ -88,7 +88,7 @@ export default function YourQuestionPage() {
                     {isLoading ? (
                         <QuestionCardListSkeleton />
                     ) : response?.items && response.items.length > 0 ? (
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 gap-6">
                             {response.items.map((question: QuestionResponse) => (
                                 <YourQuestionItem key={question.id} question={question} />
                             ))}

@@ -2,7 +2,7 @@
 
 import getAuth from "@/helpers/auth-utils";
 import { Routes } from "@/utilities/Constants";
-import { Add, AutoStories, Search } from "@mui/icons-material";
+import { Add, AutoStories } from "@mui/icons-material";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Avatar, Popover, SvgIcon } from "@mui/material";
 import Link from "next/link";
@@ -144,12 +144,6 @@ export default function UserDropdown() {
                                 </svg>
                             </SvgIcon>
                             <div>Your Collections</div>
-                        </Link>
-
-                        <Link onClick={handleClose} href={'/search'}
-                            className={`${buttonStyle} ${pathname === '/search' ? selectedStyle : ""}`}>
-                            <Search />
-                            <div>Search</div>
                         </Link>
 
                         <div className={`${buttonStyle} hidden`}>

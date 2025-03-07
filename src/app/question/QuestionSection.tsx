@@ -4,7 +4,7 @@ import EditSection from "@/app/question/EditSection";
 import QuestionActions from "@/app/question/QuestionActions";
 import QuestionContent from "@/app/question/QuestionContent";
 import QuestionHeaderDetails from "@/app/question/QuestionHeaderDetails";
-import PermissionAction from "@/components/PermissionAction";
+import ResourceOwnerPrivilege from "@/components/Privilege/ResourceOwnerPrivilege";
 import TagLabel from "@/components/TagLabel";
 import { formatReputation } from "@/helpers/evaluate-utils";
 import { highlightCode } from "@/helpers/utils";
@@ -90,11 +90,13 @@ export default function QuestionSection({ questionInit }: { questionInit: Questi
                 <div className="col-span-11 space-y-6">
                     <div className="flex items-start justify-between">
                         <h1 className="text-2xl font-semibold text-gray-900">{question.title}</h1>
-                        <PermissionAction action="editQuestion" callback={handleEditClick}>
+                        <ResourceOwnerPrivilege resourceRight={question.resourceRight}>
                             <Tooltip title="Edit this question" arrow>
-                                <EditIcon fontSize="medium" className="text-gray-600 hover:bg-gray-100 rounded-full" />
+                                <IconButton onClick={handleEditClick}>
+                                    <EditIcon fontSize="medium" className="text-gray-600 hover:bg-gray-100 rounded-full" />
+                                </IconButton>
                             </Tooltip>
-                        </PermissionAction>
+                        </ResourceOwnerPrivilege>
                     </div>
 
                     <QuestionHeaderDetails  {...question} isSolved={isSolved} isClosed={isClosed} />

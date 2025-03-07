@@ -1,11 +1,10 @@
 'use client';
 
-import ObjectNotfound from "@/components/Error/ObjectNotFound";
 import FilterBar from "@/components/FilterBar";
 import PermissionAction from "@/components/PermissionAction";
 import TagSkeleton from "@/components/Skeletons/TagSkeleton";
 import getAuth from "@/helpers/auth-utils";
-import { getFetcher, IsErrorResponse } from "@/helpers/request-utils";
+import { getFetcher } from "@/helpers/request-utils";
 import { toTagDetail } from "@/helpers/route-utils";
 import { PagedResponse, TagResponse } from "@/types/types";
 import { Pagination } from "@mui/material";
@@ -32,10 +31,6 @@ export default function Tags() {
         revalidateOnReconnect: false,
         revalidateIfStale: false,
     });
-
-    if (IsErrorResponse(data)) {
-        return <ObjectNotfound title="Error" message="No tags found" />
-    }
 
     const handleOrderByChange = (value: string) => {
         setOrderBy(value);

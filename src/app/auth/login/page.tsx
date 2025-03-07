@@ -1,12 +1,13 @@
 'use client'
 
-import {ErrorResponse} from "@/props/ErrorResponse";
-import {backendURL, Routes} from "@/utilities/Constants";
+import { AuthProps } from "@/helpers/auth-utils";
+import { IsErrorResponse, postFetcher } from "@/helpers/request-utils";
+import { Routes } from "@/utilities/Constants";
 import notifyError from "@/utilities/ToastrExtensions";
-import {setCookie} from "cookies-next/client";
+import { setCookie } from "cookies-next/client";
 import Link from "next/link";
-import {redirect, usePathname} from "next/navigation";
-import React, {FormEvent, useState} from "react";
+import { redirect, usePathname } from "next/navigation";
+import { FormEvent, useState } from "react";
 
 export default function LoginPage() {
     const [isLoading, setIsLoading] = useState(false);
@@ -23,26 +24,16 @@ export default function LoginPage() {
                 password: formData.get('password') as string,
             };
 
-            const response = await fetch(`${backendURL}/api${name}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            })
+            const response = await postFetcher([`/api${name}`, '', JSON.stringify(data)])
 
-            if (!response.ok) {
-                const error = (await response.json()) as ErrorResponse;
-                notifyError(error.title);
+            if (IsErrorResponse(response)) {
                 return;
             }
 
-            const body = await response.json();
+            setCookie('auth', response as AuthProps)
 
-            setCookie('auth', body)
-
-        } catch {
-            notifyError('Something went wrong');
+        } catch (e: any) {
+            notifyError(e);
             return;
         } finally {
             setIsLoading(false);
@@ -64,26 +55,26 @@ export default function LoginPage() {
                     <form className="mt-10" method="POST" onSubmit={handleSubmit}>
 
                         <label htmlFor="email"
-                               className="block text-xs font-semibold text-gray-600 uppercase">E-mail</label>
+                            className="block text-xs font-semibold text-gray-600 uppercase">E-mail</label>
                         <input id="email" type="email" name="email" placeholder="e-mail address" autoComplete="email"
-                               className="block w-full py-3 px-1 mt-2
+                            className="block w-full py-3 px-1 mt-2
                     text-gray-800 appearance-none
                     border-b-2 border-gray-100
                     focus:text-gray-500 focus:outline-none focus:border-gray-200"
-                               required/>
+                            required />
 
                         <label htmlFor="password"
-                               className="block mt-2 text-xs font-semibold text-gray-600 uppercase">Password</label>
+                            className="block mt-2 text-xs font-semibold text-gray-600 uppercase">Password</label>
                         <input id="password" type="password" name="password" placeholder="password"
-                               autoComplete="current-password"
-                               className="block w-full py-3 px-1 mt-2 mb-4
+                            autoComplete="current-password"
+                            className="block w-full py-3 px-1 mt-2 mb-4
                     text-gray-800 appearance-none
                     border-b-2 border-gray-100
                     focus:text-gray-500 focus:outline-none focus:border-gray-200"
-                               required/>
+                            required />
 
                         <button type="submit"
-                                className="w-full py-3 mt-10 bg-gray-800 rounded-sm
+                            className="w-full py-3 mt-10 bg-gray-800 rounded-sm
                     font-medium text-white uppercase
                     focus:outline-none hover:bg-gray-700 hover:shadow-none">
                             {isLoading ? 'Login...' : 'Login'}

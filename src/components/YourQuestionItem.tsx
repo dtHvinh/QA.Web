@@ -13,69 +13,58 @@ interface YourQuestionItemProps {
 }
 
 export default function YourQuestionItem({ question, showAuthor = true }: Readonly<YourQuestionItemProps>) {
-
     return (
-        <div className='flex flex-col'>
-            <div className="rounded-xl p-6 hover:border-blue-500 hover:shadow-lg duration-200 border border-gray-100 w-full bg-white group">
-                <div className="flex w-full items-start justify-between pb-3">
-                    <div className="flex items-center gap-3 max-w-[85%]">
-                        <Link href={toQuestionDetail(question.id, question.slug)}
-                            className="text-lg font-semibold text-gray-800 hover:text-blue-600 transition-colors">
-                            {question.title}
-                        </Link>
-                        <QuestionStatusBar {...question} />
-                    </div>
-                    <div className="flex flex-col gap-3">
-                        <div className="flex justify-end flex-wrap gap-2">
-                            {question.tags?.map(tag =>
-                                <TagLabel key={tag.id} name={tag.name}
-                                    description={tag.description} onClick={console.log} />
-                            )}
-                        </div>
-                        <div className="flex justify-end items-center gap-2 text-sm text-gray-500">
-                            <span className="font-medium">Asked</span>
-                            <span>{timeFromNow(question.createdAt)}</span>
-                        </div>
-                    </div>
+        <div className="bg-white rounded-lg border border-gray-100 hover:border-blue-500 hover:shadow-sm transition-all p-4">
+            <div className="space-y-3">
+                <div className="flex items-start justify-between gap-3">
+                    <Link href={toQuestionDetail(question.id, question.slug)}
+                        className="text-base font-semibold text-gray-800 hover:text-blue-600 transition-colors flex-grow">
+                        {question.title}
+                    </Link>
+                    <QuestionStatusBar {...question} />
                 </div>
 
-                <div className="">
-                    <p dangerouslySetInnerHTML={{ __html: question.content }}
-                        className="text-gray-600 line-clamp-2 leading-relaxed">
-                    </p>
+                <div className="flex flex-wrap gap-1.5">
+                    {question.tags?.map(tag =>
+                        <TagLabel
+                            key={tag.id}
+                            name={tag.name}
+                            description={tag.description}
+                            onClick={console.log}
+                        />
+                    )}
                 </div>
 
-                <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                    <div className="flex gap-6">
-                        <div className="flex items-center gap-2 text-gray-600">
-                            <span className="text-sm">Votes</span>
-                            <span className="font-semibold">{question.upvote - question.downvote}</span>
-                        </div>
+                <p dangerouslySetInnerHTML={{ __html: question.content }}
+                    className="text-sm text-gray-600 line-clamp-2 leading-relaxed">
+                </p>
 
-                        <div className="flex items-center gap-2 text-gray-600">
-                            <span className="text-sm">Views</span>
-                            <span className="font-semibold">{formatNumber(question.viewCount)}</span>
-                        </div>
-
-                        <div className={`flex items-center gap-2 ${question.isSolved
-                            ? 'px-3 py-1 rounded-full bg-green-100 text-green-700'
+                <div className="flex items-center justify-between pt-2 text-sm">
+                    <div className="flex gap-4">
+                        <span className="text-gray-600">
+                            <span className="font-medium">{question.score}</span> votes
+                        </span>
+                        <span className="text-gray-600">
+                            <span className="font-medium">{formatNumber(question.viewCount)}</span> views
+                        </span>
+                        <span className={question.isSolved
+                            ? 'text-green-600'
                             : 'text-gray-600'
-                            }`}>
-                            <span className="text-sm">Answers</span>
-                            <span className="font-semibold">{formatNumber(question.answerCount)}</span>
-                        </div>
+                        }>
+                            <span className="font-medium">{formatNumber(question.answerCount)}</span> answers
+                        </span>
+                    </div>
 
-                        {showAuthor &&
-                            <div className="flex items-center gap-2 text-gray-600">
-                                <span className="text-sm">Author</span>
-                                <UserInfoPopup user={question.author} />
-                            </div>
-                        }
+                    <div className="flex items-center gap-3 text-gray-500">
+                        {showAuthor && <UserInfoPopup user={question.author} />}
+                        <span className="text-xs">
+                            asked {timeFromNow(question.createdAt)}
+                        </span>
                     </div>
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
 export function YourQuestionItemSkeleton() {

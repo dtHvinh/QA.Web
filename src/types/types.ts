@@ -68,8 +68,7 @@ export interface QuestionResponse extends ResourceRightProps {
 
     author: AuthorResponse,
 
-    upvote: number,
-    downvote: number,
+    score: number,
 
     createdAt: string,
     updatedAt: string,
@@ -135,8 +134,7 @@ export interface AuthorResponse {
 }
 
 export interface VoteResponse {
-    currentUpvote: number,
-    currentDownvote: number,
+    score: number;
 }
 
 export interface UserResponse {
@@ -152,7 +150,7 @@ export interface UserResponse {
     bio: string;
     questionCount: number;
     answerCount: number;
-    totalUpvotes: number;
+    totalScore: number;
     acceptedAnswerCount: number;
     commentCount: number;
     collectionCount: number;
@@ -179,8 +177,7 @@ export interface AnswerResponse extends ResourceRightProps {
     content: string;
     createdAt: string;
     updatedAt: string;
-    upvote: number;
-    downvote: number;
+    score: number;
     isAccepted: boolean;
     author?: AuthorResponse;
     resourceRight: ResourceRight;

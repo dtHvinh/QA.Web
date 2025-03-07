@@ -138,7 +138,7 @@ export default function ProfilePage({ params }: { params: Promise<{ username?: s
                     <div className="space-y-4">
                         <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
                             <span className="text-gray-700">Total Upvotes</span>
-                            <span className="font-semibold text-gray-900">{user.totalUpvotes}</span>
+                            <span className="font-semibold text-gray-900">{user.totalScore}</span>
                         </div>
                         <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
                             <span className="text-gray-700">Accepted Answers</span>

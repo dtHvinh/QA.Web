@@ -17,7 +17,7 @@ export default function QuestionActions({ question, onQuestionClose, className }
     className?: string
 }) {
     const auth = getAuth();
-    const [currentVote, setCurrentVote] = React.useState<number>(question.upvote - question.downvote);
+    const [currentVote, setCurrentVote] = React.useState<number>(question.score);
     const [isBookmarked, setIsBookmarked] = React.useState<boolean>(question.isBookmarked);
     const [deleteConfirmOpen, setDeleteConfirmOpen] = React.useState(false);
     const [closeConfirmOpen, setCloseConfirmOpen] = React.useState(false);
@@ -66,7 +66,7 @@ export default function QuestionActions({ question, onQuestionClose, className }
 
         if (!IsErrorResponse(response)) {
             const voteResponse = response as VoteResponse;
-            setCurrentVote(voteResponse.currentUpvote - voteResponse.currentDownvote);
+            setCurrentVote(voteResponse.score);
         }
     }
 
