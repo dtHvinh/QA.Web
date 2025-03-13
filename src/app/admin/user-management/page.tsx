@@ -57,22 +57,22 @@ export default function UserManagementPage() {
     return (
         <AdminPrivilege fallBackComponent={<AccessDenied />}>
             <div className="page-container mx-auto">
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div className="p-6 border-b border-gray-100">
+                <div className="bg-[var(--card-background)] rounded-xl shadow-sm border border-[var(--border-color)] overflow-hidden">
+                    <div className="p-6 border-b border-[var(--border-color)]">
                         <div className="flex items-center gap-4 mb-4">
                             <Link
                                 href="/admin"
-                                className="inline-flex items-center gap-1 text-blue-700 hover:text-blue-900"
+                                className="inline-flex items-center gap-1 text-blue-500 hover:text-blue-600"
                             >
                                 <ArrowBack fontSize="small" />
                                 <span>Back to Dashboard</span>
                             </Link>
                         </div>
-                        <h1 className="text-xl font-bold text-gray-900">User Management</h1>
-                        <p className="mt-1 text-sm text-gray-500">Manage and monitor user accounts</p>
+                        <h1 className="text-xl font-bold text-[var(--text-primary)]">User Management</h1>
+                        <p className="mt-1 text-sm text-[var(--text-secondary)]">Manage and monitor user accounts</p>
                     </div>
 
-                    <div className="px-6 py-4 border-b border-gray-100">
+                    <div className="px-6 py-4 border-b border-[var(--border-color)]">
                         <div className="max-w-xs">
                             <form onSubmit={handleSearchUserById}>
                                 <input
@@ -80,7 +80,7 @@ export default function UserManagementPage() {
                                     placeholder="Search user by Id"
                                     value={searchId}
                                     onChange={(e) => setSearchId(e.target.value)}
-                                    className="w-full px-4 py-2 border rounded-lg text-sm"
+                                    className="w-full px-4 py-2 border border-[var(--border-color)] rounded-lg text-sm bg-[var(--input-bg)] text-[var(--text-primary)]"
                                 />
                             </form>
                         </div>
@@ -89,7 +89,7 @@ export default function UserManagementPage() {
                     <div className="overflow-x-auto">
                         <table className="w-full">
                             <thead>
-                                <tr className="bg-gray-50 text-left text-sm text-gray-600">
+                                <tr className="bg-[var(--hover-background)] text-left text-sm text-[var(--text-secondary)]">
                                     <th className="py-3 px-6 font-medium">ID</th>
                                     <th className="py-3 px-6 font-medium">User</th>
                                     <th className="py-3 px-6 font-medium">Email</th>
@@ -99,11 +99,11 @@ export default function UserManagementPage() {
                                     <th className="py-3 px-6 font-medium">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-100">
+                            <tbody className="divide-y divide-[var(--border-color)]">
                                 {data && users.map((user) => (
                                     <React.Fragment key={user.id} >
-                                        <tr className="hover:bg-gray-50 transition-colors">
-                                            <td className="py-3 px-6 text-gray-600">
+                                        <tr className="hover:bg-[var(--hover-background)] transition-colors">
+                                            <td className="py-3 px-6 text-[var(--text-secondary)]">
                                                 {user.id}
                                             </td>
                                             <td className="py-3 px-6">
@@ -114,33 +114,33 @@ export default function UserManagementPage() {
                                                         className="w-8 h-8 rounded-full"
                                                     />
                                                     <div>
-                                                        <div className="font-medium text-gray-900">
+                                                        <div className="font-medium text-[var(--text-primary)]">
                                                             {user.userName}
                                                         </div>
-                                                        <div className="text-sm text-gray-500">
+                                                        <div className="text-sm text-[var(--text-secondary)]">
                                                             {user.firstName} {user.lastName}
                                                         </div>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="py-3 px-6 text-gray-600">
+                                            <td className="py-3 px-6 text-[var(--text-secondary)]">
                                                 {user.email || 'N/A'}
                                             </td>
                                             <td className="py-3 px-6">
-                                                <span className="font-medium text-blue-600">
+                                                <span className="font-medium text-blue-500">
                                                     {user.reputation}
                                                 </span>
                                             </td>
                                             <td className="py-3 px-6">
                                                 <UserStatus user={user} />
                                             </td>
-                                            <td className="py-3 px-6 text-gray-600">
+                                            <td className="py-3 px-6 text-[var(--text-secondary)]">
                                                 {new Date(user.createdAt).toLocaleDateString()}
                                             </td>
                                             <td className="py-3 px-6">
                                                 <button
                                                     onClick={() => setExpandedUserId(expandedUserId === user.id ? null : user.id)}
-                                                    className={`text-sm ${expandedUserId === user.id ? 'text-blue-800' : 'text-blue-600 hover:text-blue-800'}`}
+                                                    className={`text-sm ${expandedUserId === user.id ? 'text-blue-600' : 'text-blue-500 hover:text-blue-600'}`}
                                                 >
                                                     {expandedUserId === user.id ? 'Close' : 'Edit'}
                                                 </button>
@@ -162,7 +162,7 @@ export default function UserManagementPage() {
                     </div>
 
                     {data && data.items.length > 0 && data.totalPage > 0 && (
-                        <div className="flex justify-center py-6 border-t border-gray-100">
+                        <div className="flex justify-center py-6 border-t border-[var(--border-color)]">
                             <Pagination
                                 count={data.totalPage}
                                 page={pageIndex}

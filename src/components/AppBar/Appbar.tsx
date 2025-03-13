@@ -6,14 +6,13 @@ import { Add } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
 import SearchInput from "../Search/SearchInput";
+import ThemeToggle from '../ThemeToggle';
 import UserDropdown from "../UserDropdown";
 
 export default function Appbar() {
     const currentPath = usePathname();
     const router = useRouter();
-    const [searchTerm, setSearchTerm] = useState("");
 
     if (currentPath.startsWith('/auth')) return null;
 
@@ -25,7 +24,7 @@ export default function Appbar() {
     };
 
     return (
-        <div className="h-[var(--appbar-height)] bg-white border-b border-gray-200">
+        <div className="h-[var(--appbar-height)] bg-[var(--nav-background)] border-b border-[var(--border-color)]">
             <div className="max-w-7xl mx-auto px-4 h-full">
                 <div className="flex items-center justify-between h-full">
                     <div className="flex items-center gap-4">
@@ -42,8 +41,9 @@ export default function Appbar() {
                     </div>
 
                     <div className="flex items-center gap-4">
+                        <ThemeToggle />
                         <Tooltip title='Ask a question'>
-                            <Link href={'/new-question'} className="hover:bg-gray-200 p-2 rounded-full transition-colors active:scale-95">
+                            <Link href={'/new-question'} className="hover:bg-[var(--hover-background)] p-2 rounded-full transition-colors active:scale-95">
                                 <Add />
                             </Link>
                         </Tooltip>

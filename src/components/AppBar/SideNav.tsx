@@ -10,99 +10,93 @@ export default function SideNav() {
     const logOut = useLogout();
 
     const theme = {
-        "selected": 'bg-blue-100 font-semibold text-blue-500'
+        "selected": 'bg-[var(--hover-background)] font-semibold text-blue-500'
     }
 
     return (
-        <>
-            <aside className="flex flex-col 
-                items-center text-gray-700 h-full
-                rounded-r-3xl
-                w-56
-                max-h-[calc(100vh-var(--appbar-height)*2)]">
-                <div className="h-16 flex items-center w-full px-4">
-                    <Link href={Routes.Home} className="flex items-center gap-3">
-                        <PsychologyOutlined />
-                        <span className="font-medium">QA Platform</span>
+        <aside className="flex flex-col 
+            items-center text-[var(--text-primary)] h-full
+            w-64
+            border-r border-[var(--border-color)]
+            bg-[var(--nav-background)]
+            fixed left-0 top-[var(--appbar-height)]
+            overflow-y-auto
+            max-h-[calc(100vh-var(--appbar-height))]">
+            <div className="h-20 flex items-center w-full px-6 border-b border-[var(--border-color)]">
+                <Link href={Routes.Home} className="flex items-center gap-3">
+                    <PsychologyOutlined className="text-blue-500" />
+                    <span className="font-semibold text-lg">QA Platform</span>
+                </Link>
+            </div>
+
+            <nav className="w-full flex flex-col p-4 space-y-2">
+                <div className="space-y-1">
+                    <Link href={Routes.Home}
+                        className={`h-10 px-4 flex items-center gap-3 w-full rounded-lg hover:bg-[var(--hover-background)] transition-colors
+                        ${pathname === Routes.Home ? theme.selected : ''}`}>
+                        <HomeOutlined fontSize="small" />
+                        <span>Home</span>
+                    </Link>
+
+                    <Link href={Routes.Questions}
+                        className={`h-10 px-4 flex items-center gap-3 w-full rounded-lg hover:bg-[var(--hover-background)] transition-colors
+                        ${pathname === Routes.Questions ? theme.selected : ''}`}>
+                        <QuestionMarkSharp fontSize="small" />
+                        <span>Questions</span>
+                    </Link>
+
+                    <Link href={Routes.Tags}
+                        className={`h-10 px-4 flex items-center gap-3 w-full rounded-lg hover:bg-[var(--hover-background)] transition-colors
+                        ${pathname === Routes.Tags ? theme.selected : ''}`}>
+                        <TagOutlined />
+                        <span>Tags</span>
                     </Link>
                 </div>
 
-                <ul className="w-full flex flex-col h-[calc(100vh-var(--appbar-height)-4rem)]">
-                    <li>
-                        <Link href={Routes.Home}
-                            className={`h-12 px-4 flex items-center gap-3 w-full hover:bg-gray-100 
-                            ${pathname === Routes.Home ? theme.selected : ''}`}>
-                            <HomeOutlined fontSize="small" />
-                            <span>Home</span>
-                        </Link>
-                    </li>
+                <div className="space-y-1 pt-4">
+                    <Link href={Routes.Collections}
+                        className={`h-10 px-4 flex items-center gap-3 w-full rounded-lg hover:bg-[var(--hover-background)] transition-colors
+                        ${pathname === Routes.Collections ? theme.selected : ''}`}>
+                        <CollectionsOutlined />
+                        <span>Collections</span>
+                    </Link>
 
-                    <li>
-                        <Link href={Routes.Questions}
-                            className={`h-12 px-4 flex items-center gap-3 w-full hover:bg-gray-100
-                            ${pathname === Routes.Questions ? theme.selected : ''}`}>
-                            <QuestionMarkSharp fontSize="small" />
-                            <span>Questions</span>
-                        </Link>
-                    </li>
+                    <Link href={Routes.Bookmarks}
+                        className={`h-10 px-4 flex items-center gap-3 w-full rounded-lg hover:bg-[var(--hover-background)] transition-colors
+                        ${pathname === Routes.Bookmarks ? theme.selected : ''}`}>
+                        <BookmarksOutlined fontSize="small" />
+                        <span>Bookmarks</span>
+                    </Link>
 
-                    <li>
-                        <Link href={Routes.Tags}
-                            className={`h-12 px-4 flex items-center gap-3 w-full hover:bg-gray-100
-                            ${pathname === Routes.Tags ? theme.selected : ''}`}>
-                            <TagOutlined />
-                            <span>Tags</span>
-                        </Link>
-                    </li>
+                    <Link href={'/community'}
+                        className={`h-10 px-4 flex items-center gap-3 w-full rounded-lg hover:bg-[var(--hover-background)] transition-colors
+                        ${pathname === '/community' ? theme.selected : ''}`}>
+                        <Language fontSize="small" />
+                        <span>Community</span>
+                    </Link>
+                </div>
 
-                    <li>
-                        <Link href={Routes.Collections}
-                            className={`h-12 px-4 flex items-center gap-3 w-full hover:bg-gray-100
-                            ${pathname === Routes.Collections ? theme.selected : ''}`}>
-                            <CollectionsOutlined />
-                            <span>Collections</span>
-                        </Link>
-                    </li>
-
-                    <li>
-                        <Link href={Routes.Bookmarks}
-                            className={`h-12 px-4 flex items-center gap-3 w-full hover:bg-gray-100
-                            ${pathname === Routes.Bookmarks ? theme.selected : ''}`}>
-                            <BookmarksOutlined fontSize="small" />
-                            <span>Bookmarks</span>
-                        </Link>
-                    </li>
-
-                    <li>
-                        <Link href={'/community'}
-                            className={`h-12 px-4 flex items-center gap-3 w-full hover:bg-gray-100
-                            ${pathname === '/community' ? theme.selected : ''}`}>
-                            <Language fontSize="small" />
-                            <span>Community</span>
-                        </Link>
-                    </li>
-
-                    <AdminPrivilege>
-                        <hr className="mx-4" />
-                        <li>
+                <AdminPrivilege>
+                    <div className="pt-4">
+                        <div className="border-t border-[var(--border-color)] pt-4">
                             <Link href={'/admin'}
-                                className={`h-12 px-4 flex items-center gap-3 w-full hover:bg-gray-100
-                                ${pathname === 'admin' ? theme.selected : ''}`}>
+                                className={`h-10 px-4 flex items-center gap-3 w-full rounded-lg hover:bg-[var(--hover-background)] transition-colors
+                                ${pathname === '/admin' ? theme.selected : ''}`}>
                                 <AdminPanelSettings fontSize="small" />
                                 <span>Admin</span>
                             </Link>
-                        </li>
-                    </AdminPrivilege>
+                        </div>
+                    </div>
+                </AdminPrivilege>
 
-                    <li className="mt-auto border-t">
-                        <button onClick={logOut}
-                            className="h-12 px-4 flex items-center gap-3 w-full text-red-500 hover:bg-gray-100">
-                            <Logout fontSize="small" />
-                            <span>Logout</span>
-                        </button>
-                    </li>
-                </ul>
-            </aside>
-        </>
+                <div className="mt-auto pt-4">
+                    <button onClick={logOut}
+                        className="h-10 px-4 flex items-center gap-3 w-full rounded-lg text-red-500 hover:bg-[var(--hover-background)] transition-colors">
+                        <Logout fontSize="small" />
+                        <span>Logout</span>
+                    </button>
+                </div>
+            </nav>
+        </aside>
     );
 }
