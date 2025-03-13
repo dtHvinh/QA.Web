@@ -18,28 +18,28 @@ export default function SubLayout({
         '/auth',
     ];
 
+    const pathname = usePathname();
+    const shouldShowSidebar = !noLayoutPathPrefix.some(prefix => pathname.startsWith(prefix));
+
     return (
         <ThemeProvider theme={theme}>
             <ErrorBoundary FallbackComponent={ErrorFallback}>
-                {noLayoutPathPrefix.some(prefix => usePathname().startsWith(prefix)) ?
-                    <div>
-                        <SnackbarProvider autoHideDuration={6000}>
-                            {children}
-                        </SnackbarProvider>
-                    </div>
-                    :
-                    <div>
-                        <SnackbarProvider autoHideDuration={6000}>
-                            <div className="flex">
-                                <div className="hidden md:block fixed left-0 top-[var(--appbar-height)] w-16">
-                                    <SideNav />
-                                </div>
-                                <div className="flex-1 ml-0 md:ml-16 p-4">
+                <SnackbarProvider autoHideDuration={6000}>
+                    <div className="flex flex-col min-h-screen">
+                        {shouldShowSidebar ? (
+                            <div className="flex flex-1">
+                                <SideNav />
+                                <div className="flex-1 ml-64 pt-4 px-6">
                                     {children}
                                 </div>
                             </div>
-                        </SnackbarProvider>
-                    </div>}
+                        ) : (
+                            <div className="flex-1">
+                                {children}
+                            </div>
+                        )}
+                    </div>
+                </SnackbarProvider>
             </ErrorBoundary>
         </ThemeProvider>
     );

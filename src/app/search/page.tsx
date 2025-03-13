@@ -12,8 +12,8 @@ import { useEffect, useState } from "react";
 
 export default function SearchPage() {
     const searchParams = useSearchParams();
-    const queryTerm = searchParams.get('q');
-    const queryTagId = searchParams.get('tag');
+    const queryTerm = searchParams.get('q') ?? "";
+    const queryTagId = searchParams.get('tag') ?? 0;
 
     const [searchResults, setSearchResults] = useState<QuestionResponse[]>([]);
     const [pageIndex, setPageIndex] = useState(1);

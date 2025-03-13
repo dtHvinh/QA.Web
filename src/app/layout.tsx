@@ -44,14 +44,12 @@ export default function RootLayout({
             <body
                 className={`${dmSans.className} ${geistSans.variable} ${geistMono.variable} bg-gray-50 text-black antialiased`}
             >
-                <main>
-                    <div>
-                        <div className="container mx-auto">
-                            <Appbar />
-                        </div>
-                    </div>
+                <div className="flex flex-col min-h-screen">
+                    <header className="sticky top-0 z-50 bg-white shadow-sm">
+                        <Appbar />
+                    </header>
 
-                    <div className="container mx-auto px-4 min-h-[calc(100vh-var(--appbar-height))]">
+                    <main className="flex-1">
                         <SupabaseProvider>
                             <SubLayout>
                                 {children}
@@ -60,13 +58,14 @@ export default function RootLayout({
                             </SubLayout>
                         </SupabaseProvider>
                         <ScrollToTopButton />
-                    </div>
-                </main>
-                <footer className="bg-gray-800 text-white py-4 h-[var(--appbar-height)]">
-                    <div className="container mx-auto text-center">
-                        <p>&copy; {new Date().getFullYear()} Q&A App. All rights reserved.</p>
-                    </div>
-                </footer>
+                    </main>
+
+                    <footer className="bg-gray-800 text-white py-4 z-50">
+                        <div className="container mx-auto text-center">
+                            <p>&copy; {new Date().getFullYear()} Q&A App. All rights reserved.</p>
+                        </div>
+                    </footer>
+                </div>
             </body>
         </html>
     );

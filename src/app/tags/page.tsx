@@ -41,7 +41,7 @@ export default function Tags() {
     }
 
     return (
-        <div className="max-w-5xl mx-auto px-4 space-y-8">
+        <div className="page-container mx-auto px-4 space-y-8">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div className="space-y-1">
                     <h1 className="text-3xl font-bold text-gray-900">Tags</h1>
