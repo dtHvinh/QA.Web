@@ -1,19 +1,22 @@
+import ModeratorButton from "@/components/Admin/ModeratorButton";
 import AlertDialog from "@/components/AlertDialog";
 import AddToCollection from "@/components/Collection/AddToCollection";
 import PermissionAction from "@/components/PermissionAction";
 import ModeratorPrivilege from "@/components/Privilege/ModeratorPrivilege";
 import getAuth from "@/helpers/auth-utils";
 import { deleteFetcher, IsErrorResponse, postFetcher, putFetcher } from "@/helpers/request-utils";
-import { ErrorResponse } from "@/props/ErrorResponse";
 import { QuestionResponse, VoteResponse } from "@/types/types";
 import notifyError, { notifyInfo, notifySucceed } from "@/utilities/ToastrExtensions";
 import { BookmarkAdded, BookmarkAddOutlined, Close, Delete, OpenInFull } from "@mui/icons-material";
+import { Tooltip } from "@mui/material";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
-export default function QuestionActions({ question, onQuestionClose, className }: {
+export default function QuestionActions({ question, isClosed, onQuestionClose, onQuestionReopen, className }: {
     question: QuestionResponse,
     onQuestionClose?: () => void,
+    onQuestionReopen?: () => void,
+    isClosed: boolean,
     className?: string
 }) {
     const auth = getAuth();
@@ -24,16 +27,12 @@ export default function QuestionActions({ question, onQuestionClose, className }
     const [isExpand, setIsExpand] = useState(false)
     const router = useRouter();
 
-    const toggleExpand = () => setIsExpand(!isExpand);
-
     const handleCloseQuestion = async () => {
         const response = await putFetcher([
             `/api/question/${question.id}/close`,
             auth!.accessToken, '']);
 
-        if (IsErrorResponse(response)) {
-            notifyError((response as ErrorResponse).errors);
-        } else {
+        if (!IsErrorResponse(response)) {
             notifySucceed('Question closed');
             onQuestionClose?.();
         }
@@ -82,7 +81,14 @@ export default function QuestionActions({ question, onQuestionClose, className }
     }
 
     const handleReOpenQuestion = async () => {
+        const response = await putFetcher([
+            `/api/question/${question.id}/re-open`,
+            auth!.accessToken, '']);
 
+        if (!IsErrorResponse(response)) {
+            notifySucceed('Done');
+            onQuestionReopen?.();
+        }
     }
     return (
         <div className={`${className} flex flex-col items-center gap-2 p-4`}>
@@ -150,28 +156,42 @@ export default function QuestionActions({ question, onQuestionClose, className }
 
             <ModeratorPrivilege>
                 <div className="w-full h-px bg-gray-200 my-2"></div>
-                <button
-                    onClick={() => setDeleteConfirmOpen(true)}
-                    className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-                >
-                    <Delete />
-                </button>
+                <div className="relative">
+                    <ModeratorButton onClick={() => setIsExpand(!isExpand)} />
 
-                {!question.isClosed ? (
-                    <button
-                        onClick={() => setCloseConfirmOpen(true)}
-                        className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-                    >
-                        <Close />
-                    </button>
-                ) : (
-                    <button
-                        onClick={handleReOpenQuestion}
-                        className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-                    >
-                        <OpenInFull />
-                    </button>
-                )}
+                    {isExpand && (
+                        <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                            <Tooltip title="Moderator considered this question should be deleted" arrow placement="right">
+                                <button
+                                    onClick={() => setDeleteConfirmOpen(true)}
+                                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                >
+                                    <Delete className="mr-2" /> Delete Question
+                                </button>
+                            </Tooltip>
+
+                            {!isClosed ? (
+                                <Tooltip title="Moderator considered this question should be closed" arrow placement="right">
+                                    <button
+                                        onClick={() => setCloseConfirmOpen(true)}
+                                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                    >
+                                        <Close className="mr-2" /> Close Question
+                                    </button>
+                                </Tooltip>
+                            ) : (
+                                <Tooltip title="Moderator considered this question should be re-opened" arrow placement="right">
+                                    <button
+                                        onClick={handleReOpenQuestion}
+                                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                    >
+                                        <OpenInFull className="mr-2" /> Reopen Question
+                                    </button>
+                                </Tooltip>
+                            )}
+                        </div>
+                    )}
+                </div>
             </ModeratorPrivilege>
 
             <AlertDialog

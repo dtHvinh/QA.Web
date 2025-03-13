@@ -3,8 +3,8 @@ export const AppName = "Q&A";
 export const Routes = {
     Home: "/",
     Auth: {
-        Login: "/auth/login",
-        Register: "/auth/register",
+        Login: "/auth",
+        Register: "/auth",
     },
     NewQuestion: "/new-question",
     Questions: "/questions",

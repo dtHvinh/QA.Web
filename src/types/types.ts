@@ -35,11 +35,33 @@ export interface TagDetailResponse {
     questions: PagedResponse<QuestionResponse>
 }
 
+export interface GetUserResponse {
+    id: number;
+    userName: string;
+    email?: string;
+    firstName?: string;
+    lastName?: string;
+    profilePicture: string;
+    createdAt: string;
+    updatedAt: string;
+    reputation: number;
+
+    isDeleted: boolean;
+    isBanned: boolean;
+}
+
+export interface BanInfoResponse {
+    endedDate: string
+    reason: string
+}
+
 export interface ResourceRightProps {
     resourceRight: ResourceRight
 }
 
 export type ResourceRight = "Owner" | "Viewer";
+
+export type AnalyticPeriod = 'Daily' | 'Weekly' | 'Monthly' | 'Yearly'
 
 export interface CreateQuestionResponse {
     id: string,
@@ -145,9 +167,8 @@ export interface UserResponse {
     lastName: string;
     reputation: number;
     profilePicture: string;
-    dateJoined: string;
+    createdAt: string;
     lastActive: string;
-    bio: string;
     questionCount: number;
     answerCount: number;
     totalScore: number;
@@ -181,6 +202,12 @@ export interface AnswerResponse extends ResourceRightProps {
     isAccepted: boolean;
     author?: AuthorResponse;
     resourceRight: ResourceRight;
+}
+
+export interface AnalyticResponse {
+    currentCount: number,
+    previousCount: number,
+    growthPercentage: number
 }
 
 export interface YourQuestionList {

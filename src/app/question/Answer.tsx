@@ -1,5 +1,6 @@
 import AnswerContent from "@/app/question/AnswerContent";
 import MarkAcceptedAnswerLabel from "@/app/question/MarkAcceptedAnswerLabel";
+import ModeratorButton from "@/components/Admin/ModeratorButton";
 import AlertDialog from "@/components/AlertDialog";
 import ModeratorPrivilege from "@/components/Privilege/ModeratorPrivilege";
 import ResourceOwnerPrivilege from "@/components/Privilege/ResourceOwnerPrivilege";
@@ -33,7 +34,8 @@ const Answer = (
     const [currentText, setCurrentText] = React.useState(answer.content);
     const [editText, setEditText] = React.useState(answer.content);
     const [isAnswerAccepted, setIsAnswerAccepted] = React.useState(answer.isAccepted);
-    const [currentVote, setCurrentVote] = React.useState(answer.upvote - answer.downvote);
+    const [currentVote, setCurrentVote] = React.useState(answer.score);
+    const [isModMenuOpen, setIsModMenuOpen] = React.useState(false);
 
     const [delAnsDialog, setDelAnsDialog] = React.useState(false);
     const [isEditing, setIsEditing] = React.useState(false);
@@ -71,6 +73,7 @@ const Answer = (
         if (!IsErrorResponse(response)) {
             onAnswerAccepted(answer.id);
             setIsAnswerAccepted(true);
+            setIsModMenuOpen(false);
         }
     }
 
@@ -84,6 +87,7 @@ const Answer = (
             setTimeout(() => {
                 onAnswerDelete(answer.id);
             }, 500);
+            setIsModMenuOpen(false);
         }
     }
 
@@ -110,7 +114,7 @@ const Answer = (
         if (!IsErrorResponse(response)) {
             notifySucceed('Done');
             const voteResponse = response as VoteResponse;
-            setCurrentVote(voteResponse.currentUpvote - voteResponse.currentDownvote);
+            setCurrentVote(voteResponse.score);
         }
     }
 
@@ -149,25 +153,34 @@ const Answer = (
                     {isAnswerAccepted && <MarkAcceptedAnswerLabel />}
 
                     <ModeratorPrivilege>
-                        {!isAnswerAccepted && (
-                            <RoundedButton
-                                onClick={handleAnswerAccepted}
-                                title="Mark as answer"
-                                className="bg-green-100 text-green-700 hover:bg-green-200 active:bg-green-300"
-                                svg={<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                                    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" />
-                                </svg>}
-                            />
-                        )}
-                    </ModeratorPrivilege>
+                        <div className="relative">
+                            <ModeratorButton onClick={() => setIsModMenuOpen(!isModMenuOpen)} />
 
-                    <ModeratorPrivilege>
-                        <RoundedButton
-                            onClick={handleClickOpen}
-                            title="Moderator considered this answer should be deleted"
-                            className=" text-red-500 bg-transparent hover:bg-red-50"
-                            svg={<Delete fontSize="small" />}
-                        />
+                            {isModMenuOpen && (
+                                <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+                                    <div className="py-1">
+                                        {!isAnswerAccepted && (
+                                            <button
+                                                onClick={handleAnswerAccepted}
+                                                className="flex items-center w-full px-4 py-2 text-sm text-green-700 hover:bg-green-100"
+                                            >
+                                                <svg className="mr-3" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                                    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" />
+                                                </svg>
+                                                Accept Answer
+                                            </button>
+                                        )}
+                                        <button
+                                            onClick={handleClickOpen}
+                                            className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-100"
+                                        >
+                                            <Delete className="mr-3" fontSize="small" />
+                                            Delete Answer
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                     </ModeratorPrivilege>
                 </div>
 

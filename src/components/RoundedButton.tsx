@@ -1,6 +1,6 @@
 import { Tooltip } from "@mui/material";
-import React, { ReactElement } from "react";
 import Link from "next/link";
+import React, { ReactElement } from "react";
 
 export default function RoundedButton({ title, svg, onClick, className, href }: {
     title: string,
@@ -10,7 +10,7 @@ export default function RoundedButton({ title, svg, onClick, className, href }: 
     href?: string
 }) {
     return (
-        <Tooltip placement={'top'} title={title}>
+        <Tooltip placement={'top'} title={title} arrow>
             {href ?
                 <Link href={href}
                     className={`block transition-all p-3 bg-gray-100 active:bg-gray-400 active:scale-95 hover:bg-gray-300 rounded-full ${className}`}>

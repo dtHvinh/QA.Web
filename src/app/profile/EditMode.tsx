@@ -108,7 +108,7 @@ const EditMode = (
                                 </div>
                             </div>
                             <div className="mt-2 text-gray-500">
-                                Member for {countTotalDays(profile.dateJoined)} days
+                                Member for {countTotalDays(profile.createdAt)} days
                             </div>
                         </div>
                     </div>
@@ -134,6 +134,7 @@ const EditMode = (
                                     <div className="w-1/3">
                                         <input
                                             type="text"
+                                            required
                                             className="w-full px-4 py-2 border border-gray-300 rounded-lgtransition-colors"
                                             value={link.provider}
                                             onChange={(e) => handleLinkChange(index, 'provider', e.target.value)}
@@ -144,6 +145,7 @@ const EditMode = (
                                         <input
                                             type="url"
                                             spellCheck="false"
+                                            required
                                             className="w-full px-4 py-2 border border-gray-300 rounded-lgtransition-colors"
                                             placeholder="https://example.com"
                                             value={link.url}
@@ -151,6 +153,7 @@ const EditMode = (
                                         />
                                     </div>
                                     <button
+                                        type="button"
                                         onClick={() => removeLink(index)}
                                         className="p-2 text-gray-500 hover:text-red-500 transition-colors"
                                     >

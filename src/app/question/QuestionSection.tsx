@@ -42,6 +42,10 @@ export default function QuestionSection({ questionInit }: { questionInit: Questi
         setIsClosed(true);
     }
 
+    const handleQuestionReopen = () => {
+        setIsClosed(false);
+    }
+
     const handleQuestionEdit = (question: QuestionResponse) => {
         setQuestion(question);
         setIsEditing(false);
@@ -82,7 +86,9 @@ export default function QuestionSection({ questionInit }: { questionInit: Questi
                 <div className="col-span-1">
                     <QuestionActions
                         question={question}
+                        isClosed={isClosed}
                         onQuestionClose={handleQuestionClose}
+                        onQuestionReopen={handleQuestionReopen}
                         className="md:sticky top-4"
                     />
                 </div>
@@ -137,7 +143,7 @@ export default function QuestionSection({ questionInit }: { questionInit: Questi
                         </div>
                     </div>
 
-                    <div className="space-y-6">
+                    <div className="space-y-5">
                         <CommentSection question={question} isClosed={isClosed} />
                         <AnswerSection
                             question={question}

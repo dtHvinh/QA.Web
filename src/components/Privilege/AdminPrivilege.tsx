@@ -8,15 +8,21 @@ interface AdminPrivilegeProps {
 
 export default function AdminPrivilege({ children, fallBackComponent }: Readonly<AdminPrivilegeProps>) {
     const [isAdmin, setIsAdmin] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const auth = getAuth();
         if (auth && auth.roles.some(e => e === 'Admin')) {
             setIsAdmin(true);
         }
+
+        setIsLoading(false);
     }, []);
 
-    if (!isAdmin) {
+    if (isLoading)
+        return null;
+
+    if (!isLoading && !isAdmin) {
         if (fallBackComponent)
             return fallBackComponent;
 

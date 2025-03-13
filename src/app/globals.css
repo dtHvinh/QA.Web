@@ -87,6 +87,16 @@ body {
     max-width: 64rem;
 }
 
+select {
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
 input:focus-visible {
     outline: none;
+}
+
+.tiptap>p {
+    padding-bottom: 1rem;
 }

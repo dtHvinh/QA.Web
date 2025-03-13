@@ -2,6 +2,7 @@ $border-radius: 10px;
 $code-background: #f6f6f6;
 
 @mixin text-display {
+
   ul,
   ol {
     padding: 0 1rem;
@@ -143,7 +144,7 @@ $code-background: #f6f6f6;
       outline: none;
     }
 
-    &:focus > .text-editor {
+    &:focus>.text-editor {
       outline: black;
       border: 1px solid black;
     }

@@ -53,7 +53,7 @@ export default function QuestionPage({ params }: { params: Promise<{ path: strin
 
                     <div className="w-full lg:w-1/4">
                         <div className="sticky top-24">
-                            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden p-5">
+                            <div className="rounded-xl shadow-sm border border-gray-100 overflow-hidden p-5">
                                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Related Questions</h3>
 
                                 {relatedQuestions && relatedQuestions.items.length > 0 ? (

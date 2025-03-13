@@ -1,5 +1,5 @@
 import AlertDialog from "@/components/AlertDialog";
-import TextEditor from "@/components/TextEditor";
+import UserInfoPopup from "@/components/UserInfoPopup";
 import getAuth from "@/helpers/auth-utils";
 import { deleteFetcher, IsErrorResponse, putFetcher } from "@/helpers/request-utils";
 import { formatString } from "@/helpers/string-utils";
@@ -8,6 +8,7 @@ import { ErrorResponse } from "@/props/ErrorResponse";
 import { CommentResponse } from "@/types/types";
 import { Apis, backendURL } from "@/utilities/Constants";
 import notifyError, { notifySucceed } from "@/utilities/ToastrExtensions";
+import { TextField } from "@mui/material";
 import React from "react";
 
 interface CommentComponentProps {
@@ -15,7 +16,7 @@ interface CommentComponentProps {
     onCommentDelete: (commentId: string) => void;
 }
 
-export default function Comment({ comment, onCommentDelete }: Readonly<CommentComponentProps>) {
+const Comment = ({ comment, onCommentDelete }: Readonly<CommentComponentProps>) => {
     const [isEditing, setIsEditing] = React.useState(false);
     const [currentText, setCurrentText] = React.useState(comment.content);
     const [editText, setEditText] = React.useState(comment.content);
@@ -80,65 +81,70 @@ export default function Comment({ comment, onCommentDelete }: Readonly<CommentCo
     }
 
     return (
-        <div
-            className={`relative grid gap-1 grid-cols-1 p-2 mb-4 rounded-lg bg-white ${isDeleting ? 'element-exit element-exit-active' : ''}`}>
-            <hr />
-
+        <div className={`relative p-3 mb-4 rounded-lg bg-white ${isDeleting ? 'element-exit element-exit-active' : ''}`}>
             <AlertDialog open={deleteDialogOpen}
                 onClose={handleClose}
                 onYes={handleDelete}
                 title={'Do you want to delete this comment?'}
                 description={'This action cannot be undone'} />
 
-            <div className={'transition-all duration-300 ease-in-out'}>
-                {isEditing
-                    ? <TextEditor currentText={currentText as string} onTextChange={handleEditTextChange} />
-                    :
-                    <div>
-                        <div className="text-black text-sm"
-                            dangerouslySetInnerHTML={{ __html: currentText as TrustedHTML }}></div>
-                        <div className="text-gray-400 inline text-xs">
-                            Commented by {comment.author?.username},
-                            {comment.updatedAt == DEFAULT_TIME ?
-                                <span className="text-gray-400 text-xs"> {timeFromNow(comment.createdAt)}</span> :
-                                <span className="text-gray-400 text-xs">(Edited) {timeFromNow(comment.updatedAt)}</span>
-                            }
-                        </div>
+            <div className="space-y-2">
+                {isEditing ? (
+                    <TextField
+                        fullWidth
+                        multiline
+                        rows={2}
+                        size="small"
+                        value={editText}
+                        onChange={(e) => handleEditTextChange(e.target.value)}
+                    />
+                ) : (
+                    <div className="text-sm text-gray-900"
+                        dangerouslySetInnerHTML={{ __html: currentText as TrustedHTML }}>
                     </div>
-                }
+                )}
 
-                <div className="relative justify-between flex gap-2">
-                    {comment.resourceRight == 'Owner'
-                        &&
-                        <div className={'flex flex-col'}>
-                            <div className={'flex justify-end'}>
-                                {isEditing
-                                    ?
-                                    <div className={'flex gap-2'}>
-                                        <button className={'text-red-500'} onClick={handleDiscard}>
-                                            Discard
-                                        </button>
-                                        <button className={'text-blue-500 disabled:text-gray-500'}
-                                            disabled={!isSaveAllow}
-                                            onClick={handleUpdate}>
-                                            Save
-                                        </button>
-                                    </div>
-                                    :
-                                    <div className={'flex gap-2'}>
-                                        <button type={"button"} onClick={handleStartEditing}>
-                                            Edit
-                                        </button>
-                                        <button type={"button"} className={'text-red-500'} onClick={handleClickOpen}>
-                                            Delete
-                                        </button>
-                                    </div>
-                                }
-                            </div>
+                <div className="flex items-center justify-between text-xs">
+                    <div className="text-gray-500">
+                        Commented by {<UserInfoPopup className="inline-block" user={comment.author!} />}
+                        {comment.updatedAt == DEFAULT_TIME ? (
+                            <span> {timeFromNow(comment.createdAt)}</span>
+                        ) : (
+                            <span>(Edited) {timeFromNow(comment.updatedAt)}</span>
+                        )}
+                    </div>
+
+                    {comment.resourceRight == 'Owner' && (
+                        <div className="flex gap-2">
+                            {isEditing ? (
+                                <>
+                                    <button className="text-gray-500 hover:text-gray-700" onClick={handleDiscard}>
+                                        Cancel
+                                    </button>
+                                    <button
+                                        className="text-blue-600 hover:text-blue-800 disabled:text-gray-400"
+                                        disabled={!isSaveAllow}
+                                        onClick={handleUpdate}
+                                    >
+                                        Save
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    <button className="text-gray-500 hover:text-gray-700" onClick={handleStartEditing}>
+                                        Edit
+                                    </button>
+                                    <button className="text-red-500 hover:text-red-700" onClick={handleClickOpen}>
+                                        Delete
+                                    </button>
+                                </>
+                            )}
                         </div>
-                    }
+                    )}
                 </div>
             </div>
         </div>
     );
 }
+
+export default Comment;

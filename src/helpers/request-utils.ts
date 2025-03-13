@@ -44,7 +44,7 @@ export const getFetcher = ([url, token]: [string, string]) =>
     makeRequest({
         url,
         method: 'GET',
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
     });
 
 export const postFetcher = ([url, token, jsonBody]: [string, string, string?]) =>

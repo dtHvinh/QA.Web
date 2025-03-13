@@ -79,7 +79,7 @@ export default function ProfilePage({ params }: { params: Promise<{ username?: s
                                     </ResourceOwnerPrivilege>
                                 </div>
                                 <div className="mt-2 text-gray-500">
-                                    Member for {countTotalDays(user.dateJoined)} days
+                                    Member for {countTotalDays(user.createdAt)} days
                                 </div>
                             </div>
                         </div>

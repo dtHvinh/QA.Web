@@ -4,10 +4,14 @@ import TagQuestionDisplay from "@/app/tags/[...path]/TagQuestionDisplay";
 import TagQuestionDisplaySkeleton from "@/app/tags/[...path]/TagQuestionDisplaySkeleton";
 import ObjectNotfound from "@/components/Error/ObjectNotFound";
 import FilterBar from "@/components/FilterBar";
+import PermissionAction from "@/components/PermissionAction";
+import ModeratorPrivilege from "@/components/Privilege/ModeratorPrivilege";
 import getAuth from "@/helpers/auth-utils";
 import { getFetcher, IsErrorResponse } from "@/helpers/request-utils";
 import { QuestionResponse, TagDetailResponse } from "@/types/types";
-import { Pagination } from "@mui/material";
+import { Delete, Edit } from "@mui/icons-material";
+import { Pagination, Tooltip } from "@mui/material";
+import Link from "next/link";
 import React, { useEffect } from "react";
 import useSWR from "swr";
 
@@ -37,23 +41,46 @@ export default function TagDetailPage({ params }: { params: Promise<{ path: stri
         }
     }, [tag]);
 
-    if (IsErrorResponse(tag)) {
+    if (!isLoading && IsErrorResponse(tag)) {
         return <ObjectNotfound title="Tag Not Found" message="The tag you're looking for doesn't exist or has been removed." />
     }
 
     return (
-        <div className="max-w-5xl mx-auto space-y-8">
+        <div className="page-container mx-auto space-y-8">
             {tag && (
-                <div className="bg-white border border-gray-200 rounded-xl p-6">
-                    <div className="space-y-4">
+                <div className="bg-white border border-gray-200 rounded-xl p-6 flex flex-col">
+                    <div className="space-y-4 flex justify-between items-baseline pb-5">
                         <div className="flex items-center gap-3">
                             <h1 className="text-3xl font-bold text-gray-900">{tag.name}</h1>
                             <span className="px-3 py-1 text-sm font-medium text-blue-600 bg-blue-50 rounded-full">
                                 {tag.questionCount} questions
                             </span>
                         </div>
-                        <p className="text-gray-600">{tag.description}</p>
+
+                        <div className="space-x-5 flex justify-end items-center">
+                            <Link href={`/wiki/${tag.id}/${tag.name}`} className="border px-2 py-1 rounded-md border-gray-400 hover:bg-gray-100">
+                                Go to Wiki
+                            </Link>
+
+                            <PermissionAction action="editTag" allowedHref={`/tags/edit/${tag.id}`}>
+                                <Tooltip title='Edit'>
+                                    <Edit />
+                                </Tooltip>
+                            </PermissionAction>
+
+                            <ModeratorPrivilege>
+
+                                <Tooltip title='Delete this tag'>
+                                    <button>
+                                        <Delete />
+                                    </button>
+                                </Tooltip>
+                            </ModeratorPrivilege>
+                        </div>
                     </div>
+
+                    <p className="text-gray-600">{tag.description}</p>
+
                 </div>
             )}
 

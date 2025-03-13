@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
 import getAuth from "@/helpers/auth-utils";
+import React, { useEffect, useState } from "react";
 
 export default function ModeratorPrivilege({ children }: Readonly<{ children: React.ReactNode }>) {
     const [isModerator, setIsModerator] = useState(false);
@@ -15,9 +15,5 @@ export default function ModeratorPrivilege({ children }: Readonly<{ children: Re
         return null;
     }
 
-    return (
-        <>
-            {children}
-        </>
-    );
+    return children;
 }

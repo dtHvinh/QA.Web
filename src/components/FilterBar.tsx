@@ -1,17 +1,18 @@
-import React, { useState } from "react";
 import { HtmlTooltip } from "@/components/TagTooltip";
 import { motion } from "framer-motion";
+import { useState } from "react";
 
 interface FilterBarProps {
     tabs: string[];
     tabValues: string[];
     tabDescriptions: string[];
+    defaultIndex?: number;
     onFilterValueChange: (filter: string) => void;
 }
 
 const FilterBar = (params: Readonly<FilterBarProps>) => {
-    const { tabs, tabValues, tabDescriptions, onFilterValueChange } = params;
-    const [activeTab, setActiveTab] = useState(tabs[0]);
+    const { tabs, tabValues, tabDescriptions, onFilterValueChange, defaultIndex } = params;
+    const [activeTab, setActiveTab] = useState(tabs[defaultIndex ?? 0]);
 
     const innerOnFilterValueChange = (tab: string, value: string) => {
         setActiveTab(tab);

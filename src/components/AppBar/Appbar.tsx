@@ -25,7 +25,7 @@ export default function Appbar() {
     };
 
     return (
-        <header className="sticky top-0 z-50 bg-white border-b shadow-sm">
+        <header className="sticky top-0 z-50 bg-white shadow-sm rounded-b-full">
             <div className="max-w-7xl mx-auto px-4 sm:px-6">
                 <div className="flex justify-between items-center h-[var(--appbar-height)] gap-4">
                     <div className="flex items-center gap-6">
