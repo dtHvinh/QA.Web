@@ -13,22 +13,22 @@ import Link from "next/link";
 export default function CollectionItem({ collection }: { collection: GetCollectionResponse }) {
     return (
         <Link href={`/collection/${collection.id}`}>
-            <div className="group relative bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-200">
+            <div className="group relative bg-[var(--card-background)] border border-[var(--border-color)] rounded-xl overflow-hidden hover:shadow-lg transition-all duration-200">
                 <div className="p-6">
                     <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+                        <h3 className="text-xl font-bold text-[var(--text-primary)] group-hover:text-blue-500 transition-colors">
                             {collection.name}
                         </h3>
                         {collection.isPublic ? (
                             <Tooltip title="Public collection">
-                                <div className="flex items-center gap-1 text-green-600 text-sm">
+                                <div className="flex items-center gap-1 text-green-500 text-sm">
                                     <PublicIcon className="w-4 h-4" />
                                     <span className="font-medium">Public</span>
                                 </div>
                             </Tooltip>
                         ) : (
                             <Tooltip title="Private collection">
-                                <div className="flex items-center gap-1 text-gray-500 text-sm">
+                                <div className="flex items-center gap-1 text-[var(--text-secondary)] text-sm">
                                     <LockIcon className="w-4 h-4" />
                                     <span className="font-medium">Private</span>
                                 </div>
@@ -36,36 +36,36 @@ export default function CollectionItem({ collection }: { collection: GetCollecti
                         )}
                     </div>
 
-                    <div className="flex items-center gap-1 text-sm text-gray-600 mb-4">
+                    <div className="flex items-center gap-1 text-sm text-[var(--text-secondary)] mb-4">
                         <span>Created by</span>
                         <UserInfoPopup
                             element="div"
                             user={collection.author}
-                            className="font-medium text-gray-900 hover:text-blue-600 transition-colors"
+                            className="font-medium text-[var(--text-primary)] hover:text-blue-500 transition-colors"
                         />
                     </div>
 
-                    <p className="text-gray-600 line-clamp-2 mb-6 min-h-[3rem]">
+                    <p className="text-[var(--text-secondary)] line-clamp-2 mb-6 min-h-[3rem]">
                         {collection.description}
                     </p>
 
                     <div className="flex items-center gap-4 text-sm">
                         <Tooltip title="Likes">
-                            <div className="flex items-center gap-1 text-gray-500">
+                            <div className="flex items-center gap-1 text-[var(--text-secondary)]">
                                 <FavoriteBorderIcon className="w-4 h-4" />
                                 <span>{formatNumber(collection.likeCount)}</span>
                             </div>
                         </Tooltip>
 
                         <Tooltip title={`Created ${timeFromNow(collection.createdAt)}`}>
-                            <div className="flex items-center gap-1 text-gray-500">
+                            <div className="flex items-center gap-1 text-[var(--text-secondary)]">
                                 <AccessTimeIcon className="w-4 h-4" />
                                 <span>{timeFromNow(collection.createdAt)}</span>
                             </div>
                         </Tooltip>
 
                         <Tooltip title={`${collection.questionCount} question(s) in this collection`}>
-                            <div className="flex items-center gap-1 text-gray-500">
+                            <div className="flex items-center gap-1 text-[var(--text-secondary)]">
                                 <Numbers className="w-4 h-4" />
                                 <span>{collection.questionCount}</span>
                             </div>

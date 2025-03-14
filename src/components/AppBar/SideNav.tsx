@@ -21,6 +21,7 @@ export default function SideNav() {
             bg-[var(--nav-background)]
             fixed left-0 top-[var(--appbar-height)]
             overflow-y-auto
+            z-50
             max-h-[calc(100vh-var(--appbar-height))]">
             <div className="h-20 flex items-center w-full px-6 border-b border-[var(--border-color)]">
                 <Link href={Routes.Home} className="flex items-center gap-3">

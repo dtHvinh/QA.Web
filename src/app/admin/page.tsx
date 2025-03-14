@@ -94,8 +94,8 @@ export default function AdminDashboard() {
                         }
                     </div>
 
-                    <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-                        <h2 className="text-xl font-bold text-gray-900 mb-6">Quick Actions</h2>
+                    <div className="bg-[var(--card-background)] rounded-xl shadow-sm p-6 border border-gray-100">
+                        <h2 className="text-xl font-bold text-[var(--text-primary)]0 mb-6">Quick Actions</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             <Link href='/admin/user-management' className="flex items-start p-5 bg-white border border-gray-200 rounded-xl hover:border-purple-500 hover:shadow-md transition-all group">
                                 <div className="mr-4 p-3 bg-purple-50 rounded-lg group-hover:bg-purple-100 transition-colors">

@@ -46,15 +46,15 @@ export default function QuestionPage({ params }: { params: Promise<{ path: strin
             <div className="max-w-7xl mx-auto px-4 py-6">
                 <div className="flex flex-col lg:flex-row gap-8">
                     <div className="w-full lg:w-3/4">
-                        <div className="bg-white overflow-hidden">
+                        <div className="overflow-hidden">
                             <QuestionSection questionInit={question} />
                         </div>
                     </div>
 
                     <div className="w-full lg:w-1/4">
                         <div className="sticky top-24">
-                            <div className="rounded-xl shadow-sm border border-gray-100 overflow-hidden p-5">
-                                <h3 className="text-lg font-semibold text-gray-900 mb-4">Related Questions</h3>
+                            <div className="rounded-xl shadow-sm border border-[var(--border-color)] bg-[var(--card-background)] overflow-hidden p-5">
+                                <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-4">Related Questions</h3>
 
                                 {relatedQuestions && relatedQuestions.items.length > 0 ? (
                                     <div className="space-y-4">
@@ -62,7 +62,7 @@ export default function QuestionPage({ params }: { params: Promise<{ path: strin
                                             <div key={relatedQuestion.id} className="group">
                                                 <Link
                                                     href={toQuestionDetail(relatedQuestion.id, relatedQuestion.slug)}
-                                                    className="block text-gray-700 group-hover:text-blue-600 transition-colors text-sm font-medium"
+                                                    className="block text-[var(--text-secondary)] group-hover:text-[var(--primary)] transition-colors text-sm font-medium"
                                                 >
                                                     {relatedQuestion.title}
                                                 </Link>
@@ -70,7 +70,7 @@ export default function QuestionPage({ params }: { params: Promise<{ path: strin
                                         ))}
                                     </div>
                                 ) : (
-                                    <div className="text-gray-500 text-sm">No related questions found</div>
+                                    <div className="text-[var(--text-tertiary)] text-sm">No related questions found</div>
                                 )}
                             </div>
                         </div>

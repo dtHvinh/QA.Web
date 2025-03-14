@@ -81,7 +81,7 @@ const Comment = ({ comment, onCommentDelete }: Readonly<CommentComponentProps>) 
     }
 
     return (
-        <div className={`relative p-3 mb-4 rounded-lg bg-white ${isDeleting ? 'element-exit element-exit-active' : ''}`}>
+        <div className={`relative p-3 mb-4 rounded-lg bg-[var(--card-background)] ${isDeleting ? 'element-exit element-exit-active' : ''}`}>
             <AlertDialog open={deleteDialogOpen}
                 onClose={handleClose}
                 onYes={handleDelete}
@@ -97,15 +97,30 @@ const Comment = ({ comment, onCommentDelete }: Readonly<CommentComponentProps>) 
                         size="small"
                         value={editText}
                         onChange={(e) => handleEditTextChange(e.target.value)}
+                        sx={{
+                            '& .MuiInputBase-root': {
+                                color: 'var(--text-primary)',
+                                backgroundColor: 'var(--input-background)',
+                                '& fieldset': {
+                                    borderColor: 'var(--border-color)',
+                                },
+                                '&:hover fieldset': {
+                                    borderColor: 'var(--primary)',
+                                },
+                                '&.Mui-focused fieldset': {
+                                    borderColor: 'var(--primary)',
+                                },
+                            },
+                        }}
                     />
                 ) : (
-                    <div className="text-sm text-gray-900"
+                    <div className="text-sm text-[var(--text-primary)]"
                         dangerouslySetInnerHTML={{ __html: currentText as TrustedHTML }}>
                     </div>
                 )}
 
                 <div className="flex items-center justify-between text-xs">
-                    <div className="text-gray-500">
+                    <div className="text-[var(--text-secondary)]">
                         Commented by {<UserInfoPopup className="inline-block" user={comment.author!} />}
                         {comment.updatedAt == DEFAULT_TIME ? (
                             <span> {timeFromNow(comment.createdAt)}</span>
@@ -118,11 +133,11 @@ const Comment = ({ comment, onCommentDelete }: Readonly<CommentComponentProps>) 
                         <div className="flex gap-2">
                             {isEditing ? (
                                 <>
-                                    <button className="text-gray-500 hover:text-gray-700" onClick={handleDiscard}>
+                                    <button className="text-[var(--text-secondary)] hover:text-[var(--text-primary)]" onClick={handleDiscard}>
                                         Cancel
                                     </button>
                                     <button
-                                        className="text-blue-600 hover:text-blue-800 disabled:text-gray-400"
+                                        className="text-[var(--primary)] hover:text-[var(--primary-darker)] disabled:text-[var(--disabled-background)]"
                                         disabled={!isSaveAllow}
                                         onClick={handleUpdate}
                                     >
@@ -131,10 +146,10 @@ const Comment = ({ comment, onCommentDelete }: Readonly<CommentComponentProps>) 
                                 </>
                             ) : (
                                 <>
-                                    <button className="text-gray-500 hover:text-gray-700" onClick={handleStartEditing}>
+                                    <button className="text-[var(--text-secondary)] hover:text-[var(--text-primary)]" onClick={handleStartEditing}>
                                         Edit
                                     </button>
-                                    <button className="text-red-500 hover:text-red-700" onClick={handleClickOpen}>
+                                    <button className="text-[var(--error)] hover:text-[var(--error)] hover:opacity-80" onClick={handleClickOpen}>
                                         Delete
                                     </button>
                                 </>

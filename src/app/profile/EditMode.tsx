@@ -75,7 +75,7 @@ const EditMode = (
 
     return (
         <form onSubmit={handleSubmit}>
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="bg-[var(--card-background)] rounded-xl shadow-sm border border-[var(--border-color)] overflow-hidden">
                 <div className="bg-transparent h-32"></div>
                 <div className="px-6 pb-6">
                     <div className="flex flex-col sm:flex-row sm:items-end -mt-16 mb-6 gap-4">
@@ -86,14 +86,15 @@ const EditMode = (
                             sx={{
                                 width: 120,
                                 height: 120,
-                                border: '4px solid white',
-                                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                                border: '4px solid var(--card-background)',
+                                backgroundColor: 'var(--hover-background)',
+                                boxShadow: 'var(--shadow-sm)'
                             }}
                         />
                         <div className="flex-grow mt-4 sm:mt-0">
                             <div className="flex flex-col sm:flex-row sm:items-center justify-between">
                                 <div className="w-full max-w-md">
-                                    <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label htmlFor="username" className="block text-sm font-medium text-[var(--text-primary)] mb-1">
                                         Username
                                     </label>
                                     <input
@@ -101,13 +102,13 @@ const EditMode = (
                                         type="text"
                                         spellCheck="false"
                                         autoFocus
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                        className="w-full px-4 py-2 border border-[var(--border-color)] bg-[var(--input-background)] text-[var(--text-primary)] rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                         onChange={(e) => setEditedName(e.target.value)}
                                         defaultValue={profile.username}
                                     />
                                 </div>
                             </div>
-                            <div className="mt-2 text-gray-500">
+                            <div className="mt-2 text-[var(--text-secondary)]">
                                 Member for {countTotalDays(profile.createdAt)} days
                             </div>
                         </div>
@@ -116,13 +117,13 @@ const EditMode = (
                     <div className="space-y-4 mt-6">
                         <div>
                             <div className="flex items-center justify-between mb-2">
-                                <label className="block text-sm font-medium text-gray-700">
+                                <label className="block text-sm font-medium text-[var(--text-primary)]">
                                     External Links
                                 </label>
                                 <button
                                     type="button"
                                     onClick={addNewLink}
-                                    className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800"
+                                    className="flex items-center gap-1 text-sm text-[var(--primary)] hover:text-[var(--primary-darker)]"
                                 >
                                     <Add fontSize="small" />
                                     Add Link
@@ -135,18 +136,17 @@ const EditMode = (
                                         <input
                                             type="text"
                                             required
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lgtransition-colors"
+                                            className="w-full px-4 py-2 border border-[var(--border-color)] bg-[var(--input-background)] text-[var(--text-primary)] rounded-lg transition-colors"
                                             value={link.provider}
                                             onChange={(e) => handleLinkChange(index, 'provider', e.target.value)}
-                                        >
-                                        </input>
+                                        />
                                     </div>
                                     <div className="flex-1">
                                         <input
                                             type="url"
                                             spellCheck="false"
                                             required
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lgtransition-colors"
+                                            className="w-full px-4 py-2 border border-[var(--border-color)] bg-[var(--input-background)] text-[var(--text-primary)] rounded-lg transition-colors"
                                             placeholder="https://example.com"
                                             value={link.url}
                                             onChange={(e) => handleLinkChange(index, 'url', e.target.value)}
@@ -155,7 +155,7 @@ const EditMode = (
                                     <button
                                         type="button"
                                         onClick={() => removeLink(index)}
-                                        className="p-2 text-gray-500 hover:text-red-500 transition-colors"
+                                        className="p-2 text-[var(--text-secondary)] hover:text-[var(--error)] transition-colors"
                                     >
                                         <Delete fontSize="small" />
                                     </button>
@@ -167,7 +167,7 @@ const EditMode = (
                     <div className="flex justify-end gap-3 mt-8">
                         <button
                             onClick={onEditModeClick}
-                            className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                            className="flex items-center gap-2 px-4 py-2 bg-[var(--hover-background)] text-[var(--text-primary)] rounded-lg hover:bg-[var(--hover-background-darker)] transition-colors"
                         >
                             <Cancel fontSize="small" />
                             <span>Cancel</span>
@@ -175,13 +175,12 @@ const EditMode = (
                         <button
                             type="submit"
                             disabled={!anyChange}
-                            className="flex items-center gap-2 px-4 py-2 disabled:bg-gray-400 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                            className="flex items-center gap-2 px-4 py-2 disabled:bg-[var(--disabled-background)] bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                         >
                             <Save fontSize="small" />
                             <span>Save Changes</span>
                         </button>
                     </div>
-
                 </div>
             </div>
         </form>

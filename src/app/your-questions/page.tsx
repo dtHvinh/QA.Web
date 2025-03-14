@@ -69,8 +69,8 @@ export default function YourQuestionPage() {
             <div className="space-y-6">
                 <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
                     <div>
-                        <h1 className="text-3xl font-bold text-gray-900">Your Questions</h1>
-                        <p className="mt-1 text-sm text-gray-500">
+                        <h1 className="text-3xl font-bold text-[var(--text-primary)]">Your Questions</h1>
+                        <p className="mt-1 text-sm text-[var(--text-secondary)]">
                             You have asked {response?.totalCount || 0} questions
                         </p>
                     </div>
@@ -94,16 +94,16 @@ export default function YourQuestionPage() {
                             ))}
                         </div>
                     ) : (
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 text-center">
+                        <div className="bg-[var(--card-background)] rounded-xl shadow-sm border border-[var(--border-color)] p-8 text-center">
                             <div className="max-w-md mx-auto">
-                                <svg className="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg className="w-12 h-12 text-[var(--text-tertiary)] mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
-                                <h3 className="text-lg font-medium text-gray-900 mb-2">No questions yet</h3>
-                                <p className="text-gray-500 mb-4">Start sharing your knowledge with the community</p>
+                                <h3 className="text-lg font-medium text-[var(--text-primary)] mb-2">No questions yet</h3>
+                                <p className="text-[var(--text-secondary)] mb-4">Start sharing your knowledge with the community</p>
                                 <Link
                                     href={Routes.NewQuestion}
-                                    className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+                                    className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[var(--primary)] hover:bg-[var(--primary-darker)] transition-colors"
                                 >
                                     Ask a Question
                                 </Link>
@@ -113,7 +113,7 @@ export default function YourQuestionPage() {
                 </div>
 
                 {response?.items && response.items.length > 0 && (
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+                    <div className="bg-[var(--card-background)] rounded-xl shadow-sm border border-[var(--border-color)] p-4">
                         <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
                             <ItemPerPage
                                 onPageSizeChange={setPageSize}
@@ -128,13 +128,17 @@ export default function YourQuestionPage() {
                                 size="large"
                                 sx={{
                                     '& .MuiPaginationItem-root': {
-                                        borderColor: 'rgb(229 231 235)',
+                                        borderColor: 'var(--border-color)',
+                                        color: 'var(--text-primary)',
                                         '&.Mui-selected': {
-                                            backgroundColor: 'rgb(59 130 246)',
+                                            backgroundColor: 'var(--primary)',
                                             color: 'white',
                                             '&:hover': {
-                                                backgroundColor: 'rgb(37 99 235)',
+                                                backgroundColor: 'var(--primary-darker)',
                                             },
+                                        },
+                                        '&:hover': {
+                                            backgroundColor: 'var(--hover-background)',
                                         },
                                     },
                                 }}

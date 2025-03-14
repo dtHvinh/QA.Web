@@ -63,7 +63,7 @@ export default function CollectionsPage() {
         <div className="page-container mx-auto px-4">
             <div className="flex flex-col space-y-6">
                 <div className="flex items-center justify-between">
-                    <h1 className="text-3xl font-bold text-gray-900">Collections</h1>
+                    <h1 className="text-3xl font-bold text-[var(--text-primary)]">Collections</h1>
                     <Tooltip title="Create Collection" arrow placement="left">
                         <button
                             onClick={() => setOpen(true)}
@@ -81,12 +81,12 @@ export default function CollectionsPage() {
                             <input
                                 type="text"
                                 placeholder="Search collections..."
-                                className="w-full sm:w-80 pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                                className="w-full sm:w-80 pl-10 pr-4 py-2 border border-[var(--border-color)] rounded-lg bg-[var(--input-background)] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 value={searchTerm}
                             />
                             <svg
-                                className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+                                className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-tertiary)]"
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"

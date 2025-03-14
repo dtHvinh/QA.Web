@@ -24,20 +24,20 @@ const QuestionHeaderDetails = memo(
         }: QuestionHeaderDetailsProps) {
 
         return (
-            <div className={'flex flex-col space-y-1 text-gray-400'}>
+            <div className={'flex flex-col space-y-1 text-[var(--text-tertiary)]'}>
                 <div></div>
                 <div className={'flex flex-wrap gap-4'}>
-                    <div>Asked : <span className={'text-gray-700'}>{timeFromNow(createdAt)}</span></div>
+                    <div>Asked : <span className={'text-[var(--text-secondary)]'}>{timeFromNow(createdAt)}</span></div>
                     {updatedAt !== DEFAULT_TIME ?
                         <div>
-                            Modified : <span className={'text-gray-700'}>{timeFromNow(updatedAt)}</span>
+                            Modified : <span className={'text-[var(--text-secondary)]'}>{timeFromNow(updatedAt)}</span>
                         </div> : ''
                     }
                     <div>
-                        Views: <span className={'text-gray-700'}>{formatNumber(viewCount)}</span>
+                        Views: <span className={'text-[var(--text-secondary)]'}>{formatNumber(viewCount)}</span>
                     </div>
                     <div>
-                        Answers: <span className={'text-gray-700'}>{answerCount}</span>
+                        Answers: <span className={'text-[var(--text-secondary)]'}>{answerCount}</span>
                     </div>
                 </div>
                 <div>

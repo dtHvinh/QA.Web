@@ -65,13 +65,13 @@ export default function CollectionDetailPage({ params }: Readonly<{ params: Prom
     }
 
     return (
-        <div className="max-w-6xl mx-auto">
+        <div className="page-container mx-auto">
             {data && (
                 <div className="space-y-6">
                     <Tabs.Root defaultValue="details" className="w-full">
-                        <Tabs.List className="flex space-x-1 border-b border-gray-200 mb-6">
+                        <Tabs.List className="flex space-x-1 border-b border-[var(--border-color)] mb-6">
                             <Tabs.TabsTrigger
-                                className="px-4 py-2 -mb-px text-sm font-medium text-gray-500 hover:text-gray-700 focus:outline-none data-[state=active]:text-blue-600 data-[state=active]:border-b-2 data-[state=active]:border-blue-600"
+                                className="px-4 py-2 -mb-px text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] focus:outline-none data-[state=active]:text-blue-500 data-[state=active]:border-b-2 data-[state=active]:border-blue-500"
                                 value="details"
                             >
                                 <div className="flex items-center gap-2">
@@ -104,28 +104,28 @@ export default function CollectionDetailPage({ params }: Readonly<{ params: Prom
                         <TabsContent value="details" className="focus:outline-none">
                             <div className="space-y-8">
                                 <div className="flex justify-between items-start">
-                                    <h1 className="text-4xl font-bold text-gray-900">{data.name}</h1>
+                                    <h1 className="text-4xl font-bold text-[var(--text-primary)]">{data.name}</h1>
                                     <button
                                         onClick={isLiked ? handleUnlike : handleLike}
-                                        className="flex items-center gap-2 px-4 py-2 rounded-full border border-gray-200 hover:bg-gray-50 transition-colors"
+                                        className="flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--border-color)] hover:bg-[var(--hover-background)] transition-colors"
                                     >
                                         {isLiked ? (
                                             <FavoriteIcon className="w-5 h-5 text-red-500" />
                                         ) : (
-                                            <FavoriteBorderIcon className="w-5 h-5 text-gray-400" />
+                                            <FavoriteBorderIcon className="w-5 h-5 text-[var(--text-tertiary)]" />
                                         )}
-                                        <span className="text-sm font-medium text-gray-700">{likeCount}</span>
+                                        <span className="text-sm font-medium text-[var(--text-secondary)]">{likeCount}</span>
                                     </button>
                                 </div>
 
-                                <div className="bg-gray-100 rounded-xl p-6">
-                                    <div className="flex items-start gap-3 text-gray-600">
+                                <div className="bg-[var(--hover-background)] rounded-xl p-6">
+                                    <div className="flex items-start gap-3 text-[var(--text-secondary)]">
                                         <Description className="w-5 h-5 mt-1" />
                                         <p className="text-lg">{data.description}</p>
                                     </div>
                                 </div>
 
-                                <div className="flex items-start gap-6 p-6 bg-white rounded-xl border border-gray-200">
+                                <div className="flex items-start gap-6 p-6 bg-[var(--card-background)] rounded-xl border border-[var(--border-color)]">
                                     <Avatar
                                         variant="rounded"
                                         src={data.author.profilePicture}
@@ -133,13 +133,13 @@ export default function CollectionDetailPage({ params }: Readonly<{ params: Prom
                                         sx={{ width: 80, height: 80 }}
                                     />
                                     <div className="space-y-3">
-                                        <h2 className="text-2xl font-bold text-gray-900">
+                                        <h2 className="text-2xl font-bold text-[var(--text-primary)]">
                                             {data.author.username}
                                         </h2>
                                         <div className="flex items-center gap-4 text-sm">
-                                            <span className="text-gray-500">External links:</span>
-                                            <a href="#" className="text-blue-600 hover:underline">Website</a>
-                                            <a href="#" className="text-blue-600 hover:underline">GitHub</a>
+                                            <span className="text-[var(--text-secondary)]">External links:</span>
+                                            <a href="#" className="text-blue-500 hover:underline">Website</a>
+                                            <a href="#" className="text-blue-500 hover:underline">GitHub</a>
                                         </div>
                                     </div>
                                 </div>
@@ -148,7 +148,7 @@ export default function CollectionDetailPage({ params }: Readonly<{ params: Prom
 
                         <TabsContent value="questions" className="focus:outline-none">
                             <div className="space-y-6">
-                                <h2 className="text-2xl font-semibold text-gray-900">
+                                <h2 className="text-2xl font-semibold text-[var(--text-primary)]">
                                     Questions ({data.questions.totalCount})
                                 </h2>
 

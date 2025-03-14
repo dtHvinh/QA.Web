@@ -44,20 +44,20 @@ export default function YourCollectionsPage() {
             <CreateCollectionDialog open={open} onClose={() => setOpen(false)} onCreated={handleCreated} />
 
             <div className="flex flex-col sm:flex-row justify-between items-center mb-8">
-                <h1 className="text-3xl font-bold text-gray-900">
+                <h1 className="text-3xl font-bold text-[var(--text-primary)]">
                     Your Collections
                 </h1>
 
                 <button
                     onClick={() => setOpen(true)}
-                    className="flex items-center gap-2 px-4 py-2 mt-4 sm:mt-0 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 mt-4 sm:mt-0 text-white bg-[var(--primary)] rounded-lg hover:bg-[var(--primary-darker)] transition-colors"
                 >
                     <PlaylistAddIcon sx={{ fontSize: 20 }} />
                     <span>New Collection</span>
                 </button>
             </div>
 
-            <div className="p-4 border-b border-gray-100">
+            <div className="p-4 border-b border-[var(--border-color)]">
                 <FilterBar
                     tabs={tabs}
                     tabValues={tabValues}
@@ -75,23 +75,35 @@ export default function YourCollectionsPage() {
                     </div>
 
                     {data?.totalPage !== 0 && (
-                        <div className="flex justify-center border-t border-gray-100 p-4">
+                        <div className="flex justify-center border-t border-[var(--border-color)] p-4">
                             <Pagination
                                 count={data?.totalPage}
                                 page={pageIndex}
                                 onChange={(_, num) => setPageIndex(num)}
                                 size="large"
+                                sx={{
+                                    '& .MuiPaginationItem-root': {
+                                        color: 'var(--text-primary)',
+                                    },
+                                    '& .MuiPaginationItem-root.Mui-selected': {
+                                        backgroundColor: 'var(--primary)',
+                                        color: 'white',
+                                    },
+                                    '& .MuiPaginationItem-root:hover': {
+                                        backgroundColor: 'var(--hover-background)',
+                                    },
+                                }}
                             />
                         </div>
                     )}
                 </>
             ) : (
                 <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
-                    <svg className="w-16 h-16 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-16 h-16 text-[var(--text-tertiary)] mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                     </svg>
-                    <h3 className="text-lg font-medium text-gray-900 mb-1">No collections yet</h3>
-                    <p className="text-gray-500">Create your first collection to get started</p>
+                    <h3 className="text-lg font-medium text-[var(--text-primary)] mb-1">No collections yet</h3>
+                    <p className="text-[var(--text-secondary)]">Create your first collection to get started</p>
                 </div>
             )}
         </div>

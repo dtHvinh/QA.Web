@@ -66,53 +66,79 @@ export default function AddToCollection({ questionId }: Readonly<{ questionId: s
     return (
         <>
             <Tooltip title={'Add to collection'}>
-                <IconButton onClick={handleOpen} sx={{ width: 48, height: 48 }}>
+                <IconButton 
+                    onClick={handleOpen} 
+                    sx={{ 
+                        width: 48, 
+                        height: 48,
+                        color: 'var(--text-secondary)',
+                        '&:hover': {
+                            backgroundColor: 'var(--hover-background)'
+                        }
+                    }}
+                >
                     <PlaylistAddIcon />
                 </IconButton>
             </Tooltip>
 
-            <CreateCollectionDialog open={createCollectionDialogOpen}
+            <CreateCollectionDialog 
+                open={createCollectionDialogOpen}
                 onClose={() => setCreateCollectionDialogOpen(false)}
-                onCreated={handleOnCreateCollection} />
+                onCreated={handleOnCreateCollection} 
+            />
 
-            <Dialog open={open} onClose={handleClose} hideBackdrop={true} slotProps={{
-                paper: {
-                    elevation: 5,
-                }
-            }}>
+            <Dialog 
+                open={open} 
+                onClose={handleClose} 
+                hideBackdrop={true} 
+                slotProps={{
+                    paper: {
+                        elevation: 5,
+                        style: {
+                            backgroundColor: 'var(--card-background)',
+                            color: 'var(--text-primary)'
+                        }
+                    }
+                }}
+            >
                 <div className={'p-5 px-9 flex flex-col'}>
-                    <div className={'text-2xl'}>Add this question to...</div>
+                    <div className={'text-2xl text-[var(--text-primary)]'}>Add this question to...</div>
 
                     <div className={'flex flex-col gap-0 mt-5'}>
                         {collectionWithStatus.map((collection) => (
                             <FormControlLabel key={collection.id}
                                 className={'p-2 flex gap-2'}
-                                control={<Checkbox defaultChecked={collection.isAdded}
-                                    onChange={(e) =>
-                                        handleCheck(e, collection.id, collection.name)}
-                                    sx={{
-                                        [`&, &.${checkboxClasses.checked}`]: {
-                                            color: 'black',
-                                        },
-                                    }} />} label={
-                                        <div className={'flex'}>
-                                            <div className={'text-sm mr-2 text-gray-500'}>
-                                                {collection.isPublic ?
-                                                    <Public fontSize={'small'} />
-                                                    :
-                                                    <Lock fontSize={'small'} />}
-                                            </div>
-                                            <div>
-                                                {collection.name}
-                                            </div>
+                                control={
+                                    <Checkbox 
+                                        defaultChecked={collection.isAdded}
+                                        onChange={(e) => handleCheck(e, collection.id, collection.name)}
+                                        sx={{
+                                            [`&, &.${checkboxClasses.checked}`]: {
+                                                color: 'var(--text-primary)',
+                                            },
+                                        }} 
+                                    />
+                                } 
+                                label={
+                                    <div className={'flex'}>
+                                        <div className={'text-sm mr-2 text-[var(--text-secondary)]'}>
+                                            {collection.isPublic ?
+                                                <Public fontSize={'small'} /> :
+                                                <Lock fontSize={'small'} />}
                                         </div>
-                                    } />
+                                        <div className="text-[var(--text-primary)]">
+                                            {collection.name}
+                                        </div>
+                                    </div>
+                                } 
+                            />
                         ))}
                     </div>
 
                     <button
                         onClick={() => setCreateCollectionDialogOpen(true)}
-                        className={'flex mt-4 border py-1 rounded-full bg-gray-200 hover:bg-gray-300 border-gray-500 justify-center transition'}>
+                        className={'flex mt-4 border py-1 rounded-full bg-[var(--hover-background)] hover:bg-[var(--hover-background-darker)] border-[var(--border-color)] text-[var(--text-primary)] justify-center transition'}
+                    >
                         Add collection
                     </button>
                 </div>

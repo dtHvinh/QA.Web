@@ -1,11 +1,12 @@
 'use client'
 
 import Loading from "@/app/loading";
+import ViewOptionsButton from "@/components/Common/ViewOptionsButton";
 import QuestionCardListSkeleton from "@/components/Skeletons/YQPSkeleton";
 import YourQuestionItem from "@/components/YourQuestionItem";
 import getAuth from "@/helpers/auth-utils";
 import { getFetcher, IsErrorResponse } from "@/helpers/request-utils";
-import { PagedResponse, QuestionResponse } from "@/types/types";
+import { PagedResponse, QuestionResponse, ViewOptions } from "@/types/types";
 import notifyError from "@/utilities/ToastrExtensions";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
@@ -15,6 +16,7 @@ export default function Home() {
     const getQuestionRequestUrl = `/api/question/you_may_like?pageIndex=1&pageSize=30`;
     const auth = getAuth();
     const [questionResults, setQuestionResults] = useState<PagedResponse<QuestionResponse>>();
+    const [view, setView] = useState<ViewOptions>('full')
 
     const { data: user, isLoading } = useSWR([userInfoRequestUrl, auth?.accessToken], getFetcher);
 
@@ -82,6 +84,8 @@ export default function Home() {
                             <h2 className="text-2xl font-bold text-[var(--text-primary)]">
                                 Recommended Questions
                             </h2>
+
+                            <ViewOptionsButton view={view} onChange={setView} />
                         </div>
 
                         {questionResults == null ? (
@@ -90,6 +94,7 @@ export default function Home() {
                             <div className="space-y-4">
                                 {questionResults.items.map((question) => (
                                     <YourQuestionItem
+                                        view={view}
                                         question={question}
                                         key={question.id}
                                         showAuthor={false}

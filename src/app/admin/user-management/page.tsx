@@ -10,7 +10,7 @@ import { GetUserResponse, PagedResponse } from "@/types/types";
 import { ArrowBack } from "@mui/icons-material";
 import { Pagination } from "@mui/material";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import useSWR from "swr";
 import UserStatus from "../UserStatus";
 
@@ -19,13 +19,16 @@ export default function UserManagementPage() {
     const [pageIndex, setPageIndex] = useState(1);
     const [expandedUserId, setExpandedUserId] = useState<number | null>(null);
     const [searchId, setSearchId] = useState('');
-    const { data, isLoading } = useSWR<PagedResponse<GetUserResponse>>(
+    const [cachedUsers, setCachedUsers] = useState<GetUserResponse[]>([])
+    const { data, isLoading, mutate } = useSWR<PagedResponse<GetUserResponse>>(
         [`/api/admin/users?pageIndex=${pageIndex}&pageSize=10`, auth?.accessToken], getFetcher);
     const [users, setUsers] = useState<GetUserResponse[]>([])
 
     useEffect(() => {
-        if (data)
+        if (data) {
             setUsers(data.items)
+            setCachedUsers(data.items)
+        }
     }, [data])
 
     if (!isLoading && IsErrorResponse(data)) {
@@ -50,8 +53,19 @@ export default function UserManagementPage() {
             user => user.id === userId ? { ...user, isBanned: false } : user))
     }
 
-    const handleSearchUserById = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSearchUserById = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        if (!searchId) {
+            setUsers(cachedUsers)
+            return;
+        }
+
+        const res = await getFetcher([`/api/admin/users/${searchId}`, auth!.accessToken]);
+
+        if (!IsErrorResponse(res)) {
+            setUsers([res as GetUserResponse])
+        }
     }
 
     return (
@@ -127,7 +141,7 @@ export default function UserManagementPage() {
                                                 {user.email || 'N/A'}
                                             </td>
                                             <td className="py-3 px-6">
-                                                <span className="font-medium text-blue-500">
+                                                <span className="font-medium text-[var(--text-primary)]">
                                                     {user.reputation}
                                                 </span>
                                             </td>
@@ -140,7 +154,7 @@ export default function UserManagementPage() {
                                             <td className="py-3 px-6">
                                                 <button
                                                     onClick={() => setExpandedUserId(expandedUserId === user.id ? null : user.id)}
-                                                    className={`text-sm ${expandedUserId === user.id ? 'text-blue-600' : 'text-blue-500 hover:text-blue-600'}`}
+                                                    className={`text-sm ${expandedUserId === user.id ? 'text-[var(--primary-dark)]' : 'text-[var(--primary)] hover:text-[var(--primary-dark)]'}`}
                                                 >
                                                     {expandedUserId === user.id ? 'Close' : 'Edit'}
                                                 </button>
@@ -161,7 +175,7 @@ export default function UserManagementPage() {
                         </table>
                     </div>
 
-                    {data && data.items.length > 0 && data.totalPage > 0 && (
+                    {data && data.totalPage > 0 && (
                         <div className="flex justify-center py-6 border-t border-[var(--border-color)]">
                             <Pagination
                                 count={data.totalPage}

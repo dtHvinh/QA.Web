@@ -35,26 +35,26 @@ export default function BookmarkPage() {
     return (
         <div className="page-container mx-auto">
             <div className="mb-8">
-                <h1 className="text-3xl font-bold text-gray-900">Your Bookmarks</h1>
-                <p className="mt-2 text-gray-600">Save and organize your favorite questions</p>
+                <h1 className="text-3xl font-bold text-[var(--text-primary)]">Your Bookmarks</h1>
+                <p className="mt-2 text-[var(--text-secondary)]">Save and organize your favorite questions</p>
             </div>
 
             {questions.length === 0 ? (
-                <div className="text-center py-16 bg-white rounded-xl border border-gray-200">
+                <div className="text-center py-16 bg-[var(--card-background)] rounded-xl border border-[var(--border-color)]">
                     <div className="mb-4">
-                        <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="mx-auto h-12 w-12 text-[var(--text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
                         </svg>
                     </div>
-                    <h3 className="text-lg font-medium text-gray-900">No bookmarks yet</h3>
-                    <p className="mt-1 text-sm text-gray-500">
+                    <h3 className="text-lg font-medium text-[var(--text-primary)]">No bookmarks yet</h3>
+                    <p className="mt-1 text-sm text-[var(--text-secondary)]">
                         Start saving questions to your bookmarks to find them easily later
                     </p>
                 </div>
             ) : (
                 <div className="space-y-6">
                     <div className="flex items-center justify-between">
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-[var(--text-secondary)]">
                             Showing {questions.length} bookmark{questions.length !== 1 ? 's' : ''}
                         </p>
                     </div>
@@ -71,13 +71,29 @@ export default function BookmarkPage() {
                     </div>
 
                     {(data as PagedResponse<unknown>).totalPage > 1 && (
-                        <div className="flex justify-center pt-6 border-t">
+                        <div className="flex justify-center pt-6 border-t border-[var(--border-color)]">
                             <Pagination
                                 count={(data as PagedResponse<unknown>).totalPage}
                                 page={pageIndex}
                                 onChange={(_, value) => setPageIndex(value)}
                                 shape="rounded"
                                 size="large"
+                                sx={{
+                                    '& .MuiPaginationItem-root': {
+                                        color: 'var(--text-primary)',
+                                        borderColor: 'var(--border-color)',
+                                        '&:hover': {
+                                            backgroundColor: 'var(--hover-background)',
+                                        },
+                                        '&.Mui-selected': {
+                                            backgroundColor: 'var(--primary)',
+                                            color: 'white',
+                                            '&:hover': {
+                                                backgroundColor: 'var(--primary-darker)',
+                                            },
+                                        },
+                                    },
+                                }}
                             />
                         </div>
                     )}

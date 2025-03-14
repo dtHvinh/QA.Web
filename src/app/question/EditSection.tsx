@@ -57,18 +57,18 @@ export default function EditSection({ question, onEditSuccess }: {
     }
 
     return (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="bg-[var(--card-background)] rounded-xl shadow-sm border border-[var(--border-color)] overflow-hidden">
             <div className="flex justify-between items-center">
-                <div className="p-6 border-b border-gray-100">
-                    <h2 className="text-xl font-bold text-gray-900">Edit Question</h2>
-                    <p className="mt-1 text-sm text-gray-500">Update your question details</p>
+                <div className="p-6 border-b border-[var(--border-color)]">
+                    <h2 className="text-xl font-bold text-[var(--text-primary)]">Edit Question</h2>
+                    <p className="mt-1 text-sm text-[var(--text-secondary)]">Update your question details</p>
                 </div>
 
                 <div className="gap-3">
                     <button
                         onClick={handleSend}
                         disabled={!isAnyChange}
-                        className="flex items-center px-2 py-1 rounded-lg text-white bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+                        className="flex items-center px-2 py-1 rounded-lg text-white bg-[var(--primary)] hover:bg-[var(--primary-darker)] disabled:bg-[var(--disabled-background)] disabled:cursor-not-allowed transition-colors"
                     >
                         <svg
                             className="w-5 h-5 mr-2"
@@ -89,9 +89,9 @@ export default function EditSection({ question, onEditSuccess }: {
             </div>
             <div className="px-6 space-y-6">
                 <div className="space-y-2">
-                    <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="title" className="block text-sm font-medium text-[var(--text-primary)]">
                         Question Title
-                        <span className="text-red-500 ml-1">*</span>
+                        <span className="text-[var(--error)] ml-1">*</span>
                     </label>
                     <input
                         id="title"
@@ -102,16 +102,16 @@ export default function EditSection({ question, onEditSuccess }: {
                         name="title"
                         required
                         placeholder="Enter your question title"
-                        className="w-full px-4 py-2.5 rounded-lg border border-gray-200 transition-all"
+                        className="w-full px-4 py-2.5 rounded-lg border border-[var(--border-color)] bg-[var(--input-background)] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] transition-all focus:border-[var(--primary)]"
                     />
                 </div>
 
                 <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm font-medium text-[var(--text-primary)]">
                         Question Content
-                        <span className="text-red-500 ml-1">*</span>
+                        <span className="text-[var(--error)] ml-1">*</span>
                     </label>
-                    <div className="border border-gray-200 rounded-lg overflow-hidden">
+                    <div className="border border-[var(--border-color)] rounded-lg overflow-hidden">
                         <TextEditor
                             currentText={editContentValue}
                             onTextChange={setEditContentValue}
@@ -120,9 +120,9 @@ export default function EditSection({ question, onEditSuccess }: {
                 </div>
 
                 <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm font-medium text-[var(--text-primary)]">
                         Tags
-                        <span className="text-xs text-gray-500 ml-2">(Max 5 tags)</span>
+                        <span className="text-xs text-[var(--text-secondary)] ml-2">(Max 5 tags)</span>
                     </label>
                     <TagInput
                         onTagChange={handleTagChange}
@@ -133,9 +133,9 @@ export default function EditSection({ question, onEditSuccess }: {
                 </div>
 
                 <div className="space-y-2">
-                    <label htmlFor="comment" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="comment" className="block text-sm font-medium text-[var(--text-primary)]">
                         Comment
-                        <span className="text-red-500 ml-1">*</span>
+                        <span className="text-[var(--error)] ml-1">*</span>
                     </label>
                     <input
                         id="comment"
@@ -147,7 +147,7 @@ export default function EditSection({ question, onEditSuccess }: {
                         name="comment"
                         required
                         placeholder="Enter your comment"
-                        className="w-full px-4 py-2.5 rounded-lg border border-gray-200 transition-all"
+                        className="w-full px-4 py-2.5 rounded-lg border border-[var(--border-color)] bg-[var(--input-background)] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] transition-all focus:border-[var(--primary)]"
                     />
                 </div>
             </div>

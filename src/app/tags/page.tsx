@@ -44,10 +44,10 @@ export default function Tags() {
         <div className="page-container mx-auto px-4 space-y-8">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div className="space-y-1">
-                    <h1 className="text-3xl font-bold text-gray-900">Tags</h1>
+                    <h1 className="text-3xl font-bold text-[var(--text-primary)]">Tags</h1>
 
                     {data && (
-                        <p className="text-gray-600">{data.totalCount.toLocaleString()} tags</p>
+                        <p className="text-[var(--text-secondary)]">{data.totalCount.toLocaleString()} tags</p>
                     )}
 
                     <PermissionAction
@@ -57,7 +57,6 @@ export default function Tags() {
                     >
                         Create Tag
                     </PermissionAction>
-
                 </div>
                 <FilterBar
                     tabs={validOrder}
@@ -81,20 +80,20 @@ export default function Tags() {
                         key={tag.id}
                         className="group block"
                     >
-                        <div className="h-full p-6 bg-white border border-gray-200 rounded-xl hover:border-blue-500 hover:shadow-md transition-all duration-200">
+                        <div className="h-full p-6 bg-[var(--card-background)] border border-[var(--border-color)] rounded-xl hover:border-blue-500 hover:shadow-md transition-all duration-200">
                             <div className="flex items-center justify-between mb-4">
-                                <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+                                <h3 className="text-lg font-semibold text-[var(--text-primary)] group-hover:text-blue-500 transition-colors">
                                     {tag.name}
                                 </h3>
-                                <span className="text-sm text-gray-500">
+                                <span className="text-sm text-[var(--text-secondary)]">
                                     {tag.questionCount || 0} questions
                                 </span>
                             </div>
-                            <p className="text-gray-600 line-clamp-3">
+                            <p className="text-[var(--text-secondary)] line-clamp-3">
                                 {tag.description}
                             </p>
-                            <div className="mt-4 pt-4 border-t border-gray-100">
-                                <span className="text-sm text-blue-600 group-hover:text-blue-700 transition-colors">
+                            <div className="mt-4 pt-4 border-t border-[var(--border-color)]">
+                                <span className="text-sm text-blue-500 group-hover:text-blue-600 transition-colors">
                                     View questions →
                                 </span>
                             </div>

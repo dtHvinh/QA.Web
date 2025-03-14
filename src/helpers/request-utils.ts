@@ -132,7 +132,7 @@ export async function refreshToken(auth?: AuthProps) {
         return authRefreshResponse.accessToken;
     } catch (error) {
         notifyError("Failed to refresh token");
-        window.location.href = '/auth/login';
+        window.location.href = '/auth';
         return null;
     } finally {
         isRefreshing = false;

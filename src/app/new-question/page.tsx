@@ -58,13 +58,13 @@ export default function NewQuestion() {
         <div className="max-w-4xl mx-auto px-4 py-8">
             <div className="space-y-8">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900">Ask a Question</h1>
-                    <p className="mt-2 text-gray-600">Get help from the community by asking a clear, well-structured question</p>
+                    <h1 className="text-3xl font-bold text-[var(--text-primary)]">Ask a Question</h1>
+                    <p className="mt-2 text-[var(--text-secondary)]">Get help from the community by asking a clear, well-structured question</p>
                 </div>
 
                 <form className="space-y-6" method="POST" onSubmit={handleFormSubmit}>
                     <div className="space-y-2">
-                        <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+                        <label htmlFor="title" className="block text-sm font-medium text-[var(--text-primary)]">
                             Question Title
                         </label>
                         <input
@@ -74,45 +74,45 @@ export default function NewQuestion() {
                             spellCheck={false}
                             placeholder="e.g. How to use React Query?"
                             required
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                            className="w-full px-4 py-3 border border-[var(--border-color)] bg-[var(--input-background)] text-[var(--text-primary)] rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                         />
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-[var(--text-secondary)]">
                             Be specific and imagine you're asking a question to another person
                         </p>
                     </div>
 
                     <div className="space-y-2">
-                        <label htmlFor="details" className="block text-sm font-medium text-gray-700">
+                        <label htmlFor="details" className="block text-sm font-medium text-[var(--text-primary)]">
                             Question Details
                         </label>
-                        <div className="border border-gray-200 rounded-lg">
+                        <div className="border border-[var(--border-color)] rounded-lg">
                             <TextEditor currentText={''} onTextChange={setContent} />
                         </div>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-[var(--text-secondary)]">
                             Include all the information someone would need to answer your question
                         </p>
                     </div>
 
                     <div className="space-y-2">
                         <div className="flex items-center justify-between">
-                            <label htmlFor="tag" className="block text-sm font-medium text-gray-700">
+                            <label htmlFor="tag" className="block text-sm font-medium text-[var(--text-primary)]">
                                 Tags
                             </label>
-                            <span className="text-sm text-gray-500">
+                            <span className="text-sm text-[var(--text-secondary)]">
                                 Max 5 tags
                             </span>
                         </div>
                         <TagInput onTagIdChange={handleTagChange} maxTags={5} />
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-[var(--text-secondary)]">
                             Add up to 5 tags to describe what your question is about. Start typing to see suggestions.
                         </p>
                     </div>
 
-                    <div className="flex items-center justify-end space-x-4 pt-6 border-t">
+                    <div className="flex items-center justify-end space-x-4 pt-6 border-t border-[var(--border-color)]">
                         <button
                             type="submit"
                             disabled={isSendDisabled}
-                            className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                            className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-[var(--disabled-background)] disabled:cursor-not-allowed transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                         >
                             Post Question
                         </button>

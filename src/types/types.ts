@@ -2,6 +2,8 @@ export interface TextResponse {
     message: string
 }
 
+export declare type ViewOptions = 'compact' | 'full'
+
 export interface TagResponse {
     id: string,
     name: string,

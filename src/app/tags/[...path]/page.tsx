@@ -48,45 +48,44 @@ export default function TagDetailPage({ params }: { params: Promise<{ path: stri
     return (
         <div className="page-container mx-auto space-y-8">
             {tag && (
-                <div className="bg-white border border-gray-200 rounded-xl p-6 flex flex-col">
+                <div className="bg-[var(--card-background)] border border-[var(--border-color)] rounded-xl p-6 flex flex-col">
                     <div className="space-y-4 flex justify-between items-baseline pb-5">
                         <div className="flex items-center gap-3">
-                            <h1 className="text-3xl font-bold text-gray-900">{tag.name}</h1>
-                            <span className="px-3 py-1 text-sm font-medium text-blue-600 bg-blue-50 rounded-full">
+                            <h1 className="text-3xl font-bold text-[var(--text-primary)]">{tag.name}</h1>
+                            <span className="px-3 py-1 text-sm font-medium text-blue-500 bg-blue-500/10 rounded-full">
                                 {tag.questionCount} questions
                             </span>
                         </div>
 
                         <div className="space-x-5 flex justify-end items-center">
-                            <Link href={`/wiki/${tag.id}/${tag.name}`} className="border px-2 py-1 rounded-md border-gray-400 hover:bg-gray-100">
+                            <Link href={`/wiki/${tag.id}/${tag.name}`}
+                                className="border px-2 py-1 rounded-md border-[var(--border-color)] hover:bg-[var(--hover-background)]">
                                 Go to Wiki
                             </Link>
 
                             <PermissionAction action="editTag" allowedHref={`/tags/edit/${tag.id}`}>
                                 <Tooltip title='Edit'>
-                                    <Edit />
+                                    <Edit className="text-[var(--text-secondary)]" />
                                 </Tooltip>
                             </PermissionAction>
 
                             <ModeratorPrivilege>
-
                                 <Tooltip title='Delete this tag'>
                                     <button>
-                                        <Delete />
+                                        <Delete className="text-[var(--text-secondary)]" />
                                     </button>
                                 </Tooltip>
                             </ModeratorPrivilege>
                         </div>
                     </div>
 
-                    <p className="text-gray-600">{tag.description}</p>
-
+                    <p className="text-[var(--text-secondary)]">{tag.description}</p>
                 </div>
             )}
 
             <div className="space-y-6">
                 <div ref={titleRef} className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                    <h2 className="text-xl font-semibold text-gray-900">
+                    <h2 className="text-xl font-semibold text-[var(--text-primary)]">
                         Questions Tagged [{tag?.name}]
                     </h2>
                     <FilterBar
@@ -101,8 +100,8 @@ export default function TagDetailPage({ params }: { params: Promise<{ path: stri
                     {isLoading ? (
                         <TagQuestionDisplaySkeleton />
                     ) : tagQuestions.length === 0 ? (
-                        <div className="text-center py-12 bg-gray-50 rounded-lg">
-                            <p className="text-gray-500">No questions found with this tag</p>
+                        <div className="text-center py-12 bg-[var(--hover-background)] rounded-lg">
+                            <p className="text-[var(--text-secondary)]">No questions found with this tag</p>
                         </div>
                     ) : (
                         tagQuestions.map(question => (
@@ -115,7 +114,7 @@ export default function TagDetailPage({ params }: { params: Promise<{ path: stri
                 </div>
 
                 {tag?.questions && tag.questions.totalPage > 1 && (
-                    <div className="flex justify-center pt-6 border-t">
+                    <div className="flex justify-center pt-6 border-t border-[var(--border-color)]">
                         <Pagination
                             count={tag.questions.totalPage}
                             page={pageIndex}

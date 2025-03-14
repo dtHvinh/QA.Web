@@ -52,7 +52,7 @@ export default function QuestionSection({ questionInit }: { questionInit: Questi
     }
 
     return (
-        <div className="max-w-5xl mx-auto">
+        <div className="page-container mx-auto">
             <Dialog
                 fullScreen={true}
                 open={isEditing}
@@ -61,18 +61,20 @@ export default function QuestionSection({ questionInit }: { questionInit: Questi
                 sx={{
                     '& .MuiDialog-paper': {
                         maxWidth: 'none',
+                        backgroundColor: 'var(--card-background)',
+                        color: 'var(--text-primary)'
                     }
                 }}
             >
                 <IconButton
                     aria-label="close"
                     onClick={handleEditingClose}
-                    sx={(theme) => ({
+                    sx={{
                         position: 'absolute',
                         right: 8,
                         top: 8,
-                        color: theme.palette.grey[500],
-                    })}
+                        color: 'var(--text-secondary)',
+                    }}
                 >
                     <Close />
                 </IconButton>
@@ -95,20 +97,20 @@ export default function QuestionSection({ questionInit }: { questionInit: Questi
 
                 <div className="col-span-11 space-y-6">
                     <div className="flex items-start justify-between">
-                        <h1 className="text-2xl font-semibold text-gray-900">{question.title}</h1>
+                        <h1 className="text-2xl font-semibold text-[var(--text-primary)]">{question.title}</h1>
                         <ResourceOwnerPrivilege resourceRight={question.resourceRight}>
                             <Tooltip title="Edit this question" arrow>
                                 <IconButton onClick={handleEditClick}>
-                                    <EditIcon fontSize="medium" className="text-gray-600 hover:bg-gray-100 rounded-full" />
+                                    <EditIcon fontSize="medium" className="text-[var(--text-secondary)] hover:bg-[var(--hover-background)] rounded-full" />
                                 </IconButton>
                             </Tooltip>
                         </ResourceOwnerPrivilege>
                     </div>
 
-                    <QuestionHeaderDetails  {...question} isSolved={isSolved} isClosed={isClosed} />
+                    <QuestionHeaderDetails {...question} isSolved={isSolved} isClosed={isClosed} />
 
                     <div className="space-y-6">
-                        <div className="prose max-w-none">
+                        <div className="prose max-w-none dark:prose-invert">
                             <QuestionContent content={question.content} />
                         </div>
 
@@ -122,13 +124,13 @@ export default function QuestionSection({ questionInit }: { questionInit: Questi
                             ))}
                         </div>
 
-                        <div className="flex justify-end border-t pt-4">
-                            <div className="flex items-center gap-4 bg-gray-50 rounded-lg p-4">
+                        <div className="flex justify-end border-t border-[var(--border-color)] pt-4">
+                            <div className="flex items-center gap-4 bg-[var(--hover-background)] rounded-lg p-4">
                                 <div className="text-right">
-                                    <div className="text-sm font-medium text-gray-900">
+                                    <div className="text-sm font-medium text-[var(--text-primary)]">
                                         {question.author.username}
                                     </div>
-                                    <div className="text-sm text-gray-500">
+                                    <div className="text-sm text-[var(--text-secondary)]">
                                         Reputation: <span className="font-medium">
                                             {formatReputation(question.author.reputation)}
                                         </span>
@@ -137,7 +139,7 @@ export default function QuestionSection({ questionInit }: { questionInit: Questi
                                 <Avatar
                                     sx={{ width: 40, height: 40 }}
                                     src={question.author.profilePicture}
-                                    className="border-2 border-white shadow-sm"
+                                    className="border-2 border-[var(--card-background)] shadow-sm"
                                 />
                             </div>
                         </div>

@@ -96,47 +96,47 @@ export default function QuestionActions({ question, isClosed, onQuestionClose, o
                 <PermissionAction
                     action="upvote"
                     callback={() => handleVote(true)}
-                    className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                    className="p-2 rounded-full hover:bg-[var(--hover-background)] transition-colors"
                 >
-                    <svg className="w-6 h-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-6 h-6 text-[var(--text-secondary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
                     </svg>
                 </PermissionAction>
 
-                <span className="text-lg font-semibold text-gray-900">{currentVote}</span>
+                <span className="text-lg font-semibold text-[var(--text-primary)]">{currentVote}</span>
 
                 <PermissionAction
                     action="downvote"
                     callback={() => handleVote(false)}
-                    className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                    className="p-2 rounded-full hover:bg-[var(--hover-background)] transition-colors"
                 >
-                    <svg className="w-6 h-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-6 h-6 text-[var(--text-secondary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
                 </PermissionAction>
             </div>
 
-            <div className="w-full h-px bg-gray-200 my-2"></div>
+            <div className="w-full h-px bg-[var(--border-color)] my-2"></div>
 
             <div className="flex flex-col items-center gap-2">
                 <button
                     onClick={handleBookmarkQuestion}
-                    className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                    className="p-2 rounded-full hover:bg-[var(--hover-background)] transition-colors"
                     title={isBookmarked ? "Remove bookmark" : "Bookmark question"}
                 >
                     {isBookmarked ? (
-                        <BookmarkAdded className="text-blue-600" />
+                        <BookmarkAdded className="text-[var(--primary)]" />
                     ) : (
-                        <BookmarkAddOutlined className="text-gray-700" />
+                        <BookmarkAddOutlined className="text-[var(--text-secondary)]" />
                     )}
                 </button>
 
                 <button
                     onClick={handleShare}
-                    className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                    className="p-2 rounded-full hover:bg-[var(--hover-background)] transition-colors"
                     title="Share question"
                 >
-                    <svg className="w-5 h-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-5 h-5 text-[var(--text-secondary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
                     </svg>
                 </button>
@@ -145,26 +145,26 @@ export default function QuestionActions({ question, isClosed, onQuestionClose, o
 
                 <button
                     onClick={() => router.push(`/question/history?qid=${question.id}`)}
-                    className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                    className="p-2 rounded-full hover:bg-[var(--hover-background)] transition-colors"
                     title="View history"
                 >
-                    <svg className="w-5 h-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-5 h-5 text-[var(--text-secondary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </button>
             </div>
 
             <ModeratorPrivilege>
-                <div className="w-full h-px bg-gray-200 my-2"></div>
+                <div className="w-full h-px bg-[var(--border-color)] my-2"></div>
                 <div className="relative">
                     <ModeratorButton onClick={() => setIsExpand(!isExpand)} />
 
                     {isExpand && (
-                        <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                        <div className="absolute left-0 mt-2 w-48 bg-[var(--card-background)] rounded-md shadow-lg py-1 z-50">
                             <Tooltip title="Moderator considered this question should be deleted" arrow placement="right">
                                 <button
                                     onClick={() => setDeleteConfirmOpen(true)}
-                                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                    className="flex items-center w-full px-4 py-2 text-sm text-[var(--text-secondary)] hover:bg-[var(--hover-background)]"
                                 >
                                     <Delete className="mr-2" /> Delete Question
                                 </button>
@@ -174,7 +174,7 @@ export default function QuestionActions({ question, isClosed, onQuestionClose, o
                                 <Tooltip title="Moderator considered this question should be closed" arrow placement="right">
                                     <button
                                         onClick={() => setCloseConfirmOpen(true)}
-                                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                        className="flex items-center w-full px-4 py-2 text-sm text-[var(--text-secondary)] hover:bg-[var(--hover-background)]"
                                     >
                                         <Close className="mr-2" /> Close Question
                                     </button>
@@ -183,7 +183,7 @@ export default function QuestionActions({ question, isClosed, onQuestionClose, o
                                 <Tooltip title="Moderator considered this question should be re-opened" arrow placement="right">
                                     <button
                                         onClick={handleReOpenQuestion}
-                                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                        className="flex items-center w-full px-4 py-2 text-sm text-[var(--text-secondary)] hover:bg-[var(--hover-background)]"
                                     >
                                         <OpenInFull className="mr-2" /> Reopen Question
                                     </button>

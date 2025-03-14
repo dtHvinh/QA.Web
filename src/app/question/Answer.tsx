@@ -119,7 +119,7 @@ const Answer = (
     }
 
     return (
-        <div className="border-b last:border-b-0">
+        <div className="border-b last:border-b-0 border-[var(--border-color)]">
             <AlertDialog
                 open={delAnsDialog}
                 onClose={handleClose}
@@ -128,23 +128,23 @@ const Answer = (
                 description="Are you sure you want to delete this answer? This action cannot be undone."
             />
 
-            <div className={`relative grid grid-cols-12 gap-6 p-6 bg-white transition-all duration-300
+            <div className={`relative grid grid-cols-12 gap-6 p-6 transition-all duration-300
                 ${isDeleting ? 'opacity-0 transform' : 'opacity-100'}`}>
 
                 <div className="col-span-1 flex flex-col items-center gap-2">
                     <RoundedButton
                         title="Upvote"
-                        className="hover:bg-blue-50 active:bg-blue-100"
-                        svg={<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                        className="hover:bg-[var(--primary-light)] active:bg-[var(--primary-lighter)]"
+                        svg={<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="black" viewBox="0 0 16 16">
                             <path d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z" />
                         </svg>}
                         onClick={() => handleVote(true)}
                     />
-                    <span className="text-lg font-semibold text-gray-700">{currentVote}</span>
+                    <span className="text-lg font-semibold text-[var(--text-secondary)]">{currentVote}</span>
                     <RoundedButton
                         title="Downvote"
-                        className="hover:bg-red-50 active:bg-red-100"
-                        svg={<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                        className="hover:bg-[var(--error)] hover:bg-opacity-10 active:bg-opacity-20"
+                        svg={<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="black" viewBox="0 0 16 16">
                             <path d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z" />
                         </svg>}
                         onClick={() => handleVote(false)}
@@ -157,12 +157,12 @@ const Answer = (
                             <ModeratorButton onClick={() => setIsModMenuOpen(!isModMenuOpen)} />
 
                             {isModMenuOpen && (
-                                <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+                                <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-[var(--card-background)] ring-1 ring-black ring-opacity-5 z-10">
                                     <div className="py-1">
                                         {!isAnswerAccepted && (
                                             <button
                                                 onClick={handleAnswerAccepted}
-                                                className="flex items-center w-full px-4 py-2 text-sm text-green-700 hover:bg-green-100"
+                                                className="flex items-center w-full px-4 py-2 text-sm text-[var(--success)] hover:bg-[var(--success-light)]"
                                             >
                                                 <svg className="mr-3" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                                                     <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" />
@@ -172,7 +172,7 @@ const Answer = (
                                         )}
                                         <button
                                             onClick={handleClickOpen}
-                                            className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-100"
+                                            className="flex items-center w-full px-4 py-2 text-sm text-[var(--error)] hover:bg-[var(--error)] hover:bg-opacity-10"
                                         >
                                             <Delete className="mr-3" fontSize="small" />
                                             Delete Answer
@@ -190,11 +190,11 @@ const Answer = (
                             <div className="flex flex-col items-end gap-2">
                                 {isEditing ? (
                                     <div className="flex gap-3">
-                                        <button className="px-3 py-1.5 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                                        <button className="px-3 py-1.5 text-sm text-[var(--error)] hover:bg-[var(--error)] hover:bg-opacity-10 rounded-md transition-colors"
                                             onClick={handleDiscard}>
                                             Discard
                                         </button>
-                                        <button className="px-3 py-1.5 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors disabled:bg-gray-300"
+                                        <button className="px-3 py-1.5 text-sm text-white bg-[var(--primary)] hover:bg-[var(--primary-darker)] rounded-md transition-colors disabled:bg-[var(--disabled-background)]"
                                             disabled={!isAllowUpdate}
                                             onClick={handleEdit}>
                                             Save Changes
@@ -202,11 +202,11 @@ const Answer = (
                                     </div>
                                 ) : (
                                     <div className="flex gap-3">
-                                        <button className="px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-100 rounded-md transition-colors"
+                                        <button className="px-3 py-1.5 text-sm text-[var(--text-secondary)] hover:bg-[var(--hover-background)] rounded-md transition-colors"
                                             onClick={handleStartEditing}>
                                             Edit
                                         </button>
-                                        <button className="px-3 py-1.5 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                                        <button className="px-3 py-1.5 text-sm text-[var(--error)] hover:bg-[var(--error)] hover:bg-opacity-10 rounded-md transition-colors"
                                             onClick={handleClickOpen}>
                                             Delete
                                         </button>
@@ -216,7 +216,7 @@ const Answer = (
                         </ResourceOwnerPrivilege>
                     </div>
 
-                    <div className="prose max-w-none">
+                    <div className="prose max-w-none dark:prose-invert">
                         {isEditing ? (
                             <TextEditor currentText={currentText} onTextChange={handleEditTextChange} />
                         ) : (
@@ -224,7 +224,7 @@ const Answer = (
                         )}
                     </div>
 
-                    <div className="text-sm text-gray-400 space-y-1">
+                    <div className="text-sm text-[var(--text-tertiary)] space-y-1">
                         <div>Answered {timeFromNow(answer.createdAt)}</div>
                         {answer.updatedAt !== DEFAULT_TIME && (
                             <div>Edited {timeFromNow(answer.updatedAt)}</div>
@@ -232,19 +232,19 @@ const Answer = (
                     </div>
 
                     <div className="flex justify-end pt-4">
-                        <div className="flex items-center gap-4 bg-gray-50 rounded-lg p-3">
+                        <div className="flex items-center gap-4 bg-[var(--hover-background)] rounded-lg p-3">
                             <div className="text-right">
-                                <div className="text-sm font-medium text-gray-900">
+                                <div className="text-sm font-medium text-[var(--text-primary)]">
                                     {answer.author?.username}
                                 </div>
-                                <div className="text-sm text-gray-500">
+                                <div className="text-sm text-[var(--text-secondary)]">
                                     Reputation: <span className="font-medium">{formatReputation(answer.author?.reputation)}</span>
                                 </div>
                             </div>
                             <Avatar
                                 sx={{ width: 40, height: 40 }}
                                 src={answer.author?.profilePicture}
-                                className="border-2 border-white shadow-sm"
+                                className="border-2 border-[var(--card-background)] shadow-sm"
                             />
                         </div>
                     </div>

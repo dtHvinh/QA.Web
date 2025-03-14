@@ -1,7 +1,6 @@
 'use client'
 
 import { TagResponse } from "@/types/types";
-import { AppName } from "@/utilities/Constants";
 import { Add } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import Link from "next/link";
@@ -30,9 +29,8 @@ export default function Appbar() {
                     <div className="flex items-center gap-4">
                         <Link
                             href={'/'}
-                            className="text-2xl font-semibold text-gray-900 hover:text-gray-700 transition-colors whitespace-nowrap"
-                        >
-                            {AppName}
+                            className="text-2xl font-semibold text-[var(--text-primary)] hover:text-[var(--text-primary-dark)] transition-colors whitespace-nowrap">
+                            QA Platform
                         </Link>
                     </div>
 

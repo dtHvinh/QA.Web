@@ -78,15 +78,29 @@ export default function TagInput({ onTagIdChange, maxTags, onTagChange, defaultT
                         value={searchTerm}
                         onChange={(event) => setSearchTerm(event.target.value)}
                         placeholder={"Select up to 5 tags"}
+                        sx={{
+                            '& .MuiOutlinedInput-root': {
+                                backgroundColor: 'var(--input-background)',
+                                '& fieldset': {
+                                    borderColor: 'var(--border-color)',
+                                },
+                                '&:hover fieldset': {
+                                    borderColor: 'var(--primary)',
+                                },
+                                '& input': {
+                                    color: 'var(--text-primary)',
+                                },
+                            },
+                        }}
                     />
                 )}
                 renderOption={(props, option) => (
                     <li {...props} key={option.id}>
                         <div>
-                            <Typography variant="subtitle1" fontWeight="bold">
+                            <Typography variant="subtitle1" fontWeight="bold" sx={{ color: 'var(--text-primary)' }}>
                                 {option.name}
                             </Typography>
-                            <Typography variant={'caption'} className={'text-gray-600 line-clamp-5'}>
+                            <Typography variant={'caption'} sx={{ color: 'var(--text-secondary)' }} className={'line-clamp-5'}>
                                 {option.description}
                             </Typography>
                         </div>
@@ -99,18 +113,31 @@ export default function TagInput({ onTagIdChange, maxTags, onTagChange, defaultT
                                 component="ul"
                                 {...props}
                                 sx={{
-                                    border: '.5px solid gray',
+                                    backgroundColor: 'var(--card-background)',
+                                    border: '1px solid var(--border-color)',
                                     borderRadius: '8px',
                                     display: "grid",
                                     gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
                                     gap: 1,
                                     padding: 2,
+                                    '& li': {
+                                        backgroundColor: 'var(--card-background)',
+                                        '&:hover': {
+                                            backgroundColor: 'var(--hover-background)',
+                                        },
+                                    },
                                 }}
                             >
                                 {props.children}
                             </Box>
                         ),
                     },
+                    paper: {
+                        sx: {
+                            backgroundColor: 'var(--card-background)',
+                            border: '1px solid var(--border-color)',
+                        }
+                    }
                 }}
             />
         </div>
