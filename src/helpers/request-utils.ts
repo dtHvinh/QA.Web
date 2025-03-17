@@ -55,6 +55,17 @@ export const postFetcher = ([url, token, jsonBody]: [string, string, string?]) =
         data: jsonBody ? JSON.parse(jsonBody) : null
     });
 
+export const formPostFetcher = ([url, token, formData]: [string, string, FormData?]) =>
+    makeRequest({
+        url,
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+        },
+        data: formData
+    });
+
 export const putFetcher = ([url, token, jsonBody]: [string, string, string?]) =>
     makeRequest({
         url,

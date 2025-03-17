@@ -14,16 +14,17 @@ export default function SideNav() {
     }
 
     return (
-        <aside className="flex flex-col 
+        <aside className="flex-col 
+            hidden md:flex
             items-center text-[var(--text-primary)] h-full
-            w-64
+            w-[var(--left-nav-expanded-width)]
             border-r border-[var(--border-color)]
             bg-[var(--nav-background)]
             fixed left-0 top-[var(--appbar-height)]
             overflow-y-auto
             z-50
             max-h-[calc(100vh-var(--appbar-height))]">
-            <div className="h-20 flex items-center w-full px-6 border-b border-[var(--border-color)]">
+            <div className="h-20 flex items-center w-full px-6">
                 <Link href={Routes.Home} className="flex items-center gap-3">
                     <PsychologyOutlined className="text-blue-500" />
                     <span className="font-semibold text-lg">QA Platform</span>

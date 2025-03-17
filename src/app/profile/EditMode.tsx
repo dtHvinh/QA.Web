@@ -186,5 +186,4 @@ const EditMode = (
         </form>
     )
 }
-
 export default EditMode

@@ -7,5 +7,9 @@ export function highlightCode() {
 }
 
 export function scrollToTop() {
-    window.scrollTo({top: 0, behavior: 'instant'});
+    window.scrollTo({ top: 0, behavior: 'instant' });
+}
+
+export function fromImage(imagePath?: string) {
+    return imagePath ? process.env.NEXT_PUBLIC_STORAGE_HOST + '/' + imagePath : "/default.png";
 }

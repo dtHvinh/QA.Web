@@ -3,6 +3,8 @@
 @tailwind utilities;
 
 :root {
+    --left-nav-expanded-width: 260px;
+
     --appbar-height: 58px;
 
     --background: #ffffff;
@@ -33,7 +35,7 @@
     --warning-lighter: #fde68a;
     --error: #dc2626;
     --disabled-background: #9ca3af;
-    --hover-background-darker: #1f2937;
+    --hover-background-darker: #eaeef3;
     --hover-background-darkest: #111827;
     --input-background: var(--card-background);
     --tag-background: #e5e7eb;

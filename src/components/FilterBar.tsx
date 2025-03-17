@@ -1,6 +1,6 @@
 import { HtmlTooltip } from "@/components/TagTooltip";
-import { motion } from "framer-motion";
-import { useState } from "react";
+import { ArrowDropDown } from "@mui/icons-material";
+import { useEffect, useRef, useState } from "react";
 
 interface FilterBarProps {
     tabs: string[];
@@ -13,38 +13,63 @@ interface FilterBarProps {
 const FilterBar = (params: Readonly<FilterBarProps>) => {
     const { tabs, tabValues, tabDescriptions, onFilterValueChange, defaultIndex } = params;
     const [activeTab, setActiveTab] = useState(tabs[defaultIndex ?? 0]);
+    const [isOpen, setIsOpen] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
 
-    const innerOnFilterValueChange = (tab: string, value: string) => {
+    const handleSelect = (tab: string, value: string) => {
         setActiveTab(tab);
         onFilterValueChange(value);
-    }
+        setIsOpen(false);
+    };
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setIsOpen(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
 
     return (
-        <div className="flex items-center gap-1 p-1 bg-[var(--hover-background)]/50 rounded-xl border border-[var(--border-color)]">
-            {tabs.map((label, index) => (
-                <HtmlTooltip
-                    title={tabDescriptions[index]}
-                    key={label}
-                    placement="top"
-                    arrow
+        <div className="relative" ref={dropdownRef}>
+            <div className="flex items-center">
+                <span className="text-sm font-medium text-[var(--text-secondary)] mr-2">Sort by</span>
+                <button
+                    onClick={() => setIsOpen(!isOpen)}
+                    className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-[var(--hover-background)] border border-[var(--border-color)] text-[var(--text-primary)]"
                 >
-                    <motion.button
-                        whileTap={{ scale: 0.98 }}
-                        className={`relative px-4 py-2 rounded-lg transition-all duration-200 ${activeTab === label
-                            ? "text-blue-500 bg-[var(--card-background)] shadow-sm"
-                            : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--hover-background)]"
-                            }`}
-                        onClick={() => innerOnFilterValueChange(label, tabValues[index])}
-                    >
-                        <span className="relative z-10 text-sm font-medium">{label}</span>
-                        {activeTab === label && (
-                            <div
-                                className="absolute inset-0 bg-[var(--card-background)] rounded-lg shadow-sm"
-                            />
-                        )}
-                    </motion.button>
-                </HtmlTooltip>
-            ))}
+                    <span className="text-sm font-medium">{activeTab}</span>
+                    <ArrowDropDown fontSize="small" />
+                </button>
+            </div>
+
+            {isOpen && (
+                <div className="absolute z-10 mt-1 w-32 bg-[var(--card-background)] rounded-lg shadow-lg border border-[var(--border-color)] overflow-hidden">
+                    {tabs.map((label, index) => (
+                        <HtmlTooltip
+                            key={label}
+                            title={tabDescriptions[index]}
+                            placement="right"
+                            arrow
+                        >
+                            <button
+                                className={`w-full text-left px-4 py-2 text-sm transition-colors
+                                    ${activeTab === label
+                                        ? "bg-[var(--primary-light)] text-[var(--primary)]"
+                                        : "text-[var(--text-primary)] hover:bg-[var(--hover-background)]"}`}
+                                onClick={() => handleSelect(label, tabValues[index])}
+                            >
+                                {label}
+                            </button>
+                        </HtmlTooltip>
+                    ))}
+                </div>
+            )}
         </div>
     );
 };

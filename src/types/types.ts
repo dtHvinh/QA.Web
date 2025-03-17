@@ -2,6 +2,23 @@ export interface TextResponse {
     message: string
 }
 
+export interface GetCommunityResponse {
+    id: string,
+    name: string,
+    description: string,
+    iconImage: string,
+    isPrivate: string,
+    memberCount: number,
+    isJoined: boolean,
+}
+
+export interface SysLogResponse {
+    id: string,
+    level: string,
+    message: string,
+    utcTimestamp: string
+}
+
 export declare type ViewOptions = 'compact' | 'full'
 
 export interface TagResponse {
