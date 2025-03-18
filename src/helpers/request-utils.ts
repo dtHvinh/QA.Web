@@ -74,6 +74,17 @@ export const putFetcher = ([url, token, jsonBody]: [string, string, string?]) =>
         data: jsonBody ? JSON.parse(jsonBody) : null
     });
 
+export const formPutFetcher = ([url, token, formData]: [string, string, FormData?]) =>
+    makeRequest({
+        url,
+        method: 'PUT',
+        headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+        },
+        data: formData
+    });
+
 export const deleteFetcher = ([url, token]: [string, string]) =>
     makeRequest({
         url,

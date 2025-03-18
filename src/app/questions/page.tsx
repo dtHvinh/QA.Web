@@ -141,18 +141,20 @@ export default function QuestionsPage() {
             </div >
 
             {response && questions && questions.length > 0 && (
-                <div className="flex flex-col sm:flex-row justify-between items-center gap-4 py-4 border-t border-[var(--border-color)]">
-                    <ItemPerPage
-                        onPageSizeChange={setPageSize}
-                        values={[16, 32, 64]}
-                    />
-                    <Pagination
-                        page={pageIndex}
-                        onChange={handlePageChange}
-                        count={response?.totalPage}
-                        shape="rounded"
-                        size="large"
-                    />
+                <div className="mt-auto">
+                    <div className="flex flex-col sm:flex-row justify-between items-center gap-4 py-4 border-t border-[var(--border-color)]">
+                        <ItemPerPage
+                            onPageSizeChange={setPageSize}
+                            values={[16, 32, 64]}
+                        />
+                        <Pagination
+                            page={pageIndex}
+                            onChange={handlePageChange}
+                            count={response?.totalPage}
+                            shape="rounded"
+                            size="large"
+                        />
+                    </div>
                 </div>
             )}
         </div >

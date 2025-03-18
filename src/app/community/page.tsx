@@ -1,80 +1,184 @@
 'use client'
 
+import ViewOptionsButton from "@/components/Common/ViewOptionsButton";
 import CommunityCard from "@/components/Community/CommunityCard";
 import CreateCommunityDialog from "@/components/Community/CreateCommunityDialog";
 import getAuth from "@/helpers/auth-utils";
 import { getFetcher } from "@/helpers/request-utils";
-import { GetCommunityResponse } from "@/types/types";
-import { AddOutlined, PeopleOutline, SearchOutlined } from "@mui/icons-material";
-import { useRouter } from "next/navigation";
+import { GetCommunityResponse, ViewOptions } from "@/types/types";
+import { Add, Search } from "@mui/icons-material";
+import { InputAdornment, TextField } from "@mui/material";
+import Link from "next/link";
 import { useState } from "react";
 import useSWR from "swr";
 
 export default function CommunityPage() {
     const auth = getAuth();
-    const [searchQuery, setSearchQuery] = useState('');
-    const [open, setOpen] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
     const [pageIndex, setPageIndex] = useState(1);
-    const { data: communities, isLoading } = useSWR<GetCommunityResponse[]>(
-        [`/api/community?pageIndex=${pageIndex}&pageSize=20`, auth?.accessToken], getFetcher);
-    const router = useRouter();
+    const [view, setView] = useState<ViewOptions>('compact');
+    const [createDialogOpen, setCreateDialogOpen] = useState(false);
 
-    const handleCreateCommunity = (name: string) => {
-        router.push(`/community/${name}`)
+    const { data: joinedCommunities, isLoading: isLoadingJoined } = useSWR<GetCommunityResponse[]>(
+        [`/api/community/joined?pageIndex=1&pageSize=4`, auth?.accessToken],
+        getFetcher
+    );
+
+    const { data: popularCommunities, isLoading: isLoadingPopular } = useSWR<GetCommunityResponse[]>(
+        [`/api/community/popular?pageIndex=1&pageSize=8`, auth?.accessToken],
+        getFetcher
+    );
+
+    const { data: searchResults, isLoading: isLoadingSearch } = useSWR<GetCommunityResponse[]>(
+        searchTerm.length > 2 ? [`/api/community/search?term=${searchTerm}&pageIndex=1&pageSize=20`, auth?.accessToken] : null,
+        getFetcher
+    );
+
+    const handleCreateSuccess = (newCommunity: GetCommunityResponse) => {
+        window.location.href = `/community/${newCommunity.name}`;
     };
 
     return (
-        <div className="ml-28 page-container">
-            <CreateCommunityDialog
-                open={open}
-                onClose={() => setOpen(false)}
-                onCreate={handleCreateCommunity}
-            />
-
-            <div>
-                <div className="flex justify-between items-center mb-8">
-                    <div>
-                        <h1 className="text-3xl font-bold text-[var(--text-primary)]">Communities</h1>
-                        <p className="mt-2 text-[var(--text-secondary)]">Join communities to connect with other developers</p>
-                    </div>
-                    <button
-                        onClick={() => setOpen(true)}
-                        className="inline-flex items-center px-4 py-2 bg-[var(--card-background)] rounded-full border border-[var(--border-color)]
-                    hover:bg-[var(--hover-background)] active:bg-[var(--hover-background-darker)]
-                    transition-colors gap-2 text-[var(--text-primary)]"
-                    >
-                        <AddOutlined className="w-5 h-5" />
-                        Create
-                    </button>
+        <div className="page-container mx-auto">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                <div>
+                    <h1 className="text-3xl font-bold text-[var(--text-primary)]">Communities</h1>
+                    <p className="text-[var(--text-secondary)] mt-1">
+                        Join communities to connect with others and share knowledge
+                    </p>
                 </div>
 
-                <div className="mb-8">
-                    <div className="relative">
-                        <SearchOutlined className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--text-tertiary)] w-5 h-5" />
-                        <input
-                            type="text"
-                            placeholder="Search communities..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-10 pr-4 py-3 border border-[var(--border-color)] rounded-lg bg-[var(--input-background)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)]"
-                        />
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-3 gap-2">
-                    {communities?.map((community) => (
-                        <CommunityCard key={community.id} community={community} />
-                    ))}
-                </div>
-
-                {communities?.length === 0 && (
-                    <div className="text-center py-12">
-                        <PeopleOutline className="w-12 h-12 text-[var(--text-tertiary)] mx-auto mb-4" />
-                        <h3 className="text-lg font-medium text-[var(--text-primary)] mb-2">No communities found</h3>
-                        <p className="text-[var(--text-secondary)]">Try adjusting your search or create a new community</p>
-                    </div>
-                )}
+                <button
+                    onClick={() => setCreateDialogOpen(true)}
+                    className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                    <Add /> Create Community
+                </button>
             </div>
+
+            <div className="mb-8">
+                <TextField
+                    fullWidth
+                    placeholder="Search communities..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    slotProps={{
+                        htmlInput: {
+                            startadorment: (
+                                <InputAdornment position="start">
+                                    <Search className="text-[var(--text-tertiary)]" />
+                                </InputAdornment>
+                            ),
+                            sx: {
+                                backgroundColor: 'var(--input-background)',
+                                borderRadius: '12px',
+                                '& fieldset': {
+                                    borderColor: 'var(--border-color)'
+                                }
+                            }
+                        }
+                    }}
+                />
+            </div>
+
+            {searchTerm.length > 2 ? (
+                // Search results
+                <div>
+                    <h2 className="text-xl font-semibold mb-4 text-[var(--text-primary)]">
+                        Search Results for "{searchTerm}"
+                    </h2>
+
+                    {isLoadingSearch ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {[1, 2, 3, 4, 5, 6].map((i) => (
+                                <div key={i} className="bg-[var(--card-background)] rounded-xl p-6 border border-[var(--border-color)] animate-pulse">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-16 h-16 rounded-full bg-[var(--hover-background)]"></div>
+                                        <div className="flex-1">
+                                            <div className="h-5 bg-[var(--hover-background)] rounded w-3/4 mb-2"></div>
+                                            <div className="h-4 bg-[var(--hover-background)] rounded w-1/2"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : searchResults?.length === 0 ? (
+                        <div className="text-center py-12">
+                            <div className="text-6xl mb-4">🔍</div>
+                            <h3 className="text-xl font-medium text-[var(--text-primary)] mb-2">No communities found</h3>
+                            <p className="text-[var(--text-secondary)]">
+                                Try a different search term or create a new community
+                            </p>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {searchResults?.map((community) => (
+                                <CommunityCard key={community.id} community={community} />
+                            ))}
+                        </div>
+                    )}
+                </div>
+            ) : (
+                // Default view
+                <>
+                    {joinedCommunities && joinedCommunities.length > 0 && (
+                        <div className="mb-12">
+                            <div className="flex items-center justify-between mb-4">
+                                <h2 className="text-xl font-semibold text-[var(--text-primary)]">
+                                    Your Communities
+                                </h2>
+                                <Link href="/community/joined" className="text-[var(--primary)] text-sm hover:underline">
+                                    View all
+                                </Link>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                {joinedCommunities.map((community) => (
+                                    <CommunityCard key={community.id} community={community} compact />
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    <div>
+                        <div className="flex items-center justify-between mb-4">
+                            <h2 className="text-xl font-semibold text-[var(--text-primary)]">
+                                Popular Communities
+                            </h2>
+
+                            <ViewOptionsButton view={view} onChange={setView} />
+                        </div>
+
+                        {isLoadingPopular ? (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                                    <div key={i} className="bg-[var(--card-background)] rounded-xl p-6 border border-[var(--border-color)] animate-pulse">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-12 h-12 rounded-full bg-[var(--hover-background)]"></div>
+                                            <div className="flex-1">
+                                                <div className="h-4 bg-[var(--hover-background)] rounded w-3/4 mb-2"></div>
+                                                <div className="h-3 bg-[var(--hover-background)] rounded w-1/2"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                {popularCommunities?.map((community) => (
+                                    <CommunityCard key={community.id} community={community} compact={view === "compact"} />
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </>
+            )}
+
+            <CreateCommunityDialog
+                open={createDialogOpen}
+                onClose={() => setCreateDialogOpen(false)}
+                onCreated={handleCreateSuccess}
+            />
         </div>
     );
 }

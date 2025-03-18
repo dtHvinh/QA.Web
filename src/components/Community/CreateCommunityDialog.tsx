@@ -1,9 +1,10 @@
 import getAuth from '@/helpers/auth-utils';
 import { formPostFetcher, IsErrorResponse } from '@/helpers/request-utils';
-import { AddPhotoAlternate, People } from '@mui/icons-material';
+import { GetCommunityResponse } from '@/types/types';
+import notifyError, { notifySucceed } from '@/utilities/ToastrExtensions';
+import { AddPhotoAlternate, Close } from '@mui/icons-material';
 import {
     Avatar,
-    Box,
     Button,
     Checkbox,
     Dialog,
@@ -11,321 +12,269 @@ import {
     DialogContent,
     DialogTitle,
     FormControlLabel,
-    Paper,
+    IconButton,
     TextField,
-    Typography
+    Typography,
+    useMediaQuery,
+    useTheme
 } from '@mui/material';
-import { useState } from 'react';
+import { FormEvent, useState } from 'react';
 
 interface CreateCommunityDialogProps {
     open: boolean;
     onClose: () => void;
-    onCreate: (name: string) => void;
+    onCreated: (community: GetCommunityResponse) => void;
 }
 
-export default function CreateCommunityDialog({ open, onClose, onCreate }: CreateCommunityDialogProps) {
-    const auth = getAuth();
+export default function CreateCommunityDialog({ open, onClose, onCreated }: CreateCommunityDialogProps) {
+    const theme = useTheme();
+    const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [isPrivate, setIsPrivate] = useState(false);
-    const [stage, setStage] = useState(1);
-    const [imageFile, setImageFile] = useState<File | null>(null);
-    const [imagePreview, setImagePreview] = useState<string>('');
+    const [iconImage, setIconImage] = useState<File | null>(null);
+    const [iconPreview, setIconPreview] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [nameError, setNameError] = useState('');
+    const auth = getAuth();
 
-    const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (file) {
-            setImageFile(file);
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setImagePreview(reader.result as string);
-            };
-            reader.readAsDataURL(file);
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            setIconImage(file);
+            setIconPreview(URL.createObjectURL(file));
         }
     };
 
-    const handleSubmit = async () => {
-        const formData = new FormData();
-        formData.append('name', name);
-        formData.append('description', description);
-        formData.append('isPrivate', isPrivate.toString());
-        if (imageFile) {
-            formData.append('iconImage', imageFile);
+    const validateName = (value: string) => {
+        if (!value.trim()) {
+            setNameError('Community name is required');
+            return false;
         }
 
-        const res = await formPostFetcher(
-            [`/api/community`, auth!.accessToken, formData])
+        if (value.length < 3) {
+            setNameError('Community name must be at least 3 characters');
+            return false;
+        }
 
-        if (!IsErrorResponse(res))
-            onCreate(name);
+        if (value.length > 30) {
+            setNameError('Community name must be less than 30 characters');
+            return false;
+        }
+
+        if (!/^[a-zA-Z0-9_-]+$/.test(value)) {
+            setNameError('Community name can only contain letters, numbers, underscores, and hyphens');
+            return false;
+        }
+
+        setNameError('');
+        return true;
+    };
+
+    const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setName(value);
+        validateName(value);
+    };
+
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        if (!validateName(name)) {
+            return;
+        }
+
+        setIsSubmitting(true);
+
+        try {
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('description', description);
+            formData.append('isPrivate', isPrivate.toString());
+
+            if (iconImage) {
+                formData.append('iconImage', iconImage);
+            }
+
+            const response = await formPostFetcher([
+                `/api/community`,
+                auth!.accessToken,
+                formData
+            ]);
+
+            if (IsErrorResponse(response)) {
+                notifyError(response.title || "Failed to create community");
+                return;
+            }
+
+            notifySucceed("Community created successfully");
+            onCreated(response);
+            handleClose();
+        } catch (error) {
+            notifyError("An error occurred while creating the community");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const handleClose = () => {
+        setName('');
+        setDescription('');
+        setIsPrivate(false);
+        setIconImage(null);
+        setIconPreview('');
+        setNameError('');
+        onClose();
     };
 
     return (
         <Dialog
             open={open}
-            onClose={onClose}
-            maxWidth="md"
+            onClose={handleClose}
+            fullScreen={fullScreen}
+            maxWidth="sm"
             fullWidth
             slotProps={{
                 paper: {
                     sx: {
                         borderRadius: '12px',
                         backgroundColor: 'var(--card-background)',
-                        border: '1px solid var(--border-color)'
+                        color: 'var(--text-primary)'
                     }
                 }
             }}
         >
-            <DialogTitle sx={{
-                fontSize: '1.5rem',
-                fontWeight: 600,
-                color: 'var(--text-primary)',
-                display: 'flex',
-                justifyContent: 'space-between',
-                pb: 1
-            }}>
-                Create a Community
-
-                <FormControlLabel control={<Checkbox defaultChecked />} label="Private"
-                    onChange={() => setIsPrivate(!isPrivate)} />
+            <DialogTitle className="flex justify-between items-center border-b border-[var(--border-color)] pb-3">
+                <span className="text-xl font-semibold">Create New Community</span>
+                <IconButton onClick={handleClose} size="small" className="text-[var(--text-secondary)]">
+                    <Close fontSize="small" />
+                </IconButton>
             </DialogTitle>
-            <DialogContent>
-                <div className="flex flex-col md:flex-row gap-8 mt-4">
-                    <div className="flex-1">
-                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                            <Box sx={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                gap: 1
-                            }}>
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    id="community-icon"
-                                    onChange={handleImageChange}
-                                    style={{ display: 'none' }}
-                                />
-                                <label htmlFor="community-icon">
-                                    <Box
-                                        sx={{
-                                            width: 128,
-                                            height: 128,
-                                            borderRadius: '50%',
-                                            border: '2px dashed var(--border-color)',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            cursor: 'pointer',
-                                            overflow: 'hidden',
-                                            '&:hover': {
-                                                borderColor: 'var(--primary)',
-                                            },
-                                            ...(imagePreview && {
-                                                border: 'none',
-                                            })
-                                        }}
-                                    >
-                                        {imagePreview ? (
-                                            <img
-                                                src={imagePreview}
-                                                alt="Community icon"
-                                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                            />
-                                        ) : (
-                                            <AddPhotoAlternate
-                                                sx={{
-                                                    fontSize: 48,
-                                                    color: 'var(--text-tertiary)'
-                                                }}
-                                            />
-                                        )}
-                                    </Box>
-                                </label>
-                                <Typography
-                                    variant="caption"
-                                    sx={{ color: 'var(--text-tertiary)' }}
-                                >
-                                    Click to upload community icon
-                                </Typography>
-                            </Box>
 
-                            <TextField
-                                label="Community Name"
-                                value={name}
-                                onChange={(e) => setName(e.target.value.replaceAll(' ', '-'))}
-                                fullWidth
-                                helperText="Community names cannot be changed after creation"
-                                placeholder="programming"
-                                sx={{
-                                    '& .MuiInputBase-root': {
-                                        color: 'var(--text-primary)',
-                                        backgroundColor: 'var(--input-background)',
-                                    },
-                                    '& .MuiInputLabel-root': {
-                                        color: 'var(--text-secondary)',
-                                    },
-                                    '& .MuiOutlinedInput-root': {
-                                        '& fieldset': {
-                                            borderColor: 'var(--border-color)',
-                                        },
-                                        '&:hover fieldset': {
-                                            borderColor: 'var(--primary)',
-                                        },
-                                        '&.Mui-focused fieldset': {
-                                            borderColor: 'var(--primary)',
-                                        }
-                                    },
-                                    '& .MuiFormHelperText-root': {
-                                        color: 'var(--text-tertiary)',
-                                    }
-                                }}
-                            />
-                            <TextField
-                                label="Description"
-                                value={description}
-                                onChange={(e) => setDescription(e.target.value)}
-                                multiline
-                                rows={4}
-                                fullWidth
-                                slotProps={{
-                                    htmlInput: {
-                                        spellCheck: false
-                                    }
-                                }}
-                                helperText="Describe your community's purpose"
-                                placeholder="Community description"
-                                sx={{
-                                    '& .MuiInputBase-root': {
-                                        color: 'var(--text-primary)',
-                                        backgroundColor: 'var(--input-background)',
-                                    },
-                                    '& .MuiInputLabel-root': {
-                                        color: 'var(--text-secondary)',
-                                    },
-                                    '& .MuiOutlinedInput-root': {
-                                        '& fieldset': {
-                                            borderColor: 'var(--border-color)',
-                                        },
-                                        '&:hover fieldset': {
-                                            borderColor: 'var(--primary)',
-                                        },
-                                        '&.Mui-focused fieldset': {
-                                            borderColor: 'var(--primary)',
-                                        }
-                                    },
-                                    '& .MuiFormHelperText-root': {
-                                        color: 'var(--text-tertiary)',
-                                    }
-                                }}
-                            />
-                        </Box>
-                    </div>
-
-                    <div className="w-full md:w-2/5">
-                        <Paper
-                            variant="outlined"
+            <form onSubmit={handleSubmit}>
+                <DialogContent className="pt-4">
+                    <div className="flex flex-col items-center mb-6">
+                        <Avatar
+                            src={iconPreview}
                             sx={{
-                                p: 2,
-                                bgcolor: 'var(--card-background)',
-                                height: '100%',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                gap: 2,
-                                borderRadius: '0.75rem',
-                                borderColor: 'var(--border-color)'
+                                width: 100,
+                                height: 100,
+                                mb: 2,
+                                bgcolor: 'var(--primary-light)',
+                                color: 'var(--primary)'
                             }}
                         >
-                            <Typography
-                                variant="subtitle2"
-                                sx={{ color: 'var(--text-tertiary)', fontSize: '0.875rem' }}
-                            >
-                                PREVIEW
-                            </Typography>
+                            {name ? name.charAt(0).toUpperCase() : <AddPhotoAlternate />}
+                        </Avatar>
 
-                            <Box>
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                                    <Avatar
-                                        src={imagePreview || "/default.png"}
-                                        sx={{
-                                            width: 48,
-                                            height: 48,
-                                            bgcolor: 'var(--hover-background)'
-                                        }}
-                                    >
-                                        {!imagePreview && name.charAt(0).toUpperCase()}
-                                    </Avatar>
-                                    <div>
-                                        <Typography
-                                            variant="h6"
-                                            sx={{
-                                                wordBreak: 'break-word',
-                                                color: 'var(--text-primary)',
-                                                fontWeight: 600
-                                            }}
-                                        >
-                                            qa/{name || 'community-name'}
-                                        </Typography>
-                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                            <People sx={{ fontSize: 20, color: 'var(--text-tertiary)' }} />
-                                            <Typography variant="body2" sx={{ color: 'var(--text-tertiary)' }}>
-                                                1 member • 1 online
-                                            </Typography>
-                                        </Box>
-                                    </div>
-                                </Box>
-                            </Box>
-
-                            <Typography
-                                variant="body2"
-                                sx={{
-                                    mt: 'auto',
-                                    color: 'var(--text-secondary)',
-                                    overflowWrap: 'break-word',
-                                    whiteSpace: 'pre-wrap',
-                                    overflow: 'hidden',
-                                    display: '-webkit-box',
-                                    WebkitLineClamp: 4,
-                                    WebkitBoxOrient: 'vertical',
-                                    maxHeight: '80px'
-                                }}
-                            >
-                                {description || 'Community description will appear here'}
-                            </Typography>
-                        </Paper>
+                        <Button
+                            component="label"
+                            variant="outlined"
+                            startIcon={<AddPhotoAlternate />}
+                            className="text-[var(--text-secondary)] border-[var(--border-color)]"
+                        >
+                            Upload Icon
+                            <input
+                                type="file"
+                                hidden
+                                accept="image/*"
+                                onChange={handleImageChange}
+                            />
+                        </Button>
                     </div>
-                </div>
-            </DialogContent>
-            <DialogActions sx={{ p: 3 }}>
-                {stage == 1 && (<><Button
-                    onClick={onClose}
-                    sx={{
-                        color: 'var(--text-secondary)',
-                        '&:hover': {
-                            bgcolor: 'var(--hover-background)'
-                        }
-                    }}
-                >
-                    Cancel
-                </Button>
-                    <Button
-                        onClick={handleSubmit}
-                        variant="contained"
-                        disabled={!name.trim() || !description.trim()}
-                        sx={{
-                            bgcolor: 'var(--primary)',
-                            '&:hover': {
-                                bgcolor: 'var(--primary-darker)'
-                            },
-                            '&:disabled': {
-                                bgcolor: 'var(--disabled-background)'
+
+                    <TextField
+                        autoFocus
+                        label="Community Name"
+                        fullWidth
+                        value={name}
+                        onChange={handleNameChange}
+                        required
+                        variant="outlined"
+                        margin="normal"
+                        error={!!nameError}
+                        helperText={nameError || "Use only letters, numbers, underscores, and hyphens"}
+                        slotProps={{
+                            input: {
+                                sx: {
+                                    backgroundColor: 'var(--input-background)',
+                                    color: 'var(--text-primary)'
+                                }
                             }
                         }}
+                        InputLabelProps={{
+                            sx: {
+                                color: 'var(--text-secondary)'
+                            }
+                        }}
+                    />
+
+                    <TextField
+                        label="Description (Optional)"
+                        fullWidth
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        variant="outlined"
+                        margin="normal"
+                        multiline
+                        rows={3}
+                        slotProps={{
+                            htmlInput: {
+                                spellCheck: false,
+                            },
+                            input: {
+                                sx: {
+                                    backgroundColor: 'var(--input-background)',
+                                    color: 'var(--text-primary)'
+                                }
+                            },
+                            inputLabel: {
+                                sx: {
+                                    color: 'var(--text-secondary)'
+                                }
+                            }
+                        }}
+                    />
+
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={isPrivate}
+                                onChange={(e) => setIsPrivate(e.target.checked)}
+                                sx={{
+                                    color: 'var(--text-secondary)',
+                                    '&.Mui-checked': {
+                                        color: 'var(--primary)',
+                                    },
+                                }}
+                            />
+                        }
+                        label="Private Community"
+                        className="mt-2 text-[var(--text-primary)]"
+                    />
+
+                    <Typography variant="body2" className="mt-1 text-[var(--text-tertiary)]">
+                        Private communities require approval to join and are not visible in search results.
+                    </Typography>
+                </DialogContent>
+
+                <DialogActions className="p-4 pt-2">
+                    <Button
+                        onClick={handleClose}
+                        className="text-[var(--text-secondary)] hover:bg-[var(--hover-background)]"
                     >
-                        Create Community
+                        Cancel
                     </Button>
-                </>)}
-            </DialogActions>
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        disabled={!name.trim() || !!nameError || isSubmitting}
+                        className="bg-[var(--primary)] hover:bg-[var(--primary-darker)]"
+                    >
+                        {isSubmitting ? 'Creating...' : 'Create Community'}
+                    </Button>
+                </DialogActions>
+            </form>
         </Dialog>
     );
 }
