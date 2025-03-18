@@ -13,3 +13,8 @@ export function scrollToTop() {
 export function fromImage(imagePath?: string) {
     return imagePath ? process.env.NEXT_PUBLIC_STORAGE_HOST + '/' + imagePath : "/default.png";
 }
+
+export function getProviderImage(url: string) {
+    const domain = new URL(url).hostname;
+    return `https://www.google.com/s2/favicons?sz=16&domain_url=${domain}`
+}

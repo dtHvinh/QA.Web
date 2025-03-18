@@ -20,11 +20,12 @@ export default function CommunityLayout({ children }: { children: React.ReactNod
 
     return (
         <div className="relative flex min-h-[calc(100vh-var(--appbar-height))]">
-            <div className="ml-56 flex-1">
+            <div className="ml-[var(--left-nav-expanded-width)] flex-1">
                 {children}
             </div>
 
-            <div className="fixed right-0 top-[var(--appbar-height)] bottom-0  
+            <div className="fixed right-0 top-[var(--appbar-height)] bottom-0 
+                w-[var(--community-right-sidebar-width)]
                 border-l border-[var(--border-color)] bg-[var(--card-background)] 
                 p-2 flex flex-col gap-2 overflow-y-auto h-screen">
                 {communityJoined?.map((community) => (
@@ -34,7 +35,7 @@ export default function CommunityLayout({ children }: { children: React.ReactNod
                         placement="left"
                         arrow
                     >
-                        <Link className="border hover:rounded-lg transition rounded-full border-[var(--border-color)]" href={`/community/${community.name}`}>
+                        <Link className="border transition rounded-full border-[var(--border-color)]" href={`/community/${community.name}`}>
                             <Avatar
                                 src={fromImage(community.iconImage)}
                                 sx={{

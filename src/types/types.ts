@@ -166,7 +166,7 @@ export interface AuthRefreshResponse {
 }
 
 export interface AuthorResponse {
-    id: string;
+    id: string | number;
     firstName?: string;
     lastName?: string;
     username: string;

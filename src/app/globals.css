@@ -4,7 +4,7 @@
 
 :root {
     --left-nav-expanded-width: 260px;
-
+    --community-right-sidebar-width: 67px;
     --appbar-height: 58px;
 
     --background: #ffffff;
@@ -40,6 +40,17 @@
     --input-background: var(--card-background);
     --tag-background: #e5e7eb;
     --tag-text: #4b5563;
+
+    --chat-sidebar-bg: #f8fafc;
+    --chat-message-bg: #f1f5f9;
+    --chat-message-text: #020202;
+    --chat-message-hover: #e2e8f0;
+    --chat-room-active: #558ce4;
+    --chat-room-active-text: #ffffff;
+    --chat-room-hover: #f1f5f9;
+    --chat-header-bg: #f8fafc;
+    --chat-unread-badge: #e2e8f0;
+    --chat-border: #e2e8f0;
 }
 
 [data-theme='dark'] {
@@ -71,6 +82,8 @@
     --input-background: #171717;
     --tag-background: #2a2a2a;
     --tag-text: #d4d4d4;
+
+    --chat-message-bg: #c4c9cf;
 }
 
 body {

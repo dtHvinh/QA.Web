@@ -1,6 +1,7 @@
 'use client'
 
 import Loading from "@/app/loading";
+import ChatRoom from "@/components/Community/ChatRoom";
 import ObjectNotfound from "@/components/Error/ObjectNotFound";
 import getAuth from "@/helpers/auth-utils";
 import { getFetcher, IsErrorResponse } from "@/helpers/request-utils";
@@ -8,9 +9,7 @@ import { fromImage } from "@/helpers/utils";
 import { AuthorResponse } from "@/types/types";
 import { Add, Forum, Settings } from "@mui/icons-material";
 import { Avatar, IconButton, Tooltip } from "@mui/material";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { use } from "react";
+import { use, useState } from "react";
 import useSWR from "swr";
 
 export interface CommunityDetailResponse {
@@ -43,12 +42,12 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
     const { name: communityName } = use(params)
     const auth = getAuth();
 
-    const pathName = usePathname();
-
     const { data: communityDetail, isLoading } = useSWR<CommunityDetailResponse>(
         [`/api/community/detail/${communityName}`, auth?.accessToken],
         getFetcher
     );
+
+    const [selectedRoomId, setSelectedRoomId] = useState<number | null>(communityDetail?.rooms[0]?.id ?? null);
 
     if (isLoading) return <Loading />;
 
@@ -83,10 +82,11 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
                 </div>
 
                 <div className="flex-1 p-6">
+                    <ChatRoom messageInit={communityDetail.rooms.filter(e => e.id == selectedRoomId)[0].messages} />
                 </div>
             </div>
 
-            <div className="w-80 bg-[var(--card-background)] border-l border-[var(--border-color)] h-screen flex flex-col">
+            <div className="w-80 mr-[var(--community-right-sidebar-width)] bg-[var(--card-background)] border-l border-[var(--border-color)] h-screen flex flex-col">
                 <div className="p-3 border-b border-[var(--border-color)]">
                     <div className="flex items-center justify-between">
                         <span className="text-sm font-medium text-[var(--text-primary)]">Chat Rooms</span>
@@ -103,12 +103,12 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
                 <div className="flex-1 overflow-y-auto">
                     <div className="p-2 space-y-0.5">
                         {communityDetail.rooms.map(room => (
-                            <Link
-                                href={`/community/${communityName}/${room.name}`}
+                            <button
+                                onClick={() => setSelectedRoomId(room.id)}
                                 key={room.id}
                                 className={`w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm
-                                    ${pathName === room.name
-                                        ? 'bg-[var(--primary)] text-white'
+                                    ${selectedRoomId === room.id
+                                        ? 'bg-[var(--chat-room-active)] text-white'
                                         : 'text-[var(--text-secondary)] hover:bg-[var(--hover-background)]'
                                     }`}
                             >
@@ -119,7 +119,7 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
                                         {room.messages.length}
                                     </span>
                                 )}
-                            </Link>
+                            </button>
                         ))}
                     </div>
                 </div>

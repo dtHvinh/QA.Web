@@ -6,6 +6,7 @@ import ResourceOwnerPrivilege from "@/components/Privilege/ResourceOwnerPrivileg
 import getAuth from "@/helpers/auth-utils";
 import { getFetcher, IsErrorResponse } from "@/helpers/request-utils";
 import { countTotalDays } from "@/helpers/time-utils";
+import { getProviderImage } from "@/helpers/utils";
 import { ExternalLinkResponse, UserResponse } from "@/types/types";
 import { Edit } from "@mui/icons-material";
 import { Avatar } from "@mui/material";
@@ -95,7 +96,8 @@ export default function ProfilePage({ params }: { params: Promise<{ username?: s
                                             href={link.url}
                                             className="flex items-center gap-2 px-4 py-2 bg-[var(--hover-background-darker)] text-[var(--text-primary)] rounded-lg hover:bg-[var(--hover-background-darkest)] transition-colors"
                                         >
-                                            {link.provider}
+                                            <Avatar src={getProviderImage(link.url)} sx={{ width: 16, height: 16 }} />
+                                            <span className="truncate">{link.url}</span>
                                         </Link>))
                                     : <div className="text-[var(--text-tertiary)] italic">No links</div>
                                 }
