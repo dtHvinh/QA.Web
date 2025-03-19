@@ -7,6 +7,8 @@
     --community-right-sidebar-width: 80px;
     --appbar-height: 58px;
 
+    --left-nav-expand-button-border: black;
+
     --background: #ffffff;
     --foreground: #171717;
     --card-background: #ffffff;
@@ -56,6 +58,8 @@
 }
 
 [data-theme="dark"] {
+    --left-nav-expand-button-border: #374151;
+
     --background: #111827;
     --foreground: #f9fafb;
     --card-background: #1f2937;

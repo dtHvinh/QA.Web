@@ -55,7 +55,6 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
 
     const [selectedRoomId, setSelectedRoomId] = useState<number | null>(null);
 
-    // Set the first room as selected when data loads
     if (communityDetail?.rooms.length && selectedRoomId === null) {
         setSelectedRoomId(communityDetail.rooms[0].id);
     }
@@ -68,7 +67,6 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
 
     const handleCreateRoom = (roomId: number, roomName: string) => {
         if (communityDetail) {
-            // Add the new room to the list
             const newRoom: ChatRoomResponse = {
                 id: roomId,
                 name: roomName,
@@ -80,7 +78,6 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
                 rooms: [...communityDetail.rooms, newRoom]
             }, false);
 
-            // Select the new room
             setSelectedRoomId(roomId);
         }
     };
@@ -96,23 +93,24 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
 
     return (
         communityDetail &&
-        <div className="ml-[var(--left-nav-expanded-width)]  flex h-[calc(100vh-var(--appbar-height))] -mt-4">
+        <div className="ml-[var(--left-nav-expanded-width)] flex h-[calc(100vh-var(--appbar-height))] -mt-4">
             <div className="flex-1 flex flex-col bg-[var(--background)]">
-                <div className="h-16 border-b border-[var(--border-color)] flex items-center bg-[var(--card-background)] px-6">
-                    <div className="flex items-center gap-3 flex-1">
+                <div className="h-16 border-b border-[var(--border-color)] flex items-center bg-[var(--card-background)] px-6 shadow-sm">
+                    <div className="flex items-center gap-4 flex-1">
                         <Avatar
                             src={fromImage(communityDetail.iconImage)}
                             sx={{
-                                width: 40,
-                                height: 40,
-                                border: '2px solid var(--primary-light)'
+                                width: 44,
+                                height: 44,
+                                border: '2px solid var(--primary-light)',
+                                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
                             }}
                         >
                             {communityDetail.name.charAt(0).toUpperCase()}
                         </Avatar>
                         <div>
                             <div className="flex items-center gap-2">
-                                <h1 className="font-semibold text-lg text-[var(--text-primary)]">
+                                <h1 className="font-semibold text-xl text-[var(--text-primary)]">
                                     {communityDetail.name}
                                 </h1>
                                 {communityDetail.isPrivate && (
@@ -120,20 +118,27 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
                                         size="small"
                                         label="Private"
                                         color="primary"
-                                        variant="outlined"
-                                        sx={{ height: 20, fontSize: '0.7rem' }}
+                                        sx={{
+                                            height: 22,
+                                            fontSize: '0.75rem',
+                                            backgroundColor: 'var(--primary-light)',
+                                            color: 'var(--primary)',
+                                            '& .MuiChip-label': {
+                                                px: 1
+                                            }
+                                        }}
                                     />
                                 )}
                             </div>
-                            <div className="flex items-center gap-2">
-                                <span className="text-xs text-[var(--text-secondary)] flex items-center gap-1">
-                                    <People fontSize="small" sx={{ fontSize: 14 }} />
+                            <div className="flex items-center gap-3 mt-0.5">
+                                <span className="text-sm text-[var(--text-secondary)] flex items-center gap-1.5">
+                                    <People sx={{ fontSize: 16 }} />
                                     {communityDetail.memberCount} members
                                 </span>
                                 {selectedRoom && (
-                                    <span className="text-xs text-[var(--text-secondary)] flex items-center gap-1">
+                                    <span className="text-sm text-[var(--text-secondary)] flex items-center gap-1.5">
                                         <span>•</span>
-                                        <Forum fontSize="small" sx={{ fontSize: 14 }} />
+                                        <Forum sx={{ fontSize: 16 }} />
                                         {selectedRoom.name}
                                     </span>
                                 )}
@@ -143,21 +148,19 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
                     <div className="flex items-center gap-2">
                         <Tooltip title="Community Info">
                             <IconButton
-                                size="small"
-                                className="text-[var(--text-secondary)]"
+                                className="text-[var(--text-secondary)] hover:bg-[var(--hover-background)]"
                                 onClick={() => setInfoOpen(true)}
                             >
-                                <Info fontSize="small" />
+                                <Info />
                             </IconButton>
                         </Tooltip>
                         {communityDetail.isOwner && (
                             <Tooltip title="Community Settings">
                                 <IconButton
-                                    size="small"
-                                    className="text-[var(--text-secondary)]"
+                                    className="text-[var(--text-secondary)] hover:bg-[var(--hover-background)]"
                                     onClick={() => setSettingsOpen(true)}
                                 >
-                                    <Settings fontSize="small" />
+                                    <Settings />
                                 </IconButton>
                             </Tooltip>
                         )}
@@ -169,18 +172,17 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
                 </div>
             </div>
 
-            <div className="w-80 mr-[var(--community-right-sidebar-width)] bg-[var(--card-background)] border-l border-[var(--border-color)] flex flex-col">
+            <div className="w-80 mr-[var(--community-right-sidebar-width)] bg-[var(--card-background)] border-l border-[var(--border-color)] flex flex-col shadow-lg">
                 <div className="p-4 border-b border-[var(--border-color)]">
                     <div className="flex items-center justify-between">
-                        <span className="font-medium text-[var(--text-primary)]">Chat Rooms</span>
+                        <span className="font-medium text-lg text-[var(--text-primary)]">Chat Rooms</span>
                         {(communityDetail.isOwner || communityDetail.isModerator) && (
                             <Tooltip title="Create Room">
                                 <IconButton
-                                    size="small"
-                                    className="bg-[var(--primary-light)] text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white"
+                                    className="bg-[var(--primary)] text-white hover:bg-[var(--primary-darker)]"
                                     onClick={() => setCreateRoomOpen(true)}
                                 >
-                                    <Add fontSize="small" />
+                                    <Add />
                                 </IconButton>
                             </Tooltip>
                         )}
@@ -188,18 +190,18 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
                 </div>
 
                 <div className="flex-1 overflow-y-auto">
-                    <div className="p-3 space-y-1">
+                    <div className="p-4 space-y-2">
                         {communityDetail.rooms.map(room => (
                             <button
                                 onClick={() => setSelectedRoomId(room.id)}
                                 key={room.id}
-                                className={`w-full flex items-center gap-2 px-4 py-3 rounded-lg text-sm transition-all
+                                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all
                                     ${selectedRoomId === room.id
-                                        ? 'bg-[var(--primary)] text-white shadow-sm'
+                                        ? 'bg-[var(--primary)] text-white shadow-md'
                                         : 'text-[var(--text-secondary)] hover:bg-[var(--hover-background)]'
                                     }`}
                             >
-                                <Forum fontSize="small" />
+                                <Forum />
                                 <span className="truncate font-medium">{room.name}</span>
                                 {room.messages.length > 0 && (
                                     <Badge
@@ -208,9 +210,9 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
                                         className="ml-auto"
                                         sx={{
                                             '& .MuiBadge-badge': {
-                                                fontSize: '0.7rem',
-                                                height: '18px',
-                                                minWidth: '18px'
+                                                fontSize: '0.75rem',
+                                                height: '20px',
+                                                minWidth: '20px'
                                             }
                                         }}
                                     />
@@ -220,27 +222,28 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
                     </div>
                 </div>
 
-                <div className="sticky bottom-0 p-4 border-t border-[var(--border-color)] bg-[var(--hover-background)]">
-                    <div className="flex items-center gap-3">
+                <div className="sticky bottom-0 p-4 border-t border-[var(--border-color)] bg-[var(--card-background)]">
+                    <div className="flex items-center gap-4">
                         <Avatar
                             src={auth?.profilePicture}
                             sx={{
-                                width: 36,
-                                height: 36,
-                                border: '2px solid var(--primary-light)'
+                                width: 40,
+                                height: 40,
+                                border: '2px solid var(--primary-light)',
+                                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
                             }}
                         />
                         <div className="flex-1 min-w-0">
-                            <div className="text-sm font-medium text-[var(--text-primary)] truncate">
+                            <div className="text-sm font-semibold text-[var(--text-primary)] truncate">
                                 {auth?.username}
                             </div>
-                            <div className="text-xs text-[var(--text-secondary)]">
+                            <div className="text-xs mt-0.5">
                                 {communityDetail.isOwner ? (
-                                    <span className="text-[var(--primary)]">Owner</span>
+                                    <span className="text-[var(--primary)] font-medium">Owner</span>
                                 ) : communityDetail.isModerator ? (
-                                    <span className="text-[var(--secondary)]">Moderator</span>
+                                    <span className="text-[var(--secondary)] font-medium">Moderator</span>
                                 ) : (
-                                    <span>Member</span>
+                                    <span className="text-[var(--text-secondary)]">Member</span>
                                 )}
                             </div>
                         </div>
@@ -248,7 +251,6 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
                 </div>
             </div>
 
-            {/* Dialogs */}
             {communityDetail && (
                 <>
                     <CommunitySettings

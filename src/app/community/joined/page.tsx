@@ -5,7 +5,7 @@ import { getFetcher } from "@/helpers/request-utils";
 import { fromImage } from "@/helpers/utils";
 import { GetCommunityResponse } from "@/types/types";
 import { ArrowBack, Lock, People } from "@mui/icons-material";
-import { Avatar, Button, Chip } from "@mui/material";
+import { Avatar, Button } from "@mui/material";
 import Link from "next/link";
 import { useState } from "react";
 import useSWR from "swr";
@@ -119,15 +119,6 @@ export default function JoinedCommunitiesPage() {
                                             </p>
                                         )}
                                     </div>
-                                </div>
-
-                                <div className="mt-4 flex justify-end">
-                                    <Chip
-                                        label="Joined"
-                                        color="primary"
-                                        size="small"
-                                        className="bg-[var(--primary)]"
-                                    />
                                 </div>
                             </Link>
                         ))}

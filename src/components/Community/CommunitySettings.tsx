@@ -1,6 +1,7 @@
 import { CommunityDetailResponse } from "@/app/community/[name]/page";
 import getAuth from "@/helpers/auth-utils";
 import { deleteFetcher, formPutFetcher, IsErrorResponse } from "@/helpers/request-utils";
+import { fromImage } from "@/helpers/utils";
 import { ErrorResponse } from "@/props/ErrorResponse";
 import { backendURL } from "@/utilities/Constants";
 import notifyError, { notifySucceed } from "@/utilities/ToastrExtensions";
@@ -159,7 +160,7 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
                     <Box component="form" onSubmit={handleSubmit} className="p-6">
                         <div className="flex flex-col items-center mb-6">
                             <Avatar
-                                src={iconPreview}
+                                src={fromImage(iconPreview)}
                                 sx={{ width: 100, height: 100, mb: 2 }}
                             >
                                 {community.name.charAt(0).toUpperCase()}

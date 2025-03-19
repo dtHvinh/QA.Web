@@ -29,10 +29,6 @@ export default function CommunityLayout({ children }: { children: React.ReactNod
 
     const communityName = isCommunityPage ? pathname.split('/')[2] : null;
 
-    const currentCommunity = communityName
-        ? communityJoined?.find(c => c.name === communityName)
-        : null;
-
     const handleCreateSuccess = (newCommunity: GetCommunityResponse) => {
         if (communityJoined) {
             mutate([newCommunity, ...communityJoined], false);
@@ -42,7 +38,7 @@ export default function CommunityLayout({ children }: { children: React.ReactNod
     };
 
     return (
-        <div className="">
+        <div>
             <div className="flex-1">
                 {children}
             </div>

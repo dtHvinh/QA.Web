@@ -82,7 +82,6 @@ export default function CommunityPage() {
             </div>
 
             {searchTerm.length > 2 ? (
-                // Search results
                 <div>
                     <h2 className="text-xl font-semibold mb-4 text-[var(--text-primary)]">
                         Search Results for "{searchTerm}"
@@ -119,7 +118,6 @@ export default function CommunityPage() {
                     )}
                 </div>
             ) : (
-                // Default view
                 <>
                     {joinedCommunities && joinedCommunities.length > 0 && (
                         <div className="mb-12">

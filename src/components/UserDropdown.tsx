@@ -2,13 +2,14 @@
 
 import getAuth from "@/helpers/auth-utils";
 import { Routes } from "@/utilities/Constants";
-import { Add, AutoStories } from "@mui/icons-material";
+import { Add, AdminPanelSettings, AutoStories, Language } from "@mui/icons-material";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Avatar, Popover, SvgIcon } from "@mui/material";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import ChatBot from "./ChatBot";
+import AdminPrivilege from "./Privilege/AdminPrivilege";
 
 export default function UserDropdown() {
     const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
@@ -77,7 +78,6 @@ export default function UserDropdown() {
                     </div>
 
                     <div className="block md:hidden px-2 py-2">
-                        {/* Navigation links - update classes */}
                         <Link onClick={handleClose} href={Routes.Home}
                             className={`${buttonStyle} ${pathname === Routes.Home ? selectedStyle : "text-[var(--text-primary)]"}`}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
@@ -112,6 +112,11 @@ export default function UserDropdown() {
                             </svg>
                             Collections
                         </Link>
+                        <Link onClick={handleClose} href={'/community'}
+                            className={`${buttonStyle} ${pathname === "/community" ? selectedStyle : "text-[var(--text-primary)]"}`}>
+                            <Language fontSize="small" />
+                            Community
+                        </Link>
 
                         <Link onClick={handleClose} href={Routes.Bookmarks}
                             className={`${buttonStyle} ${pathname === Routes.Bookmarks ? selectedStyle : "text-[var(--text-primary)]"}`}>
@@ -121,7 +126,18 @@ export default function UserDropdown() {
                             </svg>
                             Bookmarks
                         </Link>
-                        <hr className="mt-4 border-[var(--border-color)]" />
+
+                        <AdminPrivilege>
+                            <div className="pt-4">
+                                <div className="border-t border-[var(--border-color)] pt-4">
+                                    <Link href={'/admin'}
+                                        className={`${buttonStyle} ${pathname === "/admin" ? selectedStyle : "text-[var(--text-primary)]"}`}>
+                                        <AdminPanelSettings fontSize="small" />
+                                        <span>Admin</span>
+                                    </Link>
+                                </div>
+                            </div>
+                        </AdminPrivilege>
                     </div>
 
                     <div className="block px-4 py-2 mb-1">
