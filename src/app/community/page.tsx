@@ -11,6 +11,7 @@ import { InputAdornment, TextField } from "@mui/material";
 import Link from "next/link";
 import { useState } from "react";
 import useSWR from "swr";
+import { useDebounce } from "use-debounce";
 
 export default function CommunityPage() {
     const auth = getAuth();
@@ -18,6 +19,7 @@ export default function CommunityPage() {
     const [pageIndex, setPageIndex] = useState(1);
     const [view, setView] = useState<ViewOptions>('compact');
     const [createDialogOpen, setCreateDialogOpen] = useState(false);
+    const [debounceSearchTerm] = useDebounce(searchTerm, 500);
 
     const { data: joinedCommunities, isLoading: isLoadingJoined } = useSWR<GetCommunityResponse[]>(
         [`/api/community/joined?pageIndex=1&pageSize=4`, auth?.accessToken],
@@ -30,7 +32,7 @@ export default function CommunityPage() {
     );
 
     const { data: searchResults, isLoading: isLoadingSearch } = useSWR<GetCommunityResponse[]>(
-        searchTerm.length > 2 ? [`/api/community/search?term=${searchTerm}&pageIndex=1&pageSize=20`, auth?.accessToken] : null,
+        debounceSearchTerm.length > 2 ? [`/api/community/search/${debounceSearchTerm}/?pageIndex=1&pageSize=20`, auth?.accessToken] : null,
         getFetcher
     );
 
@@ -74,17 +76,18 @@ export default function CommunityPage() {
                                 borderRadius: '12px',
                                 '& fieldset': {
                                     borderColor: 'var(--border-color)'
-                                }
+                                },
+                                color: 'var(--text-primary)'
                             }
                         }
                     }}
                 />
             </div>
 
-            {searchTerm.length > 2 ? (
+            {debounceSearchTerm.length > 2 ? (
                 <div>
                     <h2 className="text-xl font-semibold mb-4 text-[var(--text-primary)]">
-                        Search Results for "{searchTerm}"
+                        Search Results for "{debounceSearchTerm}"
                     </h2>
 
                     {isLoadingSearch ? (

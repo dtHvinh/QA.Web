@@ -1,5 +1,6 @@
 import getAuth from '@/helpers/auth-utils';
-import { formPostFetcher, IsErrorResponse } from '@/helpers/request-utils';
+import { IsErrorResponse, postFetcher } from '@/helpers/request-utils';
+import notifyError, { notifySucceed } from '@/utilities/ToastrExtensions';
 import { Close } from '@mui/icons-material';
 import {
     Button,
@@ -13,7 +14,6 @@ import {
     useTheme
 } from '@mui/material';
 import { FormEvent, useState } from 'react';
-import notifyError, { notifySucceed } from '@/utilities/ToastrExtensions';
 
 interface CreateRoomDialogProps {
     open: boolean;
@@ -32,29 +32,25 @@ export default function CreateRoomDialog({ open, communityId, onClose, onCreated
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!name.trim()) return;
-        
+
         setIsSubmitting(true);
-        
+
         try {
-            const formData = new FormData();
-            formData.append('communityId', communityId.toString());
-            formData.append('name', name);
-            
-            const response = await formPostFetcher([
-                `/api/community/room`, 
-                auth!.accessToken, 
-                formData
+            const response = await postFetcher([
+                `/api/community/room`,
+                auth!.accessToken,
+                JSON.stringify({
+                    communityId: communityId,
+                    name: name
+                })
             ]);
-            
-            if (IsErrorResponse(response)) {
-                notifyError(response.title || "Failed to create room");
-                return;
+
+            if (!IsErrorResponse(response)) {
+                notifySucceed("Room created successfully");
+                onCreated(response.id, name);
+                onClose();
+                setName('');
             }
-            
-            notifySucceed("Room created successfully");
-            onCreated(response.id, name);
-            onClose();
-            setName('');
         } catch (error) {
             notifyError("An error occurred while creating the room");
         } finally {
@@ -83,13 +79,13 @@ export default function CreateRoomDialog({ open, communityId, onClose, onCreated
                     <Close fontSize="small" />
                 </IconButton>
             </DialogTitle>
-            
+
             <form onSubmit={handleSubmit}>
                 <DialogContent className="pt-4">
                     <p className="text-[var(--text-secondary)] mb-4">
                         Create a new room for members to chat in this community.
                     </p>
-                    
+
                     <TextField
                         autoFocus
                         label="Room Name"
@@ -113,17 +109,17 @@ export default function CreateRoomDialog({ open, communityId, onClose, onCreated
                         placeholder="General, Announcements, Help, etc."
                     />
                 </DialogContent>
-                
+
                 <DialogActions className="p-4 pt-2">
-                    <Button 
-                        onClick={onClose} 
+                    <Button
+                        onClick={onClose}
                         className="text-[var(--text-secondary)] hover:bg-[var(--hover-background)]"
                     >
                         Cancel
                     </Button>
-                    <Button 
-                        type="submit" 
-                        variant="contained" 
+                    <Button
+                        type="submit"
+                        variant="contained"
                         disabled={!name.trim() || isSubmitting}
                         className="bg-[var(--primary)] hover:bg-[var(--primary-darker)]"
                     >

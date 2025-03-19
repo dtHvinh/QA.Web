@@ -11,7 +11,7 @@ import { getFetcher, IsErrorResponse } from "@/helpers/request-utils";
 import { fromImage } from "@/helpers/utils";
 import { AuthorResponse } from "@/types/types";
 import { Add, Forum, Info, People, Settings } from "@mui/icons-material";
-import { Avatar, Badge, Chip, IconButton, Tooltip } from "@mui/material";
+import { Avatar, Chip, IconButton, Tooltip } from "@mui/material";
 import { use, useState } from "react";
 import useSWR from "swr";
 
@@ -95,7 +95,8 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
         communityDetail &&
         <div className="ml-[var(--left-nav-expanded-width)] flex h-[calc(100vh-var(--appbar-height))] -mt-4">
             <div className="flex-1 flex flex-col bg-[var(--background)]">
-                <div className="h-16 border-b border-[var(--border-color)] flex items-center bg-[var(--card-background)] px-6 shadow-sm">
+                <div className="h-16 border-b border-[var(--border-color)] flex items-center bg-[var(--card-background)] 
+                border-l rounded-bl-2xl px-6 shadow-sm">
                     <div className="flex items-center gap-4 flex-1">
                         <Avatar
                             src={fromImage(communityDetail.iconImage)}
@@ -151,7 +152,7 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
                                 className="text-[var(--text-secondary)] hover:bg-[var(--hover-background)]"
                                 onClick={() => setInfoOpen(true)}
                             >
-                                <Info />
+                                <Info className=" text-[var(--text-primary)]" />
                             </IconButton>
                         </Tooltip>
                         {communityDetail.isOwner && (
@@ -160,7 +161,7 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
                                     className="text-[var(--text-secondary)] hover:bg-[var(--hover-background)]"
                                     onClick={() => setSettingsOpen(true)}
                                 >
-                                    <Settings />
+                                    <Settings className=" text-[var(--text-primary)]" />
                                 </IconButton>
                             </Tooltip>
                         )}
@@ -179,10 +180,10 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
                         {(communityDetail.isOwner || communityDetail.isModerator) && (
                             <Tooltip title="Create Room">
                                 <IconButton
-                                    className="bg-[var(--primary)] text-white hover:bg-[var(--primary-darker)]"
+                                    className="bg-[var(--primary)]hover:bg-[var(--primary-darker)]"
                                     onClick={() => setCreateRoomOpen(true)}
                                 >
-                                    <Add />
+                                    <Add className=" text-[var(--text-primary)]" />
                                 </IconButton>
                             </Tooltip>
                         )}
@@ -195,28 +196,14 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
                             <button
                                 onClick={() => setSelectedRoomId(room.id)}
                                 key={room.id}
-                                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all
+                                className={`w-full flex items-center gap-3 px-4 py-1 rounded-md transition-all
                                     ${selectedRoomId === room.id
-                                        ? 'bg-[var(--primary)] text-white shadow-md'
-                                        : 'text-[var(--text-secondary)] hover:bg-[var(--hover-background)]'
+                                        ? ' text-white bg-[var(--primary)]'
+                                        : 'text-[var(--text-primary)] hover:bg-[var(--hover-background)]'
                                     }`}
                             >
                                 <Forum />
                                 <span className="truncate font-medium">{room.name}</span>
-                                {room.messages.length > 0 && (
-                                    <Badge
-                                        badgeContent={room.messages.length}
-                                        color={selectedRoomId === room.id ? "error" : "primary"}
-                                        className="ml-auto"
-                                        sx={{
-                                            '& .MuiBadge-badge': {
-                                                fontSize: '0.75rem',
-                                                height: '20px',
-                                                minWidth: '20px'
-                                            }
-                                        }}
-                                    />
-                                )}
                             </button>
                         ))}
                     </div>

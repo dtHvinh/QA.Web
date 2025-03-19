@@ -3,7 +3,7 @@ import getAuth from "@/helpers/auth-utils";
 import timeFromNow from "@/helpers/time-utils";
 import { Send } from "@mui/icons-material";
 import { Avatar, IconButton } from "@mui/material";
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 
 interface ChatRoomProps {
     messageInit?: ChatMessageResponse[];
@@ -14,6 +14,13 @@ export default function ChatRoom({ messageInit = [] }: ChatRoomProps) {
     const [messages, setMessages] = useState<ChatMessageResponse[]>(messageInit);
     const [newMessage, setNewMessage] = useState("");
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (containerRef.current) {
+            containerRef.current.scrollTop = containerRef.current.scrollHeight;
+        }
+    }, [messages]);
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
@@ -62,8 +69,8 @@ export default function ChatRoom({ messageInit = [] }: ChatRoomProps) {
                                             <Avatar
                                                 src={msg.user.profilePicture}
                                                 alt={msg.user.username}
-                                                sx={{ 
-                                                    width: 38, 
+                                                sx={{
+                                                    width: 38,
                                                     height: 38,
                                                     boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
                                                 }}
@@ -94,11 +101,11 @@ export default function ChatRoom({ messageInit = [] }: ChatRoomProps) {
                             );
                         })
                     )}
-                    <div ref={messagesEndRef} />
+                    <div id="22" ref={messagesEndRef} />
                 </div>
             </div>
 
-            <form onSubmit={handleSubmit} 
+            <form onSubmit={handleSubmit}
                 className="border-t border-[var(--border-color)] p-4 bg-[var(--card-background)] shadow-lg">
                 <div className="relative flex items-center gap-2">
                     <input

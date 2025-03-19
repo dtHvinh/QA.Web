@@ -102,14 +102,11 @@ export default function CreateCommunityDialog({ open, onClose, onCreated }: Crea
                 formData
             ]);
 
-            if (IsErrorResponse(response)) {
-                notifyError(response.title || "Failed to create community");
-                return;
+            if (!IsErrorResponse(response)) {
+                notifySucceed("Community created successfully");
+                onCreated(response);
+                handleClose();
             }
-
-            notifySucceed("Community created successfully");
-            onCreated(response);
-            handleClose();
         } catch (error) {
             notifyError("An error occurred while creating the community");
         } finally {
@@ -195,16 +192,21 @@ export default function CreateCommunityDialog({ open, onClose, onCreated }: Crea
                         error={!!nameError}
                         helperText={nameError || "Use only letters, numbers, underscores, and hyphens"}
                         slotProps={{
-                            input: {
+                            htmlInput: {
                                 sx: {
                                     backgroundColor: 'var(--input-background)',
                                     color: 'var(--text-primary)'
                                 }
-                            }
-                        }}
-                        InputLabelProps={{
-                            sx: {
-                                color: 'var(--text-secondary)'
+                            },
+                            formHelperText: {
+                                sx: {
+                                    color: 'var(--text-tertiary)'
+                                }
+                            },
+                            inputLabel: {
+                                sx: {
+                                    color: 'var(--text-secondary)'
+                                }
                             }
                         }}
                     />
