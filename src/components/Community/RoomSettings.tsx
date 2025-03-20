@@ -1,6 +1,6 @@
-import { ChatRoomResponse } from "@/app/community/[name]/page";
 import getAuth from "@/helpers/auth-utils";
 import { IsErrorResponse, putFetcher } from "@/helpers/request-utils";
+import { ChatRoomResponse } from "@/types/types";
 import { Delete } from "@mui/icons-material";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
 import { useState } from "react";
@@ -27,6 +27,7 @@ export default function RoomSettings({ open, onClose, room, communityId, onUpdat
             auth!.accessToken,
             JSON.stringify({
                 id: room.id,
+                communityId: communityId,
                 name: name,
             })])
 

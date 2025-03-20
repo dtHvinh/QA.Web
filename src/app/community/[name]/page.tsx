@@ -1,46 +1,18 @@
 'use client'
 
-import Loading from "@/app/loading";
 import ChatRoom from "@/components/Community/ChatRoom";
 import CommunityInfo from "@/components/Community/CommunityInfo";
 import CommunitySettings from "@/components/Community/CommunitySettings";
 import CreateRoomDialog from "@/components/Community/CreateRoomDialog";
 import RoomSettings from "@/components/Community/RoomSettings";
-import ObjectNotfound from "@/components/Error/ObjectNotFound";
 import getAuth from "@/helpers/auth-utils";
 import { deleteFetcher, getFetcher, IsErrorResponse } from "@/helpers/request-utils";
 import { fromImage, isScrollBottom } from "@/helpers/utils";
-import { AuthorResponse } from "@/types/types";
+import { ChatRoomResponse, CommunityDetailResponse } from "@/types/types";
 import { Add, Forum, ForumOutlined, Info, People, Settings } from "@mui/icons-material";
 import { Avatar, Chip, IconButton, Tooltip } from "@mui/material";
 import { use, useRef, useState } from "react";
 import useSWR from "swr";
-
-export interface CommunityDetailResponse {
-    id: number;
-    name: string;
-    description?: string;
-    iconImage?: string;
-    isPrivate: boolean;
-    memberCount: number;
-    rooms: ChatRoomResponse[];
-    isOwner: boolean;
-    isModerator: boolean;
-}
-
-export interface ChatRoomResponse {
-    id: number;
-    name: string;
-    messages: ChatMessageResponse[];
-}
-
-export interface ChatMessageResponse {
-    id: number;
-    message: string;
-    createdAt: string;
-    updatedAt: string;
-    user: AuthorResponse;
-}
 
 export default function CommunityDetailPage({ params }: { params: Promise<{ name: string }> }) {
     const { name: communityName } = use(params)
@@ -55,6 +27,7 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
     const [roomPageIndex, setRoomPageIndex] = useState(3);
     const [selectedRoomId, setSelectedRoomId] = useState<number | null>(null);
     const [chatRoomOpen, setChatRoomOpen] = useState(false);
+    const [selectedRoom, setSelectedRoom] = useState<ChatRoomResponse | null>(null);
     const roomDisplayRef = useRef<HTMLDivElement>(null);
 
     const { data: communityDetail, isLoading, mutate } = useSWR<CommunityDetailResponse>(
@@ -62,16 +35,6 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
         getFetcher
     );
 
-
-    if (isLoading) return <Loading />;
-
-    if (!isLoading && IsErrorResponse(communityDetail)) return <ObjectNotfound title="Error" message="Community not found or you have not joined this community yet!" />;
-
-    if (communityDetail?.rooms.length && selectedRoomId === null) {
-        setSelectedRoomId(communityDetail.rooms[0].id);
-    }
-
-    const selectedRoom = communityDetail?.rooms.find(room => room.id === selectedRoomId);
 
     const handleCreateRoom = (roomId: number, roomName: string) => {
         if (communityDetail) {
@@ -86,7 +49,7 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
                 rooms: [...communityDetail.rooms, newRoom]
             }, false);
 
-            setSelectedRoomId(roomId);
+            setSelectedRoom(newRoom);
         }
     };
 
@@ -150,12 +113,14 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
 
     const handleClickBack = () => {
         setChatRoomOpen(false);
-    }
+        setSelectedRoom(null);
+    };
 
-    const handleRoomClick = (roomId: number) => {
-        setSelectedRoomId(roomId);
+    const handleRoomClick = (room: ChatRoomResponse) => {
+        setSelectedRoom(room);
+        setSelectedRoomId(room.id);
         setChatRoomOpen(true);
-    }
+    };
 
     return (
         communityDetail &&
@@ -244,7 +209,9 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
                 </div>
             </div>
 
-            <div className="w-80 mr-[var(--community-right-sidebar-width)] bg-[var(--card-background)] border-l border-[var(--border-color)] flex flex-col shadow-lg">
+            <div className="w-80 mr-[var(--community-right-sidebar-width)] bg-[var(--card-background)] border-l 
+                            border-[var(--border-color)] flex flex-col shadow-lg
+                            h-[calc(100vh-calc(var(--appbar-height)*2))]">
                 <div className="p-4 border-b border-[var(--border-color)]">
                     <div className="flex items-center justify-between">
                         <span className="font-medium text-lg text-[var(--text-primary)]">Chat Rooms</span>
@@ -266,10 +233,10 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
                         {communityDetail.rooms.map(room => (
                             <div key={room.id} className="flex items-center gap-2">
                                 <button
-                                    onClick={() => handleRoomClick(room.id)}
+                                    onClick={() => handleRoomClick(room)}
                                     className={`flex-1 flex items-center gap-3 px-4 py-2 rounded-md transition-all
                                         ${selectedRoomId === room.id
-                                            ? 'text-white bg-[var(--primary)]'
+                                            ? 'text-white bg-[var(--secondary)]'
                                             : 'text-[var(--text-primary)] hover:bg-[var(--hover-background)]'
                                         }`}
                                 >

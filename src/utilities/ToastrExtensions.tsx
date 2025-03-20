@@ -1,7 +1,11 @@
 import { enqueueSnackbar, SnackbarKey, SnackbarOrigin } from "notistack";
 
 export default function notifyError(message: string, position?: SnackbarOrigin, duration: number = 2) {
-    enqueueSnackbar(message, { variant: 'error', autoHideDuration: duration * 1000, anchorOrigin: position });
+    enqueueSnackbar(message, {
+        variant: 'error',
+        autoHideDuration: duration * 1000,
+        anchorOrigin: position ?? { horizontal: "center", vertical: "top" }
+    });
 }
 
 export function notifyWarning(message: string, position?: SnackbarOrigin, duration: number = 1) {

@@ -1,6 +1,31 @@
 export interface TextResponse {
     message: string
 }
+export interface CommunityDetailResponse {
+    id: number;
+    name: string;
+    description?: string;
+    iconImage?: string;
+    isPrivate: boolean;
+    memberCount: number;
+    rooms: ChatRoomResponse[];
+    isOwner: boolean;
+    isModerator: boolean;
+}
+
+export interface ChatRoomResponse {
+    id: number;
+    name: string;
+    messages: ChatMessageResponse[];
+}
+
+export interface ChatMessageResponse {
+    id: number;
+    message: string;
+    createdAt: string;
+    updatedAt: string;
+    user: AuthorResponse;
+}
 
 export interface GetCommunityResponse {
     id: string,

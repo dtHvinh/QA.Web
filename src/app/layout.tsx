@@ -1,7 +1,7 @@
 import Appbar from "@/components/AppBar/Appbar";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
 import { SupabaseProvider } from "@/context/SupabaseClientContext";
-import { ThemeProvider } from '@/context/ThemeContext';
+import { AppThemeProvider } from '@/context/ThemeContext';
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
@@ -43,7 +43,7 @@ export default function RootLayout({
                 <title>A</title>
             </head>
             <body className={`${dmSans.className} ${geistSans.variable} ${geistMono.variable} antialiased`}>
-                <ThemeProvider>
+                <AppThemeProvider>
                     <div className="flex flex-col min-h-screen">
                         <header className="sticky top-0 z-50 bg-white shadow-sm">
                             <Appbar />
@@ -66,7 +66,7 @@ export default function RootLayout({
                             </div>
                         </footer>
                     </div>
-                </ThemeProvider>
+                </AppThemeProvider>
             </body>
         </html>
     );

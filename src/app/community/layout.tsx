@@ -38,7 +38,7 @@ export default function CommunityLayout({ children }: { children: React.ReactNod
     };
 
     return (
-        <div>
+        <div className="h-[calc(100vh-calc(var(--appbar-height)*2))]">
             <div className="flex-1">
                 {children}
             </div>
@@ -46,7 +46,8 @@ export default function CommunityLayout({ children }: { children: React.ReactNod
             <div className="fixed right-0 top-[var(--appbar-height)] bottom-0 
                 w-[var(--community-right-sidebar-width)]
                 border-l border-[var(--border-color)] bg-[var(--card-background)] 
-                p-2 flex flex-col gap-2 overflow-y-auto">
+                p-2 flex flex-col gap-2 overflow-y-auto
+                h-[calc(100vh-calc(var(--appbar-height)*2))]">
 
                 <Tooltip title="Create Community" placement="left" arrow>
                     <div className="flex justify-center">

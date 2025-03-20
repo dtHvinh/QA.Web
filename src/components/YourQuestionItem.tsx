@@ -4,6 +4,7 @@ import { formatNumber } from "@/helpers/evaluate-utils";
 import toQuestionDetail from "@/helpers/path";
 import timeFromNow from "@/helpers/time-utils";
 import { QuestionResponse, ViewOptions } from "@/types/types";
+import { Tooltip } from "@mui/material";
 import Link from "next/link";
 import UserInfoPopup from "./UserInfoPopup";
 
@@ -15,13 +16,17 @@ interface YourQuestionItemProps {
 
 export default function YourQuestionItem({ question, showAuthor = true, view = 'full' }: Readonly<YourQuestionItemProps>) {
     return (
-        <div className={`bg-[var(--card-background)] rounded-lg ${view == 'full' && 'border border-[var(--border-color)]'} hover:border-blue-500 hover:shadow-sm transition-all ${view === 'compact' ? 'p-2' : 'p-4'}`}>
+        <div className={`bg-[var(--card-background)] rounded-lg ${'border border-[var(--border-color)]'} hover:border-blue-500 hover:shadow-sm transition-all ${view === 'compact' ? 'p-2' : 'p-4'}`}>
             <div className={`${view === 'compact' ? 'space-y-1.5 px-2' : 'space-y-3'}`}>
                 <div className="flex items-start justify-between gap-3">
                     <Link href={toQuestionDetail(question.id, question.slug)}
                         className={`font-semibold line-clamp-1 text-[var(--text-primary)] hover:text-blue-500 transition-colors flex-grow
-                            ${view === 'compact' ? 'text-sm' : 'text-base'}`}>
-                        {question.title}
+                                ${view === 'compact' ? 'text-sm' : 'text-base'}`}>
+                        <Tooltip title={question.title}>
+                            <span>
+                                {question.title}
+                            </span>
+                        </Tooltip>
                     </Link>
                     {view === 'full' && <QuestionStatusBar {...question} />}
                 </div>
@@ -47,7 +52,7 @@ export default function YourQuestionItem({ question, showAuthor = true, view = '
                     )}
                 </div>
 
-                {view === 'full' && (
+                {view === 'full' ? (
                     <>
                         <p dangerouslySetInnerHTML={{ __html: question.content }}
                             className="text-sm text-[var(--text-secondary)] line-clamp-2 leading-relaxed">
@@ -74,6 +79,11 @@ export default function YourQuestionItem({ question, showAuthor = true, view = '
                             </div>
                         </div>
                     </>
+                ) : (
+                    <>
+                        <p dangerouslySetInnerHTML={{ __html: question.content }}
+                            className="text-sm text-[var(--text-secondary)] line-clamp-1 leading-relaxed">
+                        </p></>
                 )}
             </div>
         </div>

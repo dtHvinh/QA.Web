@@ -1,11 +1,11 @@
-import { CommunityDetailResponse } from "@/app/community/[name]/page";
 import getAuth from "@/helpers/auth-utils";
-import { deleteFetcher, formPutFetcher, IsErrorResponse } from "@/helpers/request-utils";
+import { deleteFetcher, formPutFetcher, getFetcher, IsErrorResponse } from "@/helpers/request-utils";
 import { fromImage } from "@/helpers/utils";
 import { ErrorResponse } from "@/props/ErrorResponse";
+import { CommunityDetailResponse, PagedResponse } from "@/types/types";
 import { backendURL } from "@/utilities/Constants";
 import notifyError, { notifySucceed } from "@/utilities/ToastrExtensions";
-import { AddPhotoAlternate, Delete, Save } from "@mui/icons-material";
+import { AddPhotoAlternate, Delete, Group, PersonAdd, Save } from "@mui/icons-material";
 import {
     Avatar,
     Box,
@@ -21,7 +21,8 @@ import {
     Typography
 } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
+import useSWR from "swr";
 
 interface CommunitySettingsProps {
     open: boolean;
@@ -30,7 +31,16 @@ interface CommunitySettingsProps {
     onUpdate: (updatedCommunity: Partial<CommunityDetailResponse>) => void;
 }
 
+export interface CommunityMemberResponse {
+    id: string,
+    username: string,
+    profileImage: string,
+    isModerator: boolean
+}
+
 export default function CommunitySettings({ open, onClose, community, onUpdate }: CommunitySettingsProps) {
+    const auth = getAuth();
+    const router = useRouter();
     const [tabValue, setTabValue] = useState(0);
     const [isPrivate, setIsPrivate] = useState(community.isPrivate);
     const [name, setName] = useState(community.name);
@@ -38,8 +48,18 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
     const [iconImage, setIconImage] = useState<File | null>(null);
     const [iconPreview, setIconPreview] = useState(community.iconImage || '');
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const auth = getAuth();
-    const router = useRouter();
+    const [anyChange, setAnyChange] = useState(false);
+    const { data: members, isLoading: isMemberLoading } = useSWR<PagedResponse<CommunityMemberResponse>>([
+        `/api/community/${community.id}/members?pageIndex=1&pageSize=100`,
+        auth!.accessToken],
+        getFetcher);
+
+    useEffect(() => {
+        setAnyChange(name !== community.name
+            || description !== community.description
+            || isPrivate !== community.isPrivate
+            || iconImage !== null)
+    }, [name, description, isPrivate, iconImage]);
 
     const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
         setTabValue(newValue);
@@ -166,12 +186,13 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
                                 {community.name.charAt(0).toUpperCase()}
                             </Avatar>
 
-                            <Button
-                                component="label"
-                                variant="outlined"
-                                startIcon={<AddPhotoAlternate />}
-                                className="text-[var(--text-secondary)] border-[var(--border-color)]"
+                            <button
+                                type="button"
+                                className="flex items-center gap-2 px-4 py-2 rounded-lg
+                                    text-[var(--text-secondary)] border border-[var(--border-color)]
+                                    hover:bg-[var(--hover-background)] transition-colors"
                             >
+                                <AddPhotoAlternate fontSize="small" />
                                 Change Icon
                                 <input
                                     type="file"
@@ -179,7 +200,7 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
                                     accept="image/*"
                                     onChange={handleImageChange}
                                 />
-                            </Button>
+                            </button>
                         </div>
 
                         <TextField
@@ -245,51 +266,116 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
                         </Typography>
 
                         <div className="flex justify-end mt-6">
-                            <Button
+                            <button
+                                type="button"
                                 onClick={onClose}
-                                className="mr-2 text-[var(--text-secondary)]"
+                                className="mr-2 px-4 py-2 rounded-lg text-[var(--text-secondary)]
+                                    hover:bg-[var(--hover-background)] transition-colors"
                             >
                                 Cancel
-                            </Button>
-                            <Button
+                            </button>
+                            <button
                                 type="submit"
-                                variant="contained"
-                                startIcon={<Save />}
-                                disabled={isSubmitting}
-                                className="bg-[var(--primary)] hover:bg-[var(--primary-darker)]"
+                                disabled={isSubmitting || !anyChange}
+                                className="flex items-center gap-2 px-4 py-2 rounded-lg
+                                    bg-[var(--primary)] hover:bg-[var(--primary-darker)]
+                                    text-white transition-colors disabled:opacity-50"
                             >
+                                <Save fontSize="small" />
                                 {isSubmitting ? 'Saving...' : 'Save Changes'}
-                            </Button>
+                            </button>
                         </div>
                     </Box>
                 )}
 
                 {tabValue === 1 && (
                     <Box className="p-6">
-                        <Typography variant="h6" className="mb-4">
-                            Member Management
-                        </Typography>
-                        <Typography variant="body2" className="text-[var(--text-secondary)]">
-                            Member management features will be implemented in a future update.
-                        </Typography>
+                        <div className="flex items-center justify-between mb-6">
+                            <div className="flex items-center gap-2">
+                                <Group className="text-[var(--text-secondary)]" />
+                                <Typography variant="h6" className="text-[var(--text-primary)]">
+                                    Members ({members?.totalCount || 0})
+                                </Typography>
+                            </div>
+                            <button
+                                type="button"
+                                className="flex items-center gap-2 px-4 py-2 rounded-lg
+                                    text-[var(--text-secondary)] border border-[var(--border-color)]
+                                    hover:bg-[var(--hover-background)] transition-colors"
+                            >
+                                <PersonAdd fontSize="small" />
+                                Invite Members
+                            </button>
+                        </div>
+
+                        {isMemberLoading ? (
+                            <div className="space-y-3">
+                                {[1, 2, 3].map((i) => (
+                                    <div key={i} className="flex items-center gap-3 animate-pulse">
+                                        <div className="w-10 h-10 rounded-full bg-[var(--hover-background)]" />
+                                        <div className="flex-1 space-y-2">
+                                            <div className="h-4 w-32 bg-[var(--hover-background)] rounded" />
+                                            <div className="h-3 w-20 bg-[var(--hover-background)] rounded" />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="space-y-3">
+                                {members?.items.map((member) => (
+                                    <div key={member.id}
+                                        className="flex items-center gap-3 p-3 rounded-lg hover:bg-[var(--hover-background)] transition-colors">
+                                        <Avatar
+                                            src={fromImage(member.profileImage)}
+                                            sx={{ width: 40, height: 40 }}
+                                        >
+                                            {member.username.charAt(0).toUpperCase()}
+                                        </Avatar>
+                                        <div className="flex-1">
+                                            <div className="font-medium text-[var(--text-primary)]">
+                                                {member.username}
+                                            </div>
+                                            {member.isModerator && (
+                                                <div className="text-sm text-[var(--primary)]">
+                                                    Moderator
+                                                </div>
+                                            )}
+                                        </div>
+                                        {community.isOwner && (
+                                            <Button
+                                                size="small"
+                                                variant="outlined"
+                                                sx={{ textTransform: 'none' }}
+                                                className="text-[var(--text-secondary)] border-[var(--border-color)]"
+                                            >
+                                                {member.isModerator ? 'Remove Mod' : 'Make Mod'}
+                                            </Button>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </Box>
                 )}
 
                 {tabValue === 2 && (
                     <Box className="p-6">
-                        <div className="p-4 border border-[var(--error)] rounded-lg bg-[var(--error-light)] mb-4">
+                        <div className="p-4 border border-[var(--error)] rounded-lg bg-[var(--error-light)] mb-4 flex flex-col gap-2">
                             <Typography variant="h6" className="text-[var(--error)] mb-2">
                                 Delete Community
                             </Typography>
-                            <Typography variant="body2" className="text-[var(--text-secondary)] mb-4">
+                            <Typography variant="body2" className="text-[var(--text-secondary)] mb-5">
                                 Once you delete a community, there is no going back. Please be certain.
                             </Typography>
                             <Button
+                                sx={{ textTransform: 'none' }}
                                 variant="contained"
                                 color="error"
                                 startIcon={<Delete />}
                                 onClick={handleDelete}
-                                className="bg-[var(--error)] hover:bg-[var(--error-darker)]"
+                                className="flex items-center gap-2 px-4 py-2 rounded-lg
+                                    bg-[var(--error)] hover:bg-[var(--error-darker)]
+                                    text-white transition-colors"
                             >
                                 Delete Community
                             </Button>

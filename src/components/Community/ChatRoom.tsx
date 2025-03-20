@@ -1,6 +1,6 @@
-import { ChatMessageResponse } from "@/app/community/[name]/page";
 import getAuth from "@/helpers/auth-utils";
 import timeFromNow from "@/helpers/time-utils";
+import { ChatMessageResponse } from "@/types/types";
 import { ArrowBack, Send } from "@mui/icons-material";
 import { Avatar, IconButton } from "@mui/material";
 import { FormEvent, useEffect, useRef, useState } from "react";
@@ -17,8 +17,8 @@ export default function ChatRoom({ messageInit = [], onBack }: ChatRoomProps & {
     const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        if (containerRef.current) {
-            containerRef.current.scrollTop = containerRef.current.scrollHeight;
+        if (messagesEndRef.current) {
+            messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
         }
     }, [messages]);
 
@@ -53,9 +53,9 @@ export default function ChatRoom({ messageInit = [], onBack }: ChatRoomProps & {
                     className="mr-2 text-[var(--text-secondary)] hover:bg-[var(--hover-background)]"
                     size="small"
                 >
-                    <ArrowBack className="text-[var(--text-primary)]" fontSize="small" />
+                    <ArrowBack fontSize="small" />
                 </IconButton>
-                <span className="text-[var(--text-primary)] font-medium">Back to commuinity</span>
+                <span className="text-[var(--text-primary)] font-medium">Back to community</span>
             </div>
 
             <div className="flex-1 overflow-y-auto p-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
@@ -118,7 +118,7 @@ export default function ChatRoom({ messageInit = [], onBack }: ChatRoomProps & {
 
             <form onSubmit={handleSubmit}
                 className="border-t border-[var(--border-color)] p-4 bg-[var(--card-background)] shadow-lg">
-                <div className="relative flex items-center gap-2">
+                <div className="relative flex items-center gap-5">
                     <input
                         type="text"
                         value={newMessage}
