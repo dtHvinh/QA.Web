@@ -5,14 +5,15 @@ import ChatRoom from "@/components/Community/ChatRoom";
 import CommunityInfo from "@/components/Community/CommunityInfo";
 import CommunitySettings from "@/components/Community/CommunitySettings";
 import CreateRoomDialog from "@/components/Community/CreateRoomDialog";
+import RoomSettings from "@/components/Community/RoomSettings";
 import ObjectNotfound from "@/components/Error/ObjectNotFound";
 import getAuth from "@/helpers/auth-utils";
-import { getFetcher, IsErrorResponse } from "@/helpers/request-utils";
-import { fromImage } from "@/helpers/utils";
+import { deleteFetcher, getFetcher, IsErrorResponse } from "@/helpers/request-utils";
+import { fromImage, isScrollBottom } from "@/helpers/utils";
 import { AuthorResponse } from "@/types/types";
-import { Add, Forum, Info, People, Settings } from "@mui/icons-material";
+import { Add, Forum, ForumOutlined, Info, People, Settings } from "@mui/icons-material";
 import { Avatar, Chip, IconButton, Tooltip } from "@mui/material";
-import { use, useState } from "react";
+import { use, useRef, useState } from "react";
 import useSWR from "swr";
 
 export interface CommunityDetailResponse {
@@ -47,6 +48,12 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
     const [settingsOpen, setSettingsOpen] = useState(false);
     const [createRoomOpen, setCreateRoomOpen] = useState(false);
     const [infoOpen, setInfoOpen] = useState(false);
+    const [roomSettingsOpen, setRoomSettingsOpen] = useState(false);
+    const [selectedRoomForSettings, setSelectedRoomForSettings] = useState<ChatRoomResponse | null>(null);
+    const [hasMoreRoom, setHasMoreRoom] = useState(true);
+    const [isRoomLoading, setIsRoomLoading] = useState(false);
+    const [roomPageIndex, setRoomPageIndex] = useState(3);
+    const roomDisplayRef = useRef<HTMLDivElement>(null);
 
     const { data: communityDetail, isLoading, mutate } = useSWR<CommunityDetailResponse>(
         [`/api/community/detail/${communityName}`, auth?.accessToken],
@@ -55,13 +62,13 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
 
     const [selectedRoomId, setSelectedRoomId] = useState<number | null>(null);
 
+    if (isLoading) return <Loading />;
+
+    if (!isLoading && IsErrorResponse(communityDetail)) return <ObjectNotfound title="Error" message="Community not found or you have not joined this community yet!" />;
+
     if (communityDetail?.rooms.length && selectedRoomId === null) {
         setSelectedRoomId(communityDetail.rooms[0].id);
     }
-
-    if (isLoading) return <Loading />;
-
-    if (!isLoading && IsErrorResponse(communityDetail)) return <ObjectNotfound title="Community not found" message="Community not found" />;
 
     const selectedRoom = communityDetail?.rooms.find(room => room.id === selectedRoomId);
 
@@ -90,6 +97,55 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
             }, false);
         }
     };
+
+    const handleRoomUpdate = (updatedRoom: ChatRoomResponse) => {
+        if (communityDetail)
+            mutate({
+                ...communityDetail,
+                rooms: communityDetail.rooms.map(room =>
+                    room.id === updatedRoom.id ? updatedRoom : room
+                )
+            }, false);
+    }
+
+    const handleRoomDelete = async (roomId: number) => {
+        if (communityDetail) {
+            const res = await deleteFetcher([`/api/community/${communityDetail.id}/room/${roomId}`, auth!.accessToken]);
+
+            if (!IsErrorResponse(res)) {
+                mutate({
+                    ...communityDetail,
+                    rooms: communityDetail.rooms.filter(room => room.id !== roomId)
+                }, false);
+
+                if (selectedRoomId === roomId) {
+                    const firstRoom = communityDetail.rooms.find(room => room.id !== roomId);
+                    setSelectedRoomId(firstRoom?.id ?? null);
+                }
+            }
+        }
+    };
+
+    const handleRoomScroll = async () => {
+        if (hasMoreRoom && roomDisplayRef.current && isScrollBottom(roomDisplayRef.current)) {
+            setIsRoomLoading(true);
+
+            const response = (await getFetcher([
+                `/api/community/room/${communityDetail!.id}/?pageIndex=${roomPageIndex}&pageSize=${10}`,
+                auth!.accessToken
+            ])) as ChatRoomResponse[]
+
+            if (communityDetail && !IsErrorResponse(response)) {
+                setRoomPageIndex(roomPageIndex + 1)
+                setHasMoreRoom(response.length === 10)
+                mutate({
+                    ...communityDetail,
+                    rooms: [...communityDetail.rooms, ...response as ChatRoomResponse[]]
+                }, false);
+            }
+            setIsRoomLoading(false);
+        }
+    }
 
     return (
         communityDetail &&
@@ -190,22 +246,40 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
                     </div>
                 </div>
 
-                <div className="flex-1 overflow-y-auto">
-                    <div className="p-4 space-y-2">
+                <div ref={roomDisplayRef} onScroll={handleRoomScroll} className="flex-1 overflow-y-auto">
+                    <div className="p-4 space-y-2" >
                         {communityDetail.rooms.map(room => (
-                            <button
-                                onClick={() => setSelectedRoomId(room.id)}
-                                key={room.id}
-                                className={`w-full flex items-center gap-3 px-4 py-1 rounded-md transition-all
-                                    ${selectedRoomId === room.id
-                                        ? ' text-white bg-[var(--primary)]'
-                                        : 'text-[var(--text-primary)] hover:bg-[var(--hover-background)]'
-                                    }`}
-                            >
-                                <Forum />
-                                <span className="truncate font-medium">{room.name}</span>
-                            </button>
+                            <div key={room.id} className="flex items-center gap-2">
+                                <button
+                                    onClick={() => setSelectedRoomId(room.id)}
+                                    className={`flex-1 flex items-center gap-3 px-4 py-2 rounded-md transition-all
+                                        ${selectedRoomId === room.id
+                                            ? 'text-white bg-[var(--primary)]'
+                                            : 'text-[var(--text-primary)] hover:bg-[var(--hover-background)]'
+                                        }`}
+                                >
+                                    <ForumOutlined />
+                                    <span className="truncate font-medium">{room.name}</span>
+                                </button>
+                                {(communityDetail.isOwner || communityDetail.isModerator) && room.name !== 'global' && (
+                                    <IconButton
+                                        size="small"
+                                        onClick={() => {
+                                            setSelectedRoomForSettings(room);
+                                            setRoomSettingsOpen(true);
+                                        }}
+                                        className="text-[var(--text-secondary)] hover:bg-[var(--hover-background)]"
+                                    >
+                                        <Settings fontSize="small" className="text-[var(--text-primary)]" />
+                                    </IconButton>
+                                )}
+                            </div>
                         ))}
+                        {isRoomLoading && (
+                            <div className="flex justify-center py-2 bg-[var(--card-border)] rounded-full">
+                                <div className="w-6 h-6 border-2 border-[var(--text-primary)] border-t-transparent rounded-full animate-spin"></div>
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -258,6 +332,15 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
                         open={infoOpen}
                         onClose={() => setInfoOpen(false)}
                         community={communityDetail}
+                    />
+
+                    <RoomSettings
+                        open={roomSettingsOpen}
+                        communityId={communityDetail.id}
+                        onClose={() => setRoomSettingsOpen(false)}
+                        onUpdate={handleRoomUpdate}
+                        room={selectedRoomForSettings}
+                        onDelete={handleRoomDelete}
                     />
                 </>
             )}

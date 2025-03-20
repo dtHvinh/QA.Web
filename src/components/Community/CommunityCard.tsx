@@ -1,3 +1,5 @@
+import getAuth from "@/helpers/auth-utils";
+import { IsErrorResponse, postFetcher } from "@/helpers/request-utils";
 import { fromImage } from "@/helpers/utils";
 import { GetCommunityResponse } from "@/types/types";
 import { Lock, People } from "@mui/icons-material";
@@ -12,9 +14,14 @@ interface CommunityCardProps {
 
 function CommunityCard({ community, compact = false }: CommunityCardProps) {
     const [isJoined, setIsJoined] = useState(community.isJoined);
+    const auth = getAuth();
 
     const handleJoinCommunity = async () => {
+        const response = await postFetcher([`/api/community/join/${community.id}`, auth!.accessToken, '']);
 
+        if (!IsErrorResponse(response)) {
+            setIsJoined(true);
+        }
     }
 
     return (
