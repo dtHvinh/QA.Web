@@ -38,7 +38,7 @@ export default function Appbar() {
                         <SearchInput onSearch={handleSearch} />
                     </div>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4 -ml-2">
                         <ThemeToggle />
                         <Tooltip title='Ask a question'>
                             <Link href={'/new-question'} className="hover:bg-[var(--hover-background)] p-2 rounded-full transition-colors active:scale-95">

@@ -51,7 +51,7 @@ export default function SearchPage() {
                     ) : (
                         <>
                             <div className="flex items-center justify-between">
-                                <h1 className="text-xl font-semibold text-gray-900">
+                                <h1 className="text-xl font-semibold text-[var(--text-primary)]">
                                     Search Results
                                 </h1>
                                 {searchResults.length > 0 && (
@@ -91,7 +91,6 @@ export default function SearchPage() {
                                             count={totalPages}
                                             onChange={(_, page) => setPageIndex(page)}
                                             color="primary"
-                                            shape="rounded"
                                         />
                                     </div>
                                 </div>

@@ -19,7 +19,7 @@ export default function YourQuestionItem({ question, showAuthor = true, view = '
             <div className={`${view === 'compact' ? 'space-y-1.5 px-2' : 'space-y-3'}`}>
                 <div className="flex items-start justify-between gap-3">
                     <Link href={toQuestionDetail(question.id, question.slug)}
-                        className={`font-semibold text-[var(--text-primary)] hover:text-blue-500 transition-colors flex-grow
+                        className={`font-semibold line-clamp-1 text-[var(--text-primary)] hover:text-blue-500 transition-colors flex-grow
                             ${view === 'compact' ? 'text-sm' : 'text-base'}`}>
                         {question.title}
                     </Link>
@@ -37,7 +37,7 @@ export default function YourQuestionItem({ question, showAuthor = true, view = '
                         )}
                     </div>
 
-                    {view === 'compact' && showAuthor && (
+                    {view === 'compact' && showAuthor && question.author && (
                         <div className="flex items-center gap-2 text-[var(--text-secondary)] shrink-0">
                             <UserInfoPopup user={question.author} />
                             <span className="text-xs">

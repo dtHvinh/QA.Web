@@ -53,6 +53,8 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
     const [hasMoreRoom, setHasMoreRoom] = useState(true);
     const [isRoomLoading, setIsRoomLoading] = useState(false);
     const [roomPageIndex, setRoomPageIndex] = useState(3);
+    const [selectedRoomId, setSelectedRoomId] = useState<number | null>(null);
+    const [chatRoomOpen, setChatRoomOpen] = useState(false);
     const roomDisplayRef = useRef<HTMLDivElement>(null);
 
     const { data: communityDetail, isLoading, mutate } = useSWR<CommunityDetailResponse>(
@@ -60,7 +62,6 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
         getFetcher
     );
 
-    const [selectedRoomId, setSelectedRoomId] = useState<number | null>(null);
 
     if (isLoading) return <Loading />;
 
@@ -147,6 +148,15 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
         }
     }
 
+    const handleClickBack = () => {
+        setChatRoomOpen(false);
+    }
+
+    const handleRoomClick = (roomId: number) => {
+        setSelectedRoomId(roomId);
+        setChatRoomOpen(true);
+    }
+
     return (
         communityDetail &&
         <div className="ml-[var(--left-nav-expanded-width)] flex h-[calc(100vh-var(--appbar-height))] -mt-4">
@@ -224,8 +234,13 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
                     </div>
                 </div>
 
-                <div className="flex-1 p-6 bg-[var(--background)]">
-                    {selectedRoom && <ChatRoom messageInit={selectedRoom.messages} />}
+                <div className="flex-1 p-6 bg-[var(--background)] overflow-y-hidden">
+                    {chatRoomOpen &&
+                        selectedRoom &&
+                        <ChatRoom
+                            messageInit={selectedRoom.messages}
+                            onBack={handleClickBack}
+                        />}
                 </div>
             </div>
 
@@ -251,7 +266,7 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
                         {communityDetail.rooms.map(room => (
                             <div key={room.id} className="flex items-center gap-2">
                                 <button
-                                    onClick={() => setSelectedRoomId(room.id)}
+                                    onClick={() => handleRoomClick(room.id)}
                                     className={`flex-1 flex items-center gap-3 px-4 py-2 rounded-md transition-all
                                         ${selectedRoomId === room.id
                                             ? 'text-white bg-[var(--primary)]'

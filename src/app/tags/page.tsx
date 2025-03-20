@@ -103,13 +103,13 @@ export default function Tags() {
             </div>
 
             {data && data.totalPage > 1 && (
-                <div className="flex justify-center pt-6">
+                <div className="flex justify-center pt-6 pb-5">
                     <Pagination
                         count={data.totalPage}
                         page={pageIndex}
                         onChange={handlePageChange}
-                        shape="rounded"
                         size="large"
+                        color="primary"
                     />
                 </div>
             )}

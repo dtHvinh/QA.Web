@@ -151,8 +151,8 @@ export default function QuestionsPage() {
                             page={pageIndex}
                             onChange={handlePageChange}
                             count={response?.totalPage}
-                            shape="rounded"
                             size="large"
+                            color="primary"
                         />
                     </div>
                 </div>

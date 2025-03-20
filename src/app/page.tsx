@@ -5,34 +5,20 @@ import ViewOptionsButton from "@/components/Common/ViewOptionsButton";
 import QuestionCardListSkeleton from "@/components/Skeletons/YQPSkeleton";
 import YourQuestionItem from "@/components/YourQuestionItem";
 import getAuth from "@/helpers/auth-utils";
-import { getFetcher, IsErrorResponse } from "@/helpers/request-utils";
+import { getFetcher } from "@/helpers/request-utils";
 import { PagedResponse, QuestionResponse, ViewOptions } from "@/types/types";
-import notifyError from "@/utilities/ToastrExtensions";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import useSWR from "swr";
 
 export default function Home() {
-    const userInfoRequestUrl = `/api/user/`;
-    const getQuestionRequestUrl = `/api/question/you_may_like?pageIndex=1&pageSize=30`;
     const auth = getAuth();
-    const [questionResults, setQuestionResults] = useState<PagedResponse<QuestionResponse>>();
+    const { data: questionResults, isLoading: isQuestionLoading } = useSWR<PagedResponse<QuestionResponse>>([
+        `/api/question/you_may_like?pageIndex=1&pageSize=30`,
+        auth!.accessToken], getFetcher);
+
     const [view, setView] = useState<ViewOptions>('full')
 
-    const { data: user, isLoading } = useSWR([userInfoRequestUrl, auth?.accessToken], getFetcher);
-
-    useEffect(() => {
-        async function fetchQuestions() {
-            const fetchResult = await getFetcher([getQuestionRequestUrl, auth!.accessToken]);
-            if (IsErrorResponse(fetchResult)) {
-                notifyError("Error");
-                return;
-            }
-
-            setQuestionResults(fetchResult as PagedResponse<QuestionResponse>);
-        }
-
-        fetchQuestions().then();
-    }, []);
+    const { data: user, isLoading } = useSWR([`/api/user/`, auth!.accessToken], getFetcher);
 
     if (isLoading) return <Loading />;
 
@@ -78,7 +64,7 @@ export default function Home() {
                     </div>
                 </div>
 
-                <div className="col-span-full md:col-span-8 lg:col-span-9">
+                <div className="col-span-full md:col-span-8 lg:col-span-9 mb-5">
                     <div className="space-y-6">
                         <div className="flex items-center justify-between">
                             <h2 className="text-2xl font-bold text-[var(--text-primary)]">
@@ -88,7 +74,7 @@ export default function Home() {
                             <ViewOptionsButton view={view} onChange={setView} />
                         </div>
 
-                        {questionResults == null ? (
+                        {(isQuestionLoading || !questionResults) ? (
                             <QuestionCardListSkeleton />
                         ) : (
                             <div className="space-y-4">

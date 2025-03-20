@@ -1,7 +1,7 @@
 import { ChatMessageResponse } from "@/app/community/[name]/page";
 import getAuth from "@/helpers/auth-utils";
 import timeFromNow from "@/helpers/time-utils";
-import { Send } from "@mui/icons-material";
+import { ArrowBack, Send } from "@mui/icons-material";
 import { Avatar, IconButton } from "@mui/material";
 import { FormEvent, useEffect, useRef, useState } from "react";
 
@@ -9,7 +9,7 @@ interface ChatRoomProps {
     messageInit?: ChatMessageResponse[];
 }
 
-export default function ChatRoom({ messageInit = [] }: ChatRoomProps) {
+export default function ChatRoom({ messageInit = [], onBack }: ChatRoomProps & { onBack?: () => void }) {
     const auth = getAuth();
     const [messages, setMessages] = useState<ChatMessageResponse[]>(messageInit);
     const [newMessage, setNewMessage] = useState("");
@@ -47,6 +47,17 @@ export default function ChatRoom({ messageInit = [] }: ChatRoomProps) {
 
     return (
         <div className="flex flex-col h-[705px] bg-[var(--card-background)] rounded-xl border border-[var(--border-color)] shadow-lg overflow-hidden">
+            <div className="px-4 py-3 border-b border-[var(--border-color)] flex items-center">
+                <IconButton
+                    onClick={onBack}
+                    className="mr-2 text-[var(--text-secondary)] hover:bg-[var(--hover-background)]"
+                    size="small"
+                >
+                    <ArrowBack className="text-[var(--text-primary)]" fontSize="small" />
+                </IconButton>
+                <span className="text-[var(--text-primary)] font-medium">Back to commuinity</span>
+            </div>
+
             <div className="flex-1 overflow-y-auto p-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
                 <div className="space-y-4">
                     {messages.length === 0 ? (

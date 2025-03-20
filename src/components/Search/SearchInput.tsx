@@ -106,7 +106,7 @@ export default function SearchInput({ onSearch }: SearchInputProps) {
                     }
                 }}
             >
-                <div className="p-3 border-b border-[var(--border-color)]">
+                <div className="p-3 border-b border-[var(--border-color)] bg-[var(--card-background)]">
                     <input
                         ref={tagSearchInputRef}
                         placeholder="Search tags..."
@@ -115,7 +115,7 @@ export default function SearchInput({ onSearch }: SearchInputProps) {
                     />
                 </div>
 
-                <div className="overflow-y-auto p-2">
+                <div className="overflow-y-auto p-2 bg-[var(--card-background)]">
                     <div className="space-y-1">
                         {tags?.map((tag) => (
                             <button

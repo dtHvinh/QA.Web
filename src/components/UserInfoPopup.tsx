@@ -22,7 +22,7 @@ export default function UserInfoPopup({ user, className, element = 'a' }: { user
                 aria-haspopup="true"
                 onMouseEnter={handlePopoverOpen}
                 onMouseLeave={handlePopoverClose}
-                className="text-blue-600 hover:text-blue-800 cursor-pointer">
+                className="text-[var(--primary)] hover:text-[var(--primary-darker)] cursor-pointer">
                 {user.username}
             </div>
 
@@ -33,6 +33,8 @@ export default function UserInfoPopup({ user, className, element = 'a' }: { user
                     '& .MuiPaper-root': {
                         borderRadius: '12px',
                         boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+                        backgroundColor: 'var(--card-background)',
+                        border: '1px solid var(--border-color)'
                     }
                 }}
                 open={open}
@@ -52,18 +54,22 @@ export default function UserInfoPopup({ user, className, element = 'a' }: { user
                     <div className="flex items-center gap-4 mb-4">
                         <Avatar
                             src={user.profilePicture}
-                            sx={{ width: 64, height: 64 }}
+                            sx={{
+                                width: 64,
+                                height: 64,
+                                border: '2px solid var(--primary-light)'
+                            }}
                         />
                         <div>
-                            <div className="text-lg font-semibold">{user.username}</div>
-                            <div className="text-sm text-gray-600 mt-1">Member</div>
+                            <div className="text-lg font-semibold text-[var(--text-primary)]">{user.username}</div>
+                            <div className="text-sm text-[var(--text-secondary)] mt-1">Member</div>
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-2 mt-4 p-3 bg-gray-50 rounded-lg">
+                    <div className="flex items-center gap-2 mt-4 p-3 bg-[var(--hover-background)] rounded-lg">
                         <div className="text-sm font-medium">
-                            <div className="text-gray-900">{user.reputation}</div>
-                            <div className="text-gray-500">Reputation</div>
+                            <div className="text-[var(--text-primary)]">{user.reputation}</div>
+                            <div className="text-[var(--text-secondary)]">Reputation</div>
                         </div>
                     </div>
                 </div>
