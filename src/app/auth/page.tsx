@@ -119,7 +119,7 @@ export default function AuthPage() {
                                     type="email"
                                     name="email"
                                     required
-                                    className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                                    className="w-full text-black px-4 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
                                     placeholder="your@email.com"
                                 />
                             </div>
@@ -130,7 +130,7 @@ export default function AuthPage() {
                                     type="password"
                                     name="password"
                                     required
-                                    className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                                    className="w-full text-black px-4 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
                                     placeholder="••••••••"
                                 />
                             </div>

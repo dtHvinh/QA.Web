@@ -26,6 +26,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 import useSWR from "swr";
+import DeleteConfirmDialog from "../Dialog/DeleteConfirmDialog";
 
 interface CommunitySettingsProps {
     open: boolean;
@@ -53,6 +54,7 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
     const [iconPreview, setIconPreview] = useState(community.iconImage || '');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [anyChange, setAnyChange] = useState(false);
+    const [deleteCommunityConfimOpen, setDeletCommunityConfimOpen] = useState(false);
     const { data: members, isLoading: isMemberLoading } = useSWR<PagedResponse<CommunityMemberResponse>>([
         `/api/community/${community.id}/members?pageIndex=1&pageSize=100`,
         auth!.accessToken],
@@ -117,10 +119,6 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
     };
 
     const handleDelete = async () => {
-        if (!window.confirm('Are you sure you want to delete this community? This action cannot be undone.')) {
-            return;
-        }
-
         try {
             const response = await deleteFetcher([
                 `${backendURL}/api/community/${community.id}`,
@@ -382,7 +380,7 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
                                 variant="contained"
                                 color="error"
                                 startIcon={<Delete />}
-                                onClick={handleDelete}
+                                onClick={() => setDeletCommunityConfimOpen(true)}
                                 className="flex items-center gap-2 px-4 py-2 rounded-lg
                                     bg-[var(--error)] hover:bg-[var(--error-darker)]
                                     text-white transition-colors"
@@ -392,6 +390,14 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
                         </div>
                     </Box>
                 )}
+
+                <DeleteConfirmDialog
+                    itemType="community"
+                    itemName={community.name}
+                    onClose={() => setDeletCommunityConfimOpen(false)}
+                    onConfirm={handleDelete}
+                    open={deleteCommunityConfimOpen}
+                />
             </DialogContent>
         </Dialog>
     );

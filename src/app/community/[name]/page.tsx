@@ -13,6 +13,7 @@ import { deleteFetcher, getFetcher, IsErrorResponse } from "@/helpers/request-ut
 import { fromImage } from "@/helpers/utils";
 import { theme } from "@/theme/theme";
 import { ChatRoomResponse, CommunityDetailResponse } from "@/types/types";
+import { notifySucceed } from "@/utilities/ToastrExtensions";
 import { ChatBubbleOutlineRounded, Forum, InfoOutlined, People, SettingsOutlined } from "@mui/icons-material";
 import { Avatar, Chip, IconButton, Tooltip, useMediaQuery } from "@mui/material";
 import { use, useState } from "react";
@@ -91,6 +92,8 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
                     const firstRoom = communityDetail.rooms.find(room => room.id !== roomId);
                     setSelectedRoomId(firstRoom?.id ?? null);
                 }
+
+                notifySucceed("Room deleted");
             }
             setIsRoomDeleting(false);
             setRoomDeleteConfirmOpen(false)
@@ -207,8 +210,8 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
                     {chatRoomOpen &&
                         selectedRoom &&
                         <ChatRoom
-                            messageInit={selectedRoom.messages}
                             onBack={handleClickBack}
+                            messageInit={selectedRoom.messages}
                         />}
                 </div>
             </div>
