@@ -2,10 +2,11 @@ import getAuth from "@/helpers/auth-utils";
 import { deleteFetcher, formPutFetcher, getFetcher, IsErrorResponse } from "@/helpers/request-utils";
 import { fromImage } from "@/helpers/utils";
 import { ErrorResponse } from "@/props/ErrorResponse";
+import { theme } from "@/theme/theme";
 import { CommunityDetailResponse, PagedResponse } from "@/types/types";
 import { backendURL } from "@/utilities/Constants";
 import notifyError, { notifySucceed } from "@/utilities/ToastrExtensions";
-import { AddPhotoAlternate, Delete, Group, PersonAdd, Save } from "@mui/icons-material";
+import { AddPhotoAlternate, Close, Delete, Group, PersonAdd, Save } from "@mui/icons-material";
 import {
     Avatar,
     Box,
@@ -15,11 +16,13 @@ import {
     DialogContent,
     DialogTitle,
     FormControlLabel,
+    IconButton,
     Tab,
     Tabs,
     TextField,
     Typography
 } from "@mui/material";
+import useMediaQuery from '@mui/material/useMediaQuery';
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 import useSWR from "swr";
@@ -40,6 +43,7 @@ export interface CommunityMemberResponse {
 
 export default function CommunitySettings({ open, onClose, community, onUpdate }: CommunitySettingsProps) {
     const auth = getAuth();
+    const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
     const router = useRouter();
     const [tabValue, setTabValue] = useState(0);
     const [isPrivate, setIsPrivate] = useState(community.isPrivate);
@@ -137,6 +141,7 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
 
     return (
         <Dialog
+            fullScreen={fullScreen}
             open={open}
             onClose={onClose}
             fullWidth
@@ -149,8 +154,13 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
                 }
             }}
         >
-            <DialogTitle className="border-b border-[var(--border-color)]">
-                Community Settings
+            <DialogTitle className="border-b border-[var(--border-color)] flex justify-between">
+                <div>
+                    Community Settings
+                </div>
+                <IconButton onClick={onClose}>
+                    <Close className="text-[var(--text-primary)]" />
+                </IconButton>
             </DialogTitle>
 
             <DialogContent className="p-0">
