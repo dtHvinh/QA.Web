@@ -1,26 +1,37 @@
 import getAuth from "@/helpers/auth-utils";
-import { IsErrorResponse, postFetcher } from "@/helpers/request-utils";
+import { getFetcher, IsErrorResponse, postFetcher } from "@/helpers/request-utils";
 import { fromImage } from "@/helpers/utils";
-import { GetCommunityResponse } from "@/types/types";
+import { GetCommunityResponse, ViewOptions } from "@/types/types";
 import { Lock, People } from "@mui/icons-material";
 import { Avatar } from "@mui/material";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
-
+import useSWRMutate from 'swr/mutation';
 
 interface CommunityCardProps {
     community: GetCommunityResponse;
-    compact?: boolean;
+    compact?: ViewOptions;
 }
 
-function CommunityCard({ community, compact = false }: CommunityCardProps) {
-    const [isJoined, setIsJoined] = useState(community.isJoined);
+export default function CommunityCard({ community, compact = "compact" }: CommunityCardProps) {
     const auth = getAuth();
+    const [isJoined, setIsJoined] = useState(community.isJoined);
+    const pathname = usePathname();
+    const { trigger: layoutJoinedList } = useSWRMutate([`/api/community/joined?pageIndex=1&pageSize=10`, auth!.accessToken], getFetcher);
 
     const handleJoinCommunity = async () => {
         const response = await postFetcher([`/api/community/join/${community.id}`, auth!.accessToken, '']);
 
         if (!IsErrorResponse(response)) {
             setIsJoined(true);
+            if (!pathname.startsWith('/community/joined')) {
+                await layoutJoinedList(undefined, {
+                    populateCache: (_, data) => {
+                        return data ? [community, ...data] : [community];
+                    },
+                    revalidate: false
+                });
+            }
         }
     }
 
@@ -74,5 +85,3 @@ function CommunityCard({ community, compact = false }: CommunityCardProps) {
         </div>
     );
 }
-
-export default CommunityCard;
