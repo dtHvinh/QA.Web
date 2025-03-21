@@ -11,6 +11,7 @@ import { formatReputation } from "@/helpers/evaluate-utils";
 import { deleteFetcher, IsErrorResponse, postFetcher, putFetcher } from "@/helpers/request-utils";
 import { formatString } from "@/helpers/string-utils";
 import timeFromNow, { DEFAULT_TIME } from "@/helpers/time-utils";
+import { fromImage } from "@/helpers/utils";
 import { AnswerResponse, QuestionResponse, VoteResponse } from "@/types/types";
 import { Apis, backendURL } from "@/utilities/Constants";
 import { notifySucceed } from "@/utilities/ToastrExtensions";
@@ -243,7 +244,7 @@ const Answer = (
                             </div>
                             <Avatar
                                 sx={{ width: 40, height: 40 }}
-                                src={answer.author?.profilePicture}
+                                src={fromImage(question.author.profilePicture)}
                                 className="border-2 border-[var(--card-background)] shadow-sm"
                             />
                         </div>

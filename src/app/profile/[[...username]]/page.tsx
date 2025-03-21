@@ -6,7 +6,7 @@ import ResourceOwnerPrivilege from "@/components/Privilege/ResourceOwnerPrivileg
 import getAuth from "@/helpers/auth-utils";
 import { getFetcher, IsErrorResponse } from "@/helpers/request-utils";
 import { countTotalDays } from "@/helpers/time-utils";
-import { getProviderImage } from "@/helpers/utils";
+import { fromImage, getProviderImage } from "@/helpers/utils";
 import { ExternalLinkResponse, UserResponse } from "@/types/types";
 import { Edit } from "@mui/icons-material";
 import { Avatar } from "@mui/material";
@@ -19,7 +19,7 @@ export default function ProfilePage({ params }: { params: Promise<{ username?: s
     const p = React.use(params);
     const auth = getAuth();
     const [isEditMode, setIsEditMode] = useState(false)
-    const { data: user, isLoading } = useSWR<UserResponse>([`/api/user/${p.username ?? ''}`, auth?.accessToken], getFetcher);
+    const { data: user, isLoading, mutate } = useSWR<UserResponse>([`/api/user/${p.username ?? ''}`, auth?.accessToken], getFetcher);
     const [username, setUsername] = useState('')
     const [externalLinks, setExternalLinks] = useState<ExternalLinkResponse[]>([])
 
@@ -41,6 +41,13 @@ export default function ProfilePage({ params }: { params: Promise<{ username?: s
         setExternalLinks(links)
     }
 
+    const handlePfpChanged = (pfp: string) => {
+        mutate({
+            ...user,
+            profilePicture: pfp
+        })
+    }
+
     return (
         <div className="max-w-4xl mx-auto py-8 px-4">
             {isEditMode ? (
@@ -48,6 +55,7 @@ export default function ProfilePage({ params }: { params: Promise<{ username?: s
                     onSocialLinksChange={handleLinkChange}
                     onUsernameChange={setUsername}
                     externalLinks={externalLinks}
+                    onProfilePictureChange={handlePfpChanged}
                     onEditModeClick={() => setIsEditMode(false)}
                     profile={user} />
             ) : (
@@ -57,7 +65,7 @@ export default function ProfilePage({ params }: { params: Promise<{ username?: s
                         <div className="flex flex-col sm:flex-row sm:items-end -mt-16 mb-6 gap-4">
                             <Avatar
                                 variant="rounded"
-                                src={auth?.profilePicture}
+                                src={fromImage(user.profilePicture)}
                                 alt={user.username}
                                 sx={{
                                     width: 120,
@@ -81,7 +89,7 @@ export default function ProfilePage({ params }: { params: Promise<{ username?: s
                                     </ResourceOwnerPrivilege>
                                 </div>
                                 <div className="mt-2 text-[var(--text-secondary)]">
-                                    Member for {countTotalDays(user.createdAt)} days
+                                    Member for {countTotalDays(user.createdAt)}
                                 </div>
                             </div>
                         </div>
@@ -113,25 +121,25 @@ export default function ProfilePage({ params }: { params: Promise<{ username?: s
                         <Link href="/your-questions" className="bg-[var(--primary-light)] rounded-xl p-4 hover:bg-[var(--primary-lighter)] transition-colors">
                             <div className="flex flex-col items-center">
                                 <span className="text-3xl font-bold text-[var(--primary)]">{user.questionCount}</span>
-                                <span className="text-[var(--text-secondary)] mt-1">Questions</span>
+                                <span className="text-[var(--text-primary)] mt-1">Questions</span>
                             </div>
                         </Link>
                         <div className="bg-[var(--success-light)] rounded-xl p-4">
                             <div className="flex flex-col items-center">
                                 <span className="text-3xl font-bold text-[var(--success)]">{user.answerCount}</span>
-                                <span className="text-[var(--text-secondary)] mt-1">Answers</span>
+                                <span className="text-black mt-1">Answers</span>
                             </div>
                         </div>
                         <div className="bg-[var(--secondary-light)] rounded-xl p-4">
                             <div className="flex flex-col items-center">
                                 <span className="text-3xl font-bold text-[var(--secondary)]">{user.commentCount}</span>
-                                <span className="text-[var(--text-secondary)] mt-1">Comments</span>
+                                <span className="text-black mt-1">Comments</span>
                             </div>
                         </div>
                         <Link href="/your-collections" className="bg-[var(--warning-light)] rounded-xl p-4 hover:bg-[var(--warning-lighter)] transition-colors">
                             <div className="flex flex-col items-center">
                                 <span className="text-3xl font-bold text-[var(--warning)]">{user.collectionCount}</span>
-                                <span className="text-[var(--text-secondary)] mt-1">Collections</span>
+                                <span className="text-black mt-1">Collections</span>
                             </div>
                         </Link>
                     </div>

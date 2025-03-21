@@ -7,7 +7,7 @@ import QuestionHeaderDetails from "@/app/question/QuestionHeaderDetails";
 import ResourceOwnerPrivilege from "@/components/Privilege/ResourceOwnerPrivilege";
 import TagLabel from "@/components/TagLabel";
 import { formatReputation } from "@/helpers/evaluate-utils";
-import { highlightCode } from "@/helpers/utils";
+import { fromImage, highlightCode } from "@/helpers/utils";
 import { QuestionResponse } from "@/types/types";
 import { Close } from "@mui/icons-material";
 import EditIcon from '@mui/icons-material/Edit';
@@ -138,7 +138,7 @@ export default function QuestionSection({ questionInit }: { questionInit: Questi
                                 </div>
                                 <Avatar
                                     sx={{ width: 40, height: 40 }}
-                                    src={question.author.profilePicture}
+                                    src={fromImage(question.author.profilePicture)}
                                     className="border-2 border-[var(--card-background)] shadow-sm"
                                 />
                             </div>

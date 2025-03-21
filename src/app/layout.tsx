@@ -60,7 +60,7 @@ export default function RootLayout({
                             <ScrollToTopButton />
                         </main>
 
-                        <footer className="bg-gray-800 text-white py-4 z-50">
+                        <footer className="bg-gray-800 text-white py-4 z-50 h-[var(--appbar-height)]">
                             <div className="container mx-auto text-center">
                                 <p>&copy; {new Date().getFullYear()} Q&A App. All rights reserved.</p>
                             </div>

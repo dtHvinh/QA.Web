@@ -5,6 +5,7 @@ import CommunityInfo from "@/components/Community/CommunityInfo";
 import CommunitySettings from "@/components/Community/CommunitySettings";
 import CreateRoomDialog from "@/components/Community/CreateRoomDialog";
 import RoomSettings from "@/components/Community/RoomSettings";
+import DeleteConfirmDialog from "@/components/Dialog/DeleteConfirmDialog";
 import getAuth from "@/helpers/auth-utils";
 import { deleteFetcher, getFetcher, IsErrorResponse } from "@/helpers/request-utils";
 import { fromImage, isScrollBottom } from "@/helpers/utils";
@@ -28,6 +29,8 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
     const [selectedRoomId, setSelectedRoomId] = useState<number | null>(null);
     const [chatRoomOpen, setChatRoomOpen] = useState(false);
     const [selectedRoom, setSelectedRoom] = useState<ChatRoomResponse | null>(null);
+    const [roomDeleteConfirmOpen, setRoomDeleteConfirmOpen] = useState(false);
+    const [isRoomDeleting, setIsRoomDeleting] = useState(false);
     const roomDisplayRef = useRef<HTMLDivElement>(null);
 
     const { data: communityDetail, isLoading, mutate } = useSWR<CommunityDetailResponse>(
@@ -74,6 +77,7 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
 
     const handleRoomDelete = async (roomId: number) => {
         if (communityDetail) {
+            setIsRoomDeleting(true);
             const res = await deleteFetcher([`/api/community/${communityDetail.id}/room/${roomId}`, auth!.accessToken]);
 
             if (!IsErrorResponse(res)) {
@@ -87,6 +91,8 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
                     setSelectedRoomId(firstRoom?.id ?? null);
                 }
             }
+            setIsRoomDeleting(false);
+            setRoomDeleteConfirmOpen(false)
         }
     };
 
@@ -127,7 +133,7 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
         <div className="ml-[var(--left-nav-expanded-width)] flex h-[calc(100vh-var(--appbar-height))] -mt-4">
             <div className="flex-1 flex flex-col bg-[var(--background)]">
                 <div className="h-16 border-b border-[var(--border-color)] flex items-center bg-[var(--card-background)] 
-                border-l rounded-bl-2xl px-6 shadow-sm">
+                border-l rounded-bl-2xl px-6 shadow-sm py-9">
                     <div className="flex items-center gap-4 flex-1">
                         <Avatar
                             src={fromImage(communityDetail.iconImage)}
@@ -322,7 +328,16 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
                         onClose={() => setRoomSettingsOpen(false)}
                         onUpdate={handleRoomUpdate}
                         room={selectedRoomForSettings}
-                        onDelete={handleRoomDelete}
+                        onDelete={() => setRoomDeleteConfirmOpen(true)}
+                    />
+
+                    <DeleteConfirmDialog
+                        open={roomDeleteConfirmOpen}
+                        onClose={() => setRoomDeleteConfirmOpen(false)}
+                        itemName={selectedRoomForSettings?.name ?? "NAN"}
+                        itemType="room"
+                        onConfirm={() => handleRoomDelete(selectedRoomForSettings!.id)}
+                        isDeleting={isRoomDeleting}
                     />
                 </>
             )}

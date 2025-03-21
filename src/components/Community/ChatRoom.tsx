@@ -53,7 +53,7 @@ export default function ChatRoom({ messageInit = [], onBack }: ChatRoomProps & {
                     className="mr-2 text-[var(--text-secondary)] hover:bg-[var(--hover-background)]"
                     size="small"
                 >
-                    <ArrowBack fontSize="small" />
+                    <ArrowBack className="text-[var(--text-secondary)]" fontSize="small" />
                 </IconButton>
                 <span className="text-[var(--text-primary)] font-medium">Back to community</span>
             </div>
