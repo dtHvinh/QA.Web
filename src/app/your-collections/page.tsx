@@ -3,10 +3,8 @@
 import CollectionItem from "@/components/CollectionItem";
 import CreateCollectionDialog from "@/components/CreateCollectionDialog";
 import FilterBar from "@/components/FilterBar";
-import getAuth from "@/helpers/auth-utils";
 import { getFetcher } from "@/helpers/request-utils";
 import { GetCollectionResponse, PagedResponse } from "@/types/types";
-import { backendURL } from "@/utilities/Constants";
 import { notifySucceed } from "@/utilities/ToastrExtensions";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import { Pagination } from "@mui/material";
@@ -22,10 +20,8 @@ export default function YourCollectionsPage() {
     const [filterValue, setFilterValue] = React.useState(tabValues[0]);
     const [collections, setCollections] = React.useState<GetCollectionResponse[]>([]);
     const [pageIndex, setPageIndex] = React.useState(1);
-    const requestUrl = `${backendURL}/api/collection/my-collections?orderBy=${filterValue}&pageSize=6&pageIndex=${pageIndex}`;
-    const auth = getAuth();
 
-    const { data } = useSWR<PagedResponse<GetCollectionResponse>>([requestUrl, auth?.accessToken], getFetcher);
+    const { data } = useSWR<PagedResponse<GetCollectionResponse>>(`/api/collection/my-collections?orderBy=${filterValue}&pageSize=6&pageIndex=${pageIndex}`, getFetcher);
 
     useEffect(() => {
         if (data)

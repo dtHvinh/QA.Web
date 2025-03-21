@@ -34,8 +34,6 @@ const EditMode = ({
     const [profilePreview, setProfilePreview] = useState(auth?.profilePicture || '');
     const maxLinks = 5
 
-    const requestUrl = "/api/user/"
-
     useEffect(() => {
         setAnyChange(editedName != profile.username || JSON.stringify(socialLinks) != JSON.stringify(externalLinks))
     }, [editedName, socialLinks])
@@ -65,7 +63,7 @@ const EditMode = ({
             const formData = new FormData();
             formData.append('profilePicture', file);
 
-            const res = await formPutFetcher(['/api/user/profile-picture', auth!.accessToken, formData]);
+            const res = await formPutFetcher('/api/user/profile-picture', formData);
 
             if (!IsErrorResponse(res)) {
                 const previewUrl = URL.createObjectURL(file);
@@ -84,7 +82,7 @@ const EditMode = ({
             links: socialLinks
         };
 
-        const res = await putFetcher(['/api/user', auth!.accessToken, JSON.stringify(updateData)]);
+        const res = await putFetcher('/api/user', JSON.stringify(updateData));
 
         if (!IsErrorResponse(res)) {
             notifySucceed("Profile updated", { vertical: "top", horizontal: "center" }, 1)

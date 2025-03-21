@@ -1,4 +1,3 @@
-import getAuth from "@/helpers/auth-utils";
 import { getFetcher, IsErrorResponse, postFetcher } from "@/helpers/request-utils";
 import { fromImage } from "@/helpers/utils";
 import { GetCommunityResponse, ViewOptions } from "@/types/types";
@@ -14,13 +13,12 @@ interface CommunityCardProps {
 }
 
 export default function CommunityCard({ community, compact = "compact" }: CommunityCardProps) {
-    const auth = getAuth();
     const [isJoined, setIsJoined] = useState(community.isJoined);
     const pathname = usePathname();
-    const { trigger: layoutJoinedList } = useSWRMutate([`/api/community/joined?pageIndex=1&pageSize=10`, auth!.accessToken], getFetcher);
+    const { trigger: layoutJoinedList } = useSWRMutate(`/api/community/joined?pageIndex=1&pageSize=10`, getFetcher);
 
     const handleJoinCommunity = async () => {
-        const response = await postFetcher([`/api/community/join/${community.id}`, auth!.accessToken, '']);
+        const response = await postFetcher(`/api/community/join/${community.id}`);
 
         if (!IsErrorResponse(response)) {
             setIsJoined(true);

@@ -69,7 +69,7 @@ const Answer = (
     }
 
     const handleAnswerAccepted = async () => {
-        const response = await putFetcher([acceptAnswerUrl, auth!.accessToken, '']);
+        const response = await putFetcher(acceptAnswerUrl);
 
         if (!IsErrorResponse(response)) {
             onAnswerAccepted(answer.id);
@@ -81,7 +81,7 @@ const Answer = (
     const handleDelete = async () => {
         const requestUrl = formatString(backendURL + Apis.Answer.Delete, answer.id);
 
-        const response = await deleteFetcher([requestUrl, auth!.accessToken]);
+        const response = await deleteFetcher(requestUrl);
 
         if (!IsErrorResponse(response)) {
             setIsDeleting(true);
@@ -94,9 +94,9 @@ const Answer = (
 
     const handleEdit = async () => {
         const requestUrl = formatString(backendURL + Apis.Answer.Update, answer.id);
-        const response = await putFetcher([requestUrl, auth!.accessToken, JSON.stringify({
+        const response = await putFetcher(requestUrl, JSON.stringify({
             content: editText
-        })]);
+        }));
 
         if (!IsErrorResponse(response)) {
             answer = response as AnswerResponse;
@@ -110,7 +110,7 @@ const Answer = (
     const handleVote = async (isUpvote: boolean) => {
         const requestUrl = `${backendURL}/api/answer/${answer.id}/${isUpvote ? 'upvote' : 'downvote'}/`;
 
-        const response = await postFetcher([requestUrl, auth!.accessToken, '']);
+        const response = await postFetcher(requestUrl);
 
         if (!IsErrorResponse(response)) {
             notifySucceed('Done');

@@ -28,9 +28,7 @@ export default function QuestionActions({ question, isClosed, onQuestionClose, o
     const router = useRouter();
 
     const handleCloseQuestion = async () => {
-        const response = await putFetcher([
-            `/api/question/${question.id}/close`,
-            auth!.accessToken, '']);
+        const response = await putFetcher(`/api/question/${question.id}/close`);
 
         if (!IsErrorResponse(response)) {
             notifySucceed('Question closed');
@@ -39,9 +37,7 @@ export default function QuestionActions({ question, isClosed, onQuestionClose, o
     }
 
     const handleDeleteQuestion = async () => {
-        const response = await deleteFetcher([
-            `/api/question/${question.id}`,
-            auth!.accessToken]);
+        const response = await deleteFetcher(`/api/question/${question.id}`);
 
         if (!IsErrorResponse(response)) {
             notifySucceed('Question deleted');
@@ -61,7 +57,7 @@ export default function QuestionActions({ question, isClosed, onQuestionClose, o
     const handleVote = async (isUpvote: boolean) => {
         const requestUrl = `/api/question/${question.id}/${isUpvote ? 'upvote' : 'downvote'}/`;
 
-        const response = await postFetcher([requestUrl, auth!.accessToken, '']);
+        const response = await postFetcher(requestUrl, auth!.accessToken);
 
         if (!IsErrorResponse(response)) {
             const voteResponse = response as VoteResponse;
@@ -70,9 +66,7 @@ export default function QuestionActions({ question, isClosed, onQuestionClose, o
     }
 
     const handleBookmarkQuestion = async () => {
-        const response = await postFetcher([
-            `/api/bookmark/${question.id}`,
-            auth!.accessToken, '']);
+        const response = await postFetcher(`/api/bookmark/${question.id}`);
 
         if (!IsErrorResponse(response)) {
             notifySucceed('Question bookmarked');
@@ -81,9 +75,7 @@ export default function QuestionActions({ question, isClosed, onQuestionClose, o
     }
 
     const handleReOpenQuestion = async () => {
-        const response = await putFetcher([
-            `/api/question/${question.id}/re-open`,
-            auth!.accessToken, '']);
+        const response = await putFetcher(`/api/question/${question.id}/re-open`);
 
         if (!IsErrorResponse(response)) {
             notifySucceed('Done');

@@ -1,7 +1,6 @@
 'use client'
 
 import TextEditor from "@/components/TextEditor";
-import getAuth from "@/helpers/auth-utils";
 import { IsErrorResponse, postFetcher } from "@/helpers/request-utils";
 import notifyError, { notifySucceed } from "@/utilities/ToastrExtensions";
 import { useRouter } from "next/navigation";
@@ -13,7 +12,6 @@ export default function CreateTagPage() {
     const [wikiBody, setWikiBody] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const router = useRouter();
-    const auth = getAuth();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -24,11 +22,7 @@ export default function CreateTagPage() {
 
         setIsSubmitting(true);
 
-        const response = await postFetcher([
-            '/api/tag',
-            auth!.accessToken,
-            JSON.stringify({ name, description, wikiBody })
-        ]);
+        const response = await postFetcher('/api/tag', JSON.stringify({ name, description, wikiBody }));
 
         if (!IsErrorResponse(response)) {
             notifySucceed('Tag created successfully');

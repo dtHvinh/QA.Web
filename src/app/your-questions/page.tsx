@@ -4,7 +4,6 @@ import FilterBar from "@/components/FilterBar";
 import ItemPerPage from "@/components/ItemPerPage";
 import QuestionCardListSkeleton from "@/components/Skeletons/YQPSkeleton";
 import YourQuestionItem from "@/components/YourQuestionItem";
-import getAuth from "@/helpers/auth-utils";
 import { getFetcher } from "@/helpers/request-utils";
 import { PagedResponse, QuestionResponse } from "@/types/types";
 import { Apis, backendURL, Routes } from "@/utilities/Constants";
@@ -14,7 +13,6 @@ import React, { useEffect, useState } from "react";
 import useSWR from "swr";
 
 export default function YourQuestionPage() {
-    const auth = getAuth();
     const validOrderValue = ['Newest', 'MostViewed', 'MostVoted', 'Solved', 'Draft'];
     const validOrder = ['Newest', 'Most Viewed', 'Most Voted', 'Solved', 'Draft'];
     const orderDescription = [
@@ -34,7 +32,7 @@ export default function YourQuestionPage() {
         + `&pageIndex=${pageIndex}`
         + `&pageSize=${pageSize}`);
 
-    const { data, isLoading } = useSWR([requestUrl, auth?.accessToken], getFetcher);
+    const { data, isLoading } = useSWR(requestUrl, getFetcher);
 
     useEffect(() => {
         if (data) {

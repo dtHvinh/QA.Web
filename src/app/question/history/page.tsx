@@ -1,7 +1,6 @@
 'use client'
 
 import Loading from "@/app/loading";
-import getAuth from "@/helpers/auth-utils";
 import { getFetcher } from "@/helpers/request-utils";
 import timeFromNow from "@/helpers/time-utils";
 import { QuestionHistoryResponse } from "@/types/types";
@@ -11,12 +10,11 @@ import useSWR from "swr";
 
 export default function QuestionHistoryPage() {
     const searchParams = useSearchParams();
-    const auth = getAuth();
 
     const {
         data,
         isLoading
-    } = useSWR([`${backendURL}/api/question/${searchParams.get('qid')}/history`, auth?.accessToken], getFetcher);
+    } = useSWR(`${backendURL}/api/question/${searchParams.get('qid')}/history`, getFetcher);
 
     if (isLoading) {
         return <Loading />

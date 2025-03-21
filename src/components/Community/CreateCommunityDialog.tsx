@@ -1,4 +1,3 @@
-import getAuth from '@/helpers/auth-utils';
 import { formPostFetcher, IsErrorResponse } from '@/helpers/request-utils';
 import { GetCommunityResponse } from '@/types/types';
 import notifyError, { notifySucceed } from '@/utilities/ToastrExtensions';
@@ -36,7 +35,6 @@ export default function CreateCommunityDialog({ open, onClose, onCreated }: Crea
     const [iconPreview, setIconPreview] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [nameError, setNameError] = useState('');
-    const auth = getAuth();
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
@@ -96,11 +94,9 @@ export default function CreateCommunityDialog({ open, onClose, onCreated }: Crea
                 formData.append('iconImage', iconImage);
             }
 
-            const response = await formPostFetcher([
+            const response = await formPostFetcher(
                 `/api/community`,
-                auth!.accessToken,
-                formData
-            ]);
+                formData);
 
             if (!IsErrorResponse(response)) {
                 notifySucceed("Community created successfully");

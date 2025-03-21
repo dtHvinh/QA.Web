@@ -1,4 +1,3 @@
-import getAuth from "@/helpers/auth-utils";
 import { deleteFetcher, IsErrorResponse, putFetcher } from "@/helpers/request-utils";
 import { ErrorResponse } from "@/props/ErrorResponse";
 import { GetCollectionDetailResponse } from "@/types/types";
@@ -16,7 +15,6 @@ export default function CollectionSettings({ collection }: { collection: GetColl
     const [anyChange, setAnyChange] = React.useState(false);
     const [isPublic, setIsPublic] = React.useState(collection.isPublic ? 'true' : 'false');
     const [inputValue, setInputValue] = React.useState('');
-    const auth = getAuth();
     const router = useRouter();
 
     const handleUpdate = async (e: FormEvent<HTMLFormElement>) => {
@@ -31,7 +29,7 @@ export default function CollectionSettings({ collection }: { collection: GetColl
             isPublic: isPublic === 'true'
         }
 
-        const res = await putFetcher([`${backendURL}/api/collection`, auth!.accessToken, JSON.stringify(updateModel)])
+        const res = await putFetcher(`${backendURL}/api/collection`, JSON.stringify(updateModel))
 
         if (IsErrorResponse(res)) {
             notifyError((res as ErrorResponse).title);
@@ -43,7 +41,7 @@ export default function CollectionSettings({ collection }: { collection: GetColl
     }
 
     const handleDelete = async () => {
-        const res = await deleteFetcher([`${backendURL}/api/collection/${collection.id}`, auth!.accessToken])
+        const res = await deleteFetcher(`${backendURL}/api/collection/${collection.id}`)
 
         if (IsErrorResponse(res)) {
             notifyError((res as ErrorResponse).title);

@@ -4,6 +4,7 @@ import { CommunityDetailResponse } from "@/types/types";
 import { Avatar } from "@mui/material";
 
 export default function UserCommunityInfoBottom({ communityDetail }: { communityDetail: CommunityDetailResponse }) {
+    // TODO: Use user endpoint instead of this
     const auth = getAuth();
 
     return <div className="sticky bottom-0 p-4 border-t border-[var(--border-color)] bg-[var(--card-background)]">

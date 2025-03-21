@@ -1,6 +1,5 @@
 import TagInput from "@/components/TagInput";
 import TextEditor from "@/components/TextEditor";
-import getAuth from "@/helpers/auth-utils";
 import { IsErrorResponse, putFetcher } from "@/helpers/request-utils";
 import { formatString } from "@/helpers/string-utils";
 import { QuestionResponse, TagResponse } from "@/types/types";
@@ -19,18 +18,16 @@ export default function EditSection({ question, onEditSuccess }: {
     const [editComment, setEditComment] = useState('');
     const [isAnyChange, setIsAnyChange] = useState(false);
 
-    const auth = getAuth();
-
     const handleSend = async () => {
         const requestUrl = formatString(backendURL + Apis.Question.Update, question.id);
 
-        const response = await putFetcher([requestUrl, auth!.accessToken, JSON.stringify({
+        const response = await putFetcher(requestUrl, JSON.stringify({
             id: question.id,
             title: editTitleValue,
             content: editContentValue,
             tags: editTagIds,
             comment: editComment
-        })]);
+        }));
 
         if (!IsErrorResponse(response)) {
             question.content = editContentValue;

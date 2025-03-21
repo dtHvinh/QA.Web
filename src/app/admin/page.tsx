@@ -32,7 +32,7 @@ export default function AdminDashboard() {
 
     useEffect(() => {
         async function fetchAnalytic(what: string, setAction: Dispatch<SetStateAction<AnalyticResponse | undefined>>) {
-            const res = await getFetcher([`/api/admin/analytic/${what}/${period}`, auth!.accessToken])
+            const res = await getFetcher(`/api/admin/analytic/${what}/${period}`)
             console.log(res);
             setAction(res);
         }

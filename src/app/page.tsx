@@ -4,21 +4,15 @@ import Loading from "@/app/loading";
 import ViewOptionsButton from "@/components/Common/ViewOptionsButton";
 import QuestionCardListSkeleton from "@/components/Skeletons/YQPSkeleton";
 import YourQuestionItem from "@/components/YourQuestionItem";
-import getAuth from "@/helpers/auth-utils";
 import { getFetcher } from "@/helpers/request-utils";
 import { PagedResponse, QuestionResponse, ViewOptions } from "@/types/types";
 import { useState } from "react";
 import useSWR from "swr";
 
 export default function Home() {
-    const auth = getAuth();
-    const { data: questionResults, isLoading: isQuestionLoading } = useSWR<PagedResponse<QuestionResponse>>([
-        `/api/question/you_may_like?pageIndex=1&pageSize=30`,
-        auth!.accessToken], getFetcher);
-
+    const { data: questionResults, isLoading: isQuestionLoading } = useSWR<PagedResponse<QuestionResponse>>(`/api/question/you_may_like?pageIndex=1&pageSize=30`, getFetcher);
+    const { data: user, isLoading } = useSWR(`/api/user/`, getFetcher);
     const [view, setView] = useState<ViewOptions>('full')
-
-    const { data: user, isLoading } = useSWR([`/api/user/`, auth!.accessToken], getFetcher);
 
     if (isLoading) return <Loading />;
 

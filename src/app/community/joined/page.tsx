@@ -14,10 +14,7 @@ export default function JoinedCommunitiesPage() {
     const auth = getAuth();
     const [pageIndex, setPageIndex] = useState(1);
     const [pageSize, setPageSize] = useState(12);
-    const { data, isLoading } = useSWR<GetCommunityResponse[]>(
-        [`/api/community/joined?pageIndex=1&pageSize=${pageSize}`, auth?.accessToken],
-        getFetcher
-    );
+    const { data, isLoading } = useSWR<GetCommunityResponse[]>(`/api/community/joined?pageIndex=1&pageSize=${pageSize}`, getFetcher);
     const [hasMore, setHasMore] = useState(data?.length == pageSize);
 
     const handleLoadMore = () => {

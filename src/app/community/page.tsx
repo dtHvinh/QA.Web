@@ -3,7 +3,6 @@
 import ViewOptionsButton from "@/components/Common/ViewOptionsButton";
 import CommunityCard from "@/components/Community/CommunityCard";
 import CreateCommunityDialog from "@/components/Community/CreateCommunityDialog";
-import getAuth from "@/helpers/auth-utils";
 import { getFetcher } from "@/helpers/request-utils";
 import { GetCommunityResponse, ViewOptions } from "@/types/types";
 import { Add, Search } from "@mui/icons-material";
@@ -14,7 +13,6 @@ import useSWR from "swr";
 import { useDebounce } from "use-debounce";
 
 export default function CommunityPage() {
-    const auth = getAuth();
     const [searchTerm, setSearchTerm] = useState("");
     const [pageIndex, setPageIndex] = useState(1);
     const [view, setView] = useState<ViewOptions>('compact');
@@ -22,17 +20,16 @@ export default function CommunityPage() {
     const [debounceSearchTerm] = useDebounce(searchTerm, 500);
 
     const { data: joinedCommunities, isLoading: isLoadingJoined } = useSWR<GetCommunityResponse[]>(
-        [`/api/community/joined?pageIndex=1&pageSize=4`, auth?.accessToken],
-        getFetcher
+        `/api/community/joined?pageIndex=1&pageSize=4`, getFetcher
     );
 
     const { data: popularCommunities, isLoading: isLoadingPopular } = useSWR<GetCommunityResponse[]>(
-        [`/api/community/popular?pageIndex=1&pageSize=8`, auth?.accessToken],
+        `/api/community/popular?pageIndex=1&pageSize=8`,
         getFetcher
     );
 
     const { data: searchResults, isLoading: isLoadingSearch } = useSWR<GetCommunityResponse[]>(
-        debounceSearchTerm.length > 2 ? [`/api/community/search/${debounceSearchTerm}/?pageIndex=1&pageSize=20`, auth?.accessToken] : null,
+        debounceSearchTerm.length > 2 ? `/api/community/search/${debounceSearchTerm}/?pageIndex=1&pageSize=20` : null,
         getFetcher
     );
 
@@ -135,7 +132,7 @@ export default function CommunityPage() {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                                 {joinedCommunities.map((community) => (
-                                    <CommunityCard key={community.id} community={community} compact />
+                                    <CommunityCard key={community.id} community={community} compact="compact" />
                                 ))}
                             </div>
                         </div>
@@ -167,7 +164,7 @@ export default function CommunityPage() {
                         ) : (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                                 {popularCommunities?.map((community) => (
-                                    <CommunityCard key={community.id} community={community} compact={view === "compact"} />
+                                    <CommunityCard key={community.id} community={community} compact={view} />
                                 ))}
                             </div>
                         )}

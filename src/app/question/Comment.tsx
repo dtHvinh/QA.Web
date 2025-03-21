@@ -50,7 +50,7 @@ const Comment = ({ comment, onCommentDelete }: Readonly<CommentComponentProps>) 
     const handleDelete = async () => {
         const requestUrl = formatString(Apis.Comment.Delete, comment.id);
 
-        const response = await deleteFetcher([requestUrl, auth!.accessToken]);
+        const response = await deleteFetcher(requestUrl);
 
         if (IsErrorResponse(response)) {
             notifyError((response as ErrorResponse).title);
@@ -65,9 +65,9 @@ const Comment = ({ comment, onCommentDelete }: Readonly<CommentComponentProps>) 
     const handleUpdate = async () => {
         const requestUrl = formatString(backendURL + Apis.Comment.Update, comment.id);
 
-        const response = await putFetcher([requestUrl, auth!.accessToken, JSON.stringify({
+        const response = await putFetcher(requestUrl, JSON.stringify({
             content: editText
-        })]);
+        }));
 
         if (IsErrorResponse(response)) {
             notifyError((response as ErrorResponse).title);

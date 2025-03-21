@@ -1,7 +1,6 @@
-import { CommunityDetailResponse } from "@/app/community/[name]/page";
-import getAuth from "@/helpers/auth-utils";
 import { deleteFetcher, IsErrorResponse } from "@/helpers/request-utils";
 import { fromImage } from "@/helpers/utils";
+import { CommunityDetailResponse } from "@/types/types";
 import { Close, Lock, People, Public } from "@mui/icons-material";
 import {
     Avatar,
@@ -21,11 +20,8 @@ interface CommunityInfoProps {
 }
 
 export default function CommunityInfo({ open, onClose, community }: CommunityInfoProps) {
-    const auth = getAuth();
-
     const handleLeaveCommunity = async () => {
-        const res = await deleteFetcher([
-            `/api/community/${community.id}/leave`, auth!.accessToken]);
+        const res = await deleteFetcher(`/api/community/${community.id}/leave`);
 
         if (!IsErrorResponse(res)) {
             window.location.href = '/community'

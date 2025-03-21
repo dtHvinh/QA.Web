@@ -16,12 +16,18 @@ interface RequestConfig {
 }
 
 export const makeRequest = async (config: RequestConfig) => {
+    const auth = getAuth();
     try {
-        const response = await axios(config);
+        const response = await axios({
+            ...config,
+            headers: {
+                ...config.headers,
+                Authorization: auth ? `Bearer ${auth.accessToken}` : ''
+            }
+        });
         return response.data;
     } catch (error: any) {
         if (error.response?.status === 401) {
-            const auth = getAuth();
             if (auth) {
                 const newToken = await refreshToken(auth);
                 if (newToken) {
@@ -40,56 +46,50 @@ export const makeRequest = async (config: RequestConfig) => {
     }
 };
 
-export const getFetcher = ([url, token]: [string, string]) =>
+export const getFetcher = (url: string) =>
     makeRequest({
         url,
-        method: 'GET',
-        headers: { Authorization: `Bearer ${token}` },
+        method: 'GET'
     });
 
-export const postFetcher = ([url, token, jsonBody]: [string, string, string?]) =>
+export const postFetcher = (url: string, jsonBody?: string) =>
     makeRequest({
         url,
         method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
         data: jsonBody ? JSON.parse(jsonBody) : null
     });
 
-export const formPostFetcher = ([url, token, formData]: [string, string, FormData?]) =>
+export const formPostFetcher = (url: string, formData?: FormData) =>
     makeRequest({
         url,
         method: 'POST',
         headers: {
-            Authorization: `Bearer ${token}`,
             'Content-Type': 'multipart/form-data',
         },
         data: formData
     });
 
-export const putFetcher = ([url, token, jsonBody]: [string, string, string?]) =>
+export const putFetcher = (url: string, jsonBody?: string) =>
     makeRequest({
         url,
         method: 'PUT',
-        headers: { Authorization: `Bearer ${token}` },
         data: jsonBody ? JSON.parse(jsonBody) : null
     });
 
-export const formPutFetcher = ([url, token, formData]: [string, string, FormData?]) =>
+export const formPutFetcher = (url: string, formData?: FormData) =>
     makeRequest({
         url,
         method: 'PUT',
         headers: {
-            Authorization: `Bearer ${token}`,
             'Content-Type': 'multipart/form-data',
         },
         data: formData
     });
 
-export const deleteFetcher = ([url, token]: [string, string]) =>
+export const deleteFetcher = (url: string) =>
     makeRequest({
         url,
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` }
+        method: 'DELETE'
     });
 
 export const IsErrorResponse = (response: any) => {

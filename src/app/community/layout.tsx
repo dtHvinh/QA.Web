@@ -18,10 +18,7 @@ export default function CommunityLayout({ children }: { children: React.ReactNod
     const pathname = usePathname();
     const [createDialogOpen, setCreateDialogOpen] = useState(false);
 
-    const { data: communityJoined, isLoading, mutate } = useSWR<GetCommunityResponse[]>(
-        [`/api/community/joined?pageIndex=${pageIndex}&pageSize=10`, auth?.accessToken],
-        getFetcher
-    );
+    const { data: communityJoined, isLoading, mutate } = useSWR<GetCommunityResponse[]>(`/api/community/joined?pageIndex=${pageIndex}&pageSize=10`, getFetcher);
 
     const isCommunityPage = pathname.startsWith('/community/') &&
         pathname !== '/community/joined' &&

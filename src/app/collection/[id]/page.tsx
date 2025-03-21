@@ -4,14 +4,14 @@ import CollectionQuestions from "@/app/collection/CollectionQuestions";
 import CollectionSettings from "@/app/collection/CollectionSettings";
 import Loading from "@/app/loading";
 import ResourceOwnerPrivilege from "@/components/Privilege/ResourceOwnerPrivilege";
-import getAuth from "@/helpers/auth-utils";
+import UserInfoPopup from "@/components/UserInfoPopup";
 import { deleteFetcher, getFetcher, IsErrorResponse, postFetcher } from "@/helpers/request-utils";
 import { GetCollectionDetailResponse } from "@/types/types";
 import { notifySucceed } from "@/utilities/ToastrExtensions";
 import { Description, ImportContacts, Info, Settings } from "@mui/icons-material";
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import { Avatar, Pagination } from "@mui/material";
+import { Pagination } from "@mui/material";
 import { TabsContent } from "@radix-ui/react-tabs";
 import { Tabs } from "radix-ui";
 import React, { useEffect, useState } from "react";
@@ -21,9 +21,7 @@ export default function CollectionDetailPage({ params }: Readonly<{ params: Prom
     const { id } = React.use(params);
     const [pageIndex, setPageIndex] = useState(1);
     const [pageSize, setPageSize] = useState(15);
-    const requestUrl = `/api/collection/${id}/?pageIndex=1&pageSize=${pageSize}`;
-    const auth = getAuth();
-    const { data, isLoading } = useSWR<GetCollectionDetailResponse>([requestUrl, auth?.accessToken], getFetcher);
+    const { data, isLoading } = useSWR<GetCollectionDetailResponse>(`/api/collection/${id}/?pageIndex=1&pageSize=${pageSize}`, getFetcher);
     const [likeCount, setLikeCount] = useState(0);
     const [isLiked, setIsLiked] = useState(false);
 
@@ -42,7 +40,7 @@ export default function CollectionDetailPage({ params }: Readonly<{ params: Prom
 
         setIsLiked(true);
 
-        const res = await postFetcher([`/api/collection/${data.id}/like`, auth!.accessToken, '']);
+        const res = await postFetcher(`/api/collection/${data.id}/like`);
 
         if (!IsErrorResponse(res)) {
             setIsLiked(true);
@@ -55,7 +53,7 @@ export default function CollectionDetailPage({ params }: Readonly<{ params: Prom
         if (!data) return;
         setIsLiked(false);
 
-        const res = await deleteFetcher([`/api/collection/${data.id}/unlike`, auth!.accessToken]);
+        const res = await deleteFetcher(`/api/collection/${data.id}/unlike`);
 
         if (!IsErrorResponse(res)) {
             setIsLiked(false);
@@ -105,42 +103,29 @@ export default function CollectionDetailPage({ params }: Readonly<{ params: Prom
                             <div className="space-y-8">
                                 <div className="flex justify-between items-start">
                                     <h1 className="text-4xl font-bold text-[var(--text-primary)]">{data.name}</h1>
-                                    <button
-                                        onClick={isLiked ? handleUnlike : handleLike}
-                                        className="flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--border-color)] hover:bg-[var(--hover-background)] transition-colors"
-                                    >
-                                        {isLiked ? (
-                                            <FavoriteIcon className="w-5 h-5 text-red-500" />
-                                        ) : (
-                                            <FavoriteBorderIcon className="w-5 h-5 text-[var(--text-tertiary)]" />
-                                        )}
-                                        <span className="text-sm font-medium text-[var(--text-secondary)]">{likeCount}</span>
-                                    </button>
+                                    <div className="flex items-center space-x-5">
+                                        <div className="flex items-center space-x-2">
+                                            <span>by</span>
+                                            <UserInfoPopup user={data.author} />
+                                        </div>
+                                        <button
+                                            onClick={isLiked ? handleUnlike : handleLike}
+                                            className="flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--border-color)] hover:bg-[var(--hover-background)] transition-colors"
+                                        >
+                                            {isLiked ? (
+                                                <FavoriteIcon className="w-5 h-5 text-red-500" />
+                                            ) : (
+                                                <FavoriteBorderIcon className="w-5 h-5 text-[var(--text-tertiary)]" />
+                                            )}
+                                            <span className="text-sm font-medium text-[var(--text-secondary)]">{likeCount}</span>
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <div className="bg-[var(--hover-background)] rounded-xl p-6">
                                     <div className="flex items-start gap-3 text-[var(--text-secondary)]">
                                         <Description className="w-5 h-5 mt-1" />
                                         <p className="text-lg">{data.description}</p>
-                                    </div>
-                                </div>
-
-                                <div className="flex items-start gap-6 p-6 bg-[var(--card-background)] rounded-xl border border-[var(--border-color)]">
-                                    <Avatar
-                                        variant="rounded"
-                                        src={data.author.profilePicture}
-                                        alt={data.author.username}
-                                        sx={{ width: 80, height: 80 }}
-                                    />
-                                    <div className="space-y-3">
-                                        <h2 className="text-2xl font-bold text-[var(--text-primary)]">
-                                            {data.author.username}
-                                        </h2>
-                                        <div className="flex items-center gap-4 text-sm">
-                                            <span className="text-[var(--text-secondary)]">External links:</span>
-                                            <a href="#" className="text-blue-500 hover:underline">Website</a>
-                                            <a href="#" className="text-blue-500 hover:underline">GitHub</a>
-                                        </div>
                                     </div>
                                 </div>
                             </div>

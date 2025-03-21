@@ -1,5 +1,4 @@
 import CreateCollectionDialog from "@/components/CreateCollectionDialog";
-import getAuth from "@/helpers/auth-utils";
 import { getFetcher, IsErrorResponse } from "@/helpers/request-utils";
 import { addQuestionToCollection, deleteQuestionFromCollection } from "@/helpers/requests";
 import { ErrorResponse } from "@/props/ErrorResponse";
@@ -12,7 +11,6 @@ import { useSnackbar } from "notistack";
 import React from "react";
 
 export default function AddToCollection({ questionId }: Readonly<{ questionId: string }>) {
-    const auth = getAuth();
     const [pageIndex, setPageIndex] = React.useState(1);
     const requestUrl = `/api/collection/with_question/${questionId}?pageIndex=1&pageSize=20`;
     const [open, setOpen] = React.useState(false);
@@ -25,7 +23,7 @@ export default function AddToCollection({ questionId }: Readonly<{ questionId: s
     }
 
     const loadCollectionWithStatus = async () => {
-        const res = await getFetcher([requestUrl, auth!.accessToken]);
+        const res = await getFetcher(requestUrl);
 
         if (IsErrorResponse(res)) {
             notifyError((res as ErrorResponse).title);
@@ -66,10 +64,10 @@ export default function AddToCollection({ questionId }: Readonly<{ questionId: s
     return (
         <>
             <Tooltip title={'Add to collection'}>
-                <IconButton 
-                    onClick={handleOpen} 
-                    sx={{ 
-                        width: 48, 
+                <IconButton
+                    onClick={handleOpen}
+                    sx={{
+                        width: 48,
                         height: 48,
                         color: 'var(--text-secondary)',
                         '&:hover': {
@@ -81,16 +79,16 @@ export default function AddToCollection({ questionId }: Readonly<{ questionId: s
                 </IconButton>
             </Tooltip>
 
-            <CreateCollectionDialog 
+            <CreateCollectionDialog
                 open={createCollectionDialogOpen}
                 onClose={() => setCreateCollectionDialogOpen(false)}
-                onCreated={handleOnCreateCollection} 
+                onCreated={handleOnCreateCollection}
             />
 
-            <Dialog 
-                open={open} 
-                onClose={handleClose} 
-                hideBackdrop={true} 
+            <Dialog
+                open={open}
+                onClose={handleClose}
+                hideBackdrop={true}
                 slotProps={{
                     paper: {
                         elevation: 5,
@@ -109,16 +107,16 @@ export default function AddToCollection({ questionId }: Readonly<{ questionId: s
                             <FormControlLabel key={collection.id}
                                 className={'p-2 flex gap-2'}
                                 control={
-                                    <Checkbox 
+                                    <Checkbox
                                         defaultChecked={collection.isAdded}
                                         onChange={(e) => handleCheck(e, collection.id, collection.name)}
                                         sx={{
                                             [`&, &.${checkboxClasses.checked}`]: {
                                                 color: 'var(--text-primary)',
                                             },
-                                        }} 
+                                        }}
                                     />
-                                } 
+                                }
                                 label={
                                     <div className={'flex'}>
                                         <div className={'text-sm mr-2 text-[var(--text-secondary)]'}>
@@ -130,7 +128,7 @@ export default function AddToCollection({ questionId }: Readonly<{ questionId: s
                                             {collection.name}
                                         </div>
                                     </div>
-                                } 
+                                }
                             />
                         ))}
                     </div>

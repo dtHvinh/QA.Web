@@ -24,7 +24,7 @@ export default function LoginPage() {
                 password: formData.get('password') as string,
             };
 
-            const response = await postFetcher([`/api${name}`, '', JSON.stringify(data)])
+            const response = await postFetcher(`/api${name}`, JSON.stringify(data))
 
             if (IsErrorResponse(response)) {
                 return;

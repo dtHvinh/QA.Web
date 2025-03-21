@@ -2,7 +2,6 @@
 
 import TagInput from "@/components/TagInput";
 import TextEditor from "@/components/TextEditor";
-import getAuth from "@/helpers/auth-utils";
 import { IsErrorResponse, postFetcher } from "@/helpers/request-utils";
 import { Apis } from "@/utilities/Constants";
 import notifyError, { notifySucceed } from "@/utilities/ToastrExtensions";
@@ -12,11 +11,8 @@ import React, { useState } from "react";
 export default function NewQuestion() {
     const [tagIds, setTagIds] = useState<string[]>([]);
     const [content, setContent] = useState<string>('');
-    const auth = getAuth();
     const router = useRouter();
     const [isSendDisabled, setIsSendDisabled] = useState<boolean>(false);
-
-    const requestUrl = `${Apis.Question.Create}`;
 
     const handleTagChange = (tagIds: string[]) => {
         setTagIds(tagIds);
@@ -36,15 +32,12 @@ export default function NewQuestion() {
         }
 
         const response = await postFetcher(
-            [
-                requestUrl,
-                auth!.accessToken,
-                JSON.stringify({
-                    title: title,
-                    content: content.trim(),
-                    tags: tagIds
-                })
-            ]);
+            `${Apis.Question.Create}`,
+            JSON.stringify({
+                title: title,
+                content: content.trim(),
+                tags: tagIds
+            }));
 
         if (IsErrorResponse(response)) {
             setIsSendDisabled(false);

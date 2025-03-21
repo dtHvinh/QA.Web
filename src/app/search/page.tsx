@@ -25,10 +25,7 @@ export default function SearchPage() {
 
     const fetchResults = async () => {
         setIsFetching(true);
-        const response = await getFetcher([
-            `/api/question/search?tagId=${queryTagId}&searchTerm=${queryTerm}&pageIndex=${pageIndex}&pageSize=${pageSize}`,
-            auth!.accessToken
-        ]) as PagedResponse<QuestionResponse>;
+        const response = await getFetcher(`/api/question/search?tagId=${queryTagId}&searchTerm=${queryTerm}&pageIndex=${pageIndex}&pageSize=${pageSize}`) as PagedResponse<QuestionResponse>;
 
         setIsFetching(false);
         setTotalPages(response.totalPage);

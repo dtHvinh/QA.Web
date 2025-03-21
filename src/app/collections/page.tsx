@@ -4,7 +4,6 @@ import NoCollection from '@/components/Collection/NoCollection';
 import CollectionItem from '@/components/CollectionItem';
 import CreateCollectionDialog from "@/components/CreateCollectionDialog";
 import FilterBar from '@/components/FilterBar';
-import getAuth from '@/helpers/auth-utils';
 import { getFetcher, IsErrorResponse } from '@/helpers/request-utils';
 import { GetCollectionResponse, PagedResponse } from '@/types/types';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
@@ -25,10 +24,8 @@ export default function CollectionsPage() {
     const [debouncedSearchTerm] = useDebounce(searchTerm, 500)
     const [collections, setCollections] = React.useState<GetCollectionResponse[]>([])
     const [cachedCollections, setCachedCollections] = React.useState<GetCollectionResponse[]>([])
-    const requestUrl = `/api/collection?orderBy=${sortOrder}&pageIndex=${pageIndex}&pageSize=${pageSize}`;
-    const auth = getAuth();
 
-    const { data } = useSWR<PagedResponse<GetCollectionResponse>>([requestUrl, auth?.accessToken], getFetcher)
+    const { data } = useSWR<PagedResponse<GetCollectionResponse>>(`/api/collection?orderBy=${sortOrder}&pageIndex=${pageIndex}&pageSize=${pageSize}`, getFetcher)
 
     useEffect(() => {
         const searchTerm = debouncedSearchTerm.trim();
@@ -51,7 +48,7 @@ export default function CollectionsPage() {
     }
 
     async function searchCollections() {
-        const res = await getFetcher([`/api/collection/search/${searchTerm}?pageIndex=1&pageSize=100`, auth!.accessToken])
+        const res = await getFetcher(`/api/collection/search/${searchTerm}?pageIndex=1&pageSize=100`)
 
         if (!IsErrorResponse(res)) {
             const response = res as PagedResponse<GetCollectionResponse>

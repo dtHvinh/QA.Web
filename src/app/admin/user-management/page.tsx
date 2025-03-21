@@ -4,7 +4,6 @@ import UserActionPanel from "@/components/Admin/UserActionPanel";
 import ObjectNotfound from "@/components/Error/ObjectNotFound";
 import AccessDenied from "@/components/Privilege/AccessDenied";
 import AdminPrivilege from "@/components/Privilege/AdminPrivilege";
-import getAuth from "@/helpers/auth-utils";
 import { getFetcher, IsErrorResponse } from "@/helpers/request-utils";
 import { GetUserResponse, PagedResponse } from "@/types/types";
 import { ArrowBack } from "@mui/icons-material";
@@ -15,13 +14,11 @@ import useSWR from "swr";
 import UserStatus from "../UserStatus";
 
 export default function UserManagementPage() {
-    const auth = getAuth();
     const [pageIndex, setPageIndex] = useState(1);
     const [expandedUserId, setExpandedUserId] = useState<number | null>(null);
     const [searchId, setSearchId] = useState('');
     const [cachedUsers, setCachedUsers] = useState<GetUserResponse[]>([])
-    const { data, isLoading, mutate } = useSWR<PagedResponse<GetUserResponse>>(
-        [`/api/admin/users?pageIndex=${pageIndex}&pageSize=10`, auth?.accessToken], getFetcher);
+    const { data, isLoading } = useSWR<PagedResponse<GetUserResponse>>(`/api/admin/users?pageIndex=${pageIndex}&pageSize=10`, getFetcher);
     const [users, setUsers] = useState<GetUserResponse[]>([])
 
     useEffect(() => {
@@ -61,7 +58,7 @@ export default function UserManagementPage() {
             return;
         }
 
-        const res = await getFetcher([`/api/admin/users/${searchId}`, auth!.accessToken]);
+        const res = await getFetcher(`/api/admin/users/${searchId}`);
 
         if (!IsErrorResponse(res)) {
             setUsers([res as GetUserResponse])

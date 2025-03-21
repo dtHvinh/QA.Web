@@ -1,4 +1,3 @@
-import getAuth from '@/helpers/auth-utils';
 import { IsErrorResponse, postFetcher } from '@/helpers/request-utils';
 import notifyError, { notifySucceed } from '@/utilities/ToastrExtensions';
 import { Close } from '@mui/icons-material';
@@ -27,7 +26,6 @@ export default function CreateRoomDialog({ open, communityId, onClose, onCreated
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
     const [name, setName] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const auth = getAuth();
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -36,14 +34,12 @@ export default function CreateRoomDialog({ open, communityId, onClose, onCreated
         setIsSubmitting(true);
 
         try {
-            const response = await postFetcher([
+            const response = await postFetcher(
                 `/api/community/room`,
-                auth!.accessToken,
                 JSON.stringify({
                     communityId: communityId,
                     name: name
-                })
-            ]);
+                }));
 
             if (!IsErrorResponse(response)) {
                 notifySucceed("Room created successfully");
@@ -65,11 +61,13 @@ export default function CreateRoomDialog({ open, communityId, onClose, onCreated
             fullScreen={fullScreen}
             maxWidth="sm"
             fullWidth
-            PaperProps={{
-                sx: {
-                    borderRadius: '12px',
-                    backgroundColor: 'var(--card-background)',
-                    color: 'var(--text-primary)'
+            slotProps={{
+                paper: {
+                    sx: {
+                        borderRadius: '12px',
+                        backgroundColor: 'var(--card-background)',
+                        color: 'var(--text-primary)'
+                    }
                 }
             }}
         >

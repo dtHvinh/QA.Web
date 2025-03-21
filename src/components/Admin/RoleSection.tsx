@@ -1,4 +1,3 @@
-import getAuth from "@/helpers/auth-utils";
 import { deleteFetcher, getFetcher, IsErrorResponse, postFetcher } from "@/helpers/request-utils";
 import { GetUserResponse } from "@/types/types";
 import { notifySucceed } from "@/utilities/ToastrExtensions";
@@ -7,24 +6,18 @@ import { useState } from "react";
 import useSWR from "swr";
 
 export default function RoleSection({ user }: { user: GetUserResponse }) {
-    const auth = getAuth();
     const [selectedRole, setSelectedRole] = useState<string>('');
     const [deleteRole, setDeleteRole] = useState<string | null>(null);
 
-    const { data: roles } = useSWR<string[]>(['/api/admin/roles', auth!.accessToken], getFetcher);
-    const { data: userRoles, isLoading, mutate } = useSWR<{ name: string }[]>(
-        [`/api/admin/user-role/${user.id}`, auth!.accessToken],
-        getFetcher
-    );
+    const { data: roles } = useSWR<string[]>('/api/admin/roles', getFetcher);
+    const { data: userRoles, isLoading, mutate } = useSWR<{ name: string }[]>(`/api/admin/user-role/${user.id}`, getFetcher);
 
     const handleAddRole = async () => {
         if (!selectedRole) return;
 
-        const response = await postFetcher([
+        const response = await postFetcher(
             `/api/admin/roles/${user.id}/${selectedRole}`,
-            auth!.accessToken,
-            JSON.stringify({ roleName: selectedRole })
-        ]);
+            JSON.stringify({ roleName: selectedRole }));
 
         if (!IsErrorResponse(response)) {
             mutate();
@@ -36,10 +29,8 @@ export default function RoleSection({ user }: { user: GetUserResponse }) {
     const handleDeleteRole = async () => {
         if (!deleteRole) return;
 
-        const response = await deleteFetcher([
-            `/api/admin/roles/${user.id}/${deleteRole}`,
-            auth!.accessToken
-        ]);
+        const response = await deleteFetcher(
+            `/api/admin/roles/${user.id}/${deleteRole}`);
 
         if (!IsErrorResponse(response)) {
             mutate();

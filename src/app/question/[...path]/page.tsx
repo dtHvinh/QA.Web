@@ -3,7 +3,6 @@
 import Loading from "@/app/loading";
 import QuestionSection from "@/app/question/QuestionSection";
 import ObjectNotfound from "@/components/Error/ObjectNotFound";
-import getAuth from "@/helpers/auth-utils";
 import toQuestionDetail from "@/helpers/path";
 import { getFetcher, IsErrorResponse } from "@/helpers/request-utils";
 import { ErrorResponse } from "@/props/ErrorResponse";
@@ -16,16 +15,13 @@ import useSWR from "swr";
 
 export default function QuestionPage({ params }: { params: Promise<{ path: string[] }> }) {
     const { path } = React.use(params);
-    const auth = getAuth();
-    const requestUrl = `${Apis.Question.GetQuestionDetail}/view/${path[0]}`
-    const relatedQuestionRequestUrl = `/api/question/${path[0]}/similar?skip=0&take=10`;
     const [relatedQuestions, setRelatedQuestions] = useState<PagedResponse<QuestionResponse>>()
-    const { data, isLoading } = useSWR([requestUrl, auth?.accessToken], getFetcher);
+    const { data, isLoading } = useSWR(`${Apis.Question.GetQuestionDetail}/view/${path[0]}`, getFetcher);
 
     const question = data as QuestionResponse;
 
     useEffect(() => {
-        getFetcher([relatedQuestionRequestUrl, auth!.accessToken]).then((response: PagedResponse<QuestionResponse> | ErrorResponse) => {
+        getFetcher(`/api/question/${path[0]}/similar?skip=0&take=10`).then((response: PagedResponse<QuestionResponse> | ErrorResponse) => {
             if (!IsErrorResponse(response)) {
                 setRelatedQuestions(response as PagedResponse<QuestionResponse>);
             }

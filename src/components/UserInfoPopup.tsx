@@ -1,3 +1,4 @@
+import { fromImage } from "@/helpers/utils";
 import { AuthorResponse } from "@/types/types";
 import { Avatar, Popover } from "@mui/material";
 import Link from "next/link";
@@ -53,7 +54,7 @@ export default function UserInfoPopup({ user, className, element = 'a' }: { user
                 <div className="p-6 min-w-[320px]">
                     <div className="flex items-center gap-4 mb-4">
                         <Avatar
-                            src={user.profilePicture}
+                            src={fromImage(user.profilePicture)}
                             sx={{
                                 width: 64,
                                 height: 64,

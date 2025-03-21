@@ -31,12 +31,11 @@ export default function AnswerSection(
     }
 
     const handleSend = async () => {
-        const response = await postFetcher([
+        const response = await postFetcher(
             requestUrl,
-            auth!.accessToken,
             JSON.stringify({
                 content: currentText
-            })]);
+            }));
 
         if (!IsErrorResponse(response)) {
             setAnswers([...answers, response as AnswerResponse]);

@@ -11,7 +11,7 @@ import { fromImage, highlightCode } from "@/helpers/utils";
 import { QuestionResponse } from "@/types/types";
 import { Close } from "@mui/icons-material";
 import EditIcon from '@mui/icons-material/Edit';
-import { Avatar, Dialog, DialogContent, IconButton, Tooltip, useTheme } from "@mui/material";
+import { Avatar, Dialog, DialogContent, IconButton, Tooltip } from "@mui/material";
 import 'highlight.js/styles/atom-one-dark.css';
 import React, { useEffect } from "react";
 
@@ -20,7 +20,6 @@ export default function QuestionSection({ questionInit }: { questionInit: Questi
     const [isClosed, setIsClosed] = React.useState<boolean>(questionInit.isClosed);
     const [isEditing, setIsEditing] = React.useState<boolean>(false);
     const [question, setQuestion] = React.useState<QuestionResponse>(questionInit);
-    const theme = useTheme();
 
     const handleEditClick = () => {
         setIsEditing(!isEditing);

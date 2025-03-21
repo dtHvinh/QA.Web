@@ -1,4 +1,3 @@
-import getAuth from "@/helpers/auth-utils";
 import { getFetcher, IsErrorResponse } from "@/helpers/request-utils";
 import { ErrorResponse } from "@/props/ErrorResponse";
 import { GetCollectionDetailResponse, QuestionResponse, ResourceRight } from "@/types/types";
@@ -17,9 +16,7 @@ export default function CollectionQuestions({ collectionId, questionInit, pageIn
     pageSize: number,
     resourceRight: ResourceRight
 }) {
-    const requestUrl = `/api/collection/${collectionId}/?pageIndex=${pageIndex}&pageSize=${pageSize}`;
-    const auth = getAuth();
-    const { data } = useSWR<GetCollectionDetailResponse>([requestUrl, auth?.accessToken], getFetcher);
+    const { data } = useSWR<GetCollectionDetailResponse>(`/api/collection/${collectionId}/?pageIndex=${pageIndex}&pageSize=${pageSize}`, getFetcher);
     const [questions, setQuestions] = React.useState<QuestionResponse[]>(questionInit);
     const [cachedQuestions, setCachedQuestions] = useState<QuestionResponse[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
@@ -44,7 +41,7 @@ export default function CollectionQuestions({ collectionId, questionInit, pageIn
 
 
         async function fetchSearchResult() {
-            const result = await getFetcher([`${backendURL}/api/collection/${collectionId}/search/${searchTermRq}`, auth!.accessToken])
+            const result = await getFetcher(`${backendURL}/api/collection/${collectionId}/search/${searchTermRq}`)
 
             if (IsErrorResponse(result)) {
                 notifyError((result as ErrorResponse).title);
@@ -67,7 +64,7 @@ export default function CollectionQuestions({ collectionId, questionInit, pageIn
                 <input
                     type="text"
                     placeholder="Search questions..."
-                    className="w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-lg transition-colors"
+                    className="w-full pl-10 pr-4 py-3 bg-[var(--card)] border-[var(--card-border)] bg-white border border-gray-200 rounded-lg transition-colors"
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
                 <svg

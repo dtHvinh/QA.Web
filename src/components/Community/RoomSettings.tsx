@@ -1,4 +1,3 @@
-import getAuth from "@/helpers/auth-utils";
 import { IsErrorResponse, putFetcher } from "@/helpers/request-utils";
 import { ChatRoomResponse } from "@/types/types";
 import { Delete } from "@mui/icons-material";
@@ -16,20 +15,18 @@ interface RoomSettingsProps {
 
 export default function RoomSettings({ open, onClose, room, communityId, onUpdate, onDelete }: RoomSettingsProps) {
     const [name, setName] = useState(room?.name || '');
-    const auth = getAuth();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!room) return;
 
-        const response = await putFetcher([
+        const response = await putFetcher(
             `/api/community/room`,
-            auth!.accessToken,
             JSON.stringify({
                 id: room.id,
                 communityId: communityId,
                 name: name,
-            })])
+            }))
 
         if (!IsErrorResponse(response)) {
             onUpdate({ ...room, name });

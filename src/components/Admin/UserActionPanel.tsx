@@ -1,7 +1,6 @@
 import { GetUserResponse } from "@/types/types";
 import { Block, Person, PersonOff, Shield } from "@mui/icons-material";
 import { Tabs } from "radix-ui";
-import { useState } from "react";
 import BanSection from "./BanSection";
 import RoleSection from "./RoleSection";
 
@@ -13,13 +12,11 @@ interface UserActionPanelProps {
 }
 
 export default function UserActionPanel({ user, colSpan, onUserBanned, onUserUnban }: UserActionPanelProps) {
-    const [currentTab, setCurrentTab] = useState("")
-
     return (
         <td colSpan={colSpan} className="bg-gray-50 p-6 animate-fadeIn">
 
             <div className="space-y-6">
-                <Tabs.Root onValueChange={setCurrentTab} defaultValue="user-details" className="grid grid-cols-3 gap-6">
+                <Tabs.Root defaultValue="user-details" className="grid grid-cols-3 gap-6">
                     <div className="col-span-1 space-y-4">
                         <h3 className="font-medium text-gray-900">Quick Actions</h3>
                         <Tabs.List className="space-y-2">

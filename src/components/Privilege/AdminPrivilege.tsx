@@ -10,6 +10,7 @@ const AdminPrivilege = ({ children, fallBackComponent }: Readonly<AdminPrivilege
     const [isAdmin, setIsAdmin] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
+    // TODO: Check endpoint instead
     useEffect(() => {
         const auth = getAuth();
         if (auth && auth.roles.some(e => e === 'Admin')) {

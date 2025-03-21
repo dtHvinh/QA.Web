@@ -27,11 +27,7 @@ export default function AuthPage() {
                 ...((!isLogin && { confirmPassword: formData.get('confirmPassword') as string }))
             };
 
-            const response = await postFetcher([
-                `/api/auth/${isLogin ? 'login' : 'register'}`,
-                '',
-                JSON.stringify(data)
-            ]);
+            const response = await postFetcher(`/api/auth/${isLogin ? 'login' : 'register'}`, JSON.stringify(data));
 
             if (IsErrorResponse(response)) {
                 setError(response.title);

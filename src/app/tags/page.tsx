@@ -3,7 +3,6 @@
 import FilterBar from "@/components/FilterBar";
 import PermissionAction from "@/components/PermissionAction";
 import TagSkeleton from "@/components/Skeletons/TagSkeleton";
-import getAuth from "@/helpers/auth-utils";
 import { getFetcher } from "@/helpers/request-utils";
 import { toTagDetail } from "@/helpers/route-utils";
 import { PagedResponse, TagResponse } from "@/types/types";
@@ -16,7 +15,6 @@ import useSWR from "swr";
 export default function Tags() {
     const router = useRouter();
 
-    const auth = getAuth()!;
     const validOrderValue = ['Popular', 'Name', "Newest"];
     const validOrder = ['Popular', 'Name', "Newest"];
     const orderDescriptions = ['Order by number of question each tag has', 'Order by ascending alphabetically', 'Order by creation date'];
@@ -26,11 +24,7 @@ export default function Tags() {
     const [pageSize, setPageSize] = useState(12);
 
     const requestUrl = `/api/tag/${orderBy}?skip=${(pageIndex - 1) * pageSize}&take=${pageSize}`;
-    const { data, error, isLoading } = useSWR<PagedResponse<TagResponse>>([requestUrl, auth?.accessToken], getFetcher, {
-        revalidateOnFocus: false,
-        revalidateOnReconnect: false,
-        revalidateIfStale: false,
-    });
+    const { data, error, isLoading } = useSWR<PagedResponse<TagResponse>>(requestUrl, getFetcher);
 
     const handleOrderByChange = (value: string) => {
         setOrderBy(value);

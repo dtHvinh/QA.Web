@@ -1,4 +1,3 @@
-import getAuth from "@/helpers/auth-utils";
 import { getFetcher, IsErrorResponse } from "@/helpers/request-utils";
 import { isScrollBottom } from "@/helpers/utils";
 import { ChatRoomResponse, CommunityDetailResponse } from "@/types/types";
@@ -38,7 +37,6 @@ export default function ChatRoomsSidebar({
     const [isRoomLoading, setIsRoomLoading] = useState(false);
     const [roomPageIndex, setRoomPageIndex] = useState(3);
     const roomDisplayRef = useRef<HTMLDivElement>(null);
-    const auth = getAuth();
 
     const handleRoomScroll = async () => {
         if (!hasMoreRoom || !roomDisplayRef.current || !isScrollBottom(roomDisplayRef.current)) {
@@ -47,10 +45,7 @@ export default function ChatRoomsSidebar({
 
         setIsRoomLoading(true);
         try {
-            const response = await getFetcher([
-                `/api/community/room/${communityId}/?pageIndex=${roomPageIndex}&pageSize=${10}`,
-                auth!.accessToken
-            ]) as ChatRoomResponse[];
+            const response = await getFetcher(`/api/community/room/${communityId}/?pageIndex=${roomPageIndex}&pageSize=${10}`) as ChatRoomResponse[];
 
             if (!IsErrorResponse(response)) {
                 setRoomPageIndex(prev => prev + 1);

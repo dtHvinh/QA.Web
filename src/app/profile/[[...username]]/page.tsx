@@ -3,7 +3,6 @@
 import Loading from "@/app/loading";
 import ObjectNotfound from "@/components/Error/ObjectNotFound";
 import ResourceOwnerPrivilege from "@/components/Privilege/ResourceOwnerPrivilege";
-import getAuth from "@/helpers/auth-utils";
 import { getFetcher, IsErrorResponse } from "@/helpers/request-utils";
 import { countTotalDays } from "@/helpers/time-utils";
 import { fromImage, getProviderImage } from "@/helpers/utils";
@@ -17,9 +16,8 @@ import EditMode from "../EditMode";
 
 export default function ProfilePage({ params }: { params: Promise<{ username?: string }> }) {
     const p = React.use(params);
-    const auth = getAuth();
     const [isEditMode, setIsEditMode] = useState(false)
-    const { data: user, isLoading, mutate } = useSWR<UserResponse>([`/api/user/${p.username ?? ''}`, auth?.accessToken], getFetcher);
+    const { data: user, isLoading, mutate } = useSWR<UserResponse>(`/api/user/${p.username ?? ''} `, getFetcher);
     const [username, setUsername] = useState('')
     const [externalLinks, setExternalLinks] = useState<ExternalLinkResponse[]>([])
 

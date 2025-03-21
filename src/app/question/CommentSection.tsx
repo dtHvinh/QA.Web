@@ -1,6 +1,5 @@
 import Comment from "@/app/question/Comment";
 import PermissionAction from "@/components/PermissionAction";
-import getAuth from "@/helpers/auth-utils";
 import { getFetcher, IsErrorResponse, postFetcher } from "@/helpers/request-utils";
 import { CommentResponse, QuestionResponse } from "@/types/types";
 import { Apis } from "@/utilities/Constants";
@@ -16,7 +15,6 @@ export default function CommentSection({ question, isClosed }: { question: Quest
     const [pageIndex, setPageIndex] = React.useState(2);
     const [hasMore, setHasMore] = React.useState(true);
 
-    const auth = getAuth();
     const requestUrl = `${Apis.Question.CreateComment}/${question.id}/comment`
 
     const handleTextChange = (text: string) => {
@@ -29,8 +27,7 @@ export default function CommentSection({ question, isClosed }: { question: Quest
     }
 
     const fetchMoreComment = async () => {
-        const response = await getFetcher([
-            `/api/question/${question.id}/comments?pageIndex=${pageIndex}&pageSize=10`, auth!.accessToken])
+        const response = await getFetcher(`/api/question/${question.id}/comments?pageIndex=${pageIndex}&pageSize=10`)
 
         if (!IsErrorResponse(response)) {
             setComments([...comments, ...(response as CommentResponse[])]);
@@ -43,12 +40,11 @@ export default function CommentSection({ question, isClosed }: { question: Quest
     }
 
     const handleSend = async () => {
-        const response = await postFetcher([
+        const response = await postFetcher(
             requestUrl,
-            auth!.accessToken,
             JSON.stringify({
                 content: currentText
-            })]);
+            }));
 
         if (!IsErrorResponse(response)) {
             setComments([...comments, response as CommentResponse]);

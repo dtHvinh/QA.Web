@@ -1,7 +1,6 @@
 'use client'
 
 import Loading from "@/app/loading";
-import getAuth from "@/helpers/auth-utils";
 import { getFetcher } from "@/helpers/request-utils";
 import { highlightCode } from "@/helpers/utils";
 import { TagDetailResponse } from "@/types/types";
@@ -14,8 +13,7 @@ import useSWR from "swr";
 export default function TagWikiPage({ params }: { params: Promise<{ path: string[] }> }) {
     const { path } = React.use(params);
     const requestUrl = `${backendURL}/api/tag/wiki/${path[0]}`;
-    const auth = getAuth();
-    const { data, isLoading } = useSWR([requestUrl, auth!.accessToken], getFetcher);
+    const { data, isLoading } = useSWR(requestUrl, getFetcher);
 
     const tagDetail = data as TagDetailResponse;
 

@@ -3,7 +3,6 @@
 import getAuth from "@/helpers/auth-utils";
 import { IsErrorResponse, postFetcher } from "@/helpers/request-utils";
 import { ErrorResponse } from "@/props/ErrorResponse";
-import { backendURL } from "@/utilities/Constants";
 import notifyError from "@/utilities/ToastrExtensions";
 import { Close, Lock, Public } from "@mui/icons-material";
 import { Dialog, DialogContent, FormControlLabel, IconButton, Radio, RadioGroup, useTheme } from "@mui/material";
@@ -31,7 +30,7 @@ export default function CreateCollectionDialog({ open, onClose, onCreated }: {
             isPublic: isPublic === 'true'
         }
 
-        const response = await postFetcher([`${backendURL}/api/collection`, auth!.accessToken, JSON.stringify(newCollection)])
+        const response = await postFetcher(`/api/collection`, JSON.stringify(newCollection))
 
         if (IsErrorResponse(response)) {
             notifyError((response as ErrorResponse)?.title || "Error");

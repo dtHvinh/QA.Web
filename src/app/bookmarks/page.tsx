@@ -2,7 +2,6 @@
 
 import BookmarkItem from "@/app/bookmarks/BookmarkItem";
 import Loading from "@/app/loading";
-import getAuth from "@/helpers/auth-utils";
 import { getFetcher } from "@/helpers/request-utils";
 import { BookmarkResponse, PagedResponse } from "@/types/types";
 import { Pagination } from "@mui/material";
@@ -10,13 +9,11 @@ import React, { useEffect } from "react";
 import useSWR from "swr";
 
 export default function BookmarkPage() {
-    const auth = getAuth();
     const [pageIndex, setPageIndex] = React.useState<number>(1);
     const [pageSize, setPageSize] = React.useState<number>(10);
     const [questions, setQuestions] = React.useState<BookmarkResponse[]>([]);
-    const requestUrl = `/api/bookmark/?orderBy=Newest&pageIndex=${pageIndex}&pageSize=${pageSize}`;
 
-    const { data, isLoading } = useSWR([requestUrl, auth?.accessToken], getFetcher);
+    const { data, isLoading } = useSWR(`/api/bookmark/?orderBy=Newest&pageIndex=${pageIndex}&pageSize=${pageSize}`, getFetcher);
 
     useEffect(() => {
         if (data) {

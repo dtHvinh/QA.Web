@@ -39,7 +39,7 @@ export default function QuestionsPage() {
 
     const [view, setView] = useState<ViewOptions>('full');
 
-    const { data, isLoading } = useSWR([requestUrl, auth?.accessToken], getFetcher);
+    const { data, isLoading } = useSWR(requestUrl, getFetcher);
 
     useEffect(() => {
         if (data) {

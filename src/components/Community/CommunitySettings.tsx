@@ -1,10 +1,8 @@
-import getAuth from "@/helpers/auth-utils";
 import { deleteFetcher, formPutFetcher, getFetcher, IsErrorResponse } from "@/helpers/request-utils";
 import { fromImage } from "@/helpers/utils";
 import { ErrorResponse } from "@/props/ErrorResponse";
 import { theme } from "@/theme/theme";
 import { CommunityDetailResponse, PagedResponse } from "@/types/types";
-import { backendURL } from "@/utilities/Constants";
 import notifyError, { notifySucceed } from "@/utilities/ToastrExtensions";
 import { AddPhotoAlternate, Close, Delete, Group, PersonAdd, Save } from "@mui/icons-material";
 import {
@@ -43,7 +41,6 @@ export interface CommunityMemberResponse {
 }
 
 export default function CommunitySettings({ open, onClose, community, onUpdate }: CommunitySettingsProps) {
-    const auth = getAuth();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
     const router = useRouter();
     const [tabValue, setTabValue] = useState(0);
@@ -55,9 +52,8 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [anyChange, setAnyChange] = useState(false);
     const [deleteCommunityConfimOpen, setDeletCommunityConfimOpen] = useState(false);
-    const { data: members, isLoading: isMemberLoading } = useSWR<PagedResponse<CommunityMemberResponse>>([
+    const { data: members, isLoading: isMemberLoading } = useSWR<PagedResponse<CommunityMemberResponse>>(
         `/api/community/${community.id}/members?pageIndex=1&pageSize=100`,
-        auth!.accessToken],
         getFetcher);
 
     useEffect(() => {
@@ -94,11 +90,7 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
                 formData.append('iconImage', iconImage);
             }
 
-            const response = await formPutFetcher([
-                `${backendURL}/api/community`,
-                auth!.accessToken,
-                formData
-            ]);
+            const response = await formPutFetcher(`/api/community`, formData);
 
             if (!IsErrorResponse(response)) {
 
@@ -120,10 +112,7 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
 
     const handleDelete = async () => {
         try {
-            const response = await deleteFetcher([
-                `${backendURL}/api/community/${community.id}`,
-                auth!.accessToken
-            ]);
+            const response = await deleteFetcher(`/api/community/${community.id}`);
 
             if (IsErrorResponse(response)) {
                 notifyError((response as ErrorResponse).title);

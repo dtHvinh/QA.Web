@@ -3,7 +3,6 @@
 import Loading from "@/app/loading";
 import AccessDenied from "@/components/Privilege/AccessDenied";
 import AdminPrivilege from "@/components/Privilege/AdminPrivilege";
-import getAuth from "@/helpers/auth-utils";
 import { getFetcher, IsErrorResponse } from "@/helpers/request-utils";
 import { PagedResponse, SysLogResponse } from "@/types/types";
 import { ArrowBack } from "@mui/icons-material";
@@ -13,12 +12,8 @@ import { useState } from "react";
 import useSWR from "swr";
 
 export default function LogPage() {
-    const auth = getAuth();
     const [pageIndex, setPageIndex] = useState(1);
-    const { data, isLoading } = useSWR<PagedResponse<SysLogResponse>>(
-        [`/api/admin/logs?pageIndex=${pageIndex}&pageSize=20`, auth?.accessToken],
-        getFetcher
-    );
+    const { data, isLoading } = useSWR<PagedResponse<SysLogResponse>>(`/api/admin/logs?pageIndex=${pageIndex}&pageSize=20`, getFetcher);
 
     const getLevelColor = (level: string) => {
         switch (level.toLowerCase()) {

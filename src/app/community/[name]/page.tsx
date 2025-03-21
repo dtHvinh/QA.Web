@@ -8,7 +8,6 @@ import CreateRoomDialog from "@/components/Community/CreateRoomDialog";
 import RoomSettings from "@/components/Community/RoomSettings";
 import DeleteConfirmDialog from "@/components/Dialog/DeleteConfirmDialog";
 import GenericDialog from "@/components/Dialog/GenericDialog";
-import getAuth from "@/helpers/auth-utils";
 import { deleteFetcher, getFetcher, IsErrorResponse } from "@/helpers/request-utils";
 import { fromImage } from "@/helpers/utils";
 import { theme } from "@/theme/theme";
@@ -21,7 +20,6 @@ import useSWR from "swr";
 
 export default function CommunityDetailPage({ params }: { params: Promise<{ name: string }> }) {
     const { name: communityName } = use(params)
-    const auth = getAuth();
     const [settingsOpen, setSettingsOpen] = useState(false);
     const [createRoomOpen, setCreateRoomOpen] = useState(false);
     const [infoOpen, setInfoOpen] = useState(false);
@@ -35,11 +33,7 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
     const [isRoomDeleting, setIsRoomDeleting] = useState(false);
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-    const { data: communityDetail, isLoading, mutate } = useSWR<CommunityDetailResponse>(
-        [`/api/community/detail/${communityName}`, auth?.accessToken],
-        getFetcher
-    );
-
+    const { data: communityDetail, isLoading, mutate } = useSWR<CommunityDetailResponse>(`/api/community/detail/${communityName}`, getFetcher);
 
     const handleCreateRoom = (roomId: number, roomName: string) => {
         if (communityDetail) {
@@ -80,7 +74,7 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
     const handleRoomDelete = async (roomId: number) => {
         if (communityDetail) {
             setIsRoomDeleting(true);
-            const res = await deleteFetcher([`/api/community/${communityDetail.id}/room/${roomId}`, auth!.accessToken]);
+            const res = await deleteFetcher(`/api/community/${communityDetail.id}/room/${roomId}`);
 
             if (!IsErrorResponse(res)) {
                 mutate({

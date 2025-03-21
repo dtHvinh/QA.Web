@@ -2,7 +2,6 @@
 
 import ModeratorPrivilege from "@/components/Privilege/ModeratorPrivilege";
 import TextEditor from "@/components/TextEditor";
-import getAuth from "@/helpers/auth-utils";
 import { getFetcher } from "@/helpers/request-utils";
 import { TagDetailResponse } from "@/types/types";
 import { use, useState } from "react";
@@ -10,12 +9,11 @@ import useSWR from "swr";
 
 export default function EditTagPage({ params }: { params: Promise<{ id: number }> }) {
     const { id } = use(params);
-    const auth = getAuth();
 
     const [wikiBody, setWikiBody] = useState('')
     const [description, setDescription] = useState('')
 
-    const { data: tag, isLoading } = useSWR<TagDetailResponse>([`/api/tag/wiki/${id}`, auth?.accessToken], getFetcher)
+    const { data: tag, isLoading } = useSWR<TagDetailResponse>(`/api/tag/wiki/${id}`, getFetcher)
 
     return (
         <div className="max-w-4xl mx-auto py-8 px-4">

@@ -1,5 +1,4 @@
 import AlertDialog from "@/components/AlertDialog";
-import getAuth from "@/helpers/auth-utils";
 import toQuestionDetail from "@/helpers/path";
 import { deleteFetcher, IsErrorResponse } from "@/helpers/request-utils";
 import timeFromNow from "@/helpers/time-utils";
@@ -15,8 +14,6 @@ const BookmarkItem = memo(function BookmarkItem({ bookmark, onDelete }: Readonly
 }>) {
     const { question } = bookmark;
     const [open, setOpen] = React.useState(false);
-    const auth = getAuth();
-    const requestUrl = `/api/bookmark/${bookmark.id}`;
 
     const handleClickClose = () => {
         setOpen(false)
@@ -28,7 +25,7 @@ const BookmarkItem = memo(function BookmarkItem({ bookmark, onDelete }: Readonly
     }
 
     const handleDelete = async () => {
-        const res = await deleteFetcher([requestUrl, auth!.accessToken]);
+        const res = await deleteFetcher(`/api/bookmark/${bookmark.id}`);
 
         if (!IsErrorResponse(res)) {
             onDelete?.(bookmark);

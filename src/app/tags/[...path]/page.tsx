@@ -6,7 +6,6 @@ import ObjectNotfound from "@/components/Error/ObjectNotFound";
 import FilterBar from "@/components/FilterBar";
 import PermissionAction from "@/components/PermissionAction";
 import ModeratorPrivilege from "@/components/Privilege/ModeratorPrivilege";
-import getAuth from "@/helpers/auth-utils";
 import { getFetcher, IsErrorResponse } from "@/helpers/request-utils";
 import { QuestionResponse, TagDetailResponse } from "@/types/types";
 import { Delete, Edit } from "@mui/icons-material";
@@ -17,7 +16,6 @@ import useSWR from "swr";
 
 export default function TagDetailPage({ params }: { params: Promise<{ path: string[] }> }) {
     const { path } = React.use(params);
-    const auth = getAuth()!;
     const [pageIndex, setPageIndex] = React.useState<number>(1);
     const [tagQuestions, setTagQuestions] = React.useState<QuestionResponse[]>([]);
     const validOrderValue = ['Newest', 'MostViewed', 'MostVoted', 'Solved'];
@@ -29,10 +27,9 @@ export default function TagDetailPage({ params }: { params: Promise<{ path: stri
         'Question has been solved'
     ];
     const [selectedOrder, setSelectedOrder] = React.useState<string>(validOrderValue[0]);
-    const requestUrl = `/api/tag/${path[0]}?orderBy=${selectedOrder}&pageIndex=${pageIndex}&pageSize=15`;
     const titleRef = React.useRef<HTMLHeadingElement>(null);
 
-    const { data: tag, isLoading } = useSWR<TagDetailResponse>([requestUrl, auth?.accessToken], getFetcher);
+    const { data: tag, isLoading } = useSWR<TagDetailResponse>(`/api/tag/${path[0]}?orderBy=${selectedOrder}&pageIndex=${pageIndex}&pageSize=15`, getFetcher);
 
     useEffect(() => {
         if (!IsErrorResponse(tag)) {

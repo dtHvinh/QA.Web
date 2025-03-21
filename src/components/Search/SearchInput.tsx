@@ -1,7 +1,5 @@
-import getAuth from '@/helpers/auth-utils';
 import { getFetcher } from '@/helpers/request-utils';
 import { TagResponse } from '@/types/types';
-import { backendURL } from '@/utilities/Constants';
 import { Popover } from '@mui/material';
 import React, { FormEvent, useState } from 'react';
 import { useDebounce } from 'use-debounce';
@@ -18,17 +16,13 @@ export default function SearchInput({ onSearch }: SearchInputProps) {
     const [searchTerm, setSearchTerm] = useState("");
     const [debouncedSearchTerm] = useDebounce(tagSearchTerm, 700);
     const [tags, setTags] = useState<TagResponse[]>([]);
-    const auth = getAuth();
     const tagSearchInputRef = React.useRef<HTMLInputElement>(null);
 
     React.useEffect(() => {
         if (debouncedSearchTerm.trim().length === 0) return;
 
         const fetchSearchTags = async () => {
-            const searchTags = await getFetcher([
-                `${backendURL}/api/tag/search/${debouncedSearchTerm}`,
-                auth!.accessToken
-            ]);
+            const searchTags = await getFetcher(`/api/tag/search/${debouncedSearchTerm}`);
             setTags(searchTags.items || []);
         };
 

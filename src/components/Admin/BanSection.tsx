@@ -1,4 +1,3 @@
-import getAuth from "@/helpers/auth-utils";
 import { deleteFetcher, getFetcher, IsErrorResponse, postFetcher } from "@/helpers/request-utils";
 import { BanInfoResponse, GetUserResponse } from "@/types/types";
 import notifyError from "@/utilities/ToastrExtensions";
@@ -20,8 +19,6 @@ export default function BanSection({ user, onUserBanned, onUserUnban }:
     const [isBanned, setIsBanned] = useState(user.isBanned)
     const [banInfo, setBanInfo] = useState<BanInfoResponse>();
 
-    const auth = getAuth();
-
     const [banRequest, setBanRequest] = useState<BanRequest>({
         days: 0,
         hours: 0,
@@ -32,7 +29,7 @@ export default function BanSection({ user, onUserBanned, onUserUnban }:
     useEffect(() => {
         if (isBanned) {
             const fetchBanInfo = async () => {
-                const response = await getFetcher([`/api/admin/ban-info/${user.id}`, auth!.accessToken])
+                const response = await getFetcher(`/api/admin/ban-info/${user.id}`)
 
                 if (!IsErrorResponse(response)) {
                     setBanInfo(response as BanInfoResponse)
@@ -47,7 +44,7 @@ export default function BanSection({ user, onUserBanned, onUserUnban }:
         if (banRequest.days <= 0 && banRequest.hours <= 0 && banRequest.minutes <= 0)
             notifyError('Please enter a valid ban time', { vertical: "top", horizontal: "center" });
         else {
-            const response = await postFetcher([`/api/admin/ban/${user.id}`, auth!.accessToken, JSON.stringify(banRequest)])
+            const response = await postFetcher(`/api/admin/ban/${user.id}`, JSON.stringify(banRequest))
 
             if (!IsErrorResponse(response)) {
                 onUserBanned(user.id)
@@ -57,7 +54,7 @@ export default function BanSection({ user, onUserBanned, onUserUnban }:
     }
 
     const handleUnBanUser = async () => {
-        const response = deleteFetcher([`/api/admin/unban/${user.id}`, auth!.accessToken])
+        const response = deleteFetcher(`/api/admin/unban/${user.id}`)
 
         if (!IsErrorResponse(response)) {
             onUserUnban(user.id)
