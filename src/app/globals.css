@@ -87,6 +87,12 @@
     --chat-room-active: #3b82f6;
     --chat-room-active-text: #ffffff;
     --chat-room-hover: #282828;
+
+    .MuiPagination-root {
+        button {
+            color: white !important;
+        }
+    }
 }
 
 body {
