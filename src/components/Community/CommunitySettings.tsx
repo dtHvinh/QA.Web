@@ -67,6 +67,11 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
         setTabValue(newValue);
     };
 
+    const handleClose = () => {
+        setIconPreview(community.iconImage || '');
+        onClose();
+    };
+
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
             const file = e.target.files[0];
@@ -130,14 +135,16 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
         <Dialog
             fullScreen={fullScreen}
             open={open}
-            onClose={onClose}
+            onClose={handleClose}
             fullWidth
             maxWidth="sm"
-            PaperProps={{
-                sx: {
-                    backgroundColor: 'var(--card-background)',
-                    color: 'var(--text-primary)',
-                    borderRadius: '12px'
+            slotProps={{
+                paper: {
+                    sx: {
+                        backgroundColor: 'var(--card-background)',
+                        color: 'var(--text-primary)',
+                        borderRadius: fullScreen ? 'none' : '12px'
+                    }
                 }
             }}
         >
@@ -183,11 +190,11 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
                                 {community.name.charAt(0).toUpperCase()}
                             </Avatar>
 
-                            <button
-                                type="button"
+                            <label
                                 className="flex items-center gap-2 px-4 py-2 rounded-lg
                                     text-[var(--text-secondary)] border border-[var(--border-color)]
-                                    hover:bg-[var(--hover-background)] transition-colors"
+                                    hover:bg-[var(--hover-background)] transition-colors
+                                    cursor-pointer"
                             >
                                 <AddPhotoAlternate fontSize="small" />
                                 Change Icon
@@ -197,7 +204,7 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
                                     accept="image/*"
                                     onChange={handleImageChange}
                                 />
-                            </button>
+                            </label>
                         </div>
 
                         <TextField

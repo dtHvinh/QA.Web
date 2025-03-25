@@ -31,6 +31,7 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
     const [selectedRoom, setSelectedRoom] = useState<ChatRoomResponse | null>(null);
     const [roomDeleteConfirmOpen, setRoomDeleteConfirmOpen] = useState(false);
     const [isRoomDeleting, setIsRoomDeleting] = useState(false);
+    const [isHeaderExpanded, setIsHeaderExpanded] = useState(true);
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
     const { data: communityDetail, isLoading, mutate } = useSWR<CommunityDetailResponse>(`/api/community/detail/${communityName}`, getFetcher);
@@ -117,8 +118,8 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
         communityDetail &&
         <div className="lg:ml-[var(--left-nav-expanded-width)] flex h-[calc(100vh-var(--appbar-height))] -mt-4">
             <div className="flex-1 flex flex-col bg-[var(--background)]">
-                <div className="border-b border-[var(--border-color)] flex items-center bg-[var(--card-background)] 
-                border-l rounded-bl-2xl px-6 shadow-sm h-[73]">
+                <div className={`${!isHeaderExpanded && 'hidden'} border-b border-[var(--border-color)] flex items-center bg-[var(--card-background)] 
+                border-l rounded-bl-2xl px-6 shadow-sm h-[59]`}>
                     <div className="flex items-center gap-4 flex-1">
                         <Avatar
                             src={fromImage(communityDetail.iconImage)}
@@ -133,7 +134,7 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
                         </Avatar>
                         <div>
                             <div className="flex items-center gap-2">
-                                <h1 className="font-semibold text-xl text-[var(--text-primary)]">
+                                <h1 className="font-semibold text-md text-[var(--text-primary)]">
                                     {communityDetail.name}
                                 </h1>
                                 {communityDetail.isPrivate && (
@@ -154,12 +155,12 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
                                 )}
                             </div>
                             <div className="flex items-center gap-3 mt-0.5">
-                                <span className="text-sm text-[var(--text-secondary)] flex items-center gap-1.5">
+                                <span className="text-xs text-[var(--text-secondary)] flex items-center gap-1.5">
                                     <People sx={{ fontSize: 16 }} />
                                     {communityDetail.memberCount} members
                                 </span>
                                 {selectedRoom && (
-                                    <span className="text-sm text-[var(--text-secondary)] flex items-center gap-1.5">
+                                    <span className="text-xs text-[var(--text-secondary)] flex items-center gap-1.5">
                                         <span>•</span>
                                         <Forum sx={{ fontSize: 16 }} />
                                         {selectedRoom.name}
@@ -174,7 +175,7 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
                                 className="text-[var(--text-secondary)] hover:bg-[var(--hover-background)]"
                                 onClick={() => setInfoOpen(true)}
                             >
-                                <InfoOutlined className=" text-[var(--text-primary)]" />
+                                <InfoOutlined fontSize="small" className=" text-[var(--text-primary)]" />
                             </IconButton>
                         </Tooltip>
                         <div className="flex md:hidden">
@@ -183,7 +184,7 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
                                     className="text-[var(--text-secondary)] hover:bg-[var(--hover-background)]"
                                     onClick={() => setGenericDialogOpen(true)}
                                 >
-                                    <ChatBubbleOutlineRounded className=" text-[var(--text-primary)]" />
+                                    <ChatBubbleOutlineRounded fontSize="small" className=" text-[var(--text-primary)]" />
                                 </IconButton>
                             </Tooltip>
                         </div>
@@ -193,20 +194,23 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
                                     className="text-[var(--text-secondary)] hover:bg-[var(--hover-background)]"
                                     onClick={() => setSettingsOpen(true)}
                                 >
-                                    <SettingsOutlined className=" text-[var(--text-primary)]" />
+                                    <SettingsOutlined fontSize="small" className=" text-[var(--text-primary)]" />
                                 </IconButton>
                             </Tooltip>
                         )}
                     </div>
                 </div>
 
-                <div id="chat-room-display" className="flex-1 p-6 bg-[var(--background)] overflow-y-hidden mr-[var(--community-right-sidebar-width)] md:mr-0">
+                <div id="community-main-content" className="flex-1 bg-[var(--background)] overflow-hidden mr-[var(--community-right-sidebar-width)] md:mr-0">
                     {chatRoomOpen &&
                         selectedRoom &&
-                        <ChatRoom
-                            onBack={handleClickBack}
-                            messageInit={selectedRoom.messages}
-                        />}
+                        <div className="h-full p-2">
+                            <ChatRoom
+                                onBack={handleClickBack}
+                                messageInit={selectedRoom.messages}
+                            />
+                        </div>
+                    }
                 </div>
             </div>
 
@@ -275,7 +279,7 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
                         children={
                             <div>
                                 <ChatRoomsSidebar
-                                    className="mr-0"
+                                    className="-mr-[var(--community-right-sidebar-width)]"
                                     rooms={communityDetail.rooms}
                                     isOwner={communityDetail.isOwner}
                                     isModerator={communityDetail.isModerator}

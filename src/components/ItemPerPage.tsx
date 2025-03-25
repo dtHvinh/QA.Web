@@ -5,10 +5,10 @@ export default function ItemPerPage(
         onPageSizeChange,
         values
     }:
-    {
-        onPageSizeChange: (size: number) => void,
-        values: number[]
-    }) {
+        {
+            onPageSizeChange: (size: number) => void,
+            values: number[]
+        }) {
     const [pageSize, setPageSize] = React.useState(values[0]);
 
     const handlePageSizeChange = (size: number) => {
@@ -25,7 +25,7 @@ export default function ItemPerPage(
                     <button
                         key={value}
                         onClick={() => handlePageSizeChange(value)}
-                        className={`px-3 py-2 text-sm ${pageSize == value ? 'bg-gray-300' : 'hover:bg-gray-200'} rounded-full`}>{value}
+                        className={`px-3 py-2 text-sm ${pageSize == value ? 'bg-blue-700' : 'hover:bg-blue-500'} rounded-full transition-colors w-9 justify-center flex`}>{value}
                     </button>
                 ))}
             </div>

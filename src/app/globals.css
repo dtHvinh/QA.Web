@@ -3,9 +3,10 @@
 @tailwind utilities;
 
 :root {
-    --left-nav-expanded-width: 260px;
-    --community-right-sidebar-width: 80px;
+    --left-nav-expanded-width: 180px;
+    --community-right-sidebar-width: 72px;
     --appbar-height: 58px;
+    --chatroom-height: 515px;
 
     --left-nav-expand-button-border: black;
 
@@ -65,12 +66,12 @@
     --foreground: #f9fafb;
     --card-background: #1e1e1e;
     --card-border: #2d2d2d;
-    --nav-background: #1e1e1e;
+    --nav-background: #121212;
     --hover-background: #282828;
     --text-primary: #f3f4f6;
     --text-secondary: #a0a0a0;
     --text-tertiary: #808080;
-    --border-color: #2d2d2d;
+    --border-color: white;
     --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
     --primary-light: #1a1a1a;
     --primary-lighter: #2d2d2d;
@@ -155,7 +156,7 @@ body {
 }
 
 .page-container {
-    max-width: 78rem;
+    max-width: 60rem;
 }
 
 select {

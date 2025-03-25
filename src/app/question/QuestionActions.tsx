@@ -3,7 +3,6 @@ import AlertDialog from "@/components/AlertDialog";
 import AddToCollection from "@/components/Collection/AddToCollection";
 import PermissionAction from "@/components/PermissionAction";
 import ModeratorPrivilege from "@/components/Privilege/ModeratorPrivilege";
-import getAuth from "@/helpers/auth-utils";
 import { deleteFetcher, IsErrorResponse, postFetcher, putFetcher } from "@/helpers/request-utils";
 import { QuestionResponse, VoteResponse } from "@/types/types";
 import notifyError, { notifyInfo, notifySucceed } from "@/utilities/ToastrExtensions";
@@ -19,7 +18,6 @@ export default function QuestionActions({ question, isClosed, onQuestionClose, o
     isClosed: boolean,
     className?: string
 }) {
-    const auth = getAuth();
     const [currentVote, setCurrentVote] = React.useState<number>(question.score);
     const [isBookmarked, setIsBookmarked] = React.useState<boolean>(question.isBookmarked);
     const [deleteConfirmOpen, setDeleteConfirmOpen] = React.useState(false);
@@ -57,7 +55,7 @@ export default function QuestionActions({ question, isClosed, onQuestionClose, o
     const handleVote = async (isUpvote: boolean) => {
         const requestUrl = `/api/question/${question.id}/${isUpvote ? 'upvote' : 'downvote'}/`;
 
-        const response = await postFetcher(requestUrl, auth!.accessToken);
+        const response = await postFetcher(requestUrl);
 
         if (!IsErrorResponse(response)) {
             const voteResponse = response as VoteResponse;

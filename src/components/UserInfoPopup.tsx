@@ -33,7 +33,7 @@ export default function UserInfoPopup({ user, className, element = 'a' }: { user
                     pointerEvents: 'none',
                     '& .MuiPaper-root': {
                         borderRadius: '12px',
-                        boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+                        boxShadow: 'none',
                         backgroundColor: 'var(--card-background)',
                         border: '1px solid var(--border-color)'
                     }

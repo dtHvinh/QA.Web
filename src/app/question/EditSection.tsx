@@ -5,11 +5,13 @@ import { formatString } from "@/helpers/string-utils";
 import { QuestionResponse, TagResponse } from "@/types/types";
 import { Apis, backendURL } from "@/utilities/Constants";
 import { notifySucceed } from "@/utilities/ToastrExtensions";
+import { Close } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 
-export default function EditSection({ question, onEditSuccess }: {
+export default function EditSection({ question, onEditSuccess, onClose }: {
     question: QuestionResponse,
     onEditSuccess?: (question: QuestionResponse) => void
+    onClose?: () => void
 }) {
     const [editContentValue, setEditContentValue] = useState(question.content);
     const [editTitleValue, setEditTitleValue] = useState(question.title);
@@ -54,14 +56,14 @@ export default function EditSection({ question, onEditSuccess }: {
     }
 
     return (
-        <div className="bg-[var(--card-background)] rounded-xl shadow-sm border border-[var(--border-color)] overflow-hidden">
+        <div className="bg-[var(--card-background)] rounded-xl shadow-sm overflow-hidden">
             <div className="flex justify-between items-center">
                 <div className="p-6 border-b border-[var(--border-color)]">
                     <h2 className="text-xl font-bold text-[var(--text-primary)]">Edit Question</h2>
                     <p className="mt-1 text-sm text-[var(--text-secondary)]">Update your question details</p>
                 </div>
 
-                <div className="gap-3">
+                <div className="gap-3 flex">
                     <button
                         onClick={handleSend}
                         disabled={!isAnyChange}
@@ -81,6 +83,13 @@ export default function EditSection({ question, onEditSuccess }: {
                             />
                         </svg>
                         Update
+                    </button>
+                    <button
+                        onClick={onClose}
+                        className="flex items-center px-2 py-1 rounded-lg text-white bg-red-500 hover:bg-[var(--primary-darker)] disabled:bg-[var(--disabled-background)] disabled:cursor-not-allowed transition-colors"
+                    >
+                        <Close />
+                        Close
                     </button>
                 </div>
             </div>

@@ -6,6 +6,7 @@ import QuestionCardListSkeleton from "@/components/Skeletons/YQPSkeleton";
 import YourQuestionItem from "@/components/YourQuestionItem";
 import { getFetcher } from "@/helpers/request-utils";
 import { PagedResponse, QuestionResponse, ViewOptions } from "@/types/types";
+import Link from "next/link";
 import { useState } from "react";
 import useSWR from "swr";
 
@@ -17,7 +18,7 @@ export default function Home() {
     if (isLoading) return <Loading />;
 
     return (
-        <div className="page-container mx-auto px-4">
+        <div className="page-container mx-auto px-4 mb-5">
             <div className="grid grid-cols-12 gap-6">
                 <div className="col-span-full">
                     <h1 className="text-3xl font-bold text-[var(--text-primary)]">
@@ -56,6 +57,24 @@ export default function Home() {
                             </p>
                         </div>
                     </div>
+
+                    <div className="mt-6 bg-[var(--card-background)] rounded-xl shadow-sm border border-[var(--border-color)] p-6">
+                        <div className="space-y-4">
+                            <h2 className="text-lg font-semibold text-[var(--text-primary)]">
+                                Join Communities
+                            </h2>
+                            <p className="text-sm text-[var(--text-secondary)]">
+                                Connect with other developers, share knowledge, and collaborate in specialized communities.
+                            </p>
+                            <Link
+                                href="/community"
+                                className="inline-block w-full text-center px-4 py-2 bg-[var(--primary)] text-white rounded-lg 
+                                    hover:bg-[var(--primary-darker)] transition-colors font-medium"
+                            >
+                                Explore Communities
+                            </Link>
+                        </div>
+                    </div>
                 </div>
 
                 <div className="col-span-full md:col-span-8 lg:col-span-9 mb-5">
@@ -77,12 +96,13 @@ export default function Home() {
                                         view={view}
                                         question={question}
                                         key={question.id}
-                                        showAuthor={false}
+                                        showAuthor={true}
                                     />
                                 ))}
                             </div>
                         )}
                     </div>
+
                 </div>
             </div>
         </div>

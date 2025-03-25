@@ -1,14 +1,14 @@
 import AlertDialog from "@/components/AlertDialog";
 import UserInfoPopup from "@/components/UserInfoPopup";
-import getAuth from "@/helpers/auth-utils";
 import { deleteFetcher, IsErrorResponse, putFetcher } from "@/helpers/request-utils";
 import { formatString } from "@/helpers/string-utils";
 import timeFromNow, { DEFAULT_TIME } from "@/helpers/time-utils";
+import { fromImage } from "@/helpers/utils";
 import { ErrorResponse } from "@/props/ErrorResponse";
 import { CommentResponse } from "@/types/types";
 import { Apis, backendURL } from "@/utilities/Constants";
 import notifyError, { notifySucceed } from "@/utilities/ToastrExtensions";
-import { TextField } from "@mui/material";
+import { Avatar, TextField } from "@mui/material";
 import React from "react";
 
 interface CommentComponentProps {
@@ -23,7 +23,6 @@ const Comment = ({ comment, onCommentDelete }: Readonly<CommentComponentProps>) 
     const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
     const [isDeleting, setIsDeleting] = React.useState(false);
     const [isSaveAllow, setIsSaveAllow] = React.useState(false);
-    const auth = getAuth();
 
     const handleClickOpen = () => {
         setDeleteDialogOpen(true);
@@ -81,56 +80,70 @@ const Comment = ({ comment, onCommentDelete }: Readonly<CommentComponentProps>) 
     }
 
     return (
-        <div className={`relative p-3 mb-4 rounded-lg bg-[var(--card-background)] ${isDeleting ? 'element-exit element-exit-active' : ''}`}>
-            <AlertDialog open={deleteDialogOpen}
+        <div className={`relative p-2 mb-2 rounded-md ${isDeleting ? 'element-exit element-exit-active' : ''}`}>
+            <AlertDialog
+                open={deleteDialogOpen}
                 onClose={handleClose}
                 onYes={handleDelete}
                 title={'Do you want to delete this comment?'}
-                description={'This action cannot be undone'} />
+                description={'This action cannot be undone'}
+            />
 
-            <div className="space-y-2">
-                {isEditing ? (
-                    <TextField
-                        fullWidth
-                        multiline
-                        rows={2}
-                        size="small"
-                        value={editText}
-                        onChange={(e) => handleEditTextChange(e.target.value)}
-                        sx={{
-                            '& .MuiInputBase-root': {
-                                color: 'var(--text-primary)',
-                                backgroundColor: 'var(--input-background)',
-                                '& fieldset': {
-                                    borderColor: 'var(--border-color)',
-                                },
-                                '&:hover fieldset': {
-                                    borderColor: 'var(--primary)',
-                                },
-                                '&.Mui-focused fieldset': {
-                                    borderColor: 'var(--primary)',
-                                },
-                            },
-                        }}
+            <div className="flex gap-4">
+                <div className="flex-shrink-0">
+                    <Avatar
+                        src={fromImage(comment.author?.profilePicture)}
+                        alt={comment.author?.username}
                     />
-                ) : (
-                    <div className="text-sm text-[var(--text-primary)]"
-                        dangerouslySetInnerHTML={{ __html: currentText as TrustedHTML }}>
-                    </div>
-                )}
+                </div>
 
-                <div className="flex items-center justify-between text-xs">
-                    <div className="text-[var(--text-secondary)]">
-                        Commented by {<UserInfoPopup className="inline-block" user={comment.author!} />}
-                        {comment.updatedAt == DEFAULT_TIME ? (
-                            <span> {timeFromNow(comment.createdAt)}</span>
-                        ) : (
-                            <span>(Edited) {timeFromNow(comment.updatedAt)}</span>
-                        )}
+                <div className="flex-grow space-y-1">
+                    <div className="flex items-center gap-2">
+                        <UserInfoPopup
+                            user={comment.author!}
+                            className="text-xs font-medium text-[var(--text-primary)]"
+                        />
+                        <span className="text-xs text-[var(--text-tertiary)]">
+                            {comment.updatedAt == DEFAULT_TIME ?
+                                timeFromNow(comment.createdAt) :
+                                `(edited ${timeFromNow(comment.updatedAt)})`
+                            }
+                        </span>
                     </div>
+
+                    {isEditing ? (
+                        <TextField
+                            fullWidth
+                            multiline
+                            rows={2}
+                            size="small"
+                            value={editText}
+                            onChange={(e) => handleEditTextChange(e.target.value)}
+                            sx={{
+                                '& .MuiInputBase-root': {
+                                    color: 'var(--text-primary)',
+                                    backgroundColor: 'var(--input-background)',
+                                    fontSize: '0.875rem',
+                                    '& fieldset': {
+                                        borderColor: 'var(--border-color)',
+                                    },
+                                    '&:hover fieldset': {
+                                        borderColor: 'var(--primary)',
+                                    },
+                                    '&.Mui-focused fieldset': {
+                                        borderColor: 'var(--primary)',
+                                    },
+                                },
+                            }}
+                        />
+                    ) : (
+                        <div className="text-xs text-[var(--text-primary)]"
+                            dangerouslySetInnerHTML={{ __html: currentText as TrustedHTML }}>
+                        </div>
+                    )}
 
                     {comment.resourceRight == 'Owner' && (
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 text-xs">
                             {isEditing ? (
                                 <>
                                     <button className="text-[var(--text-secondary)] hover:text-[var(--text-primary)]" onClick={handleDiscard}>
@@ -149,7 +162,7 @@ const Comment = ({ comment, onCommentDelete }: Readonly<CommentComponentProps>) 
                                     <button className="text-[var(--text-secondary)] hover:text-[var(--text-primary)]" onClick={handleStartEditing}>
                                         Edit
                                     </button>
-                                    <button className="text-[var(--error)] hover:text-[var(--error)] hover:opacity-80" onClick={handleClickOpen}>
+                                    <button className="text-[var(--error)] hover:opacity-80" onClick={handleClickOpen}>
                                         Delete
                                     </button>
                                 </>

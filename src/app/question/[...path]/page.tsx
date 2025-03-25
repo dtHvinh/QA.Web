@@ -39,7 +39,7 @@ export default function QuestionPage({ params }: { params: Promise<{ path: strin
     return (
         <>
             <title>{question.title}</title>
-            <div className="max-w-7xl mx-auto px-4 py-6">
+            <div className="ml-72 mx-8">
                 <div className="flex flex-col lg:flex-row gap-8">
                     <div className="w-full lg:w-3/4">
                         <div className="overflow-hidden">

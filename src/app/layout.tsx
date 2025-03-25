@@ -4,7 +4,7 @@ import { SupabaseProvider } from "@/context/SupabaseClientContext";
 import { AppThemeProvider } from '@/context/ThemeContext';
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { DM_Sans, Geist, Geist_Mono } from "next/font/google";
 import React from "react";
 import "./globals.css";
@@ -29,6 +29,12 @@ const dmSans = DM_Sans({
 export const metadata: Metadata = {
     title: "Q&A",
     description: "App",
+};
+
+export const viewport: Viewport = {
+    initialScale: 1,
+    width: "device-width",
+    viewportFit: "cover"
 };
 
 export default function RootLayout({
@@ -60,7 +66,7 @@ export default function RootLayout({
                             <ScrollToTopButton />
                         </main>
 
-                        <footer className="bg-gray-800 text-white py-4 z-50 h-[var(--appbar-height)]">
+                        <footer className="bg-[var(--nav-background)] border-t border-gray-100 text-[var(--text-primary)] py-4 z-50 h-[var(--appbar-height)]">
                             <div className="container mx-auto text-center">
                                 <p>&copy; {new Date().getFullYear()} Q&A App. All rights reserved.</p>
                             </div>

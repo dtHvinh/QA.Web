@@ -14,11 +14,11 @@ export default function ChatRoom({ messageInit = [], onBack }: ChatRoomProps & {
     const [messages, setMessages] = useState<ChatMessageResponse[]>(messageInit);
     const [newMessage, setNewMessage] = useState("");
     const messagesEndRef = useRef<HTMLDivElement>(null);
-    const containerRef = useRef<HTMLDivElement>(null);
+    const messagesContainerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        if (messagesEndRef.current) {
-            messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+        if (messagesEndRef.current && messagesContainerRef.current) {
+            messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
         }
     }, [messages]);
 
@@ -46,8 +46,8 @@ export default function ChatRoom({ messageInit = [], onBack }: ChatRoomProps & {
     };
 
     return (
-        <div className="flex flex-col h-[705px] bg-[var(--card-background)] rounded-xl border border-[var(--border-color)] shadow-lg overflow-hidden">
-            <div className="px-4 py-3 border-b border-[var(--border-color)] flex items-center">
+        <div className="flex flex-col h-full bg-[var(--card-background)] rounded-xl border border-[var(--border-color)] overflow-hidden">
+            <div className="px-4 py-1 border-b border-[var(--border-color)] flex items-center">
                 <IconButton
                     onClick={onBack}
                     className="mr-2 text-[var(--text-secondary)] hover:bg-[var(--hover-background)]"
@@ -55,10 +55,10 @@ export default function ChatRoom({ messageInit = [], onBack }: ChatRoomProps & {
                 >
                     <ArrowBack className="text-[var(--text-secondary)]" fontSize="small" />
                 </IconButton>
-                <span className="text-[var(--text-primary)] font-medium">Back to community</span>
+                <span className="text-[var(--text-primary)] text-sm font-medium">Back to community</span>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+            <div ref={messagesContainerRef} className="flex-1 overflow-y-auto p-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
                 <div className="space-y-4">
                     {messages.length === 0 ? (
                         <div className="flex flex-col items-center justify-center h-64 text-[var(--text-tertiary)]">
@@ -112,7 +112,7 @@ export default function ChatRoom({ messageInit = [], onBack }: ChatRoomProps & {
                             );
                         })
                     )}
-                    <div id="22" ref={messagesEndRef} />
+                    <div ref={messagesEndRef} />
                 </div>
             </div>
 

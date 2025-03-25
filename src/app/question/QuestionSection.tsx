@@ -9,7 +9,6 @@ import TagLabel from "@/components/TagLabel";
 import { formatReputation } from "@/helpers/evaluate-utils";
 import { fromImage, highlightCode } from "@/helpers/utils";
 import { QuestionResponse } from "@/types/types";
-import { Close } from "@mui/icons-material";
 import EditIcon from '@mui/icons-material/Edit';
 import { Avatar, Dialog, DialogContent, IconButton, Tooltip } from "@mui/material";
 import 'highlight.js/styles/atom-one-dark.css';
@@ -65,21 +64,10 @@ export default function QuestionSection({ questionInit }: { questionInit: Questi
                     }
                 }}
             >
-                <IconButton
-                    aria-label="close"
-                    onClick={handleEditingClose}
-                    sx={{
-                        position: 'absolute',
-                        right: 8,
-                        top: 8,
-                        color: 'var(--text-secondary)',
-                    }}
-                >
-                    <Close />
-                </IconButton>
-
                 <DialogContent>
-                    <EditSection question={question} onEditSuccess={handleQuestionEdit} />
+                    <EditSection question={question}
+                        onEditSuccess={handleQuestionEdit}
+                        onClose={handleEditingClose} />
                 </DialogContent>
             </Dialog>
 

@@ -30,7 +30,7 @@ export default function TagInput({ onTagIdChange, maxTags, onTagChange, defaultT
         }
 
         async function fetchTags() {
-            const searchTags = await getFetcher([`${requestUrl}/${debouncedSearchTerm}`, auth!.accessToken]) as PagedResponse<TagResponse>;
+            const searchTags = await getFetcher(`${requestUrl}/${debouncedSearchTerm}`) as PagedResponse<TagResponse>;
             setTags(searchTags.items || []);
         }
 

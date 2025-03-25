@@ -103,7 +103,7 @@ export default function CommunityPage() {
                         </div>
                     ) : searchResults?.length === 0 ? (
                         <div className="text-center py-12">
-                            <div className="text-6xl mb-4">🔍</div>
+                            <Search />
                             <h3 className="text-xl font-medium text-[var(--text-primary)] mb-2">No communities found</h3>
                             <p className="text-[var(--text-secondary)]">
                                 Try a different search term or create a new community

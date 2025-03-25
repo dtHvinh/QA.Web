@@ -74,20 +74,20 @@ export default function Tags() {
                         key={tag.id}
                         className="group block"
                     >
-                        <div className="h-full p-6 bg-[var(--card-background)] border border-[var(--border-color)] rounded-xl hover:border-blue-500 hover:shadow-md transition-all duration-200">
-                            <div className="flex items-center justify-between mb-4">
-                                <h3 className="text-lg font-semibold text-[var(--text-primary)] group-hover:text-blue-500 transition-colors">
+                        <div className="h-full p-4 bg-[var(--card-background)] border border-[var(--border-color)] rounded-lg hover:border-blue-500 hover:shadow-sm transition-all duration-200">
+                            <div className="flex items-center justify-between mb-2">
+                                <h3 className="text-base font-medium text-[var(--text-primary)] group-hover:text-blue-500 transition-colors">
                                     {tag.name}
                                 </h3>
-                                <span className="text-sm text-[var(--text-secondary)]">
+                                <span className="text-xs text-[var(--text-secondary)]">
                                     {tag.questionCount || 0} questions
                                 </span>
                             </div>
-                            <p className="text-[var(--text-secondary)] line-clamp-3">
+                            <p className="text-sm text-[var(--text-secondary)] line-clamp-2">
                                 {tag.description}
                             </p>
-                            <div className="mt-4 pt-4 border-t border-[var(--border-color)]">
-                                <span className="text-sm text-blue-500 group-hover:text-blue-600 transition-colors">
+                            <div className="mt-3 pt-2 border-t border-[var(--border-color)]">
+                                <span className="text-xs text-blue-500 group-hover:text-blue-600 transition-colors">
                                     View questions →
                                 </span>
                             </div>

@@ -66,26 +66,26 @@ export default function CommentSection({ question, isClosed }: { question: Quest
     ), [comments]);
 
     return (
-        <Box className="p-4">
-            <div className="flex items-center gap-2 text-[var(--text-primary)] font-medium">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+        <Box className="p-3">
+            <div className="flex items-center gap-1.5 text-[var(--text-primary)] font-medium mb-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                     <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
                     <path d="M3 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM3 6a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 6zm0 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z" />
                 </svg>
-                <Typography typography={'h5'}>Comments</Typography>
-                <span className="text-sm text-[var(--text-secondary)]">({question.commentCount})</span>
+                <Typography variant="h6">Comments</Typography>
+                <span className="text-xs text-[var(--text-secondary)]">({question.commentCount})</span>
             </div>
 
             {comments.length > 0 && (
-                <div className="px-5 space-y-4">
-                    <div className="space-y-4">
+                <div className="px-3 space-y-3">
+                    <div className="space-y-2">
                         {memoizedComments}
                     </div>
 
                     {hasMore && (
                         <button
                             onClick={fetchMoreComment}
-                            className="w-full py-2 text-sm text-[var(--text-secondary)] hover:bg-[var(--hover-background)] bg-[var(--hover-background)] bg-opacity-50 rounded-lg transition-colors"
+                            className="w-full py-1.5 text-xs text-[var(--text-secondary)] hover:bg-[var(--hover-background)] bg-[var(--hover-background)] bg-opacity-50 rounded-md transition-colors"
                         >
                             Load More Comments
                         </button>
@@ -94,15 +94,15 @@ export default function CommentSection({ question, isClosed }: { question: Quest
             )}
 
             {!isClosed && (
-                <div className="space-y-4">
+                <div className="space-y-3 mt-5">
                     {!isComment ? (
                         <div className="flex justify-end">
                             <PermissionAction
                                 action="comment"
                                 callback={() => setIsComment(true)}
-                                className="flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors text-sm font-medium"
+                                className="flex items-center gap-1.5 text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors text-xs font-medium"
                             >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
                                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
                                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                                 </svg>
@@ -110,7 +110,7 @@ export default function CommentSection({ question, isClosed }: { question: Quest
                             </PermissionAction>
                         </div>
                     ) : (
-                        <div className="space-y-4">
+                        <div className="space-y-3">
                             <TextField
                                 fullWidth
                                 minRows={2}
@@ -123,6 +123,7 @@ export default function CommentSection({ question, isClosed }: { question: Quest
                                     "& .MuiOutlinedInput-root": {
                                         color: 'var(--text-primary)',
                                         backgroundColor: 'var(--input-background)',
+                                        fontSize: '0.875rem',
                                         '& fieldset': {
                                             borderColor: 'var(--border-color)',
                                         },
@@ -138,22 +139,22 @@ export default function CommentSection({ question, isClosed }: { question: Quest
                                     },
                                 }}
                             />
-                            <div className="flex justify-end gap-3">
+                            <div className="flex justify-end gap-2">
                                 <button
                                     onClick={() => {
                                         setIsComment(false);
                                         setCurrentText('');
                                     }}
-                                    className="px-4 py-2 text-sm text-[var(--text-secondary)] hover:bg-[var(--hover-background)] rounded-lg transition-colors"
+                                    className="px-3 py-1.5 text-xs text-[var(--text-secondary)] hover:bg-[var(--hover-background)] rounded-md transition-colors"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     onClick={handleSend}
                                     disabled={currentText.length === 0}
-                                    className="flex items-center gap-2 px-4 py-2 text-sm bg-[var(--primary)] text-white rounded-lg hover:bg-[var(--primary-darker)] disabled:bg-[var(--disabled-background)] disabled:text-[var(--text-tertiary)] transition-colors"
+                                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-[var(--primary)] text-white rounded-md hover:bg-[var(--primary-darker)] disabled:bg-[var(--disabled-background)] disabled:text-[var(--text-tertiary)] transition-colors"
                                 >
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
                                         <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z" />
                                     </svg>
                                     Send

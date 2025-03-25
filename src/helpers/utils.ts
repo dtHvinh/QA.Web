@@ -11,7 +11,11 @@ export function scrollToTop() {
 }
 
 export function fromImage(imagePath?: string) {
-    return imagePath ? process.env.NEXT_PUBLIC_STORAGE_HOST + '/' + imagePath : "/default.png";
+    return !imagePath
+        ? "/default.png"
+        : imagePath.startsWith("blob")
+            ? imagePath
+            : process.env.NEXT_PUBLIC_STORAGE_HOST + '/' + imagePath;
 }
 
 export function isScrollBottom(e: HTMLDivElement) {

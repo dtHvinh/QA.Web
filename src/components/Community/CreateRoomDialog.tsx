@@ -2,7 +2,6 @@ import { IsErrorResponse, postFetcher } from '@/helpers/request-utils';
 import notifyError, { notifySucceed } from '@/utilities/ToastrExtensions';
 import { Close } from '@mui/icons-material';
 import {
-    Button,
     Dialog,
     DialogActions,
     DialogContent,
@@ -109,20 +108,19 @@ export default function CreateRoomDialog({ open, communityId, onClose, onCreated
                 </DialogContent>
 
                 <DialogActions className="p-4 pt-2">
-                    <Button
+                    <button
                         onClick={onClose}
-                        className="text-[var(--text-secondary)] hover:bg-[var(--hover-background)]"
+                        className="text-[var(--text-secondary)] hover:bg-[var(--hover-background)] px-4 py-2 rounded-md shadow-md disabled:bg-[var(--disabled-background)] disabled:text-[var(--text-tertiary)] transition-all"
                     >
                         Cancel
-                    </Button>
-                    <Button
+                    </button>
+                    <button
                         type="submit"
-                        variant="contained"
                         disabled={!name.trim() || isSubmitting}
-                        className="bg-[var(--primary)] hover:bg-[var(--primary-darker)]"
+                        className="bg-[var(--primary)] hover:bg-[var(--primary-darker)] text-[var(--text-primary)] px-4 py-2 rounded-md shadow-md disabled:bg-[var(--disabled-background)] disabled:text-[var(--text-tertiary)] transition-all"
                     >
                         {isSubmitting ? 'Creating...' : 'Create Room'}
-                    </Button>
+                    </button>
                 </DialogActions>
             </form>
         </Dialog>

@@ -58,10 +58,10 @@ export default function ChatRoomsSidebar({
     };
 
     return (
-        <div className={`${className} md:w-80 mr-[var(--community-right-sidebar-width)] bg-[var(--card-background)] border-l 
+        <div className={` md:w-72 mr-[var(--community-right-sidebar-width)] bg-[var(--card-background)] border-l 
                         border-[var(--border-color)] flex flex-col
-                        h-[calc(100vh-calc(var(--appbar-height)*2))]`}>
-            <div className="p-4 border-b border-[var(--border-color)] h-[73px]">
+                        h-[calc(100vh-calc(var(--appbar-height)))] ${className}`}>
+            <div className="p-4 border-b border-[var(--border-color)] h-[59]">
                 <div className="flex items-center justify-between">
                     <span className="font-medium text-lg text-[var(--text-primary)]">Chat Rooms</span>
                     {(isOwner || isModerator) && (
@@ -77,15 +77,15 @@ export default function ChatRoomsSidebar({
                 </div>
             </div>
 
-            <div ref={roomDisplayRef} onScroll={handleRoomScroll} className="flex-1 overflow-y-auto">
+            <div ref={roomDisplayRef} onScroll={handleRoomScroll} className="flex-1 overflow-y-auto text-sm">
                 <div className="p-4 space-y-2">
                     {rooms.map(room => (
                         <div key={room.id} className="flex items-center gap-2">
                             <button
                                 onClick={() => onRoomClick(room)}
-                                className={`flex-1 flex items-center gap-3 px-4 py-2 rounded-md transition-all
+                                className={`flex-1 flex items-center gap-3 px-4 h-8 rounded-md transition-all
                                     ${selectedRoomId === room.id
-                                        ? 'text-white bg-[var(--secondary)]'
+                                        ? 'text-white bg-violet-500'
                                         : 'text-[var(--text-primary)] hover:bg-[var(--hover-background)]'
                                     }`}
                             >
