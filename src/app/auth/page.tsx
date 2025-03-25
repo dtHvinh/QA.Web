@@ -144,7 +144,7 @@ export default function AuthPage() {
                                             type="password"
                                             name="confirmPassword"
                                             required
-                                            className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                                            className="text-black w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
                                             placeholder="••••••••"
                                         />
                                     </motion.div>

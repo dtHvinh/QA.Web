@@ -1,8 +1,6 @@
 import TagLabel from "@/components/TagLabel";
-import getAuth from "@/helpers/auth-utils";
 import { getFetcher } from "@/helpers/request-utils";
 import { PagedResponse, TagResponse } from "@/types/types";
-import { backendURL } from "@/utilities/Constants";
 import notifyError from "@/utilities/ToastrExtensions";
 import { Autocomplete, Box, TextField, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
@@ -16,8 +14,7 @@ export interface TagInputProps {
 }
 
 export default function TagInput({ onTagIdChange, maxTags, onTagChange, defaultTags }: TagInputProps) {
-    const auth = getAuth();
-    const requestUrl = `${backendURL}/api/tag/search`;
+    const requestUrl = `/api/tag/search`;
 
     const [tags, setTags] = useState<TagResponse[]>([]);
     const [selectedTags, setSelectedTags] = useState<TagResponse[]>(defaultTags ?? []);
