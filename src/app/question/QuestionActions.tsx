@@ -6,16 +6,18 @@ import ModeratorPrivilege from "@/components/Privilege/ModeratorPrivilege";
 import { deleteFetcher, IsErrorResponse, postFetcher, putFetcher } from "@/helpers/request-utils";
 import { QuestionResponse, VoteResponse } from "@/types/types";
 import notifyError, { notifyInfo, notifySucceed } from "@/utilities/ToastrExtensions";
-import { BookmarkAdded, BookmarkAddOutlined, Close, Delete, OpenInFull } from "@mui/icons-material";
-import { Tooltip } from "@mui/material";
+import { BookmarkAdded, BookmarkAddOutlined, Close, Delete, FileCopyOutlined, OpenInFull } from "@mui/icons-material";
+import { ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
-export default function QuestionActions({ question, isClosed, onQuestionClose, onQuestionReopen, className }: {
+export default function QuestionActions({ question, isClosed, isDuplicated, onQuestionClose, onQuestionReopen, onSetDuplicated, className }: {
     question: QuestionResponse,
     onQuestionClose?: () => void,
+    onSetDuplicated?: () => void,
     onQuestionReopen?: () => void,
     isClosed: boolean,
+    isDuplicated: boolean,
     className?: string
 }) {
     const [currentVote, setCurrentVote] = React.useState<number>(question.score);
@@ -41,6 +43,10 @@ export default function QuestionActions({ question, isClosed, onQuestionClose, o
             notifySucceed('Question deleted');
             window.history.go(-1);
         }
+    }
+
+    const handleSetDuplicated = () => {
+        onSetDuplicated?.();
     }
 
     const handleShare = async () => {
@@ -80,6 +86,17 @@ export default function QuestionActions({ question, isClosed, onQuestionClose, o
             onQuestionReopen?.();
         }
     }
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const [duplicateUrl, setDuplicateUrl] = useState('');
+
+    const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+    };
+
     return (
         <div className={`${className} flex flex-col items-center gap-2 p-4`}>
             <div className="flex flex-col items-center gap-2">
@@ -146,42 +163,96 @@ export default function QuestionActions({ question, isClosed, onQuestionClose, o
 
             <ModeratorPrivilege>
                 <div className="w-full h-px bg-[var(--border-color)] my-2"></div>
-                <div className="relative">
-                    <ModeratorButton onClick={() => setIsExpand(!isExpand)} />
+                <ModeratorButton onClick={handleMenuOpen} />
 
-                    {isExpand && (
-                        <div className="absolute left-0 mt-2 w-48 bg-[var(--card-background)] rounded-md shadow-lg py-1 z-50">
-                            <Tooltip title="Moderator considered this question should be deleted" arrow placement="right">
+                <Menu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleMenuClose}
+                    sx={{
+                        '& .MuiPaper-root': {
+                            bgcolor: 'var(--card-background)',
+                            color: 'var(--text-primary)',
+                            width: 280,
+                        },
+                        '& .MuiMenuItem-root': {
+                            color: 'var(--text-secondary)',
+                            '&:hover': {
+                                bgcolor: 'var(--hover-background)',
+                            },
+                        },
+                    }}
+                >
+                    <MenuItem
+                        onClick={() => {
+                            handleMenuClose();
+                            setDeleteConfirmOpen(true);
+                        }}
+                    >
+                        <ListItemIcon>
+                            <Delete className="text-[var(--text-secondary)]" />
+                        </ListItemIcon>
+                        <ListItemText>Delete Question</ListItemText>
+                    </MenuItem>
+
+                    {!isClosed ? (
+                        <MenuItem
+                            onClick={() => {
+                                handleMenuClose();
+                                setCloseConfirmOpen(true);
+                            }}
+                        >
+                            <ListItemIcon>
+                                <Close className="text-[var(--text-secondary)]" />
+                            </ListItemIcon>
+                            <ListItemText>Close Question</ListItemText>
+                        </MenuItem>
+                    ) : (
+                        <MenuItem
+                            onClick={() => {
+                                handleMenuClose();
+                                handleReOpenQuestion();
+                            }}
+                        >
+                            <ListItemIcon>
+                                <OpenInFull className="text-[var(--text-secondary)]" />
+                            </ListItemIcon>
+                            <ListItemText>Reopen Question</ListItemText>
+                        </MenuItem>
+                    )}
+
+                    <hr className="mx-5" />
+
+                    {!isDuplicated && (
+                        <div className="px-5 mt-2">
+                            <div className="flex items-center gap-3 text-sm text-[var(--text-secondary)] mb-2">
+                                <FileCopyOutlined fontSize="small" />
+                                Mark as duplicate
+                            </div>
+                            <div className="flex gap-2">
+                                <input
+                                    type="text"
+                                    value={duplicateUrl}
+                                    onChange={(e) => setDuplicateUrl(e.target.value)}
+                                    placeholder="Enter question URL"
+                                    className="flex-1 px-3 py-1.5 text-sm rounded border border-[var(--border-color)] 
+                                        bg-[var(--input-background)] text-[var(--text-primary)] 
+                                        placeholder:text-[var(--text-tertiary)] outline-none"
+                                />
                                 <button
-                                    onClick={() => setDeleteConfirmOpen(true)}
-                                    className="flex items-center w-full px-4 py-2 text-sm text-[var(--text-secondary)] hover:bg-[var(--hover-background)]"
+                                    onClick={() => {
+                                        handleSetDuplicated();
+                                        handleMenuClose();
+                                    }}
+                                    className="px-3 py-1.5 text-sm rounded bg-[var(--primary)] text-white 
+                                        hover:bg-[var(--primary-darker)] transition-colors"
                                 >
-                                    <Delete className="mr-2" /> Delete Question
+                                    Set
                                 </button>
-                            </Tooltip>
-
-                            {!isClosed ? (
-                                <Tooltip title="Moderator considered this question should be closed" arrow placement="right">
-                                    <button
-                                        onClick={() => setCloseConfirmOpen(true)}
-                                        className="flex items-center w-full px-4 py-2 text-sm text-[var(--text-secondary)] hover:bg-[var(--hover-background)]"
-                                    >
-                                        <Close className="mr-2" /> Close Question
-                                    </button>
-                                </Tooltip>
-                            ) : (
-                                <Tooltip title="Moderator considered this question should be re-opened" arrow placement="right">
-                                    <button
-                                        onClick={handleReOpenQuestion}
-                                        className="flex items-center w-full px-4 py-2 text-sm text-[var(--text-secondary)] hover:bg-[var(--hover-background)]"
-                                    >
-                                        <OpenInFull className="mr-2" /> Reopen Question
-                                    </button>
-                                </Tooltip>
-                            )}
+                            </div>
                         </div>
                     )}
-                </div>
+                </Menu>
             </ModeratorPrivilege>
 
             <AlertDialog

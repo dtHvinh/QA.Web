@@ -3,6 +3,8 @@
 @tailwind utilities;
 
 :root {
+    --riw: 40px;
+
     --left-nav-expanded-width: 180px;
     --community-right-sidebar-width: 72px;
     --appbar-height: 58px;
@@ -71,7 +73,7 @@
     --text-primary: #f3f4f6;
     --text-secondary: #a0a0a0;
     --text-tertiary: #808080;
-    --border-color: white;
+    --border-color: rgba(255, 255, 255, 0.562);
     --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
     --primary-light: #1a1a1a;
     --primary-lighter: #2d2d2d;
@@ -171,4 +173,9 @@ input:focus-visible {
 
 .tiptap>p {
     padding-bottom: 1rem;
+}
+
+/* Why tf text has to uppercase by def */
+.MuiButtonBase-root {
+    text-transform: none !important;
 }

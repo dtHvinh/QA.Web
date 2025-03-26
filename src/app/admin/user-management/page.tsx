@@ -5,9 +5,10 @@ import ObjectNotfound from "@/components/Error/ObjectNotFound";
 import AccessDenied from "@/components/Privilege/AccessDenied";
 import AdminPrivilege from "@/components/Privilege/AdminPrivilege";
 import { getFetcher, IsErrorResponse } from "@/helpers/request-utils";
+import { fromImage } from "@/helpers/utils";
 import { GetUserResponse, PagedResponse } from "@/types/types";
 import { ArrowBack } from "@mui/icons-material";
-import { Pagination } from "@mui/material";
+import { Avatar, Pagination } from "@mui/material";
 import Link from "next/link";
 import React, { FormEvent, useEffect, useState } from "react";
 import useSWR from "swr";
@@ -119,8 +120,8 @@ export default function UserManagementPage() {
                                             </td>
                                             <td className="py-3 px-6">
                                                 <div className="flex items-center gap-3">
-                                                    <img
-                                                        src={user.profilePicture}
+                                                    <Avatar
+                                                        src={fromImage(user.profilePicture)}
                                                         alt={user.userName}
                                                         className="w-8 h-8 rounded-full"
                                                     />

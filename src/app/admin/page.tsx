@@ -45,7 +45,7 @@ export default function AdminDashboard() {
     return (
         <AdminPrivilege fallBackComponent={<AccessDenied />}>
             <div className="min-h-[calc(100vh-var(--appbar-height))]">
-                <div className="max-w-7xl mx-auto p-6">
+                <div className="page-container mx-auto p-6">
                     <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-xl p-6 mb-6 shadow-md">
                         <div className="flex items-center gap-4">
                             <div className="p-3 bg-white/20 rounded-lg">

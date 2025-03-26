@@ -35,7 +35,7 @@ export default function CommunityCard({ community, compact = "compact" }: Commun
 
     return (
         <div
-            className="flex justify-between place-items-start bg-[var(--card-background)] rounded-xl border border-[var(--border-color)] p-4 hover:bg-[var(--hover-background)] "
+            className="flex justify-between items-stretch bg-[var(--card-background)] rounded-xl border border-[var(--border-color)] p-4 hover:bg-[var(--hover-background)] "
         >
             <div className="flex items-center gap-3">
                 <Avatar
@@ -64,7 +64,7 @@ export default function CommunityCard({ community, compact = "compact" }: Commun
                         <span>{community.memberCount} members</span>
                     </div>
 
-                    {!compact && community.description && (
+                    {compact == 'full' && community.description && (
                         <p className="text-sm text-[var(--text-secondary)] mt-2 line-clamp-2">
                             {community.description}
                         </p>
@@ -72,14 +72,16 @@ export default function CommunityCard({ community, compact = "compact" }: Commun
                 </div>
             </div>
 
-            {!isJoined && <div className="mt-4 flex">
-                <button
-                    onClick={handleJoinCommunity}
-                    className={`border px-4 py-1 rounded-full text-sm font-semibold text-[var(--primary)] border-[var(--primary)] hover:bg-[var(--primary-light)]`}
-                >
-                    Join
-                </button>
-            </div>}
+            {!isJoined &&
+                <div className="mt-4 flex">
+                    <button
+                        onClick={handleJoinCommunity}
+                        className={`border p-1 px-3 rounded-full text-sm font-semibold text-[var(--primary)] border-[var(--primary)] hover:bg-[var(--primary-light)]`}
+                    >
+                        Join
+                    </button>
+                </div>
+            }
         </div>
     );
 }

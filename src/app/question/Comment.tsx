@@ -81,14 +81,6 @@ const Comment = ({ comment, onCommentDelete }: Readonly<CommentComponentProps>) 
 
     return (
         <div className={`relative p-2 mb-2 rounded-md ${isDeleting ? 'element-exit element-exit-active' : ''}`}>
-            <AlertDialog
-                open={deleteDialogOpen}
-                onClose={handleClose}
-                onYes={handleDelete}
-                title={'Do you want to delete this comment?'}
-                description={'This action cannot be undone'}
-            />
-
             <div className="flex gap-4">
                 <div className="flex-shrink-0">
                     <Avatar
@@ -171,6 +163,14 @@ const Comment = ({ comment, onCommentDelete }: Readonly<CommentComponentProps>) 
                     )}
                 </div>
             </div>
+
+            <AlertDialog
+                open={deleteDialogOpen}
+                onClose={handleClose}
+                onYes={handleDelete}
+                title={'Do you want to delete this comment?'}
+                description={'This action cannot be undone'}
+            />
         </div>
     );
 }

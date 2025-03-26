@@ -17,6 +17,7 @@ export default function CommunityLayout({ children }: { children: React.ReactNod
     const [pageIndex, setPageIndex] = useState(1);
     const pathname = usePathname();
     const [createDialogOpen, setCreateDialogOpen] = useState(false);
+    const [joinDialogOpen, setJoinDialogOpen] = useState(false);
 
     const { data: communityJoined, isLoading, mutate } = useSWR<GetCommunityResponse[]>(`/api/community/joined?pageIndex=${pageIndex}&pageSize=10`, getFetcher);
 
@@ -50,15 +51,17 @@ export default function CommunityLayout({ children }: { children: React.ReactNod
                     <div className="flex justify-center">
                         <Avatar
                             sx={{
-                                width: 48,
-                                height: 48,
+                                width: 'var(--riw)',
+                                height: 'var(--riw)',
                                 bgcolor: 'var(--primary-light)',
                                 color: 'var(--primary)',
                                 cursor: 'pointer',
                                 transition: 'all 0.2s ease',
+                                border: '1px solid var(--border-color)',
                                 '&:hover': {
                                     bgcolor: 'var(--primary)',
                                     color: 'white',
+                                    border: '2px solid var(--primary)'
                                 }
                             }}
                             onClick={() => setCreateDialogOpen(true)}
@@ -94,10 +97,11 @@ export default function CommunityLayout({ children }: { children: React.ReactNod
                                 href={`/community/${community.name}`}
                             >
                                 <Avatar
+                                    variant={`${communityName === community.name ? 'rounded' : 'circular'}`}
                                     src={fromImage(community.iconImage)}
                                     sx={{
-                                        width: 48,
-                                        height: 48,
+                                        width: 'var(--riw)',
+                                        height: 'var(--riw)',
                                         cursor: 'pointer',
                                         transition: 'all 0.2s ease',
                                         border: communityName === community.name
@@ -109,7 +113,7 @@ export default function CommunityLayout({ children }: { children: React.ReactNod
                                         }
                                     }}
                                 >
-                                    {community.name.charAt(0).toUpperCase()}
+                                    {community.name}
                                 </Avatar>
                                 <div className="absolute bottom-0 right-[8px] w-4 h-4 bg-[var(--success)] rounded-full text-white text-[9px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                     <span>{community.memberCount > 99 ? '99+' : community.memberCount}</span>
@@ -122,6 +126,32 @@ export default function CommunityLayout({ children }: { children: React.ReactNod
                         </Tooltip>
                     ))
                 )}
+
+                <Tooltip title="Join via Invitation" placement="left" arrow>
+                    <div className="flex justify-center">
+                        <Avatar
+                            sx={{
+                                width: 'var(--riw)',
+                                height: 'var(--riw)',
+                                bgcolor: 'var(--success-light)',
+                                color: 'var(--success)',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s ease',
+                                border: '1px solid var(--border-color)',
+                                '&:hover': {
+                                    bgcolor: 'var(--success)',
+                                    color: 'white',
+                                    border: '2px solid var(--success)'
+                                }
+                            }}
+                            onClick={() => setJoinDialogOpen(true)}
+                        >
+                            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                        </Avatar>
+                    </div>
+                </Tooltip>
             </div>
 
             <CreateCommunityDialog

@@ -8,6 +8,7 @@ import CreateRoomDialog from "@/components/Community/CreateRoomDialog";
 import RoomSettings from "@/components/Community/RoomSettings";
 import DeleteConfirmDialog from "@/components/Dialog/DeleteConfirmDialog";
 import GenericDialog from "@/components/Dialog/GenericDialog";
+import ObjectNotfound from "@/components/Error/ObjectNotFound";
 import { deleteFetcher, getFetcher, IsErrorResponse } from "@/helpers/request-utils";
 import { fromImage } from "@/helpers/utils";
 import { theme } from "@/theme/theme";
@@ -35,6 +36,10 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
     const { data: communityDetail, isLoading, mutate } = useSWR<CommunityDetailResponse>(`/api/community/detail/${communityName}`, getFetcher);
+
+    if ((!isLoading && IsErrorResponse(communityDetail))) {
+        return <ObjectNotfound title="Error" message="Community is not exist or it is a private " />
+    }
 
     const handleCreateRoom = (roomId: number, roomName: string) => {
         if (communityDetail) {
@@ -188,16 +193,14 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
                                 </IconButton>
                             </Tooltip>
                         </div>
-                        {communityDetail.isOwner && (
-                            <Tooltip title="Community Settings">
-                                <IconButton
-                                    className="text-[var(--text-secondary)] hover:bg-[var(--hover-background)]"
-                                    onClick={() => setSettingsOpen(true)}
-                                >
-                                    <SettingsOutlined fontSize="small" className=" text-[var(--text-primary)]" />
-                                </IconButton>
-                            </Tooltip>
-                        )}
+                        <Tooltip title="Community Settings">
+                            <IconButton
+                                className="text-[var(--text-secondary)] hover:bg-[var(--hover-background)]"
+                                onClick={() => setSettingsOpen(true)}
+                            >
+                                <SettingsOutlined fontSize="small" className=" text-[var(--text-primary)]" />
+                            </IconButton>
+                        </Tooltip>
                     </div>
                 </div>
 

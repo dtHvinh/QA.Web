@@ -4,7 +4,7 @@ import { ErrorResponse } from "@/props/ErrorResponse";
 import { theme } from "@/theme/theme";
 import { CommunityDetailResponse, PagedResponse } from "@/types/types";
 import notifyError, { notifySucceed } from "@/utilities/ToastrExtensions";
-import { AddPhotoAlternate, Close, Delete, Group, PersonAdd, Save } from "@mui/icons-material";
+import { AddPhotoAlternate, Build, BuildOutlined, Close, Delete, DeleteForeverOutlined, Group, PersonAdd, Save } from "@mui/icons-material";
 import {
     Avatar,
     Box,
@@ -17,7 +17,7 @@ import {
     IconButton,
     Tab,
     Tabs,
-    TextField,
+    Tooltip,
     Typography
 } from "@mui/material";
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -25,6 +25,7 @@ import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 import useSWR from "swr";
 import DeleteConfirmDialog from "../Dialog/DeleteConfirmDialog";
+import MemberLoadingSkeleton from "./MemberLoadingSkeleton";
 
 interface CommunitySettingsProps {
     open: boolean;
@@ -37,7 +38,23 @@ export interface CommunityMemberResponse {
     id: string,
     username: string,
     profileImage: string,
-    isModerator: boolean
+    isModerator: boolean,
+    isOwner: boolean
+}
+
+function CommunityMod({ children, isModerator }: Readonly<{ children: React.ReactNode, isModerator: boolean }>) {
+    return (
+        isModerator &&
+        <div>
+            {children}
+        </div>
+    )
+}
+
+function CommunityOwner({ children, isOwner }: Readonly<{ children: React.ReactNode, isOwner: boolean }>) {
+    return (
+        isOwner ? children : null
+    )
 }
 
 export default function CommunitySettings({ open, onClose, community, onUpdate }: CommunitySettingsProps) {
@@ -168,7 +185,8 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
                             color: 'var(--text-secondary)',
                             '&.Mui-selected': {
                                 color: 'var(--primary)'
-                            }
+                            },
+                            textTransform: 'none',
                         },
                         '& .MuiTabs-indicator': {
                             backgroundColor: 'var(--primary)'
@@ -177,7 +195,9 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
                 >
                     <Tab label="General" />
                     <Tab label="Members" />
-                    <Tab label="Danger Zone" />
+                    {community.isOwner &&
+                        <Tab label="Danger Zone" />
+                    }
                 </Tabs>
 
                 {tabValue === 0 && (
@@ -190,105 +210,109 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
                                 {community.name.charAt(0).toUpperCase()}
                             </Avatar>
 
-                            <label
-                                className="flex items-center gap-2 px-4 py-2 rounded-lg
-                                    text-[var(--text-secondary)] border border-[var(--border-color)]
-                                    hover:bg-[var(--hover-background)] transition-colors
-                                    cursor-pointer"
-                            >
-                                <AddPhotoAlternate fontSize="small" />
-                                Change Icon
-                                <input
-                                    type="file"
-                                    hidden
-                                    accept="image/*"
-                                    onChange={handleImageChange}
-                                />
+                            <CommunityOwner isOwner={community.isOwner}>
+                                <label
+                                    className="flex items-center gap-2 px-4 py-2 rounded-lg
+                                text-[var(--text-secondary)] border border-[var(--border-color)]
+                                hover:bg-[var(--hover-background)] transition-colors
+                                cursor-pointer"
+                                >
+                                    <AddPhotoAlternate fontSize="small" />
+                                    Change Icon
+                                    <input
+                                        type="file"
+                                        hidden
+                                        accept="image/*"
+                                        onChange={handleImageChange}
+                                    />
+                                </label>
+                            </CommunityOwner>
+                        </div>
+
+                        <div className="space-y-2">
+                            <label htmlFor="communityName" className="block text-sm font-medium text-[var(--text-primary)]">
+                                Community Name <span className="text-[var(--error)]">*</span>
                             </label>
+                            <input
+                                id="communityName"
+                                type="text"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                disabled={!community.isOwner}
+                                required
+                                placeholder="Enter community name"
+                                className="w-full px-4 py-2.5 rounded-lg border border-[var(--border-color)] 
+                                bg-[var(--input-background)] text-[var(--text-primary)] 
+                                placeholder:text-[var(--text-tertiary)] 
+                                focus:outline-none focus:ring-2 focus:ring-[var(--primary-light)] focus:border-[var(--primary)]
+                                disabled:opacity-60 disabled:cursor-not-allowed
+                                transition-all"
+                            />
                         </div>
 
-                        <TextField
-                            label="Community Name"
-                            fullWidth
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            margin="normal"
-                            required
-                            InputProps={{
-                                sx: {
-                                    backgroundColor: 'var(--input-background)',
-                                    color: 'var(--text-primary)'
-                                }
-                            }}
-                            InputLabelProps={{
-                                sx: {
-                                    color: 'var(--text-secondary)'
-                                }
-                            }}
-                        />
-
-                        <TextField
-                            label="Description"
-                            fullWidth
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            margin="normal"
-                            multiline
-                            rows={4}
-                            InputProps={{
-                                sx: {
-                                    backgroundColor: 'var(--input-background)',
-                                    color: 'var(--text-primary)'
-                                }
-                            }}
-                            InputLabelProps={{
-                                sx: {
-                                    color: 'var(--text-secondary)'
-                                }
-                            }}
-                        />
-
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    checked={isPrivate}
-                                    onChange={(e) => setIsPrivate(e.target.checked)}
-                                    sx={{
-                                        color: 'var(--text-secondary)',
-                                        '&.Mui-checked': {
-                                            color: 'var(--primary)',
-                                        },
-                                    }}
-                                />
-                            }
-                            label="Private Community"
-                            className="mt-2 text-[var(--text-primary)]"
-                        />
-
-                        <Typography variant="body2" className="mt-1 text-[var(--text-tertiary)]">
-                            Private communities require approval to join and are not visible in search results.
-                        </Typography>
-
-                        <div className="flex justify-end mt-6">
-                            <button
-                                type="button"
-                                onClick={onClose}
-                                className="mr-2 px-4 py-2 rounded-lg text-[var(--text-secondary)]
-                                    hover:bg-[var(--hover-background)] transition-colors"
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                type="submit"
-                                disabled={isSubmitting || !anyChange}
-                                className="flex items-center gap-2 px-4 py-2 rounded-lg
-                                    bg-[var(--primary)] hover:bg-[var(--primary-darker)]
-                                    text-white transition-colors disabled:opacity-50"
-                            >
-                                <Save fontSize="small" />
-                                {isSubmitting ? 'Saving...' : 'Save Changes'}
-                            </button>
+                        <div className="space-y-2 mt-6">
+                            <label htmlFor="description" className="block text-sm font-medium text-[var(--text-primary)]">
+                                Description
+                            </label>
+                            <textarea
+                                id="description"
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                disabled={!community.isOwner}
+                                placeholder="Enter community description"
+                                rows={4}
+                                className="w-full px-4 py-2.5 rounded-lg border border-[var(--border-color)] 
+                                bg-[var(--input-background)] text-[var(--text-primary)] 
+                                placeholder:text-[var(--text-tertiary)] 
+                                focus:outline-none focus:ring-2 focus:ring-[var(--primary-light)] focus:border-[var(--primary)]
+                                disabled:opacity-60 disabled:cursor-not-allowed resize-none
+                                transition-all"
+                            />
                         </div>
+
+                        <CommunityOwner isOwner={community.isOwner}>
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        checked={isPrivate}
+                                        onChange={(e) => setIsPrivate(e.target.checked)}
+                                        sx={{
+                                            color: 'var(--text-secondary)',
+                                            '&.Mui-checked': {
+                                                color: 'var(--primary)',
+                                            },
+                                        }}
+                                    />
+                                }
+                                label="Private Community"
+                                className="mt-2 text-[var(--text-primary)]"
+                            />
+
+                            <Typography variant="body2" className="mt-1 text-[var(--text-tertiary)]">
+                                Private communities require approval to join and are not visible in search results.
+                            </Typography>
+
+                            <div className="flex justify-end mt-6">
+                                <button
+                                    type="button"
+                                    onClick={onClose}
+                                    className="mr-2 px-4 py-2 rounded-lg text-[var(--text-secondary)]
+                                hover:bg-[var(--hover-background)] transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    disabled={isSubmitting || !anyChange}
+                                    className="flex items-center gap-2 px-4 py-2 rounded-lg
+                                bg-[var(--primary)] hover:bg-[var(--primary-darker)]
+                                text-white transition-colors disabled:opacity-50"
+                                >
+                                    <Save fontSize="small" />
+                                    {isSubmitting ? 'Saving...' : 'Save Changes'}
+                                </button>
+                            </div>
+                        </CommunityOwner>
                     </Box>
                 )}
 
@@ -301,29 +325,21 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
                                     Members ({members?.totalCount || 0})
                                 </Typography>
                             </div>
-                            <button
-                                type="button"
-                                className="flex items-center gap-2 px-4 py-2 rounded-lg
-                                    text-[var(--text-secondary)] border border-[var(--border-color)]
-                                    hover:bg-[var(--hover-background)] transition-colors"
-                            >
-                                <PersonAdd fontSize="small" />
-                                Invite Members
-                            </button>
+                            {(!community.isPrivate || (community.isModerator || community.isOwner)) &&
+                                <button
+                                    type="button"
+                                    className="flex items-center gap-2 px-4 py-2 rounded-lg
+                                text-[var(--text-secondary)] border border-[var(--border-color)]
+                                hover:bg-[var(--hover-background)] transition-colors"
+                                >
+                                    <PersonAdd fontSize="small" />
+                                    Invite Members
+                                </button>
+                            }
                         </div>
 
                         {isMemberLoading ? (
-                            <div className="space-y-3">
-                                {[1, 2, 3].map((i) => (
-                                    <div key={i} className="flex items-center gap-3 animate-pulse">
-                                        <div className="w-10 h-10 rounded-full bg-[var(--hover-background)]" />
-                                        <div className="flex-1 space-y-2">
-                                            <div className="h-4 w-32 bg-[var(--hover-background)] rounded" />
-                                            <div className="h-3 w-20 bg-[var(--hover-background)] rounded" />
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
+                            <MemberLoadingSkeleton />
                         ) : (
                             <div className="space-y-3">
                                 {members?.items.map((member) => (
@@ -339,22 +355,37 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
                                             <div className="font-medium text-[var(--text-primary)]">
                                                 {member.username}
                                             </div>
-                                            {member.isModerator && (
+                                            {member.isOwner ?
                                                 <div className="text-sm text-[var(--primary)]">
-                                                    Moderator
-                                                </div>
-                                            )}
+                                                    Owner
+                                                </div> : member.isModerator && (
+                                                    <div className="text-sm text-[var(--primary)]">
+                                                        Moderator
+                                                    </div>
+                                                )}
                                         </div>
                                         {community.isOwner && (
-                                            <Button
-                                                size="small"
-                                                variant="outlined"
-                                                sx={{ textTransform: 'none' }}
-                                                className="text-[var(--text-secondary)] border-[var(--border-color)]"
-                                            >
-                                                {member.isModerator ? 'Remove Mod' : 'Make Mod'}
-                                            </Button>
+                                            member.isModerator ? (
+                                                <Tooltip title="Revoke mod">
+                                                    <button>
+                                                        <Build className="text-blue-400" />
+                                                    </button>
+                                                </Tooltip>
+                                            ) : (
+                                                <Tooltip title="Make mod">
+                                                    <button>
+                                                        <BuildOutlined />
+                                                    </button>
+                                                </Tooltip>
+                                            )
                                         )}
+                                        <CommunityOwner isOwner={community.isOwner} >
+                                            <Tooltip title="Remove member">
+                                                <button>
+                                                    <DeleteForeverOutlined />
+                                                </button>
+                                            </Tooltip>
+                                        </CommunityOwner>
                                     </div>
                                 ))}
                             </div>

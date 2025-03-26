@@ -58,15 +58,16 @@ export default function ChatRoomsSidebar({
     };
 
     return (
-        <div className={` md:w-72 mr-[var(--community-right-sidebar-width)] bg-[var(--card-background)] border-l 
+        <div className={`md:w-72 mr-[var(--community-right-sidebar-width)] bg-[var(--card-background)] border-l 
                         border-[var(--border-color)] flex flex-col
                         h-[calc(100vh-calc(var(--appbar-height)))] ${className}`}>
-            <div className="p-4 border-b border-[var(--border-color)] h-[59]">
-                <div className="flex items-center justify-between">
+            <div className="p-4 border-b border-[var(--border-color)] h-[59px] flex items-center">
+                <div className="flex-1 flex items-center justify-between gap-4">
                     <span className="font-medium text-lg text-[var(--text-primary)]">Chat Rooms</span>
                     {(isOwner || isModerator) && (
                         <Tooltip title="Create Room">
                             <IconButton
+                                size="small"
                                 className="bg-[var(--primary)] hover:bg-[var(--primary-darker)]"
                                 onClick={onCreateRoomClick}
                             >

@@ -25,73 +25,61 @@ interface CreateCommunityDialogProps {
     onCreated: (community: GetCommunityResponse) => void;
 }
 
+interface CommunityFormState {
+    name: string;
+    description: string;
+    isPrivate: boolean;
+    iconImage: File | null;
+    iconPreview: string;
+}
+
 export default function CreateCommunityDialog({ open, onClose, onCreated }: CreateCommunityDialogProps) {
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-    const [name, setName] = useState('');
-    const [description, setDescription] = useState('');
-    const [isPrivate, setIsPrivate] = useState(false);
-    const [iconImage, setIconImage] = useState<File | null>(null);
-    const [iconPreview, setIconPreview] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [nameError, setNameError] = useState('');
+
+    const [formState, setFormState] = useState<CommunityFormState>({
+        name: '',
+        description: '',
+        isPrivate: false,
+        iconImage: null,
+        iconPreview: ''
+    });
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
             const file = e.target.files[0];
-            setIconImage(file);
-            setIconPreview(URL.createObjectURL(file));
+            setFormState(prev => ({
+                ...prev,
+                iconImage: file,
+                iconPreview: URL.createObjectURL(file)
+            }));
         }
     };
 
-    const validateName = (value: string) => {
-        if (!value.trim()) {
-            setNameError('Community name is required');
-            return false;
-        }
-
-        if (value.length < 3) {
-            setNameError('Community name must be at least 3 characters');
-            return false;
-        }
-
-        if (value.length > 30) {
-            setNameError('Community name must be less than 30 characters');
-            return false;
-        }
-
-        if (!/^[a-zA-Z0-9_-]+$/.test(value)) {
-            setNameError('Community name can only contain letters, numbers, underscores, and hyphens');
-            return false;
-        }
-
-        setNameError('');
-        return true;
-    };
+    const isSubmitable = formState.name.trim() !== '' && formState.iconImage !== null;
 
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        setName(value);
-        validateName(value);
+        setFormState(prev => ({
+            ...prev,
+            name: e.target.value
+        }));
     };
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if (!validateName(name)) {
-            return;
-        }
-
         setIsSubmitting(true);
 
         try {
             const formData = new FormData();
-            formData.append('name', name);
-            formData.append('description', description);
-            formData.append('isPrivate', isPrivate.toString());
+            formData.append('name', formState.name);
+            formData.append('description', formState.description);
+            formData.append('isPrivate', formState.isPrivate.toString());
 
-            if (iconImage) {
-                formData.append('iconImage', iconImage);
+            if (formState.iconImage) {
+                formData.append('iconImage', formState.iconImage);
             }
 
             const response = await formPostFetcher(
@@ -111,15 +99,18 @@ export default function CreateCommunityDialog({ open, onClose, onCreated }: Crea
     };
 
     const handleClose = () => {
-        setName('');
-        setDescription('');
-        setIsPrivate(false);
-        setIconImage(null);
-        setIconPreview('');
+        setFormState({
+            name: '',
+            description: '',
+            isPrivate: false,
+            iconImage: null,
+            iconPreview: ''
+        });
         setNameError('');
         onClose();
     };
 
+    // Update the JSX to use formState
     return (
         <Dialog
             open={open}
@@ -148,7 +139,7 @@ export default function CreateCommunityDialog({ open, onClose, onCreated }: Crea
                 <DialogContent className="pt-4">
                     <div className="flex flex-col items-center mb-6">
                         <Avatar
-                            src={iconPreview}
+                            src={formState.iconPreview}
                             sx={{
                                 width: 100,
                                 height: 100,
@@ -157,7 +148,7 @@ export default function CreateCommunityDialog({ open, onClose, onCreated }: Crea
                                 color: 'var(--primary)'
                             }}
                         >
-                            {name ? name.charAt(0).toUpperCase() : <AddPhotoAlternate />}
+                            {formState.name ? formState.name.charAt(0).toUpperCase() : <AddPhotoAlternate />}
                         </Avatar>
 
                         <Button
@@ -180,7 +171,7 @@ export default function CreateCommunityDialog({ open, onClose, onCreated }: Crea
                         autoFocus
                         label="Community Name"
                         fullWidth
-                        value={name}
+                        value={formState.name}
                         onChange={handleNameChange}
                         required
                         variant="outlined"
@@ -210,8 +201,8 @@ export default function CreateCommunityDialog({ open, onClose, onCreated }: Crea
                     <TextField
                         label="Description (Optional)"
                         fullWidth
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
+                        value={formState.description}
+                        onChange={(e) => setFormState(prev => ({ ...prev, description: e.target.value }))}
                         variant="outlined"
                         margin="normal"
                         multiline
@@ -237,8 +228,8 @@ export default function CreateCommunityDialog({ open, onClose, onCreated }: Crea
                     <FormControlLabel
                         control={
                             <Checkbox
-                                checked={isPrivate}
-                                onChange={(e) => setIsPrivate(e.target.checked)}
+                                checked={formState.isPrivate}
+                                onChange={(e) => setFormState(prev => ({ ...prev, isPrivate: e.target.checked }))}
                                 sx={{
                                     color: 'var(--text-secondary)',
                                     '&.Mui-checked': {
@@ -259,6 +250,7 @@ export default function CreateCommunityDialog({ open, onClose, onCreated }: Crea
                 <DialogActions className="p-4 pt-2">
                     <Button
                         onClick={handleClose}
+                        sx={{ textTransform: 'none' }}
                         className="text-[var(--text-secondary)] hover:bg-[var(--hover-background)]"
                     >
                         Cancel
@@ -266,7 +258,8 @@ export default function CreateCommunityDialog({ open, onClose, onCreated }: Crea
                     <Button
                         type="submit"
                         variant="contained"
-                        disabled={!name.trim() || !!nameError || isSubmitting}
+                        sx={{ textTransform: 'none' }}
+                        disabled={!isSubmitable || !!nameError || isSubmitting}
                         className="bg-[var(--primary)] hover:bg-[var(--primary-darker)]"
                     >
                         {isSubmitting ? 'Creating...' : 'Create Community'}

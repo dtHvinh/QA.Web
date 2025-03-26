@@ -21,6 +21,8 @@ export default function TagLabel(params: Readonly<TagLabelProps>) {
                 className={`${className} bg-[var(--tag-background)] text-[var(--tag-text)] hover:bg-[var(--tag-background)] hover:opacity-80 transition-opacity`}
                 sx={{
                     height: '24px',
+                    border: '1px solid var(--border-color)',
+                    color: 'var(--text-primary)',
                     '& .MuiChip-label': {
                         fontSize: '0.7rem',
                         padding: '0 8px',

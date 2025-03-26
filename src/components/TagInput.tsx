@@ -56,16 +56,17 @@ export default function TagInput({ onTagIdChange, maxTags, onTagChange, defaultT
                 onChange={handleTagChange}
                 renderTags={(value: TagResponse[], getTagProps) =>
                     value.map((option: TagResponse, index: number) => (
-                        <TagLabel
-                            {...getTagProps({ index })}
-                            {...option}
-                            name={option.name}
-                            key={option.id}
-                            className={"mr-2"}
-                            onClick={(name: string) => {
-                                setSelectedTags(selectedTags.filter((tag) => tag.name !== name));
-                            }}
-                        />
+                        <div key={option.id} className="mr-[.5]">
+                            <TagLabel
+                                {...getTagProps({ index })}
+                                {...option}
+                                name={option.name}
+                                onClick={(name: string) => {
+                                    setSelectedTags(selectedTags.filter((tag) => tag.name !== name));
+                                }}
+                            />
+                        </div>
+
                     ))
                 }
                 renderInput={(params) => (

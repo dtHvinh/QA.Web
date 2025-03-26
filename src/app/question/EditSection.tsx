@@ -19,8 +19,11 @@ export default function EditSection({ question, onEditSuccess, onClose }: {
     const [editTags, setEditTags] = useState(question.tags);
     const [editComment, setEditComment] = useState('');
     const [isAnyChange, setIsAnyChange] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
 
     const handleSend = async () => {
+        setIsEditing(true);
+
         const requestUrl = formatString(backendURL + Apis.Question.Update, question.id);
 
         const response = await putFetcher(requestUrl, JSON.stringify({
@@ -41,6 +44,8 @@ export default function EditSection({ question, onEditSuccess, onClose }: {
                 tags: editTags
             });
         }
+
+        setIsEditing(false);
     }
 
     useEffect(() => {
@@ -58,7 +63,7 @@ export default function EditSection({ question, onEditSuccess, onClose }: {
     return (
         <div className="bg-[var(--card-background)] rounded-xl shadow-sm overflow-hidden">
             <div className="flex justify-between items-center">
-                <div className="p-6 border-b border-[var(--border-color)]">
+                <div className="p-6">
                     <h2 className="text-xl font-bold text-[var(--text-primary)]">Edit Question</h2>
                     <p className="mt-1 text-sm text-[var(--text-secondary)]">Update your question details</p>
                 </div>

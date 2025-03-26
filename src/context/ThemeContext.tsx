@@ -1,5 +1,4 @@
 'use client'
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 type Theme = 'light' | 'dark';
@@ -8,33 +7,6 @@ type ThemeContextType = {
     theme: Theme;
     toggleTheme: () => void;
 };
-
-const noUppercaseTheme = createTheme({
-    components: {
-        MuiButton: {
-            styleOverrides: {
-                root: {
-                    textTransform: 'none',
-                },
-            },
-        },
-        MuiTab: {
-            styleOverrides: {
-                root: {
-                    textTransform: 'none',
-                },
-            },
-        },
-    },
-    typography: {
-        button: {
-            textTransform: 'none',
-        },
-        allVariants: {
-            textTransform: 'none',
-        },
-    },
-});
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
@@ -60,11 +32,9 @@ export function AppThemeProvider({ children }: { children: React.ReactNode }) {
     };
 
     return (
-        <ThemeProvider theme={noUppercaseTheme}>
-            <ThemeContext.Provider value={{ theme, toggleTheme }}>
-                {children}
-            </ThemeContext.Provider>
-        </ThemeProvider>
+        <ThemeContext.Provider value={{ theme, toggleTheme }}>
+            {children}
+        </ThemeContext.Provider>
     );
 }
 

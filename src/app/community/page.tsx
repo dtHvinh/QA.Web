@@ -112,7 +112,7 @@ export default function CommunityPage() {
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             {searchResults?.map((community) => (
-                                <CommunityCard key={community.id} community={community} />
+                                <CommunityCard key={community.id} community={community} compact={view} />
                             ))}
                         </div>
                     )}
@@ -132,7 +132,7 @@ export default function CommunityPage() {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                                 {joinedCommunities.map((community) => (
-                                    <CommunityCard key={community.id} community={community} compact="compact" />
+                                    <CommunityCard key={community.id} community={community} compact={view} />
                                 ))}
                             </div>
                         </div>

@@ -17,6 +17,7 @@ import React, { useEffect } from "react";
 export default function QuestionSection({ questionInit }: { questionInit: QuestionResponse }) {
     const [isSolved, setIsSolved] = React.useState<boolean>(questionInit.isSolved);
     const [isClosed, setIsClosed] = React.useState<boolean>(questionInit.isClosed);
+    const [isDuplicated, setIsDuplicated] = React.useState<boolean>(questionInit.isDuplicate);
     const [isEditing, setIsEditing] = React.useState<boolean>(false);
     const [question, setQuestion] = React.useState<QuestionResponse>(questionInit);
 
@@ -44,6 +45,10 @@ export default function QuestionSection({ questionInit }: { questionInit: Questi
         setIsClosed(false);
     }
 
+    const handleSetDuplicated = () => {
+        setIsDuplicated(true);
+    }
+
     const handleQuestionEdit = (question: QuestionResponse) => {
         setQuestion(question);
         setIsEditing(false);
@@ -51,33 +56,15 @@ export default function QuestionSection({ questionInit }: { questionInit: Questi
 
     return (
         <div className="page-container mx-auto">
-            <Dialog
-                fullScreen={true}
-                open={isEditing}
-                onClose={handleEditingClose}
-                hideBackdrop={true}
-                sx={{
-                    '& .MuiDialog-paper': {
-                        maxWidth: 'none',
-                        backgroundColor: 'var(--card-background)',
-                        color: 'var(--text-primary)'
-                    }
-                }}
-            >
-                <DialogContent>
-                    <EditSection question={question}
-                        onEditSuccess={handleQuestionEdit}
-                        onClose={handleEditingClose} />
-                </DialogContent>
-            </Dialog>
-
             <div className="grid grid-cols-12 gap-6">
                 <div className="col-span-1">
                     <QuestionActions
+                        isDuplicated={isDuplicated}
                         question={question}
                         isClosed={isClosed}
                         onQuestionClose={handleQuestionClose}
                         onQuestionReopen={handleQuestionReopen}
+                        onSetDuplicated={handleSetDuplicated}
                         className="md:sticky top-4"
                     />
                 </div>
@@ -142,6 +129,26 @@ export default function QuestionSection({ questionInit }: { questionInit: Questi
                     </div>
                 </div>
             </div>
+
+            <Dialog
+                fullScreen={true}
+                open={isEditing}
+                onClose={handleEditingClose}
+                hideBackdrop={true}
+                sx={{
+                    '& .MuiDialog-paper': {
+                        maxWidth: 'none',
+                        backgroundColor: 'var(--card-background)',
+                        color: 'var(--text-primary)'
+                    }
+                }}
+            >
+                <DialogContent>
+                    <EditSection question={question}
+                        onEditSuccess={handleQuestionEdit}
+                        onClose={handleEditingClose} />
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

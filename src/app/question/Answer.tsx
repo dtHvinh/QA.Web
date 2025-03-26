@@ -6,7 +6,6 @@ import ModeratorPrivilege from "@/components/Privilege/ModeratorPrivilege";
 import ResourceOwnerPrivilege from "@/components/Privilege/ResourceOwnerPrivilege";
 import RoundedButton from "@/components/RoundedButton";
 import TextEditor from "@/components/TextEditor";
-import getAuth from "@/helpers/auth-utils";
 import { formatReputation } from "@/helpers/evaluate-utils";
 import { deleteFetcher, IsErrorResponse, postFetcher, putFetcher } from "@/helpers/request-utils";
 import { formatString } from "@/helpers/string-utils";
@@ -15,8 +14,8 @@ import { fromImage } from "@/helpers/utils";
 import { AnswerResponse, QuestionResponse, VoteResponse } from "@/types/types";
 import { Apis, backendURL } from "@/utilities/Constants";
 import { notifySucceed } from "@/utilities/ToastrExtensions";
-import { Delete } from "@mui/icons-material";
-import { Avatar } from "@mui/material";
+import { Check, Delete } from "@mui/icons-material";
+import { Avatar, ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material";
 import React, { memo } from "react";
 
 const Answer = (
@@ -42,8 +41,8 @@ const Answer = (
     const [isEditing, setIsEditing] = React.useState(false);
     const [isDeleting, setIsDeleting] = React.useState(false);
     const [isAllowUpdate, setIsAllowUpdate] = React.useState(false);
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
-    const auth = getAuth();
     const acceptAnswerUrl = formatString(backendURL + Apis.Question.AcceptAnswer, question.id, answer.id);
 
     const handleClickOpen = () => {
@@ -155,32 +154,63 @@ const Answer = (
 
                     <ModeratorPrivilege>
                         <div className="relative">
-                            <ModeratorButton onClick={() => setIsModMenuOpen(!isModMenuOpen)} />
+                            <ModeratorButton onClick={(e) => setAnchorEl(e.currentTarget)} />
 
-                            {isModMenuOpen && (
-                                <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-[var(--card-background)] ring-1 ring-black ring-opacity-5 z-10">
-                                    <div className="py-1">
-                                        {!isAnswerAccepted && (
-                                            <button
-                                                onClick={handleAnswerAccepted}
-                                                className="flex items-center w-full px-4 py-2 text-sm text-[var(--success)] hover:bg-[var(--success-light)]"
-                                            >
-                                                <svg className="mr-3" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                                                    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" />
-                                                </svg>
-                                                Accept Answer
-                                            </button>
-                                        )}
-                                        <button
-                                            onClick={handleClickOpen}
-                                            className="flex items-center w-full px-4 py-2 text-sm text-[var(--error)] hover:bg-[var(--error)] hover:bg-opacity-10"
-                                        >
-                                            <Delete className="mr-3" fontSize="small" />
-                                            Delete Answer
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
+                            <Menu
+                                anchorEl={anchorEl}
+                                open={Boolean(anchorEl)}
+                                onClose={() => setAnchorEl(null)}
+                                sx={{
+                                    '& .MuiPaper-root': {
+                                        bgcolor: 'var(--card-background)',
+                                        color: 'var(--text-primary)',
+                                        width: 200,
+                                    },
+                                    '& .MuiMenuItem-root': {
+                                        color: 'var(--text-secondary)',
+                                        '&:hover': {
+                                            bgcolor: 'var(--hover-background)',
+                                        },
+                                    },
+                                }}
+                            >
+                                {!isAnswerAccepted && (
+                                    <MenuItem
+                                        onClick={() => {
+                                            handleAnswerAccepted();
+                                            setAnchorEl(null);
+                                        }}
+                                        sx={{
+                                            color: 'var(--success) !important',
+                                            '&:hover': {
+                                                bgcolor: 'var(--success-light) !important',
+                                            },
+                                        }}
+                                    >
+                                        <ListItemIcon>
+                                            <Check className="text-[var(--success)]" />
+                                        </ListItemIcon>
+                                        <ListItemText>Accept Answer</ListItemText>
+                                    </MenuItem>
+                                )}
+                                <MenuItem
+                                    onClick={() => {
+                                        handleClickOpen();
+                                        setAnchorEl(null);
+                                    }}
+                                    sx={{
+                                        color: 'var(--error) !important',
+                                        '&:hover': {
+                                            bgcolor: 'var(--error-light) !important',
+                                        },
+                                    }}
+                                >
+                                    <ListItemIcon>
+                                        <Delete className="text-[var(--error)]" />
+                                    </ListItemIcon>
+                                    <ListItemText>Delete Answer</ListItemText>
+                                </MenuItem>
+                            </Menu>
                         </div>
                     </ModeratorPrivilege>
                 </div>

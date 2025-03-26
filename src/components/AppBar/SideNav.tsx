@@ -23,7 +23,8 @@ export default function SideNav() {
             ${isExpanded ? 'w-[var(--left-nav-expanded-width)]' : 'w-4'} 
             border-r border-[var(--border-color)]
             fixed left-0 top-[var(--appbar-height)]
-            z-50`}
+            z-50
+            `}
         >
             <button
                 onClick={() => setIsExpanded(!isExpanded)}
@@ -36,14 +37,14 @@ export default function SideNav() {
 
             {isExpanded && <>
                 <div className="h-14 flex items-center justify-between w-full px-4">
-                    <Link href={Routes.Home} className="flex items-center gap-2">
+                    <div className="flex items-center gap-2">
                         <PsychologyOutlined className="text-blue-500" fontSize="small" />
                         {isExpanded && <span className="font-medium text-base">QA Platform</span>}
-                    </Link>
+                    </div>
                 </div>
 
                 <nav className="w-full flex flex-col p-2 space-y-1">
-                    <div className="space-y-0.5">
+                    <div className="space-y-0.5 border-white">
                         <Link href={Routes.Home}
                             className={`h-8 px-3 flex items-center gap-2 w-full rounded-md hover:bg-[var(--hover-background)] transition-colors text-sm
                         ${pathname === Routes.Home ? theme.selected : ''}`}>
@@ -64,9 +65,7 @@ export default function SideNav() {
                             <TagOutlined fontSize="small" />
                             <span>Tags</span>
                         </Link>
-                    </div>
 
-                    <div className="space-y-0.5 pt-2">
                         <Link href={Routes.Collections}
                             className={`h-8 px-3 flex items-center gap-2 w-full rounded-md hover:bg-[var(--hover-background)] transition-colors text-sm
                         ${pathname === Routes.Collections ? theme.selected : ''}`}>
