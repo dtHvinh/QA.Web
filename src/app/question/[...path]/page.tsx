@@ -16,7 +16,7 @@ import useSWR from "swr";
 export default function QuestionPage({ params }: { params: Promise<{ path: string[] }> }) {
     const { path } = React.use(params);
     const [relatedQuestions, setRelatedQuestions] = useState<PagedResponse<QuestionResponse>>()
-    const { data, isLoading } = useSWR(`${Apis.Question.GetQuestionDetail}/view/${path[0]}`, getFetcher);
+    const { data, isLoading } = useSWR<QuestionResponse>(`${Apis.Question.GetQuestionDetail}/view/${path[0]}`, getFetcher);
 
     const question = data as QuestionResponse;
 
@@ -27,6 +27,8 @@ export default function QuestionPage({ params }: { params: Promise<{ path: strin
             }
         })
     }, []);
+
+    console.log(data);
 
     if (isLoading) {
         return <Loading />

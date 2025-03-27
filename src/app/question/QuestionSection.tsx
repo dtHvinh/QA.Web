@@ -10,7 +10,7 @@ import { formatReputation } from "@/helpers/evaluate-utils";
 import { fromImage, highlightCode } from "@/helpers/utils";
 import { QuestionResponse } from "@/types/types";
 import EditIcon from '@mui/icons-material/Edit';
-import { Avatar, Dialog, DialogContent, IconButton, Tooltip } from "@mui/material";
+import { Avatar, Dialog, DialogContent, IconButton, Link, Tooltip } from "@mui/material";
 import 'highlight.js/styles/atom-one-dark.css';
 import React, { useEffect } from "react";
 
@@ -20,6 +20,7 @@ export default function QuestionSection({ questionInit }: { questionInit: Questi
     const [isDuplicated, setIsDuplicated] = React.useState<boolean>(questionInit.isDuplicate);
     const [isEditing, setIsEditing] = React.useState<boolean>(false);
     const [question, setQuestion] = React.useState<QuestionResponse>(questionInit);
+    const [duplicateQuestionUrl, setDuplicateQuestionUrl] = React.useState<string>(questionInit.duplicateQuestionUrl ?? "");
 
     const handleEditClick = () => {
         setIsEditing(!isEditing);
@@ -45,8 +46,14 @@ export default function QuestionSection({ questionInit }: { questionInit: Questi
         setIsClosed(false);
     }
 
-    const handleSetDuplicated = () => {
+    const handleSetDuplicated = (url: string) => {
         setIsDuplicated(true);
+        setDuplicateQuestionUrl(url);
+    }
+
+    const handleRemoveDuplicateFlag = () => {
+        setIsDuplicated(false);
+        setDuplicateQuestionUrl('');
     }
 
     const handleQuestionEdit = (question: QuestionResponse) => {
@@ -65,11 +72,31 @@ export default function QuestionSection({ questionInit }: { questionInit: Questi
                         onQuestionClose={handleQuestionClose}
                         onQuestionReopen={handleQuestionReopen}
                         onSetDuplicated={handleSetDuplicated}
+                        onRemoveDuplicateFlag={handleRemoveDuplicateFlag}
                         className="md:sticky top-4"
                     />
                 </div>
 
                 <div className="col-span-11 space-y-6">
+                    {duplicateQuestionUrl && (
+                        <div className="flex items-center gap-2 p-3 text-sm border rounded-lg bg-amber-50 border-amber-200 text-amber-800">
+                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                                />
+                            </svg>
+                            <span>
+                                This question has been marked as duplicate of{' '}
+                                <Link
+                                    href={question.duplicateQuestionUrl}
+                                    className="font-medium underline hover:text-amber-900"
+                                >
+                                    this question
+                                </Link>
+                            </span>
+                        </div>
+                    )}
+
                     <div className="flex items-start justify-between">
                         <h1 className="text-2xl font-semibold text-[var(--text-primary)]">{question.title}</h1>
                         <ResourceOwnerPrivilege resourceRight={question.resourceRight}>

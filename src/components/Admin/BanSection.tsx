@@ -67,14 +67,13 @@ export default function BanSection({ user, onUserBanned, onUserUnban }:
             {!isBanned ? (
                 <div className="space-y-6">
                     <div>
-                        <h3 className="text-lg font-medium text-gray-900">Ban User</h3>
-                        <p className="text-sm text-gray-500 mt-1">Set the duration for how long this user will be banned</p>
+                        <h3 className="text-lg font-medium text-[var(--text-primary)]">Ban User</h3>
+                        <p className="text-sm text-[var(--text-secondary)] mt-1">Set the duration for how long this user will be banned</p>
                     </div>
 
                     <div className="grid gap-6">
-
-                        <div className="bg-gray-50 p-4 rounded-lg">
-                            <label className="block text-sm font-medium text-gray-700 mb-3">Ban Duration</label>
+                        <div className="bg-[var(--hover-background)] p-4 rounded-lg">
+                            <label className="block text-sm font-medium text-[var(--text-primary)] mb-3">Ban Duration</label>
                             <div className="flex flex-wrap items-center gap-4">
                                 <div className="flex items-center gap-2">
                                     <input
@@ -83,9 +82,9 @@ export default function BanSection({ user, onUserBanned, onUserUnban }:
                                         min={0}
                                         defaultValue={0}
                                         onChange={(e) => setBanRequest({ ...banRequest, days: parseInt(e.target.value) })}
-                                        className="w-16 h-12 text-center border rounded-lg focus:border-red-500 focus:ring-1 focus:ring-red-500"
+                                        className="w-16 h-12 text-center bg-[var(--card-background)] text-[var(--text-primary)] border border-[var(--border-color)] rounded-lg focus:border-red-500 focus:ring-1 focus:ring-red-500"
                                     />
-                                    <span className="text-sm font-medium text-gray-600 w-14">Days</span>
+                                    <span className="text-sm font-medium text-[var(--text-secondary)] w-14">Days</span>
                                 </div>
 
                                 <span className="text-gray-400 font-medium">:</span>
@@ -97,7 +96,7 @@ export default function BanSection({ user, onUserBanned, onUserUnban }:
                                         min={0}
                                         defaultValue={0}
                                         onChange={(e) => setBanRequest({ ...banRequest, hours: parseInt(e.target.value) })}
-                                        className="w-16 h-12 text-center border rounded-lg focus:border-red-500 focus:ring-1 focus:ring-red-500"
+                                        className="w-16 h-12 text-center bg-[var(--card-background)] text-[var(--text-primary)] border border-[var(--border-color)] rounded-lg focus:border-red-500 focus:ring-1 focus:ring-red-500"
                                     />
                                     <span className="text-sm font-medium text-gray-600 w-14">Hours</span>
                                 </div>
@@ -111,28 +110,28 @@ export default function BanSection({ user, onUserBanned, onUserUnban }:
                                         min={0}
                                         defaultValue={0}
                                         onChange={(e) => setBanRequest({ ...banRequest, minutes: parseInt(e.target.value) })}
-                                        className="w-16 h-12 text-center border rounded-lg focus:border-red-500 focus:ring-1 focus:ring-red-500"
+                                        className="w-16 h-12 text-center bg-[var(--card-background)] text-[var(--text-primary)] border border-[var(--border-color)] rounded-lg focus:border-red-500 focus:ring-1 focus:ring-red-500"
                                     />
                                     <span className="text-sm font-medium text-gray-600 w-14">Mins</span>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="bg-gray-50 p-4 rounded-lg">
-                            <label className="block text-sm font-medium text-gray-700 mb-3">Reason for ban</label>
+                        <div className="bg-[var(--hover-background)] p-4 rounded-lg">
+                            <label className="block text-sm font-medium text-[var(--text-primary)] mb-3">Reason for ban</label>
                             <textarea
                                 rows={3}
                                 placeholder="Enter the reason for banning this user..."
                                 onChange={(e) => setBanRequest({ ...banRequest, reason: e.target.value })}
-                                className="w-full px-4 py-3 border rounded-lg focus:border-red-500 focus:ring-1 focus:ring-red-500 text-sm"
+                                className="w-full px-4 py-3 bg-[var(--card-background)] text-[var(--text-primary)] border border-[var(--border-color)] rounded-lg focus:border-red-500 focus:ring-1 focus:ring-red-500 text-sm"
                             />
                         </div>
 
                         <div className="flex justify-end">
                             <button
                                 onClick={handleBanUser}
-                                className="px-6 py-2.5 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors 
-                                         disabled:bg-gray-300 disabled:cursor-not-allowed"
+                                className="px-6 py-2.5 bg-red-500 dark:bg-red-600 text-white rounded-lg hover:bg-red-600 dark:hover:bg-red-700 transition-colors 
+                                         disabled:bg-gray-300 dark:disabled:bg-gray-700 disabled:cursor-not-allowed"
                                 disabled={isBanned}
                             >
                                 Ban User
@@ -141,22 +140,22 @@ export default function BanSection({ user, onUserBanned, onUserUnban }:
                     </div>
                 </div>
             ) : (
-                <div className="bg-red-50 p-6 rounded-lg space-y-4">
+                <div className="bg-red-50 dark:bg-red-900/20 p-6 rounded-lg space-y-4">
                     <div>
-                        <h3 className="text-lg font-medium text-gray-900">User is Currently Banned</h3>
-                        <p className="text-sm text-gray-500 mt-1">
+                        <h3 className="text-lg font-medium text-[var(--text-primary)]">User is Currently Banned</h3>
+                        <p className="text-sm text-[var(--text-secondary)] mt-1">
                             Ban will expire on {new Date(banInfo?.endedDate || '').toLocaleString()}
                         </p>
                         {banInfo?.reason && (
-                            <p className="text-sm text-gray-600 mt-2">
+                            <p className="text-sm text-[var(--text-secondary)] mt-2">
                                 <span className="font-medium">Reason:</span> {banInfo.reason}
                             </p>
                         )}
                     </div>
                     <button
                         onClick={handleUnBanUser}
-                        className="px-6 py-2.5 bg-green-500 text-white rounded-lg hover:bg-green-600 
-                                 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+                        className="px-6 py-2.5 bg-green-500 dark:bg-green-600 text-white rounded-lg hover:bg-green-600 dark:hover:bg-green-700 
+                                 transition-colors disabled:bg-gray-300 dark:disabled:bg-gray-700 disabled:cursor-not-allowed"
                         disabled={!isBanned}
                     >
                         Unban User
@@ -165,4 +164,4 @@ export default function BanSection({ user, onUserBanned, onUserUnban }:
             )}
         </div>
     );
-}    
+}

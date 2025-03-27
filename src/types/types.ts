@@ -148,6 +148,7 @@ export interface QuestionResponse extends ResourceRightProps {
     isSolved: boolean,
     isBookmarked: boolean,
 
+    duplicateQuestionUrl?: string,
     comments: CommentResponse[],
     answers: AnswerResponse[],
     histories: QuestionHistoryResponse[],

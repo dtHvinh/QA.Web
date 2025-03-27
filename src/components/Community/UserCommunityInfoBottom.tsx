@@ -7,7 +7,7 @@ export default function UserCommunityInfoBottom({ communityDetail }: { community
     // TODO: Use user endpoint instead of this
     const auth = getAuth();
 
-    return <div className="sticky bottom-0 p-4 border-t border-[var(--border-color)] bg-[var(--card-background)]">
+    return <div className="bottom-0 p-2 px-4 border-t border-[var(--border-color)] bg-[var(--card-background)]">
         <div className="flex items-center gap-4">
             <Avatar
                 src={fromImage(auth?.profilePicture)}

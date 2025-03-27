@@ -11,10 +11,20 @@ import { ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
-export default function QuestionActions({ question, isClosed, isDuplicated, onQuestionClose, onQuestionReopen, onSetDuplicated, className }: {
+export default function QuestionActions({
+    question,
+    isClosed,
+    isDuplicated,
+    onQuestionClose,
+    onQuestionReopen,
+    onSetDuplicated,
+    onRemoveDuplicateFlag,
+    className
+}: {
     question: QuestionResponse,
     onQuestionClose?: () => void,
-    onSetDuplicated?: () => void,
+    onSetDuplicated?: (duplicateUrl: string) => void,
+    onRemoveDuplicateFlag?: () => void,
     onQuestionReopen?: () => void,
     isClosed: boolean,
     isDuplicated: boolean,
@@ -24,8 +34,32 @@ export default function QuestionActions({ question, isClosed, isDuplicated, onQu
     const [isBookmarked, setIsBookmarked] = React.useState<boolean>(question.isBookmarked);
     const [deleteConfirmOpen, setDeleteConfirmOpen] = React.useState(false);
     const [closeConfirmOpen, setCloseConfirmOpen] = React.useState(false);
-    const [isExpand, setIsExpand] = useState(false)
     const router = useRouter();
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const [duplicateUrl, setDuplicateUrl] = useState('');
+
+    const handleFlagDuplicate = async () => {
+        const response = await putFetcher(`/api/question/duplicate`, JSON.stringify({
+            duplicateUrl: duplicateUrl,
+            questionId: question.id
+        }));
+
+        if (!IsErrorResponse(response)) {
+            notifySucceed('Question marked as duplicate');
+            handleMenuClose();
+            onSetDuplicated?.(duplicateUrl);
+        }
+    }
+
+    const handleRemoveDuplicateFlag = async () => {
+        const response = await putFetcher(`/api/question/${question.id}/remove-duplicate-flag`);
+
+        if (!IsErrorResponse(response)) {
+            notifySucceed('Question duplicate flag removed');
+            handleMenuClose();
+            onRemoveDuplicateFlag?.();
+        }
+    }
 
     const handleCloseQuestion = async () => {
         const response = await putFetcher(`/api/question/${question.id}/close`);
@@ -43,10 +77,6 @@ export default function QuestionActions({ question, isClosed, isDuplicated, onQu
             notifySucceed('Question deleted');
             window.history.go(-1);
         }
-    }
-
-    const handleSetDuplicated = () => {
-        onSetDuplicated?.();
     }
 
     const handleShare = async () => {
@@ -86,8 +116,6 @@ export default function QuestionActions({ question, isClosed, isDuplicated, onQu
             onQuestionReopen?.();
         }
     }
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const [duplicateUrl, setDuplicateUrl] = useState('');
 
     const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -95,6 +123,7 @@ export default function QuestionActions({ question, isClosed, isDuplicated, onQu
 
     const handleMenuClose = () => {
         setAnchorEl(null);
+        setDuplicateUrl('');
     };
 
     return (
@@ -221,37 +250,44 @@ export default function QuestionActions({ question, isClosed, isDuplicated, onQu
                         </MenuItem>
                     )}
 
-                    <hr className="mx-5" />
-
-                    {!isDuplicated && (
-                        <div className="px-5 mt-2">
-                            <div className="flex items-center gap-3 text-sm text-[var(--text-secondary)] mb-2">
-                                <FileCopyOutlined fontSize="small" />
-                                Mark as duplicate
-                            </div>
-                            <div className="flex gap-2">
-                                <input
-                                    type="text"
-                                    value={duplicateUrl}
-                                    onChange={(e) => setDuplicateUrl(e.target.value)}
-                                    placeholder="Enter question URL"
-                                    className="flex-1 px-3 py-1.5 text-sm rounded border border-[var(--border-color)] 
+                    <div className="p-5 mt-2">
+                        <div className="flex items-center gap-3 text-sm text-[var(--text-secondary)] mb-2">
+                            <FileCopyOutlined fontSize="small" />
+                            Mark as duplicate
+                        </div>
+                        <div className="flex gap-2">
+                            <input
+                                type="text"
+                                value={duplicateUrl}
+                                onChange={(e) => setDuplicateUrl(e.target.value)}
+                                placeholder="Enter question URL"
+                                className="flex-1 px-3 py-1.5 text-sm rounded border border-[var(--border-color)] 
                                         bg-[var(--input-background)] text-[var(--text-primary)] 
                                         placeholder:text-[var(--text-tertiary)] outline-none"
-                                />
-                                <button
-                                    onClick={() => {
-                                        handleSetDuplicated();
-                                        handleMenuClose();
-                                    }}
-                                    className="px-3 py-1.5 text-sm rounded bg-[var(--primary)] text-white 
+                            />
+                            <button
+                                onClick={handleFlagDuplicate}
+                                className="px-3 py-1.5 text-sm rounded bg-[var(--primary)] text-white 
                                         hover:bg-[var(--primary-darker)] transition-colors"
-                                >
-                                    Set
-                                </button>
-                            </div>
+                            >
+                                Set
+                            </button>
                         </div>
-                    )}
+                    </div>
+
+                    {isDuplicated &&
+                        <MenuItem
+                            onClick={() => {
+                                handleMenuClose();
+                                handleRemoveDuplicateFlag();
+                            }}
+                        >
+                            <ListItemIcon>
+                                <FileCopyOutlined className="text-[var(--text-primary)]" />
+                            </ListItemIcon>
+                            <ListItemText>Remove duplicate flag</ListItemText>
+                        </MenuItem>
+                    }
                 </Menu>
             </ModeratorPrivilege>
 

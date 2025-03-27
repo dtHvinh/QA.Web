@@ -5,7 +5,7 @@ import TextEditor from "@/components/TextEditor";
 import { getFetcher, IsErrorResponse, putFetcher } from "@/helpers/request-utils";
 import { TagDetailResponse } from "@/types/types";
 import { notifySucceed } from "@/utilities/ToastrExtensions";
-import { use, useState } from "react";
+import { use, useEffect, useState } from "react";
 import useSWR from "swr";
 
 export default function EditTagPage({ params }: { params: Promise<{ id: number }> }) {
@@ -15,6 +15,14 @@ export default function EditTagPage({ params }: { params: Promise<{ id: number }
     const [name, setName] = useState('')
     const [wikiBody, setWikiBody] = useState('')
     const [description, setDescription] = useState('')
+
+    useEffect(() => {
+        if (!IsErrorResponse(tag)) {
+            setName(tag?.name ?? '')
+            setDescription(tag?.description ?? '')
+            setWikiBody(tag?.wikiBody ?? '')
+        }
+    }, [tag])
 
 
     const handleTagUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -29,6 +37,7 @@ export default function EditTagPage({ params }: { params: Promise<{ id: number }
 
         if (!IsErrorResponse(response)) {
             notifySucceed('Tag updated successfully')
+            window.location.href = `/tags/${id}/${tag?.name}`
         }
     }
 

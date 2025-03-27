@@ -56,7 +56,7 @@ export default function DeleteConfirmDialog({
                     </p>
                     <div>
                         <label className="block text-sm text-[var(--text-secondary)] mb-2">
-                            Type <span className="font-mono bg-[var(--hover-background)] px-1 rounded">{itemName}</span> to confirm:
+                            Type '<span className="font-mono bg-[var(--hover-background)] px-1 rounded">{itemName}</span>' to confirm:
                         </label>
                         <form onSubmit={handleConfirm}>
                             <input
@@ -66,7 +66,7 @@ export default function DeleteConfirmDialog({
                                 className="w-full px-4 py-2 border border-[var(--border-color)] 
                                 bg-[var(--input-background)] text-[var(--text-primary)] rounded-lg 
                                 focus:ring-2 focus:ring-[var(--error)] focus:border-[var(--error)] transition-colors"
-                                placeholder={`Type ${itemName} to confirm`}
+                                placeholder={`Type '${itemName}' to confirm`}
                             />
                         </form>
                     </div>

@@ -3,6 +3,7 @@ import { fromImage } from "@/helpers/utils";
 import { GetCommunityResponse, ViewOptions } from "@/types/types";
 import { Lock, People } from "@mui/icons-material";
 import { Avatar } from "@mui/material";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import useSWRMutate from 'swr/mutation';
@@ -72,14 +73,23 @@ export default function CommunityCard({ community, compact = "compact" }: Commun
                 </div>
             </div>
 
-            {!isJoined &&
+            {!isJoined ?
                 <div className="mt-4 flex">
                     <button
                         onClick={handleJoinCommunity}
-                        className={`border p-1 px-3 rounded-full text-sm font-semibold text-[var(--primary)] border-[var(--primary)] hover:bg-[var(--primary-light)]`}
+                        className={`text-sm font-semibold text-[var(--primary)] border-[var(--primary)]`}
                     >
                         Join
                     </button>
+                </div>
+                :
+                <div className="mt-4 flex">
+                    <Link
+                        href={`/community/${community.name}`}
+                        className={`text-sm font-semibold text-[var(--secondary)] border-[var(--primary)]`}
+                    >
+                        Go
+                    </Link>
                 </div>
             }
         </div>

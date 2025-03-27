@@ -1,7 +1,6 @@
 'use client'
 
 import CreateCommunityDialog from "@/components/Community/CreateCommunityDialog";
-import getAuth from "@/helpers/auth-utils";
 import { getFetcher } from "@/helpers/request-utils";
 import { fromImage } from "@/helpers/utils";
 import { GetCommunityResponse } from "@/types/types";
@@ -13,7 +12,6 @@ import { useState } from "react";
 import useSWR from "swr";
 
 export default function CommunityLayout({ children }: { children: React.ReactNode }) {
-    const auth = getAuth();
     const [pageIndex, setPageIndex] = useState(1);
     const pathname = usePathname();
     const [createDialogOpen, setCreateDialogOpen] = useState(false);
@@ -97,7 +95,6 @@ export default function CommunityLayout({ children }: { children: React.ReactNod
                                 href={`/community/${community.name}`}
                             >
                                 <Avatar
-                                    variant={`${communityName === community.name ? 'rounded' : 'circular'}`}
                                     src={fromImage(community.iconImage)}
                                     sx={{
                                         width: 'var(--riw)',

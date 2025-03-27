@@ -71,7 +71,7 @@ export default function AdminDashboard() {
                         {userAnalytic ?
                             <StatisticBox icon={
                                 <div className="p-3 bg-blue-50 rounded-lg">
-                                    <PeopleOutline className="text-blue-600" />
+                                    <PeopleOutline className="text-blue-600 " />
                                 </div>} period={period} analytic={userAnalytic} />
                             :
                             <AALS />
@@ -94,36 +94,47 @@ export default function AdminDashboard() {
                         }
                     </div>
 
-                    <div className="bg-[var(--card-background)] rounded-xl shadow-sm p-6 border border-gray-100">
-                        <h2 className="text-xl font-bold text-[var(--text-primary)]0 mb-6">Quick Actions</h2>
+                    <div className="bg-[var(--card-background)] rounded-xl shadow-sm p-6 border border-[var(--border-color)]">
+                        <h2 className="text-xl font-bold text-[var(--text-primary)] mb-6">Quick Actions</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            <Link href='/admin/user-management' className="flex items-start p-5 bg-white border border-gray-200 rounded-xl hover:border-purple-500 hover:shadow-md transition-all group">
-                                <div className="mr-4 p-3 bg-purple-50 rounded-lg group-hover:bg-purple-100 transition-colors">
-                                    <PeopleOutline className="text-purple-600" />
+                            <Link href='/admin/user-management'
+                                className="flex items-start p-5 bg-[var(--card-background)] border border-[var(--border-color)] 
+                                    rounded-xl hover:border-purple-500 hover:shadow-md transition-all group">
+                                <div className="mr-4 p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg group-hover:bg-purple-100 
+                                    dark:group-hover:bg-purple-900/30 transition-colors">
+                                    <PeopleOutline className="text-purple-600 dark:text-purple-400" />
                                 </div>
                                 <div className="text-left">
-                                    <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-purple-700">User Management</h3>
-                                    <p className="text-sm text-gray-500">Manage users and roles</p>
+                                    <h3 className="font-semibold text-[var(--text-primary)] mb-1 group-hover:text-purple-700 
+                                        dark:group-hover:text-purple-400">User Management</h3>
+                                    <p className="text-sm text-[var(--text-secondary)]">Manage users and roles</p>
                                 </div>
                             </Link>
 
-                            <Link href='/admin/logs' className="flex items-start p-5 bg-white border border-gray-200 rounded-xl hover:border-yellow-500 hover:shadow-md transition-all group">
-                                <div className="mr-4 p-3 bg-yellow-50 rounded-lg group-hover:bg-orange-100 transition-colors">
-                                    <PlagiarismOutlined className="text-yellow-600" />
+                            <Link href='/admin/logs'
+                                className="flex items-start p-5 bg-[var(--card-background)] border border-[var(--border-color)] 
+                                    rounded-xl hover:border-yellow-500 hover:shadow-md transition-all group">
+                                <div className="mr-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg group-hover:bg-orange-100 
+                                    dark:group-hover:bg-yellow-900/30 transition-colors">
+                                    <PlagiarismOutlined className="text-yellow-600 dark:text-yellow-400" />
                                 </div>
                                 <div className="text-left">
-                                    <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-orange-700">Logs</h3>
-                                    <p className="text-sm text-gray-500">View system logs and activities</p>
+                                    <h3 className="font-semibold text-[var(--text-primary)] mb-1 group-hover:text-orange-700 
+                                        dark:group-hover:text-yellow-400">Logs</h3>
+                                    <p className="text-sm text-[var(--text-secondary)]">View system logs and activities</p>
                                 </div>
                             </Link>
 
-                            <button className="flex items-start p-5 bg-white border border-gray-200 rounded-xl hover:border-indigo-500 hover:shadow-md transition-all group">
-                                <div className="mr-4 p-3 bg-indigo-50 rounded-lg group-hover:bg-indigo-100 transition-colors">
-                                    <SettingsOutlined className="text-indigo-600" />
+                            <button className="flex items-start p-5 bg-[var(--card-background)] border border-[var(--border-color)] 
+                                rounded-xl hover:border-indigo-500 hover:shadow-md transition-all group">
+                                <div className="mr-4 p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg group-hover:bg-indigo-100 
+                                    dark:group-hover:bg-indigo-900/30 transition-colors">
+                                    <SettingsOutlined className="text-indigo-600 dark:text-indigo-400" />
                                 </div>
                                 <div className="text-left">
-                                    <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-indigo-700">System Settings</h3>
-                                    <p className="text-sm text-gray-500">Configure platform settings</p>
+                                    <h3 className="font-semibold text-[var(--text-primary)] mb-1 group-hover:text-indigo-700 
+                                        dark:group-hover:text-indigo-400">System Settings</h3>
+                                    <p className="text-sm text-[var(--text-secondary)]">Configure platform settings</p>
                                 </div>
                             </button>
                         </div>

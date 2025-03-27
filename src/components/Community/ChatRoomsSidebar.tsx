@@ -58,7 +58,7 @@ export default function ChatRoomsSidebar({
     };
 
     return (
-        <div className={`md:w-72 mr-[var(--community-right-sidebar-width)] bg-[var(--card-background)] border-l 
+        <div className={`md:w-60 mr-[var(--community-right-sidebar-width)] bg-[var(--card-background)] border-l 
                         border-[var(--border-color)] flex flex-col
                         h-[calc(100vh-calc(var(--appbar-height)))] ${className}`}>
             <div className="p-4 border-b border-[var(--border-color)] h-[59px] flex items-center">

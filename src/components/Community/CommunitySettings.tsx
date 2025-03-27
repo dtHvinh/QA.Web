@@ -4,7 +4,7 @@ import { ErrorResponse } from "@/props/ErrorResponse";
 import { theme } from "@/theme/theme";
 import { CommunityDetailResponse, PagedResponse } from "@/types/types";
 import notifyError, { notifySucceed } from "@/utilities/ToastrExtensions";
-import { AddPhotoAlternate, Build, BuildOutlined, Close, Delete, DeleteForeverOutlined, Group, PersonAdd, Save } from "@mui/icons-material";
+import { AddPhotoAlternate, Close, Delete, Group, PersonAdd, Save } from "@mui/icons-material";
 import {
     Avatar,
     Box,
@@ -17,7 +17,6 @@ import {
     IconButton,
     Tab,
     Tabs,
-    Tooltip,
     Typography
 } from "@mui/material";
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -25,6 +24,7 @@ import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 import useSWR from "swr";
 import DeleteConfirmDialog from "../Dialog/DeleteConfirmDialog";
+import CommunityMemberSettings from "./CommunityMemberSettings";
 import MemberLoadingSkeleton from "./MemberLoadingSkeleton";
 
 interface CommunitySettingsProps {
@@ -51,7 +51,7 @@ function CommunityMod({ children, isModerator }: Readonly<{ children: React.Reac
     )
 }
 
-function CommunityOwner({ children, isOwner }: Readonly<{ children: React.ReactNode, isOwner: boolean }>) {
+export function CommunityOwner({ children, isOwner }: Readonly<{ children: React.ReactNode, isOwner: boolean }>) {
     return (
         isOwner ? children : null
     )
@@ -69,7 +69,7 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [anyChange, setAnyChange] = useState(false);
     const [deleteCommunityConfimOpen, setDeletCommunityConfimOpen] = useState(false);
-    const { data: members, isLoading: isMemberLoading } = useSWR<PagedResponse<CommunityMemberResponse>>(
+    const { data: members, isLoading: isMemberLoading, mutate } = useSWR<PagedResponse<CommunityMemberResponse>>(
         `/api/community/${community.id}/members?pageIndex=1&pageSize=100`,
         getFetcher);
 
@@ -79,6 +79,36 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
             || isPrivate !== community.isPrivate
             || iconImage !== null)
     }, [name, description, isPrivate, iconImage]);
+
+    const handleModeratorGranted = (memberId: string) => {
+        if (members)
+            mutate({
+                ...members,
+                items: members?.items.map(m => m.id === memberId ? {
+                    ...m,
+                    isModerator: true
+                } : m)
+            })
+    }
+
+    const handleMemDel = (memberId: string) => {
+        if (members)
+            mutate({
+                ...members,
+                items: members?.items.filter(m => m.id !== memberId)
+            })
+    }
+
+    const handleModRevoked = (memberId: string) => {
+        if (members)
+            mutate({
+                ...members,
+                items: members?.items.map(m => m.id === memberId ? {
+                    ...m,
+                    isModerator: false
+                } : m)
+            })
+    }
 
     const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
         setTabValue(newValue);
@@ -132,7 +162,7 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
         }
     };
 
-    const handleDelete = async () => {
+    const handleDeleteCommunity = async () => {
         try {
             const response = await deleteFetcher(`/api/community/${community.id}`);
 
@@ -142,6 +172,7 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
             }
 
             notifySucceed('Community deleted successfully');
+
             router.push('/community');
         } catch (error) {
             notifyError('Failed to delete community');
@@ -342,52 +373,13 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
                             <MemberLoadingSkeleton />
                         ) : (
                             <div className="space-y-3">
-                                {members?.items.map((member) => (
-                                    <div key={member.id}
-                                        className="flex items-center gap-3 p-3 rounded-lg hover:bg-[var(--hover-background)] transition-colors">
-                                        <Avatar
-                                            src={fromImage(member.profileImage)}
-                                            sx={{ width: 40, height: 40 }}
-                                        >
-                                            {member.username.charAt(0).toUpperCase()}
-                                        </Avatar>
-                                        <div className="flex-1">
-                                            <div className="font-medium text-[var(--text-primary)]">
-                                                {member.username}
-                                            </div>
-                                            {member.isOwner ?
-                                                <div className="text-sm text-[var(--primary)]">
-                                                    Owner
-                                                </div> : member.isModerator && (
-                                                    <div className="text-sm text-[var(--primary)]">
-                                                        Moderator
-                                                    </div>
-                                                )}
-                                        </div>
-                                        {community.isOwner && (
-                                            member.isModerator ? (
-                                                <Tooltip title="Revoke mod">
-                                                    <button>
-                                                        <Build className="text-blue-400" />
-                                                    </button>
-                                                </Tooltip>
-                                            ) : (
-                                                <Tooltip title="Make mod">
-                                                    <button>
-                                                        <BuildOutlined />
-                                                    </button>
-                                                </Tooltip>
-                                            )
-                                        )}
-                                        <CommunityOwner isOwner={community.isOwner} >
-                                            <Tooltip title="Remove member">
-                                                <button>
-                                                    <DeleteForeverOutlined />
-                                                </button>
-                                            </Tooltip>
-                                        </CommunityOwner>
-                                    </div>
-                                ))}
+                                <CommunityMemberSettings
+                                    community={community}
+                                    members={members?.items || []}
+                                    onGrantModerator={handleModeratorGranted}
+                                    onRevokeModerator={handleModRevoked}
+                                    onRemoveMember={handleMemDel}
+                                />
                             </div>
                         )}
                     </Box>
@@ -422,7 +414,7 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
                     itemType="community"
                     itemName={community.name}
                     onClose={() => setDeletCommunityConfimOpen(false)}
-                    onConfirm={handleDelete}
+                    onConfirm={handleDeleteCommunity}
                     open={deleteCommunityConfimOpen}
                 />
             </DialogContent>

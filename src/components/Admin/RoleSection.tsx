@@ -42,12 +42,12 @@ export default function RoleSection({ user }: { user: GetUserResponse }) {
     return (
         <div className="space-y-4">
             <div>
-                <h3 className="text-lg font-medium text-gray-900">Manage User Roles</h3>
-                <p className="text-sm text-gray-500 mt-1">Assign or remove roles for this user</p>
+                <h3 className="text-lg font-medium text-[var(--text-primary)]">Manage User Roles</h3>
+                <p className="text-sm text-[var(--text-secondary)] mt-1">Assign or remove roles for this user</p>
             </div>
 
             {isLoading ? (
-                <div className="text-gray-500">Loading roles...</div>
+                <div className="text-[var(--text-secondary)]">Loading roles...</div>
             ) : (
                 <div className="space-y-4">
                     <div className="flex flex-wrap gap-2">
@@ -55,8 +55,9 @@ export default function RoleSection({ user }: { user: GetUserResponse }) {
                             <button
                                 key={idx}
                                 onClick={() => setDeleteRole(name)}
-                                className="inline-flex items-center gap-1.5 px-3 py-1 bg-purple-100 text-purple-700 
-                                         rounded-full text-sm hover:bg-purple-200 transition-colors"
+                                className="inline-flex items-center gap-1.5 px-3 py-1 bg-purple-100 dark:bg-purple-900/20 
+                                    text-purple-700 dark:text-purple-400 rounded-full text-sm hover:bg-purple-200 
+                                    dark:hover:bg-purple-900/30 transition-colors"
                             >
                                 {name}
                             </button>
@@ -67,8 +68,9 @@ export default function RoleSection({ user }: { user: GetUserResponse }) {
                         <select
                             value={selectedRole}
                             onChange={(e) => setSelectedRole(e.target.value)}
-                            onClick={console.log}
-                            className="flex-1 px-3 py-2 border rounded-lg focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
+                            className="flex-1 px-3 py-2 bg-[var(--card-background)] text-[var(--text-primary)] 
+                                border border-[var(--border-color)] rounded-lg focus:border-purple-500 
+                                focus:ring-1 focus:ring-purple-500"
                         >
                             <option value="">Select a role</option>
                             {roles?.map((a, idx) => (
@@ -79,8 +81,9 @@ export default function RoleSection({ user }: { user: GetUserResponse }) {
                         <button
                             onClick={handleAddRole}
                             disabled={!selectedRole}
-                            className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 
-                                     transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+                            className="px-4 py-2 bg-purple-600 dark:bg-purple-500 text-white rounded-lg 
+                                hover:bg-purple-700 dark:hover:bg-purple-600 transition-colors 
+                                disabled:bg-gray-300 dark:disabled:bg-gray-700 disabled:cursor-not-allowed"
                         >
                             Add Role
                         </button>
@@ -93,22 +96,26 @@ export default function RoleSection({ user }: { user: GetUserResponse }) {
                 onClose={() => setDeleteRole(null)}
                 maxWidth="xs"
                 fullWidth
+                PaperProps={{
+                    className: 'bg-[var(--card-background)] text-[var(--text-primary)]'
+                }}
             >
-                <DialogTitle>Remove Role</DialogTitle>
-                <DialogContent>
+                <DialogTitle className="text-[var(--text-primary)]">Remove Role</DialogTitle>
+                <DialogContent className="text-[var(--text-secondary)]">
                     Are you sure you want to remove the role "{deleteRole}" from this user?
                 </DialogContent>
                 <DialogActions className="p-4">
                     <button
                         onClick={() => setDeleteRole(null)}
-                        className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                        className="px-4 py-2 text-[var(--text-primary)] hover:bg-[var(--hover-background)] 
+                            rounded-lg transition-colors"
                     >
                         Cancel
                     </button>
                     <button
                         onClick={handleDeleteRole}
-                        className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 
-                                 transition-colors ml-2"
+                        className="px-4 py-2 bg-red-600 dark:bg-red-500 text-white rounded-lg 
+                            hover:bg-red-700 dark:hover:bg-red-600 transition-colors ml-2"
                     >
                         Remove
                     </button>

@@ -23,7 +23,7 @@ export default function YourQuestionItem({ question, showAuthor = true, view = '
                         className={`font-medium line-clamp-1 text-[var(--text-primary)] hover:text-blue-500 transition-colors flex-grow
                                 ${view === 'compact' ? 'text-xs' : 'text-sm'}`}>
                         <Tooltip title={question.title}>
-                            <span>{question.title}</span>
+                            <span className={`${question.isDuplicate && 'text-orange-500'}`}>{question.title}</span>
                         </Tooltip>
                     </Link>
                     {view === 'full' && <QuestionStatusBar {...question} />}
@@ -101,47 +101,61 @@ export default function YourQuestionItem({ question, showAuthor = true, view = '
     );
 }
 
-export function YourQuestionItemSkeleton() {
+export function YourQuestionItemSkeleton({ view = 'full' }: { view?: ViewOptions }) {
     return (
-        <div className='flex'>
-            <div className="rounded-xl border border-[var(--border-color)] p-5 shadow-md w-full bg-[var(--card-background)] animate-pulse">
-                <div className="flex w-full items-center justify-between border-b border-[var(--border-color)] pb-3">
-                    <div className="flex flex-col space-y-2">
-                        <div className="h-4 bg-[var(--skeleton-color)] rounded w-3/4"></div>
-                        <div className="flex space-x-2.5">
-                            <div className="h-4 bg-[var(--skeleton-color)] rounded w-12"></div>
-                            <div className="h-4 bg-[var(--skeleton-color)] rounded w-12"></div>
-                            <div className="h-4 bg-[var(--skeleton-color)] rounded w-12"></div>
-                        </div>
-                    </div>
-                    <div className="flex flex-col space-y-2">
-                        <div className="flex justify-end flex-wrap space-x-2">
-                            <div className="h-4 bg-[var(--skeleton-color)] rounded w-12"></div>
-                            <div className="h-4 bg-[var(--skeleton-color)] rounded w-12"></div>
-                            <div className="h-4 bg-[var(--skeleton-color)] rounded w-12"></div>
-                        </div>
-                        <div className="flex justify-end text-xs space-x-2.5">
-                            <div className="h-4 bg-[var(--skeleton-color)] rounded w-16"></div>
-                            <div className="h-4 bg-[var(--skeleton-color)] rounded w-16"></div>
-                        </div>
-                    </div>
+        <div className={`bg-[var(--card-background)] rounded-lg border border-[var(--border-color)] ${view === 'compact' ? 'p-2' : 'p-3'}`}>
+            <div className={`${view === 'compact' ? 'space-y-1 px-1.5' : 'space-y-2'}`}>
+                <div className="flex items-start justify-between gap-2">
+                    <div className="h-5 bg-[var(--skeleton-color)] rounded flex-grow"></div>
+                    {view === 'full' && <div className="h-5 w-24 bg-[var(--skeleton-color)] rounded"></div>}
                 </div>
 
-                <div className="mt-4 mb-6">
-                    <div className="h-4 bg-[var(--skeleton-color)] rounded w-full mb-2"></div>
-                    <div className="h-4 bg-[var(--skeleton-color)] rounded w-full mb-2"></div>
-                    <div className="h-4 bg-[var(--skeleton-color)] rounded w-3/4"></div>
-                </div>
-
-                <div>
-                    <div className="flex items-center justify-between">
-                        <div className="flex space-x-4 md:space-x-8">
-                            <div className="h-4 bg-[var(--skeleton-color)] rounded w-12"></div>
+                {view === 'full' ? (
+                    <>
+                        <div className="space-y-1">
+                            <div className="h-3 bg-[var(--skeleton-color)] rounded w-full"></div>
+                            <div className="h-3 bg-[var(--skeleton-color)] rounded w-3/4"></div>
                         </div>
-                        <div className="h-4 bg-[var(--skeleton-color)] rounded w-24"></div>
-                    </div>
-                </div>
+
+                        <div className="flex flex-wrap gap-1">
+                            <div className="h-5 w-16 bg-[var(--skeleton-color)] rounded-full"></div>
+                            <div className="h-5 w-20 bg-[var(--skeleton-color)] rounded-full"></div>
+                            <div className="h-5 w-14 bg-[var(--skeleton-color)] rounded-full"></div>
+                        </div>
+
+                        <div className="flex items-center justify-between pt-1.5">
+                            <div className="flex gap-3">
+                                <div className="h-4 w-16 bg-[var(--skeleton-color)] rounded"></div>
+                                <div className="h-4 w-16 bg-[var(--skeleton-color)] rounded"></div>
+                                <div className="h-4 w-16 bg-[var(--skeleton-color)] rounded"></div>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                                <div className="h-6 w-6 bg-[var(--skeleton-color)] rounded-full"></div>
+                                <div className="h-4 w-12 bg-[var(--skeleton-color)] rounded"></div>
+                                <div className="h-4 w-24 bg-[var(--skeleton-color)] rounded"></div>
+                            </div>
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <div className="h-3 bg-[var(--skeleton-color)] rounded w-3/4"></div>
+
+                        <div className="flex items-center justify-between gap-1.5">
+                            <div className="flex flex-wrap gap-1">
+                                <div className="h-5 w-16 bg-[var(--skeleton-color)] rounded-full"></div>
+                                <div className="h-5 w-20 bg-[var(--skeleton-color)] rounded-full"></div>
+                            </div>
+
+                            <div className="flex items-center gap-1.5 shrink-0">
+                                <div className="h-6 w-6 bg-[var(--skeleton-color)] rounded-full"></div>
+                                <div className="h-4 w-12 bg-[var(--skeleton-color)] rounded"></div>
+                                <div className="h-4 w-24 bg-[var(--skeleton-color)] rounded"></div>
+                            </div>
+                        </div>
+                    </>
+                )}
             </div>
         </div>
-    )
+    );
 }

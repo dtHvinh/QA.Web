@@ -133,13 +133,12 @@ export default function ChatRoom({ messageInit = [], onBack }: ChatRoomProps & {
                     <IconButton
                         type="submit"
                         disabled={!newMessage.trim()}
-                        className="absolute right-2 p-2
-                            text-white bg-[var(--primary)] hover:bg-[var(--primary-darker)]
+                        className="absolute right-2 p-2 bg-[var(--primary)] hover:bg-[var(--primary-darker)]
                             disabled:bg-[var(--disabled-background)] disabled:text-[var(--text-tertiary)]
                             transition-all rounded-xl shadow-md"
                         size="medium"
                     >
-                        <Send />
+                        <Send className="text-[var(--text-primary)]" />
                     </IconButton>
                 </div>
             </form>

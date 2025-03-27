@@ -21,7 +21,7 @@ export default function AnswerSection(
         onAnswerAcceptAction: (answerId: string) => void
     }) {
     const [currentText, setCurrentText] = React.useState('');
-    const [answers, setAnswers] = React.useState(question.answers);
+    const [answers, setAnswers] = React.useState(question.answers ?? []);
     const [resetContentFlag, setResetContentFlag] = React.useState(false);
     const [isQuestionSolved, setIsQuestionSolved] = React.useState(question.isSolved);
     const requestUrl = formatString(`${backendURL}${Apis.Question.CreateAnswer}`, question.id);

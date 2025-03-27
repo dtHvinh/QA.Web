@@ -46,7 +46,7 @@ export default function TagDetailPage({ params }: { params: Promise<{ path: stri
         <div className="page-container mx-auto px-4 py-6 space-y-6">
             {tag && (
                 <div className="bg-[var(--card-background)] border border-[var(--border-color)] rounded-2xl p-6 shadow-sm">
-                    <div className="flex flex-col md:flex-row justify-between gap-5">
+                    <div className="flex flex-col items-center md:flex-row justify-between gap-5">
                         <div className="space-y-3">
                             <div className="flex flex-wrap items-center gap-3">
                                 <h1 className="text-3xl font-bold text-[var(--text-primary)]">{tag.name}</h1>
@@ -58,42 +58,42 @@ export default function TagDetailPage({ params }: { params: Promise<{ path: stri
                             <p className="text-base text-[var(--text-secondary)] leading-relaxed max-w-3xl">{tag.description}</p>
                         </div>
 
-                        <div className="flex flex-row md:flex-col gap-4 items-center md:items-end">
-                            <Link
-                                href={`/wiki/${tag.id}/${tag.name}`}
-                                className="flex items-center gap-2 px-6 py-2.5 rounded-xl font-medium
+                        <div className="flex gap-4 md:items-end">
+                            <div className="h-10 flex items-center">
+                                <Link
+                                    href={`/wiki/${tag.id}/${tag.name}`}
+                                    className="flex items-center px-4 rounded-xl font-medium
                                     bg-[var(--primary)] text-white hover:bg-[var(--primary-darker)] transition-colors"
-                            >
-                                View Wiki
-                            </Link>
-
-                            <div className="flex gap-3">
-                                <PermissionAction action="editTag" allowedHref={`/tags/edit/${tag.id}`}>
-                                    <Tooltip title='Edit Tag'>
-                                        <div className="p-2.5 rounded-lg hover:bg-[var(--hover-background)] 
-                                            text-[var(--text-secondary)] transition-colors">
-                                            <Edit />
-                                        </div>
-                                    </Tooltip>
-                                </PermissionAction>
-
-                                <ModeratorPrivilege>
-                                    <Tooltip title='Delete Tag'>
-                                        <button className="p-2.5 rounded-lg hover:bg-[var(--error-light)] 
-                                            text-[var(--error)] transition-colors">
-                                            <Delete />
-                                        </button>
-                                    </Tooltip>
-                                </ModeratorPrivilege>
+                                >
+                                    Wiki
+                                </Link>
                             </div>
+
+
+                            <PermissionAction action="editTag" allowedHref={`/tags/edit/${tag.id}`}>
+                                <Tooltip title='Edit Tag'>
+                                    <div className="h-10 w-10 flex items-center justify-center rounded-lg hover:bg-[var(--hover-background)] 
+                                            text-[var(--text-secondary)] transition-colors">
+                                        <Edit />
+                                    </div>
+                                </Tooltip>
+                            </PermissionAction>
+
+                            <ModeratorPrivilege>
+                                <Tooltip title='Delete Tag'>
+                                    <button className="h-10 w-10 flex items-center justify-center rounded-lg hover:bg-[var(--error-light)] 
+                                            text-[var(--error)] transition-colors">
+                                        <Delete />
+                                    </button>
+                                </Tooltip>
+                            </ModeratorPrivilege>
                         </div>
                     </div>
                 </div>
             )}
 
             <div className="space-y-5">
-                <div ref={titleRef} className="bg-[var(--card-background)] border border-[var(--border-color)] 
-                    rounded-xl p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div ref={titleRef} className="rounded-xl py-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <h2 className="text-xl font-semibold text-[var(--text-primary)]">
                         Questions Tagged [{tag?.name}]
                     </h2>
