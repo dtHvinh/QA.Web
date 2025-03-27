@@ -8,17 +8,20 @@ const specificTime = (date: Date) => {
 }
 
 export default function timeFromNow(dateTimeString: string): string {
-    const date = new Date(dateTimeString + (dateTimeString.endsWith('Z') ? '' : 'Z')); // Ensure the date is treated as UTC
+    const date = new Date(dateTimeString + (dateTimeString.endsWith('Z') ? '' : 'Z'));
     const now = new Date();
     const diffInMs = now.getTime() - date.getTime();
     const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
+
+    if (diffInMs < 60000) {
+        return 'just now';
+    }
 
     if (diffInDays < 1) {
         const diffInHours = diffInMs / (1000 * 60 * 60);
         if (diffInHours < 1) {
             const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
-            const diffInSeconds = Math.floor((diffInMs % (1000 * 60)) / 1000);
-            return `${diffInMinutes}m ${diffInSeconds}s`;
+            return `${diffInMinutes}m`;
         }
         return `${Math.floor(diffInHours)}h, at ${specificTime(date)}`;
     } else if (diffInDays < 7) {

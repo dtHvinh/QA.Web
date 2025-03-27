@@ -1,9 +1,10 @@
 import getAuth from "@/helpers/auth-utils";
 import timeFromNow from "@/helpers/time-utils";
+import { fromImage } from "@/helpers/utils";
 import { ChatMessageResponse } from "@/types/types";
 import { ArrowBack, Send } from "@mui/icons-material";
 import { Avatar, IconButton } from "@mui/material";
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 
 interface ChatRoomProps {
     messageInit?: ChatMessageResponse[];
@@ -45,6 +46,51 @@ export default function ChatRoom({ messageInit = [], onBack }: ChatRoomProps & {
         setNewMessage("");
     };
 
+    const renderMessage = useMemo(() => {
+        return messages.map((msg, index) => {
+            const isCurrentUser = msg.user.id === 20;
+            const showAvatar = index === 0 || messages[index - 1].user.id !== msg.user.id;
+
+            return (
+                <div key={msg.id} className={`flex ${isCurrentUser ? 'justify-end' : 'justify-start'} animate-fadeIn`}>
+                    <div className={`flex ${isCurrentUser ? 'flex-row-reverse' : 'flex-row'} max-w-[80%] gap-3`}>
+                        {!isCurrentUser && showAvatar && (
+                            <Avatar
+                                src={fromImage(msg.user.profilePicture)}
+                                alt={msg.user.username}
+                                sx={{
+                                    width: 38,
+                                    height: 38,
+                                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                                }}
+                            />
+                        )}
+                        {!isCurrentUser && !showAvatar && <div className="w-[38px]"></div>}
+
+                        <div className="flex flex-col">
+                            {showAvatar && (
+                                <div className={`text-sm font-medium mb-1.5 ${isCurrentUser ? 'text-right' : 'text-left'} 
+                                    text-[var(--text-secondary)]`}>
+                                    {isCurrentUser ? 'You' : msg.user.username}
+                                </div>
+                            )}
+                            <div className={`rounded-2xl px-5 py-2.5 shadow-sm
+                                ${isCurrentUser
+                                    ? 'bg-[var(--primary)] text-white rounded-tr-md'
+                                    : 'bg-[var(--hover-background)] text-[var(--text-primary)] rounded-tl-md'
+                                }`}>
+                                <p className="whitespace-pre-wrap break-words text-[15px]">{msg.message}</p>
+                            </div>
+                            <div className={`text-xs text-[var(--text-tertiary)] mt-1.5 ${isCurrentUser ? 'text-right' : 'text-left'}`}>
+                                {timeFromNow(msg.createdAt)}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        })
+    }, [messages]);
+
     return (
         <div className="flex flex-col h-full bg-[var(--card-background)] rounded-xl border border-[var(--border-color)] overflow-hidden">
             <div className="px-4 py-1 border-b border-[var(--border-color)] flex items-center">
@@ -69,62 +115,21 @@ export default function ChatRoom({ messageInit = [], onBack }: ChatRoomProps & {
                             <p className="text-sm opacity-75">Be the first to start the conversation!</p>
                         </div>
                     ) : (
-                        messages.map((msg, index) => {
-                            const isCurrentUser = msg.user.id === 20;
-                            const showAvatar = index === 0 || messages[index - 1].user.id !== msg.user.id;
-
-                            return (
-                                <div key={msg.id} className={`flex ${isCurrentUser ? 'justify-end' : 'justify-start'} animate-fadeIn`}>
-                                    <div className={`flex ${isCurrentUser ? 'flex-row-reverse' : 'flex-row'} max-w-[80%] gap-3`}>
-                                        {!isCurrentUser && showAvatar && (
-                                            <Avatar
-                                                src={msg.user.profilePicture}
-                                                alt={msg.user.username}
-                                                sx={{
-                                                    width: 38,
-                                                    height: 38,
-                                                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                                                }}
-                                            />
-                                        )}
-                                        {!isCurrentUser && !showAvatar && <div className="w-[38px]"></div>}
-
-                                        <div className="flex flex-col">
-                                            {showAvatar && (
-                                                <div className={`text-sm font-medium mb-1.5 ${isCurrentUser ? 'text-right' : 'text-left'} 
-                                                    text-[var(--text-secondary)]`}>
-                                                    {isCurrentUser ? 'You' : msg.user.username}
-                                                </div>
-                                            )}
-                                            <div className={`rounded-2xl px-5 py-2.5 shadow-sm
-                                                ${isCurrentUser
-                                                    ? 'bg-[var(--primary)] text-white rounded-tr-md'
-                                                    : 'bg-[var(--hover-background)] text-[var(--text-primary)] rounded-tl-md'
-                                                }`}>
-                                                <p className="whitespace-pre-wrap break-words text-[15px]">{msg.message}</p>
-                                            </div>
-                                            <div className={`text-xs text-[var(--text-tertiary)] mt-1.5 ${isCurrentUser ? 'text-right' : 'text-left'}`}>
-                                                {timeFromNow(msg.createdAt)}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            );
-                        })
+                        renderMessage
                     )}
                     <div ref={messagesEndRef} />
                 </div>
             </div>
 
             <form onSubmit={handleSubmit}
-                className="border-t border-[var(--border-color)] p-4 bg-[var(--card-background)] shadow-lg">
+                className="border-t border-[var(--border-color)] p-2 bg-[var(--background)] shadow-lg">
                 <div className="relative flex items-center gap-5">
                     <input
                         type="text"
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
                         placeholder="Type a message..."
-                        className="w-full px-5 py-3 rounded-2xl border border-[var(--border-color)] 
+                        className="w-full px-5 py-2 rounded-2xl border border-[var(--border-color)] 
                             bg-[var(--hover-background)] text-[var(--text-primary)] 
                             placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 
                             focus:ring-[var(--primary-light)] focus:border-transparent
