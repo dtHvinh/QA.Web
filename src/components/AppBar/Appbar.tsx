@@ -39,9 +39,11 @@ export default function Appbar() {
                     </div>
 
                     <div className="flex items-center gap-4 -ml-2">
-                        <ThemeToggle />
+                        <div className="w-10">
+                            <ThemeToggle />
+                        </div>
                         <Tooltip title='Ask a question'>
-                            <Link href={'/new-question'} className="hover:bg-[var(--hover-background)] p-2 rounded-full transition-colors active:scale-95">
+                            <Link href={'/new-question'} className="hover:bg-[var(--hover-background)] w-10 h-10 p-2 rounded-full transition-colors active:scale-95">
                                 <Add />
                             </Link>
                         </Tooltip>

@@ -12,7 +12,7 @@ export function scrollToTop() {
 
 export function fromImage(imagePath?: string) {
     return !imagePath
-        ? "/default.png"
+        ? "/default-pfp.png"
         : imagePath.startsWith("blob")
             ? imagePath
             : process.env.NEXT_PUBLIC_STORAGE_HOST + '/' + imagePath;
@@ -28,4 +28,14 @@ export function isScrollBottom(e: HTMLDivElement) {
 export function getProviderImage(url: string) {
     const domain = new URL(url).hostname;
     return `https://www.google.com/s2/favicons?sz=16&domain_url=${domain}`
+}
+
+export function upsert<T>(array: T[] | undefined, element: T, selector: (e: T) => unknown): T[] {
+    if (!array) array = [];
+
+    const i = array.findIndex(e => selector(e) === selector(element));
+    if (i > -1) array[i] = element;
+    else array.push(element);
+
+    return array;
 }

@@ -28,7 +28,7 @@ export default function ProfilePage({ params }: { params: Promise<{ username?: s
         }
     }, [user])
 
-    if (!user || IsErrorResponse(user))
+    if (!isLoading && IsErrorResponse(user))
         return <ObjectNotfound title="User Not Found"
             message={`The username '${p.username}' you're looking for doesn't exist or has been removed.`} />
 
@@ -40,13 +40,16 @@ export default function ProfilePage({ params }: { params: Promise<{ username?: s
     }
 
     const handlePfpChanged = (pfp: string) => {
-        mutate({
-            ...user,
-            profilePicture: pfp
-        })
+        if (user) {
+            mutate({
+                ...user,
+                profilePicture: pfp
+            })
+        }
     }
 
     return (
+        user &&
         <div className="max-w-4xl mx-auto py-8 px-4">
             {isEditMode ? (
                 <EditMode
@@ -62,12 +65,11 @@ export default function ProfilePage({ params }: { params: Promise<{ username?: s
                     <div className="px-6 pb-6">
                         <div className="flex flex-col sm:flex-row sm:items-end -mt-16 mb-6 gap-4">
                             <Avatar
-                                variant="rounded"
                                 src={fromImage(user.profilePicture)}
-                                alt={user.username}
                                 sx={{
                                     width: 120,
                                     height: 120,
+                                    color: 'var(--text-primary)',
                                     border: '4px solid var(--card-background)',
                                     backgroundColor: 'var(--hover-background)',
                                     boxShadow: 'var(--shadow-sm)'

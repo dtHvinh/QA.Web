@@ -34,10 +34,23 @@ export default function CommunityCard({ community, compact = "compact" }: Commun
         }
     }
 
+    const CardOuter = ({ children }: { children: React.ReactNode }) => {
+        const className = "flex justify-between items-stretch bg-[var(--card-background)] rounded-xl border border-[var(--border-color)] p-4 hover:bg-[var(--hover-background)] "
+
+        return community.isJoined ?
+            <Link href={`/community/${community.name}`}
+                className={className}
+            >
+                {children}
+            </Link >
+            :
+            <div className={className}>
+                {children}
+            </div>
+    }
+
     return (
-        <div
-            className="flex justify-between items-stretch bg-[var(--card-background)] rounded-xl border border-[var(--border-color)] p-4 hover:bg-[var(--hover-background)] "
-        >
+        <CardOuter>
             <div className="flex items-center gap-3">
                 <Avatar
                     src={fromImage(community.iconImage)}
@@ -49,7 +62,6 @@ export default function CommunityCard({ community, compact = "compact" }: Commun
                 >
                     {community.name.charAt(0).toUpperCase()}
                 </Avatar>
-
                 <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                         <h3 className="font-semibold text-[var(--text-primary)] truncate">
@@ -73,7 +85,7 @@ export default function CommunityCard({ community, compact = "compact" }: Commun
                 </div>
             </div>
 
-            {!isJoined ?
+            {!isJoined &&
                 <div className="mt-4 flex">
                     <button
                         onClick={handleJoinCommunity}
@@ -82,16 +94,7 @@ export default function CommunityCard({ community, compact = "compact" }: Commun
                         Join
                     </button>
                 </div>
-                :
-                <div className="mt-4 flex">
-                    <Link
-                        href={`/community/${community.name}`}
-                        className={`text-sm font-semibold text-[var(--secondary)] border-[var(--primary)]`}
-                    >
-                        Go
-                    </Link>
-                </div>
             }
-        </div>
+        </CardOuter>
     );
 }

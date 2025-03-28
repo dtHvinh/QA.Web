@@ -32,7 +32,7 @@ export interface GetCommunityResponse {
     name: string,
     description: string,
     iconImage: string,
-    isPrivate: string,
+    isPrivate: boolean,
     memberCount: number,
     isJoined: boolean,
 }

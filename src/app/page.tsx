@@ -11,7 +11,10 @@ import { useState } from "react";
 import useSWR from "swr";
 
 export default function Home() {
-    const { data: questionResults, isLoading: isQuestionLoading } = useSWR<PagedResponse<QuestionResponse>>(`/api/question/you_may_like?pageIndex=1&pageSize=30`, getFetcher);
+    const { data: questionResults, isLoading: isQuestionLoading } = useSWR<PagedResponse<QuestionResponse>>(
+        `/api/question/you_may_like?pageIndex=1&pageSize=30`, getFetcher, {
+        revalidateOnFocus: false,
+    });
     const { data: user, isLoading } = useSWR(`/api/user/`, getFetcher);
     const [view, setView] = useState<ViewOptions>('full')
 

@@ -1,10 +1,12 @@
-import {Routes} from "@/utilities/Constants";
-import {deleteCookie} from "cookies-next/client";
-import {redirect} from "next/navigation";
+import { Routes } from "@/utilities/Constants";
+import { redirect } from "next/navigation";
+import getAuth, { removeAuth } from "./auth-utils";
 
 export default function useLogout() {
     return () => {
-        deleteCookie('auth');
+        const auth = getAuth();
+        if (auth)
+            removeAuth(auth);
         redirect(Routes.Auth.Login);
     }
 }

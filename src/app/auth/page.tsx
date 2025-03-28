@@ -1,9 +1,8 @@
 'use client'
 
-import { AuthProps } from "@/helpers/auth-utils";
+import { AuthProps, setAuth, setRememberAuth } from "@/helpers/auth-utils";
 import { IsErrorResponse, postFetcher } from "@/helpers/request-utils";
 import notifyError from "@/utilities/ToastrExtensions";
-import { setCookie } from "cookies-next/client";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
@@ -12,6 +11,7 @@ export default function AuthPage() {
     const [isLogin, setIsLogin] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
+    const [rememberMe, setRememberMe] = useState(false);
     const router = useRouter();
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -34,9 +34,12 @@ export default function AuthPage() {
                 return;
             }
 
-            setCookie('auth', response as AuthProps);
-            router.push('/');
+            if (rememberMe)
+                setRememberAuth(response as AuthProps);
+            else
+                setAuth(response as AuthProps);
 
+            router.push('/');
         } catch (e: any) {
             notifyError(e);
         } finally {
@@ -150,6 +153,21 @@ export default function AuthPage() {
                                     </motion.div>
                                 )}
                             </AnimatePresence>
+
+                            {isLogin && (
+                                <div className="flex items-center">
+                                    <input
+                                        type="checkbox"
+                                        id="rememberMe"
+                                        checked={rememberMe}
+                                        onChange={(e) => setRememberMe(e.target.checked)}
+                                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                    />
+                                    <label htmlFor="rememberMe" className="ml-2 text-sm text-gray-600">
+                                        Remember me
+                                    </label>
+                                </div>
+                            )}
 
                             <button
                                 type="submit"

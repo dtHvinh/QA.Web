@@ -2,7 +2,7 @@ import { deleteFetcher, formPutFetcher, getFetcher, IsErrorResponse } from "@/he
 import { fromImage } from "@/helpers/utils";
 import { ErrorResponse } from "@/props/ErrorResponse";
 import { theme } from "@/theme/theme";
-import { CommunityDetailResponse, PagedResponse } from "@/types/types";
+import { CommunityDetailResponse, GetCommunityResponse, PagedResponse } from "@/types/types";
 import notifyError, { notifySucceed } from "@/utilities/ToastrExtensions";
 import { AddPhotoAlternate, Close, Delete, Group, PersonAdd, Save } from "@mui/icons-material";
 import {
@@ -23,6 +23,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 import useSWR from "swr";
+import useSWRMutate from "swr/mutation";
 import DeleteConfirmDialog from "../Dialog/DeleteConfirmDialog";
 import CommunityMemberSettings from "./CommunityMemberSettings";
 import MemberLoadingSkeleton from "./MemberLoadingSkeleton";
@@ -72,6 +73,7 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
     const { data: members, isLoading: isMemberLoading, mutate } = useSWR<PagedResponse<CommunityMemberResponse>>(
         `/api/community/${community.id}/members?pageIndex=1&pageSize=100`,
         getFetcher);
+    const { trigger: layoutJoinedList } = useSWRMutate<GetCommunityResponse[]>(`/api/community/joined?pageIndex=1&pageSize=10`, getFetcher);
 
     useEffect(() => {
         setAnyChange(name !== community.name
@@ -127,6 +129,25 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
         }
     };
 
+    const updateCommunitySideBar = async () => {
+        await layoutJoinedList(undefined, {
+            populateCache: (_, data) => {
+                return data!.map(e => {
+                    return (Number.parseInt(e.id) === community.id)
+                        ? {
+                            ...e,
+                            name,
+                            description,
+                            isPrivate,
+                            iconImage: iconPreview,
+                        }
+                        : e
+                });
+            },
+            revalidate: true
+        });
+    }
+
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsSubmitting(true);
@@ -147,12 +168,16 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
             if (!IsErrorResponse(response)) {
 
                 notifySucceed('Community updated successfully');
+
                 onUpdate({
                     name,
                     description,
                     isPrivate,
                     iconImage: iconPreview
                 });
+
+                await updateCommunitySideBar();
+
                 onClose();
             }
         } catch (error) {

@@ -1,24 +1,27 @@
 'use client'
 
 import getAuth from "@/helpers/auth-utils";
+import useLogout from "@/helpers/logout-hook";
 import { fromImage } from "@/helpers/utils";
 import { Routes } from "@/utilities/Constants";
-import { Add, AdminPanelSettings, AutoStories, Language } from "@mui/icons-material";
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { Avatar, Popover, SvgIcon } from "@mui/material";
+import { Add, AdminPanelSettings, AutoStories, Language, LogoutOutlined, SwitchLeftOutlined } from "@mui/icons-material";
+import { Avatar, Popover, SvgIcon, Tooltip } from "@mui/material";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import ChangeProfilePopup from "./Auth/ChangeProfilePopup";
 import ChatBot from "./ChatBot";
 import AdminPrivilege from "./Privilege/AdminPrivilege";
 
 export default function UserDropdown() {
     const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
     const [profileImage, setProfileImage] = useState('');
+    const [isChangeProfileOpen, setIsChangeProfileOpen] = useState(false);
     const buttonStyle = "flex gap-2 items-center text-sm py-2 px-4 rounded-l-lg hover:bg-[var(--hover-background)] transition";
     const selectedStyle = "text-[var(--text-primary)] font-semibold bg-[var(--hover-background)]";
     const pathname = usePathname();
     const auth = getAuth();
+    const logOut = useLogout();
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
@@ -40,8 +43,8 @@ export default function UserDropdown() {
     return (
         <div>
             <button onClick={handleClick}
-                className="w-8 h-8 rounded-full flex items-center justify-center active:scale-95 text-[var(--text-primary)]">
-                <AccountCircleIcon fontSize="large" />
+                className="w-10 h-10 rounded-full flex items-center justify-center active:scale-95 text-[var(--text-primary)]">
+                <Avatar src={fromImage(profileImage)} sx={{ width: 38, height: 38 }} />
             </button>
             <Popover id={id}
                 open={open}
@@ -65,9 +68,9 @@ export default function UserDropdown() {
                 }}
             >
                 <div className="w-[280px] py-2 divide-y divide-[var(--border-color)]">
-                    <div className="px-2 py-2">
+                    <div className="px-2 py-2 flex justify-between items-center space-x-2">
                         <Link onClick={handleClose} href={'/profile'}
-                            className="flex items-center p-2 rounded-lg hover:bg-[var(--hover-background)] transition-colors">
+                            className="flex flex-1 items-center p-2 rounded-lg hover:bg-[var(--hover-background)] transition-colors">
                             <Avatar src={fromImage(profileImage)} alt="Profile" sx={{ width: 40, height: 40 }} />
                             <div className="ml-3">
                                 {auth &&
@@ -76,6 +79,17 @@ export default function UserDropdown() {
                                 <div className="text-sm text-[var(--text-secondary)]">View your profile</div>
                             </div>
                         </Link>
+
+                        <Tooltip title="Change profile">
+                            <button
+                                onClick={() => {
+                                    setIsChangeProfileOpen(true);
+                                    handleClose();
+                                }}
+                                className="text-[var(--text-primary)] text-center p-2.5 h-10 border border-[var(--border-color)] rounded-xl hover:bg-[var(--hover-background)] transition-all duration-200 hover:border-[var(--primary-light)] flex items-center justify-center">
+                                <SwitchLeftOutlined className="h-5 w-5" />
+                            </button>
+                        </Tooltip>
                     </div>
 
                     <div className="block md:hidden px-2 py-2">
@@ -141,7 +155,7 @@ export default function UserDropdown() {
                         </AdminPrivilege>
                     </div>
 
-                    <div className="block px-4 py-2 mb-1">
+                    <div className="block px-1 py-2 mb-1">
                         <Link onClick={handleClose} href={"/new-question"}
                             className={`${buttonStyle} ${pathname === "/new-question" ? selectedStyle : "text-[var(--text-primary)]"}`}>
                             <Add className="text-[var(--text-primary)]" />
@@ -166,12 +180,26 @@ export default function UserDropdown() {
                             <div>Your Collections</div>
                         </Link>
 
+                        <hr className="my-5" />
+
+                        <button onClick={logOut}
+                            className={`${buttonStyle} w-full text-[var(--text-primary)]`}>
+                            <LogoutOutlined />
+                            <div>Logout</div>
+                        </button>
+
                         <div className={`${buttonStyle} hidden`}>
                             <ChatBot className="flex items-center gap-2" />
                         </div>
                     </div>
                 </div>
             </Popover >
+
+
+            <ChangeProfilePopup
+                open={isChangeProfileOpen}
+                onClose={() => setIsChangeProfileOpen(false)}
+            />
         </div >
     )
 }

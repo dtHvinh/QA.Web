@@ -1,8 +1,8 @@
-import getAuth from "@/helpers/auth-utils";
+import getAuth, { updateCurrentAuthPfp, updateCurrentAuthUsername } from "@/helpers/auth-utils";
 import { formPutFetcher, IsErrorResponse, putFetcher } from "@/helpers/request-utils";
 import { countTotalDays } from "@/helpers/time-utils";
 import { fromImage } from "@/helpers/utils";
-import { ExternalLinkResponse, UserResponse } from "@/types/types";
+import { ExternalLinkResponse, TextResponse, UserResponse } from "@/types/types";
 import notifyError, { notifySucceed } from "@/utilities/ToastrExtensions";
 import { Add, AddPhotoAlternate, Cancel, Delete, Save } from "@mui/icons-material";
 import { Avatar } from "@mui/material";
@@ -70,6 +70,8 @@ const EditMode = ({
                 setProfilePreview(previewUrl);
                 onProfilePictureChange?.(previewUrl);
                 notifySucceed("Profile picture updated", { vertical: "top", horizontal: "center" }, 1);
+
+                updateCurrentAuthPfp((res as TextResponse).message)
             }
         }
     };
@@ -89,6 +91,8 @@ const EditMode = ({
             onEditModeClick()
             onSocialLinksChange?.(socialLinks)
             onUsernameChange?.(editedName)
+
+            updateCurrentAuthUsername(editedName)
         }
     };
 

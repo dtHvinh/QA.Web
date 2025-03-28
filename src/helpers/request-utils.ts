@@ -1,9 +1,8 @@
-import getAuth, { AuthProps } from "@/helpers/auth-utils";
+import getAuth, { AuthProps, setAuth } from "@/helpers/auth-utils";
 import { ErrorResponse } from "@/props/ErrorResponse";
 import { AuthRefreshResponse } from "@/types/types";
 import { backendURL } from "@/utilities/Constants";
 import notifyError from "@/utilities/ToastrExtensions";
-import { setCookie } from "cookies-next/client";
 import { createAxiosInstance } from './axios-config';
 
 const axios = createAxiosInstance();
@@ -145,10 +144,7 @@ export async function refreshToken(auth?: AuthProps) {
         currentAuth.accessToken = authRefreshResponse.accessToken;
         currentAuth.refreshToken = authRefreshResponse.refreshToken;
 
-        setCookie('auth', currentAuth, {
-            secure: true,
-            sameSite: 'strict'
-        });
+        setAuth(currentAuth)
 
         onRefreshed(authRefreshResponse.accessToken);
         return authRefreshResponse.accessToken;
