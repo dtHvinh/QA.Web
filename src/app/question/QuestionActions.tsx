@@ -97,6 +97,9 @@ export default function QuestionActions({
             const voteResponse = response as VoteResponse;
             setCurrentVote(voteResponse.score);
         }
+        else {
+            notifyError('Failed to vote');
+        }
     }
 
     const handleBookmarkQuestion = async () => {
