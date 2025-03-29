@@ -21,7 +21,7 @@ export default function ChatRoomMessage({ message: msg, isCurrentUser, showAvata
             onMouseLeave={() => setIsHovered(false)}
         >
             {isHovered && (
-                <div className="absolute right-2 -top-3 flex gap-1 rounded-full bg-[var(--background)] px-4">
+                <div className="absolute right-2 -top-3 flex gap-1 rounded-full bg-[var(--background)] px-4 z-50">
                     <IconButton size="small" >
                         <Reply className="text-[var(--text-primary)]" fontSize="small" />
                     </IconButton>

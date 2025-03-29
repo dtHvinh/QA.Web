@@ -96,7 +96,7 @@ export default function AdminDashboard() {
 
                     <div className="bg-[var(--card-background)] rounded-xl shadow-sm p-6 border border-[var(--border-color)]">
                         <h2 className="text-xl font-bold text-[var(--text-primary)] mb-6">Quick Actions</h2>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div className="[&>*]:flex-1 flex gap-4">
                             <Link href='/admin/user-management'
                                 className="flex items-start p-5 bg-[var(--card-background)] border border-[var(--border-color)] 
                                     rounded-xl hover:border-purple-500 hover:shadow-md transition-all group">
@@ -125,7 +125,7 @@ export default function AdminDashboard() {
                                 </div>
                             </Link>
 
-                            <button className="flex items-start p-5 bg-[var(--card-background)] border border-[var(--border-color)] 
+                            {/* <button className="flex items-start p-5 bg-[var(--card-background)] border border-[var(--border-color)] 
                                 rounded-xl hover:border-indigo-500 hover:shadow-md transition-all group">
                                 <div className="mr-4 p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg group-hover:bg-indigo-100 
                                     dark:group-hover:bg-indigo-900/30 transition-colors">
@@ -136,7 +136,7 @@ export default function AdminDashboard() {
                                         dark:group-hover:text-indigo-400">System Settings</h3>
                                     <p className="text-sm text-[var(--text-secondary)]">Configure platform settings</p>
                                 </div>
-                            </button>
+                            </button> */}
                         </div>
                     </div>
                 </div>

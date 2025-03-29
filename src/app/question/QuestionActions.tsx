@@ -89,17 +89,13 @@ export default function QuestionActions({
     }
 
     const handleVote = async (isUpvote: boolean) => {
-        const requestUrl = `/api/question/${question.id}/${isUpvote ? 'upvote' : 'downvote'}/`;
-
-        const response = await postFetcher(requestUrl);
+        const response = await postFetcher(`/api/question/${question.id}/${isUpvote ? 'upvote' : 'downvote'}/`);
 
         if (!IsErrorResponse(response)) {
             const voteResponse = response as VoteResponse;
             setCurrentVote(voteResponse.score);
         }
-        else {
-            notifyError('Failed to vote');
-        }
+
     }
 
     const handleBookmarkQuestion = async () => {

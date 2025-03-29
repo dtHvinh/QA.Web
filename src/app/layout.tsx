@@ -66,11 +66,11 @@ export default function RootLayout({
                             <ScrollToTopButton />
                         </main>
 
-                        <footer className="bg-[var(--nav-background)] border-t border-gray-100 text-[var(--text-primary)] py-4 z-50 h-[var(--appbar-height)]">
+                        {/* <footer className="bg-[var(--nav-background)] border-t border-gray-100 text-[var(--text-primary)] py-4 z-50 h-[var(--appbar-height)]">
                             <div className="container mx-auto text-center">
                                 <p>&copy; {new Date().getFullYear()} Q&A App. All rights reserved.</p>
                             </div>
-                        </footer>
+                        </footer> */}
                     </div>
                 </AppThemeProvider>
             </body>

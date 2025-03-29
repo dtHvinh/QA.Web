@@ -28,8 +28,6 @@ export default function QuestionPage({ params }: { params: Promise<{ path: strin
         })
     }, []);
 
-    console.log(data);
-
     if (isLoading) {
         return <Loading />
     }

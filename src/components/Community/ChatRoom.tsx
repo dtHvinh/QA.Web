@@ -1,5 +1,4 @@
-import getAuth from "@/helpers/auth-utils";
-import { formPostFetcher } from "@/helpers/request-utils";
+import { formPostFetcher, IsErrorResponse } from "@/helpers/request-utils";
 import { ChatMessageResponse } from "@/types/types";
 import { ArrowBack } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
@@ -13,7 +12,6 @@ interface ChatRoomProps {
 }
 
 export default function ChatRoom({ chatRoomId, messageInit = [], onBack }: ChatRoomProps & { onBack?: () => void }) {
-    const auth = getAuth();
     const [messages, setMessages] = useState<ChatMessageResponse[]>(messageInit);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const messagesContainerRef = useRef<HTMLDivElement>(null);
@@ -25,6 +23,8 @@ export default function ChatRoom({ chatRoomId, messageInit = [], onBack }: ChatR
     }, [messages]);
 
     const handleSubmit = async (message: string, files: File[]) => {
+        if (!message.trim() && files.length === 0) return;
+
         var formData = new FormData();
 
         formData.append('message', message);
@@ -34,6 +34,11 @@ export default function ChatRoom({ chatRoomId, messageInit = [], onBack }: ChatR
         });
 
         const res = await formPostFetcher('/api/community/room/chat', formData);
+
+        console.log(res as ChatMessageResponse)
+
+        if (!IsErrorResponse(res))
+            setMessages(prev => [...prev, res as ChatMessageResponse]);
     };
 
     const renderMessage = useMemo(() => {
