@@ -13,7 +13,14 @@ export default function Appbar() {
     const currentPath = usePathname();
     const router = useRouter();
 
-    if (currentPath.startsWith('/auth')) return null;
+    const noLayoutPathPrefix = [
+        '/auth',
+        '/banned'
+    ];
+
+    const shouldHideAppbar = noLayoutPathPrefix.some(path => currentPath.startsWith(path));
+
+    if (shouldHideAppbar) return null;
 
     const handleSearch = (searchTerm: string, selectedTag?: TagResponse) => {
         if (searchTerm) {

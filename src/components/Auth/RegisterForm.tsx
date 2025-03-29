@@ -1,5 +1,6 @@
 'use client'
 
+import { postFetcher } from "@/helpers/request-utils";
 import { ErrorResponse } from "@/props/ErrorResponse";
 import { setCookie } from "cookies-next/client";
 import React, { useState } from "react";
@@ -26,12 +27,8 @@ export default function RegisterForm({ onSuccess, onLoginClick }: RegisterFormPr
                 confirmPassword: formData.get('confirmPassword') as string,
             };
 
-            const response = await fetch('/api/auth/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
+            const response = await postFetcher('/api/auth/register', JSON.stringify(data), {
+                needAuth: false,
             })
 
             if (!response.ok) {

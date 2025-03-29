@@ -27,15 +27,18 @@ export default function AuthPage() {
                 ...((!isLogin && { confirmPassword: formData.get('confirmPassword') as string }))
             };
 
-            const response = await postFetcher(`/api/auth/${isLogin ? 'login' : 'register'}`, JSON.stringify(data));
+            const response = await postFetcher(`/api/auth/${isLogin ? 'login' : 'register'}`, JSON.stringify(data), {
+                needAuth: false,
+            });
 
             if (IsErrorResponse(response)) {
                 setError(response.title);
                 return;
             }
 
-            if (rememberMe)
+            if (rememberMe) {
                 setRememberAuth(response as AuthProps);
+            }
             else
                 setAuth(response as AuthProps);
 
@@ -153,7 +156,7 @@ export default function AuthPage() {
                                     </motion.div>
                                 )}
                             </AnimatePresence>
-
+                            {/* 
                             {isLogin && (
                                 <div className="flex items-center">
                                     <input
@@ -167,7 +170,7 @@ export default function AuthPage() {
                                         Remember me
                                     </label>
                                 </div>
-                            )}
+                            )} */}
 
                             <button
                                 type="submit"

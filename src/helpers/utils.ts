@@ -33,7 +33,14 @@ export function getProviderImage(url: string) {
 export function upsert<T>(array: T[] | undefined, element: T, selector: (e: T) => unknown): T[] {
     if (!array) array = [];
 
-    const i = array.findIndex(e => selector(e) === selector(element));
+    const guardSelector = (e: T) => {
+        if (!selector(e))
+            throw new Error("Invalid selector");
+
+        return selector(e);
+    }
+
+    const i = array.findIndex(e => guardSelector(e) === guardSelector(element));
     if (i > -1) array[i] = element;
     else array.push(element);
 

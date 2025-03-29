@@ -1,6 +1,6 @@
 'use client'
 
-import { changeAuth, getAuthList } from "@/helpers/auth-utils";
+import { AuthProps, changeAuth, getAuthList, removeAuth } from "@/helpers/auth-utils";
 import { fromImage } from "@/helpers/utils";
 import { Delete } from "@mui/icons-material";
 import { Avatar, Dialog } from "@mui/material";
@@ -20,8 +20,9 @@ export default function ChangeProfilePopup({ open, onClose }: ChangeProfilePopup
     const [tabValue, setTabValue] = useState(0);
     const currentProfile = authList?.current;
 
-    const handleRemoveProfile = (username: string) => {
-        setProfiles(profiles.filter(profile => profile.username !== username));
+    const handleRemoveProfile = (profile: AuthProps) => {
+        removeAuth(profile)
+        setProfiles(authList?.others.filter(e => e.username !== authList.current.username) || []);
     };
 
     const handleProfileSelect = (idx: number) => {
@@ -135,7 +136,7 @@ export default function ChangeProfilePopup({ open, onClose }: ChangeProfilePopup
                                             </div>
                                         </button>
                                         <button
-                                            onClick={() => handleRemoveProfile(profile.username)}
+                                            onClick={() => handleRemoveProfile(profile)}
                                             className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-red-50 transition-all"
                                         >
                                             <Delete className="text-red-500" sx={{ fontSize: 20 }} />

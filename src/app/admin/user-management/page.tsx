@@ -8,7 +8,7 @@ import { getFetcher, IsErrorResponse } from "@/helpers/request-utils";
 import { fromImage } from "@/helpers/utils";
 import { GetUserResponse, PagedResponse } from "@/types/types";
 import { ArrowBack } from "@mui/icons-material";
-import { Avatar, Pagination } from "@mui/material";
+import { Avatar, Pagination, Tooltip } from "@mui/material";
 import Link from "next/link";
 import React, { FormEvent, useEffect, useState } from "react";
 import useSWR from "swr";
@@ -135,8 +135,10 @@ export default function UserManagementPage() {
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="py-3 px-6 text-[var(--text-secondary)]">
-                                                {user.email || 'N/A'}
+                                            <td className="py-3 px-6 text-[var(--text-secondary)] max-w-60 truncate">
+                                                <Tooltip title={user.email}>
+                                                    <span>{user.email}</span>
+                                                </Tooltip>
                                             </td>
                                             <td className="py-3 px-6">
                                                 <span className="font-medium text-[var(--text-primary)]">
@@ -151,7 +153,10 @@ export default function UserManagementPage() {
                                             </td>
                                             <td className="py-3 px-6">
                                                 <button
-                                                    onClick={() => setExpandedUserId(expandedUserId === user.id ? null : user.id)}
+                                                    onClick={() => {
+                                                        setExpandedUserId(expandedUserId === user.id ? null : user.id)
+                                                        console.log(expandedUserId)
+                                                    }}
                                                     className={`text-sm ${expandedUserId === user.id ? 'text-[var(--primary-dark)]' : 'text-[var(--primary)] hover:text-[var(--primary-dark)]'}`}
                                                 >
                                                     {expandedUserId === user.id ? 'Close' : 'Edit'}

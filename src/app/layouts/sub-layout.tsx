@@ -16,6 +16,7 @@ export default function SubLayout({
 }>) {
     const noLayoutPathPrefix = [
         '/auth',
+        '/banned'
     ];
 
     const pathname = usePathname();

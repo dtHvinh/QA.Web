@@ -7,6 +7,7 @@ export interface AuthProps {
     refreshToken: string;
     profilePicture: string;
     roles: Role[];
+    isValid: boolean;
 }
 
 export interface AuthListProps {
@@ -35,8 +36,23 @@ export function getAuthList() {
 export function setAuth(auth: AuthProps) {
     const authList = getAuthList();
     setCookie('auth', {
-        current: auth,
+        current: {
+            ...auth,
+            isValid: true
+        },
         others: authList?.others || []
+    })
+}
+
+export function invalidateAuth(auth: AuthProps) {
+    const authList = getAuthList();
+    if (!authList) return;
+    setCookie('auth', {
+        current: null,
+        others: authList?.others.map(e => e.username == auth.username ? {
+            ...e,
+            isValid: false
+        } : e) || []
     })
 }
 
@@ -46,20 +62,26 @@ export function setRememberAuth(auth: AuthProps) {
 
     if (currentAuth?.username === auth.username) {
         setCookie('auth', {
-            current: auth,
+            current: {
+                ...auth,
+                isValid: true
+            },
             others: authList?.others || []
         });
-        return;
     }
-
-    setCookie('auth', {
-        current: auth,
-        others: upsert(
-            authList?.others || [],
-            currentAuth!,
-            (e) => e.username
-        ).filter(e => e.username !== auth.username)
-    });
+    else {
+        setCookie('auth', {
+            current: {
+                ...auth,
+                isValid: true
+            },
+            others: upsert(
+                authList?.others || [],
+                currentAuth!,
+                (e) => e.username
+            ).filter(e => e.username !== auth.username)
+        });
+    }
 }
 
 export function changeAuth(idx: number) {

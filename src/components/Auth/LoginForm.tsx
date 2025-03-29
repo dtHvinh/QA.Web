@@ -1,9 +1,8 @@
 'use client'
 
-import { AuthProps, setAuth, setRememberAuth } from "@/helpers/auth-utils";
+import { AuthProps, setRememberAuth } from "@/helpers/auth-utils";
 import { IsErrorResponse, postFetcher } from "@/helpers/request-utils";
 import notifyError from "@/utilities/ToastrExtensions";
-import Link from "next/link";
 import { FormEvent, useState } from "react";
 
 interface LoginFormProps {
@@ -26,16 +25,15 @@ export default function LoginForm({ onSuccess, onRegisterClick }: LoginFormProps
                 password: formData.get('password') as string,
             };
 
-            const response = await postFetcher(`/api/auth/login`, JSON.stringify(data))
+            const response = await postFetcher(`/api/auth/login`, JSON.stringify(data), {
+                needAuth: false,
+            })
 
             if (IsErrorResponse(response)) {
                 return;
             }
 
-            if (isRememberMe)
-                setRememberAuth(response as AuthProps)
-            else
-                setAuth(response as AuthProps)
+            setRememberAuth(response as AuthProps)
 
             onSuccess?.();
         } catch (e: any) {
@@ -82,7 +80,7 @@ export default function LoginForm({ onSuccess, onRegisterClick }: LoginFormProps
                         />
                     </div>
 
-                    <div className="flex items-center justify-between">
+                    {/* <div className="flex items-center justify-between">
                         <label className="flex items-center">
                             <input defaultChecked={isRememberMe} onChange={() => setIsRememberMe(!isRememberMe)}
                                 type="checkbox" className="w-4 h-4 rounded border-[var(--border-color)] text-[var(--text-primary)]" />
@@ -91,7 +89,7 @@ export default function LoginForm({ onSuccess, onRegisterClick }: LoginFormProps
                         <Link href="#" className="text-sm text-[var(--primary)] hover:text-[var(--primary-darker)]">
                             Forgot password?
                         </Link>
-                    </div>
+                    </div> */}
 
                     <button
                         type="submit"

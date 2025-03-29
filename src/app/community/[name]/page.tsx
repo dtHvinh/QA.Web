@@ -209,6 +209,7 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
                         selectedRoom &&
                         <div className="h-full p-2">
                             <ChatRoom
+                                chatRoomId={`${selectedRoom.id}`}
                                 onBack={handleClickBack}
                                 messageInit={selectedRoom.messages}
                             />

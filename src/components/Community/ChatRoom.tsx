@@ -1,19 +1,20 @@
 import getAuth from "@/helpers/auth-utils";
-import timeFromNow from "@/helpers/time-utils";
-import { fromImage } from "@/helpers/utils";
+import { formPostFetcher } from "@/helpers/request-utils";
 import { ChatMessageResponse } from "@/types/types";
-import { ArrowBack, Send } from "@mui/icons-material";
-import { Avatar, IconButton } from "@mui/material";
-import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import { ArrowBack } from "@mui/icons-material";
+import { IconButton } from "@mui/material";
+import { useEffect, useMemo, useRef, useState } from "react";
+import ChatInput from "./ChatInput";
+import ChatRoomMessage from "./ChatRoomMessage";
 
 interface ChatRoomProps {
     messageInit?: ChatMessageResponse[];
+    chatRoomId: string;
 }
 
-export default function ChatRoom({ messageInit = [], onBack }: ChatRoomProps & { onBack?: () => void }) {
+export default function ChatRoom({ chatRoomId, messageInit = [], onBack }: ChatRoomProps & { onBack?: () => void }) {
     const auth = getAuth();
     const [messages, setMessages] = useState<ChatMessageResponse[]>(messageInit);
-    const [newMessage, setNewMessage] = useState("");
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const messagesContainerRef = useRef<HTMLDivElement>(null);
 
@@ -23,72 +24,33 @@ export default function ChatRoom({ messageInit = [], onBack }: ChatRoomProps & {
         }
     }, [messages]);
 
-    const handleSubmit = async (e: FormEvent) => {
-        e.preventDefault();
-        if (!newMessage.trim()) return;
+    const handleSubmit = async (message: string, files: File[]) => {
+        var formData = new FormData();
 
-        // Add message sending logic here
-        // For now, let's just add a mock message
-        const mockMessage: ChatMessageResponse = {
-            id: Math.random(),
-            message: newMessage,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-            user: {
-                id: '0',
-                username: auth?.username || 'User',
-                profilePicture: auth?.profilePicture || '',
-                reputation: 1000
-            }
-        };
+        formData.append('message', message);
+        formData.append('chatRoomId', chatRoomId);
+        files.forEach((file, index) => {
+            formData.append(`files[${index}]`, file);
+        });
 
-        setMessages([...messages, mockMessage]);
-        setNewMessage("");
+        const res = await formPostFetcher('/api/community/room/chat', formData);
     };
 
     const renderMessage = useMemo(() => {
         return messages.map((msg, index) => {
-            const isCurrentUser = msg.user.id === 20;
-            const showAvatar = index === 0 || messages[index - 1].user.id !== msg.user.id;
+            const isCurrentUser = msg.author.id === 20;
+            const isNewGroup = index === 0 || messages[index - 1].author.id !== msg.author.id;
 
             return (
-                <div key={msg.id} className={`flex ${isCurrentUser ? 'justify-end' : 'justify-start'} animate-fadeIn`}>
-                    <div className={`flex ${isCurrentUser ? 'flex-row-reverse' : 'flex-row'} max-w-[80%] gap-3`}>
-                        {!isCurrentUser && showAvatar && (
-                            <Avatar
-                                src={fromImage(msg.user.profilePicture)}
-                                alt={msg.user.username}
-                                sx={{
-                                    width: 38,
-                                    height: 38,
-                                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                                }}
-                            />
-                        )}
-                        {!isCurrentUser && !showAvatar && <div className="w-[38px]"></div>}
-
-                        <div className="flex flex-col">
-                            {showAvatar && (
-                                <div className={`text-sm font-medium mb-1.5 ${isCurrentUser ? 'text-right' : 'text-left'} 
-                                    text-[var(--text-secondary)]`}>
-                                    {isCurrentUser ? 'You' : msg.user.username}
-                                </div>
-                            )}
-                            <div className={`rounded-2xl px-5 py-2.5 shadow-sm
-                                ${isCurrentUser
-                                    ? 'bg-[var(--primary)] text-white rounded-tr-md'
-                                    : 'bg-[var(--hover-background)] text-[var(--text-primary)] rounded-tl-md'
-                                }`}>
-                                <p className="whitespace-pre-wrap break-words text-[15px]">{msg.message}</p>
-                            </div>
-                            <div className={`text-xs text-[var(--text-tertiary)] mt-1.5 ${isCurrentUser ? 'text-right' : 'text-left'}`}>
-                                {timeFromNow(msg.createdAt)}
-                            </div>
-                        </div>
-                    </div>
+                <div key={msg.id} className={isNewGroup ? "mt-4" : "mt-0"}>
+                    <ChatRoomMessage
+                        message={msg}
+                        isCurrentUser={isCurrentUser}
+                        showAvatar={true}
+                    />
                 </div>
             );
-        })
+        });
     }, [messages]);
 
     return (
@@ -121,32 +83,7 @@ export default function ChatRoom({ messageInit = [], onBack }: ChatRoomProps & {
                 </div>
             </div>
 
-            <form onSubmit={handleSubmit}
-                className="border-t border-[var(--border-color)] p-2 bg-[var(--background)] shadow-lg">
-                <div className="relative flex items-center gap-5">
-                    <input
-                        type="text"
-                        value={newMessage}
-                        onChange={(e) => setNewMessage(e.target.value)}
-                        placeholder="Type a message..."
-                        className="w-full px-5 py-2 rounded-2xl border border-[var(--border-color)] 
-                            bg-[var(--hover-background)] text-[var(--text-primary)] 
-                            placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 
-                            focus:ring-[var(--primary-light)] focus:border-transparent
-                            pr-12 transition-all text-[15px]"
-                    />
-                    <IconButton
-                        type="submit"
-                        disabled={!newMessage.trim()}
-                        className="absolute right-2 p-2 bg-[var(--primary)] hover:bg-[var(--primary-darker)]
-                            disabled:bg-[var(--disabled-background)] disabled:text-[var(--text-tertiary)]
-                            transition-all rounded-xl shadow-md"
-                        size="medium"
-                    >
-                        <Send className="text-[var(--text-primary)]" />
-                    </IconButton>
-                </div>
-            </form>
+            <ChatInput onSubmit={handleSubmit} />
         </div>
     );
 }

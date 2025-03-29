@@ -1,4 +1,4 @@
-import getAuth, { AuthProps, setAuth } from "@/helpers/auth-utils";
+import getAuth, { AuthProps, invalidateAuth, setAuth } from "@/helpers/auth-utils";
 import { ErrorResponse } from "@/props/ErrorResponse";
 import { AuthRefreshResponse } from "@/types/types";
 import { backendURL } from "@/utilities/Constants";
@@ -7,6 +7,8 @@ import { createAxiosInstance } from './axios-config';
 
 const axios = createAxiosInstance();
 
+const bannedStatusCode = 444;
+
 interface RequestConfig {
     url: string;
     method?: string;
@@ -14,15 +16,29 @@ interface RequestConfig {
     data?: any;
 }
 
-export const makeRequest = async (config: RequestConfig) => {
+interface RQOptions {
+    needAuth?: boolean;
+}
+
+export const makeRequest = async (config: RequestConfig, options?: RQOptions) => {
     const auth = getAuth();
+
+    const headers = {
+        ...config.headers,
+        Authorization: auth ? `Bearer ${auth.accessToken}` : ''
+
+    };
+
+    if (options) {
+        if (!options.needAuth) {
+            headers.Authorization = '';
+        }
+    }
+
     try {
         const response = await axios({
             ...config,
-            headers: {
-                ...config.headers,
-                Authorization: auth ? `Bearer ${auth.accessToken}` : ''
-            }
+            headers: headers
         });
         return response.data;
     } catch (error: any) {
@@ -39,6 +55,13 @@ export const makeRequest = async (config: RequestConfig) => {
                 }
             }
         }
+        if (error.response?.status === bannedStatusCode) {
+            if (auth)
+                invalidateAuth(auth);
+            window.location.href = '/banned';
+            return null;
+        }
+
         const err = error.response.data as ErrorResponse;
         notifyError(err.title);
         return err;
@@ -51,12 +74,12 @@ export const getFetcher = (url: string) =>
         method: 'GET'
     });
 
-export const postFetcher = (url: string, jsonBody?: string) =>
+export const postFetcher = (url: string, jsonBody?: string, options?: RQOptions) =>
     makeRequest({
         url,
         method: 'POST',
-        data: jsonBody ? JSON.parse(jsonBody) : null
-    });
+        data: jsonBody ? JSON.parse(jsonBody) : null,
+    }, options);
 
 export const formPostFetcher = (url: string, formData?: FormData) =>
     makeRequest({
@@ -129,6 +152,7 @@ export async function refreshToken(auth?: AuthProps) {
 
         if (IsErrorResponse(data)) {
             notifyError((data as ErrorResponse).title);
+            invalidateAuth(auth)
             window.location.href = '/login';
             return null;
         }
@@ -151,6 +175,7 @@ export async function refreshToken(auth?: AuthProps) {
     } catch (error) {
         notifyError("Failed to refresh token");
         window.location.href = '/auth';
+        invalidateAuth(auth);
         return null;
     } finally {
         isRefreshing = false;
