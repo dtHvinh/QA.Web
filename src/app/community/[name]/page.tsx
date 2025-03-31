@@ -291,7 +291,6 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
                         children={
                             <div>
                                 <ChatRoomsSidebar
-                                    className="-mr-[var(--community-right-sidebar-width)]"
                                     rooms={communityDetail.rooms}
                                     isOwner={communityDetail.isOwner}
                                     isModerator={communityDetail.isModerator}

@@ -1,3 +1,4 @@
+import Loading from "@/app/loading";
 import { useSignalR } from "@/context/SignalRContext";
 import getAuth, { extractId, getAuthUsername } from "@/helpers/auth-utils";
 import { formPostFetcher, getFetcher, IsErrorResponse } from "@/helpers/request-utils";
@@ -34,7 +35,7 @@ export default function ChatRoom({ chatRoomId, onBack }: ChatRoomProps & { onBac
                 return [...prev, { userId, username }];
             });
         },
-        1000,
+        300,
         { leading: true, trailing: false }
     );
 
@@ -42,9 +43,20 @@ export default function ChatRoom({ chatRoomId, onBack }: ChatRoomProps & { onBac
         (_: string, userId: string) => {
             setTypingUsers(prev => prev.filter(user => user.userId !== userId));
         },
-        1000,
+        300,
         { leading: false, trailing: true }
     );
+
+    const updateMessage = (message: ChatMessageResponse) => {
+        console.log('update message', message);
+        mutate(currentData => {
+            if (!currentData) return currentData;
+            return {
+                ...currentData,
+                items: [...currentData.items, message]
+            };
+        }, false);
+    }
 
     const handleUserTyping = () => {
         if (!connection || connection.state !== HubConnectionState.Connected) return;
@@ -74,13 +86,12 @@ export default function ChatRoom({ chatRoomId, onBack }: ChatRoomProps & { onBac
                 mutate({
                     ...messageInit,
                     items: [...messageInit.items, res as ChatMessageResponse]
-                })
+                }, false);
             }
         }
     };
 
     const renderMessage = useMemo(() => messageInit ? messageInit.items.map((msg, index) => {
-        console.log('render message', msg);
         const isCurrentUser = msg.author.id === userId;
         const isNewGroup = index === 0 || messageInit.items[index - 1].author.id !== msg.author.id;
 
@@ -93,7 +104,12 @@ export default function ChatRoom({ chatRoomId, onBack }: ChatRoomProps & { onBac
                 />
             </div>
         );
-    }) : [], [messageInit]);
+    }) : [],
+        [messageInit]);
+
+    if ((connection && connection.state !== HubConnectionState.Connected)) {
+        return <Loading />
+    }
 
     useEffect(() => {
         if (messagesEndRef.current && messagesContainerRef.current) {
@@ -110,21 +126,17 @@ export default function ChatRoom({ chatRoomId, onBack }: ChatRoomProps & { onBac
 
         connection.on('ReceiveMessage', (message: ChatMessageResponse) => {
             if (message.author.id != Number.parseInt(userId)) {
-                console.log('receive message', message);
-                if (messageInit) {
-                    mutate({
-                        ...messageInit,
-                        items: [...messageInit.items, message]
-                    })
-                }
+                updateMessage(message);
             }
-        })
+        });
 
         connection.on('SomeOneStartTyping', (username: string, userId: string) => {
+            console.log('start typing', username, userId);
             throttledStartTyping(username, userId);
         })
 
         connection.on('SomeOneStopTyping', (username: string, userId: string) => {
+            console.log('stop typing', username, userId);
             throttledStopTyping(username, userId);
         })
 
@@ -132,7 +144,8 @@ export default function ChatRoom({ chatRoomId, onBack }: ChatRoomProps & { onBac
             if (!connection) return;
 
             connection.off('ReceiveMessage');
-            connection.off('UserTyping');
+            connection.off('SomeOneStartTyping');
+            connection.off('SomeOneStopTyping');
             leaveRoom(Number.parseInt(chatRoomId));
         }
     }, [chatRoomId])

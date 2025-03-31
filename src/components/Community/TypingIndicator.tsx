@@ -31,7 +31,7 @@ export default function TypingIndicator({ users }: TypingIndicatorProps) {
 
     return (
         <div className="px-4 text-sm text-[var(--text-tertiary)] italic">
-            <span>{users.map(e => e.username).join(', ')} {users.length == 1 ? 'is' : 'are'} typing</span>
+            <span><span className="font-bold">{users.map(e => e.username).join(', ')}</span> {users.length == 1 ? 'is' : 'are'} typing</span>
             <motion.span
                 className="inline-flex gap-[2px] ml-1"
                 variants={containerVariants}
