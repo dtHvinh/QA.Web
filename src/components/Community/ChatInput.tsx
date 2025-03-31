@@ -1,16 +1,27 @@
 import { AttachFile, Close, Image, Send } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
-import { FormEvent, useRef, useState } from 'react';
+import { FormEvent, useEffect, useRef, useState } from 'react';
 
 interface ChatInputProps {
     onSubmit: (message: string, files: File[]) => void;
+    onStartTyping?: () => void;
+    onStopTyping?: () => void;
 }
 
-export default function ChatInput({ onSubmit }: ChatInputProps) {
+export default function ChatInput({ onSubmit, onStartTyping, onStopTyping }: ChatInputProps) {
     const [message, setMessage] = useState('');
     const [files, setFiles] = useState<File[]>([]);
     const [previewUrls, setPreviewUrls] = useState<string[]>([]);
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        if (!message.trim() && files.length === 0) {
+            onStopTyping?.();
+        }
+        else {
+            onStartTyping?.();
+        }
+    }, [message, files])
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();

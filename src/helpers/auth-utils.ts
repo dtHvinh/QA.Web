@@ -1,4 +1,5 @@
 import { getCookie, setCookie } from "cookies-next/client";
+import { jwtDecode } from "jwt-decode";
 import { upsert } from "./utils";
 
 export interface AuthProps {
@@ -42,6 +43,16 @@ export function setAuth(auth: AuthProps) {
         },
         others: authList?.others || []
     })
+}
+
+export function getAuthUsername() {
+    return getAuth()?.username;
+}
+
+export function extractId(jwt: string) {
+    return jwtDecode<{
+        "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier": string
+    }>(jwt)["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
 }
 
 export function invalidateAuth(auth: AuthProps) {

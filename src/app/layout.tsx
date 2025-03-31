@@ -1,5 +1,6 @@
 import Appbar from "@/components/AppBar/Appbar";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
+import { SignalRProvider } from "@/context/SignalRContext";
 import { SupabaseProvider } from "@/context/SupabaseClientContext";
 import { AppThemeProvider } from '@/context/ThemeContext';
 import { Analytics } from "@vercel/analytics/react";
@@ -43,12 +44,12 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en">
+        <html lang="en" suppressHydrationWarning>
             <head>
                 <script src="https://unpkg.com/react-scan/dist/auto.global.js" async></script>
                 <title>A</title>
             </head>
-            <body className={`${dmSans.className} ${geistSans.variable} ${geistMono.variable} antialiased`}>
+            <body className={`${dmSans.className} ${geistSans.variable} ${geistMono.variable} antialiased`} suppressHydrationWarning>
                 <AppThemeProvider>
                     <div className="flex flex-col min-h-screen">
                         <header className="sticky top-0 z-50 bg-white shadow-sm">
@@ -56,21 +57,17 @@ export default function RootLayout({
                         </header>
 
                         <main className="flex-1">
-                            <SupabaseProvider>
-                                <SubLayout>
-                                    {children}
-                                    <Analytics />
-                                    <SpeedInsights />
-                                </SubLayout>
-                            </SupabaseProvider>
+                            <SignalRProvider>
+                                <SupabaseProvider>
+                                    <SubLayout>
+                                        {children}
+                                        <Analytics />
+                                        <SpeedInsights />
+                                    </SubLayout>
+                                </SupabaseProvider>
+                            </SignalRProvider>
                             <ScrollToTopButton />
                         </main>
-
-                        {/* <footer className="bg-[var(--nav-background)] border-t border-gray-100 text-[var(--text-primary)] py-4 z-50 h-[var(--appbar-height)]">
-                            <div className="container mx-auto text-center">
-                                <p>&copy; {new Date().getFullYear()} Q&A App. All rights reserved.</p>
-                            </div>
-                        </footer> */}
                     </div>
                 </AppThemeProvider>
             </body>

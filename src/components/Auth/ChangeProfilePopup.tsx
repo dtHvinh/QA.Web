@@ -5,7 +5,7 @@ import { fromImage } from "@/helpers/utils";
 import { Delete } from "@mui/icons-material";
 import { Avatar, Dialog } from "@mui/material";
 import { AnimatePresence, motion } from 'framer-motion';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 
@@ -16,9 +16,18 @@ interface ChangeProfilePopupProps {
 
 export default function ChangeProfilePopup({ open, onClose }: ChangeProfilePopupProps) {
     const authList = getAuthList();
-    const [profiles, setProfiles] = useState(authList?.others.filter(e => e.username !== authList.current.username) || []);
+    const [profiles, setProfiles] = useState<AuthProps[]>([]);
     const [tabValue, setTabValue] = useState(0);
     const currentProfile = authList?.current;
+
+    useEffect(() => {
+        try {
+            const p = authList?.others.filter(e => e.username !== authList.current.username) || []
+            setProfiles(p);
+        } catch (e) {
+            setProfiles([]);
+        }
+    }, [])
 
     const handleRemoveProfile = (profile: AuthProps) => {
         removeAuth(profile)

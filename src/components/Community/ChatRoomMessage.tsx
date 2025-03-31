@@ -3,7 +3,6 @@ import { fromImage } from "@/helpers/utils";
 import { ChatMessageResponse } from "@/types/types";
 import { MoreHoriz, Reply } from "@mui/icons-material";
 import { Avatar, IconButton } from "@mui/material";
-import { useState } from "react";
 
 interface MessageProps {
     message: ChatMessageResponse;
@@ -12,24 +11,19 @@ interface MessageProps {
 }
 
 export default function ChatRoomMessage({ message: msg, isCurrentUser, showAvatar }: MessageProps) {
-    const [isHovered, setIsHovered] = useState(false);
 
     return (
         <div
             className="group relative px-2 py-2 hover:bg-gray-700 rounded-md transition-colors"
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
         >
-            {isHovered && (
-                <div className="absolute right-2 -top-3 flex gap-1 rounded-full bg-[var(--background)] px-4 z-50">
-                    <IconButton size="small" >
-                        <Reply className="text-[var(--text-primary)]" fontSize="small" />
-                    </IconButton>
-                    <IconButton size="small">
-                        <MoreHoriz className="text-[var(--text-primary)]" fontSize="small" />
-                    </IconButton>
-                </div>
-            )}
+            <div className="invisible group-hover:visible absolute right-2 -top-3 flex gap-1 rounded-full bg-[var(--background)] px-4 z-50">
+                <IconButton size="small" >
+                    <Reply className="text-[var(--text-primary)]" fontSize="small" />
+                </IconButton>
+                <IconButton size="small">
+                    <MoreHoriz className="text-[var(--text-primary)]" fontSize="small" />
+                </IconButton>
+            </div>
 
             <div className="flex items-center gap-3 w-full">
                 {showAvatar ? (

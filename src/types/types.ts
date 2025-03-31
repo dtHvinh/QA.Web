@@ -24,7 +24,6 @@ export interface ChatMessageResponse {
     message: string;
     createdAt: string;
     updatedAt: string;
-    files: string[];
     author: AuthorResponse;
 }
 
