@@ -1,8 +1,6 @@
 'use client'
 
 import { TagResponse } from "@/types/types";
-import { Add } from "@mui/icons-material";
-import { Tooltip } from "@mui/material";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import SearchInput from "../Search/SearchInput";
@@ -41,7 +39,7 @@ export default function Appbar() {
                         </Link>
                     </div>
 
-                    <div className="flex-1 max-w-xl mx-4">
+                    <div className="hidden md:block max-w-xl mx-4">
                         <SearchInput onSearch={handleSearch} />
                     </div>
 
@@ -49,11 +47,6 @@ export default function Appbar() {
                         <div className="w-10">
                             <ThemeToggle />
                         </div>
-                        <Tooltip title='Ask a question'>
-                            <Link href={'/new-question'} className="hover:bg-[var(--hover-background)] w-10 h-10 p-2 rounded-full transition-colors active:scale-95">
-                                <Add />
-                            </Link>
-                        </Tooltip>
                         <UserDropdown />
                     </div>
                 </div>

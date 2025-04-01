@@ -9,6 +9,7 @@ import { getFetcher } from "@/helpers/request-utils";
 import { scrollToTop } from "@/helpers/utils";
 import { PagedResponse, QuestionResponse, ViewOptions } from "@/types/types";
 import { backendURL, Routes } from "@/utilities/Constants";
+import { Add } from "@mui/icons-material";
 import { Pagination } from "@mui/material";
 import Link from "next/link";
 import React, { useEffect, useMemo, useState } from "react";
@@ -81,7 +82,7 @@ export default function QuestionsPage() {
 
     return (
         <div className="page-container mx-auto space-y-8">
-            <div className="flex flex-col sm:flex-row justify-between items-start gap-4 sm:items-center">
+            <div className="flex justify-between items-center gap-4 sm:items-center">
                 <div className="space-y-1">
                     <h1 className="text-3xl font-bold text-[var(--text-primary)]">
                         All Questions
@@ -95,12 +96,9 @@ export default function QuestionsPage() {
 
                 <Link
                     href={Routes.NewQuestion}
-                    className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    className="inline-flex items-center p-2 rounded-full border-[var(--text-primary)] border text-white transition-colors"
                 >
-                    <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
-                    </svg>
-                    Ask Question
+                    <Add />
                 </Link>
             </div>
 

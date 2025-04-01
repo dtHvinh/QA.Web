@@ -83,7 +83,7 @@ export default function Home() {
                 <div className="col-span-full md:col-span-8 lg:col-span-9 mb-5">
                     <div className="space-y-6">
                         <div className="flex items-center justify-between">
-                            <h2 className="text-2xl font-bold text-[var(--text-primary)]">
+                            <h2 className="text-xl md:text-2xl font-bold text-[var(--text-primary)]">
                                 Recommended Questions
                             </h2>
 

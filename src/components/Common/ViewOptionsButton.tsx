@@ -17,7 +17,7 @@ export default function ViewOptionsButton({ view, onChange }: ViewOptionsButtonP
                         : 'text-[var(--text-secondary)] hover:bg-[var(--hover-background)]'}`}
             >
                 <ViewModule fontSize="small" />
-                <span>Compact</span>
+                <span className='hidden sm:block'>Compact</span>
             </button>
             <button
                 onClick={() => onChange('full')}
@@ -27,7 +27,7 @@ export default function ViewOptionsButton({ view, onChange }: ViewOptionsButtonP
                         : 'text-[var(--text-secondary)] hover:bg-[var(--hover-background)]'}`}
             >
                 <ViewList fontSize="small" />
-                <span>Full Details</span>
+                <span className='hidden sm:block'>Full Details</span>
             </button>
         </div>
     );

@@ -68,96 +68,93 @@ export default function UserManagementPage() {
 
     return (
         <AdminPrivilege fallBackComponent={<AccessDenied />}>
-            <div className="page-container mx-auto">
+            <div className="page-container mx-auto p-3 sm:p-6">
                 <div className="bg-[var(--card-background)] rounded-xl shadow-sm border border-[var(--border-color)] overflow-hidden">
-                    <div className="p-6 border-b border-[var(--border-color)]">
-                        <div className="flex items-center gap-4 mb-4">
+                    <div className="p-4 sm:p-6 border-b border-[var(--border-color)]">
+                        <div className="flex items-center gap-2 sm:gap-4 mb-3 sm:mb-4">
                             <Link
                                 href="/admin"
-                                className="inline-flex items-center gap-1 text-blue-500 hover:text-blue-600"
+                                className="inline-flex items-center gap-1 text-sm sm:text-base text-blue-500 hover:text-blue-600"
                             >
                                 <ArrowBack fontSize="small" />
                                 <span>Back to Dashboard</span>
                             </Link>
                         </div>
-                        <h1 className="text-xl font-bold text-[var(--text-primary)]">User Management</h1>
-                        <p className="mt-1 text-sm text-[var(--text-secondary)]">Manage and monitor user accounts</p>
+                        <h1 className="text-lg sm:text-xl font-bold text-[var(--text-primary)]">User Management</h1>
+                        <p className="mt-1 text-xs sm:text-sm text-[var(--text-secondary)]">Manage and monitor user accounts</p>
                     </div>
 
-                    <div className="px-6 py-4 border-b border-[var(--border-color)]">
-                        <div className="max-w-xs">
+                    <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-[var(--border-color)]">
+                        <div className="max-w-xs w-full">
                             <form onSubmit={handleSearchUserById}>
                                 <input
                                     type="text"
                                     placeholder="Search user by Id"
                                     value={searchId}
                                     onChange={(e) => setSearchId(e.target.value)}
-                                    className="w-full px-4 py-2 border border-[var(--border-color)] rounded-lg text-sm bg-[var(--input-bg)] text-[var(--text-primary)]"
+                                    className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded-lg text-xs sm:text-sm bg-[var(--input-bg)] text-[var(--text-primary)]"
                                 />
                             </form>
                         </div>
                     </div>
 
                     <div className="overflow-x-auto">
-                        <table className="w-full">
+                        <table className="min-w-[800px] w-full">
                             <thead>
-                                <tr className="bg-[var(--hover-background)] text-left text-sm text-[var(--text-secondary)]">
-                                    <th className="py-3 px-6 font-medium">ID</th>
-                                    <th className="py-3 px-6 font-medium">User</th>
-                                    <th className="py-3 px-6 font-medium">Email</th>
-                                    <th className="py-3 px-6 font-medium">Reputation</th>
-                                    <th className="py-3 px-6 font-medium">Status</th>
-                                    <th className="py-3 px-6 font-medium">Joined</th>
-                                    <th className="py-3 px-6 font-medium">Actions</th>
+                                <tr className="bg-[var(--hover-background)] text-left text-xs sm:text-sm text-[var(--text-secondary)]">
+                                    <th className="py-2 sm:py-3 px-3 sm:px-6 font-medium">ID</th>
+                                    <th className="py-2 sm:py-3 px-3 sm:px-6 font-medium">User</th>
+                                    <th className="py-2 sm:py-3 px-3 sm:px-6 font-medium">Email</th>
+                                    <th className="py-2 sm:py-3 px-3 sm:px-6 font-medium">Reputation</th>
+                                    <th className="py-2 sm:py-3 px-3 sm:px-6 font-medium">Status</th>
+                                    <th className="py-2 sm:py-3 px-3 sm:px-6 font-medium">Joined</th>
+                                    <th className="py-2 sm:py-3 px-3 sm:px-6 font-medium">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-[var(--border-color)]">
                                 {data && users.map((user) => (
                                     <React.Fragment key={user.id} >
                                         <tr className="hover:bg-[var(--hover-background)] transition-colors">
-                                            <td className="py-3 px-6 text-[var(--text-secondary)]">
+                                            <td className="py-2 sm:py-3 px-3 sm:px-6 text-xs sm:text-sm text-[var(--text-secondary)]">
                                                 {user.id}
                                             </td>
-                                            <td className="py-3 px-6">
-                                                <div className="flex items-center gap-3">
+                                            <td className="py-2 sm:py-3 px-3 sm:px-6">
+                                                <div className="flex items-center gap-2 sm:gap-3">
                                                     <Avatar
                                                         src={fromImage(user.profilePicture)}
                                                         alt={user.userName}
-                                                        className="w-8 h-8 rounded-full"
+                                                        className="w-6 h-6 sm:w-8 sm:h-8 rounded-full"
                                                     />
                                                     <div>
-                                                        <div className="font-medium text-[var(--text-primary)]">
+                                                        <div className="text-xs sm:text-sm font-medium text-[var(--text-primary)]">
                                                             {user.userName}
                                                         </div>
-                                                        <div className="text-sm text-[var(--text-secondary)]">
+                                                        <div className="text-xs sm:text-sm text-[var(--text-secondary)]">
                                                             {user.firstName} {user.lastName}
                                                         </div>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="py-3 px-6 text-[var(--text-secondary)] max-w-60 truncate">
+                                            <td className="py-2 sm:py-3 px-3 sm:px-6 text-xs sm:text-sm text-[var(--text-secondary)] max-w-40 sm:max-w-60 truncate">
                                                 <Tooltip title={user.email}>
                                                     <span>{user.email}</span>
                                                 </Tooltip>
                                             </td>
-                                            <td className="py-3 px-6">
-                                                <span className="font-medium text-[var(--text-primary)]">
+                                            <td className="py-2 sm:py-3 px-3 sm:px-6">
+                                                <span className="text-xs sm:text-sm font-medium text-[var(--text-primary)]">
                                                     {user.reputation}
                                                 </span>
                                             </td>
-                                            <td className="py-3 px-6">
+                                            <td className="py-2 sm:py-3 px-3 sm:px-6">
                                                 <UserStatus user={user} />
                                             </td>
-                                            <td className="py-3 px-6 text-[var(--text-secondary)]">
+                                            <td className="py-2 sm:py-3 px-3 sm:px-6 text-xs sm:text-sm text-[var(--text-secondary)]">
                                                 {new Date(user.createdAt).toLocaleDateString()}
                                             </td>
-                                            <td className="py-3 px-6">
+                                            <td className="py-2 sm:py-3 px-3 sm:px-6">
                                                 <button
-                                                    onClick={() => {
-                                                        setExpandedUserId(expandedUserId === user.id ? null : user.id)
-                                                        console.log(expandedUserId)
-                                                    }}
-                                                    className={`text-sm ${expandedUserId === user.id ? 'text-[var(--primary-dark)]' : 'text-[var(--primary)] hover:text-[var(--primary-dark)]'}`}
+                                                    onClick={() => setExpandedUserId(expandedUserId === user.id ? null : user.id)}
+                                                    className={`text-xs sm:text-sm ${expandedUserId === user.id ? 'text-[var(--primary-dark)]' : 'text-[var(--primary)] hover:text-[var(--primary-dark)]'}`}
                                                 >
                                                     {expandedUserId === user.id ? 'Close' : 'Edit'}
                                                 </button>
@@ -179,13 +176,13 @@ export default function UserManagementPage() {
                     </div>
 
                     {data && data.totalPage > 0 && (
-                        <div className="flex justify-center py-6 border-t border-[var(--border-color)]">
+                        <div className="flex justify-center py-4 sm:py-6 border-t border-[var(--border-color)]">
                             <Pagination
                                 count={data.totalPage}
                                 page={pageIndex}
                                 onChange={handlePageChange}
                                 shape="rounded"
-                                size="large"
+                                size="small"
                             />
                         </div>
                     )}

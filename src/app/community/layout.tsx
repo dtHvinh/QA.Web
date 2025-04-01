@@ -4,7 +4,7 @@ import CreateCommunityDialog from "@/components/Community/CreateCommunityDialog"
 import { getFetcher } from "@/helpers/request-utils";
 import { fromImage } from "@/helpers/utils";
 import { GetCommunityResponse } from "@/types/types";
-import { Add } from "@mui/icons-material";
+import { Add, Email } from "@mui/icons-material";
 import { Avatar, Tooltip } from "@mui/material";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -143,9 +143,7 @@ export default function CommunityLayout({ children }: { children: React.ReactNod
                             }}
                             onClick={() => setJoinDialogOpen(true)}
                         >
-                            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                            </svg>
+                            <Email />
                         </Avatar>
                     </div>
                 </Tooltip>

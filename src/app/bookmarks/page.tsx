@@ -11,13 +11,13 @@ import useSWR from "swr";
 export default function BookmarkPage() {
     const [pageIndex, setPageIndex] = React.useState<number>(1);
     const [pageSize, setPageSize] = React.useState<number>(10);
-    const [questions, setQuestions] = React.useState<BookmarkResponse[]>([]);
+    const [bookmarks, setBookmarks] = React.useState<BookmarkResponse[]>([]);
 
     const { data, isLoading } = useSWR(`/api/bookmark/?orderBy=Newest&pageIndex=${pageIndex}&pageSize=${pageSize}`, getFetcher);
 
     useEffect(() => {
         if (data) {
-            setQuestions((data as PagedResponse<BookmarkResponse>).items);
+            setBookmarks((data as PagedResponse<BookmarkResponse>).items);
         }
     }, [data]);
 
@@ -26,17 +26,17 @@ export default function BookmarkPage() {
     }
 
     const handleDelete = (bookmark: BookmarkResponse) => {
-        setQuestions(questions.filter(q => q.id !== bookmark.id));
+        setBookmarks(bookmarks.filter(q => q.id !== bookmark.id));
     }
 
     return (
-        <div className="page-container mx-auto">
-            <div className="mb-8">
-                <h1 className="text-3xl font-bold text-[var(--text-primary)]">Your Bookmarks</h1>
-                <p className="mt-2 text-[var(--text-secondary)]">Save and organize your favorite questions</p>
+        <div className="page-container mx-auto px-2 sm:px-0">
+            <div className="mb-6 sm:mb-8">
+                <h1 className="text-2xl sm:text-3xl font-bold text-[var(--text-primary)]">Your Bookmarks</h1>
+                <p className="mt-2 text-sm sm:text-base text-[var(--text-secondary)]">Save and organize your favorite questions</p>
             </div>
 
-            {questions.length === 0 ? (
+            {bookmarks.length === 0 ? (
                 <div className="text-center py-16 bg-[var(--card-background)] rounded-xl border border-[var(--border-color)]">
                     <div className="mb-4">
                         <svg className="mx-auto h-12 w-12 text-[var(--text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -49,15 +49,15 @@ export default function BookmarkPage() {
                     </p>
                 </div>
             ) : (
-                <div className="space-y-6">
+                <div className="space-y-4 sm:space-y-6">
                     <div className="flex items-center justify-between">
-                        <p className="text-sm text-[var(--text-secondary)]">
-                            Showing {questions.length} bookmark{questions.length !== 1 ? 's' : ''}
+                        <p className="text-xs sm:text-sm text-[var(--text-secondary)]">
+                            Showing {bookmarks.length} bookmark{bookmarks.length !== 1 ? 's' : ''}
                         </p>
                     </div>
 
-                    <div className="space-y-4">
-                        {questions.map((bookmark: BookmarkResponse) => (
+                    <div className="space-y-3 sm:space-y-4">
+                        {bookmarks.map((bookmark: BookmarkResponse) => (
                             <div key={bookmark.id} className="transition-all">
                                 <BookmarkItem
                                     bookmark={bookmark}

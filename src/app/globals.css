@@ -160,6 +160,25 @@ body {
     max-width: 60rem;
 }
 
+@media screen and (max-width: 640px) {
+    .page-container {
+        padding: 0 .5rem;
+    }
+
+    .MuiPagination-root {
+        .MuiPaginationItem-root {
+            min-width: 28px;
+            height: 28px;
+            font-size: 0.75rem;
+            margin: 0 2px;
+        }
+
+        .MuiPaginationItem-icon {
+            font-size: 1rem;
+        }
+    }
+}
+
 select {
     -moz-appearance: none;
     -webkit-appearance: none;
@@ -174,7 +193,6 @@ input:focus-visible {
     padding-bottom: 1rem;
 }
 
-/* Why tf text has to uppercase by def */
 .MuiButtonBase-root {
     text-transform: none !important;
 }
