@@ -157,13 +157,11 @@ export default function UserDropdown() {
 
                         <ModeratorPrivilege>
                             <div className="pt-4">
-                                <div className="border-t border-[var(--border-color)] pt-4">
-                                    <Link href={'/moderator'}
-                                        className={`${buttonStyle} ${pathname === "/moderator" ? selectedStyle : "text-[var(--text-primary)]"}`}>
-                                        <BuildOutlined fontSize="small" />
-                                        <span>Moderator</span>
-                                    </Link>
-                                </div>
+                                <Link href={'/moderator'}
+                                    className={`${buttonStyle} ${pathname === "/moderator" ? selectedStyle : "text-[var(--text-primary)]"}`}>
+                                    <BuildOutlined fontSize="small" />
+                                    <span>Moderator</span>
+                                </Link>
                             </div>
                         </ModeratorPrivilege>
                     </div>

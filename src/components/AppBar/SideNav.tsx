@@ -104,14 +104,12 @@ export default function SideNav() {
 
                     <ModeratorPrivilege>
                         <div className="pt-2">
-                            <div className="border-t border-[var(--border-color)] pt-2">
-                                <Link href={'/moderator'}
-                                    className={`h-8 px-3 flex items-center gap-2 w-full rounded-md hover:bg-[var(--hover-background)] transition-colors text-sm
+                            <Link href={'/moderator'}
+                                className={`h-8 px-3 flex items-center gap-2 w-full rounded-md hover:bg-[var(--hover-background)] transition-colors text-sm
                                 ${pathname === '/moderator' ? theme.selected : ''}`}>
-                                    <BuildOutlined fontSize="small" />
-                                    <span>Moderkaiser</span>
-                                </Link>
-                            </div>
+                                <BuildOutlined fontSize="small" />
+                                <span>Moderator</span>
+                            </Link>
                         </div>
                     </ModeratorPrivilege>
 
