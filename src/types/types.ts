@@ -44,6 +44,21 @@ export interface SysLogResponse {
     utcTimestamp: string
 }
 
+export interface GetReportResponse {
+    id: string;
+    type: string;
+    targetId: number;
+    description: string;
+    status: string;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export interface GetQuestionResponse {
+    id: string,
+    title: string,
+}
+
 export declare type ViewOptions = 'compact' | 'full'
 
 export interface TagResponse {
