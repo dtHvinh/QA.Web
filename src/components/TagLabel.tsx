@@ -17,12 +17,12 @@ export default function TagLabel(params: Readonly<TagLabelProps>) {
         return ((await getFetcher(`/api/tag/${tagId}/description`)) as TextResponse).message;
     }
     return (
-        <TagTooltip name={name} description={description} fetchDescription={fetchTagDescription}>
+        <TagTooltip name={name} tagId={tagId} description={description} fetchDescription={fetchTagDescription}>
             <Chip
                 label={name}
                 size="small"
                 onClick={() => onClick?.(name)}
-                className={`${className} bg-[var(--tag-background)] text-[var(--tag-text)] hover:bg-[var(--tag-background)] hover:opacity-80 transition-opacity`}
+                className={`${className} text-[var(--tag-text)] hover:bg-[var(--tag-background)] hover:opacity-80 transition-opacity`}
                 sx={{
                     height: '24px',
                     border: '1px solid var(--border-color)',

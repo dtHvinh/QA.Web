@@ -24,7 +24,7 @@ export default function ReportDialog({ open, onClose, targetId, targetType = "Qu
         setIsSubmitting(true);
 
         try {
-            const response = await postFetcher("/api/report", JSON.stringify({
+            const response = await postFetcher("/api/report/question", JSON.stringify({
                 targetId,
                 targetType: selectedType,
                 description
@@ -98,10 +98,12 @@ export default function ReportDialog({ open, onClose, targetId, targetType = "Qu
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                         placeholder="Please describe the issue with this content"
-                        InputProps={{
-                            sx: {
-                                bgcolor: 'var(--input-background)',
-                                color: 'var(--text-primary)',
+                        slotProps={{
+                            htmlInput: {
+                                spellCheck: false,
+                                sx: {
+                                    color: 'var(--text-primary)',
+                                }
                             }
                         }}
                         InputLabelProps={{

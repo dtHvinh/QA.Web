@@ -40,7 +40,7 @@ const QuestionDisplay: React.FC<QuestionDisplayProps> = ({ question }) => {
 
                 <div className="flex flex-wrap gap-1.5">
                     {question.tags.map(tag => (
-                        <TagLabel key={tag.id} name={tag.name} description={tag.description} />
+                        <TagLabel key={tag.id} tagId={tag.id} name={tag.name} description={tag.description} />
                     ))}
                 </div>
 

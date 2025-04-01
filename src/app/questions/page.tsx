@@ -96,7 +96,7 @@ export default function QuestionsPage() {
 
                 <Link
                     href={Routes.NewQuestion}
-                    className="inline-flex items-center p-2 rounded-full border-[var(--text-primary)] border text-white transition-colors"
+                    className="inline-flex items-center p-2 rounded-full text-[var(--text-primary)] transition-colors"
                 >
                     <Add />
                 </Link>

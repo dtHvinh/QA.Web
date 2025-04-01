@@ -62,7 +62,7 @@ export default function QuestionSection({ questionInit }: { questionInit: Questi
     }
 
     return (
-        <div className="page-container mx-auto">
+        <div className="page-container">
             <div className="grid grid-cols-12 gap-6">
                 <div className="col-span-1">
                     <QuestionActions

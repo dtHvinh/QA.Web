@@ -130,7 +130,9 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
 
     return (
         communityDetail &&
-        <div className="lg:ml-[var(--left-nav-expanded-width)] flex h-[calc(100vh-var(--appbar-height))] -mt-4">
+        <div className="lg:ml-[var(--left-nav-expanded-width)] flex 
+            md:max-h-[calc(100vh-var(--appbar-height))] 
+            -mt-4">
             <div className="flex-1 flex flex-col bg-[var(--background)]">
                 <div className={`${!isHeaderExpanded && 'hidden'} border-b border-[var(--border-color)] flex items-center bg-[var(--card-background)] 
                 border-l rounded-bl-2xl px-6 shadow-sm h-[59]`}>
@@ -171,7 +173,7 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
                             <div className="flex items-center gap-3 mt-0.5">
                                 <span className="text-xs text-[var(--text-secondary)] flex items-center gap-1.5">
                                     <People sx={{ fontSize: 16 }} />
-                                    {communityDetail.memberCount} members
+                                    {communityDetail.memberCount} <span className="hidden md:block">members</span>
                                 </span>
                                 {selectedRoom && (
                                     <span className="text-xs text-[var(--text-secondary)] flex items-center gap-1.5">
@@ -213,7 +215,7 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
                     </div>
                 </div>
 
-                <div id="community-main-content" className="flex-1 bg-[var(--background)] overflow-hidden mr-[var(--community-right-sidebar-width)] md:mr-0">
+                <div id="community-main-content" className="flex-1 bg-[var(--background)] overflow-hidden md:mr-0">
                     {chatRoomOpen &&
                         selectedRoom &&
                         <div className="h-full p-2">

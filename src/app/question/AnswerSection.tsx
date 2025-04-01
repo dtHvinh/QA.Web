@@ -90,7 +90,7 @@ export default function AnswerSection(
             </div>
 
             {!isClosed && (
-                <div className="space-y-4 p-6 rounded-lg border border-[var(--border-color)]">
+                <div className="space-y-4 rounded-lg">
                     <h3 className="font-medium text-[var(--text-primary)]">Your Answer</h3>
                     <TextEditor
                         currentText={currentText}
