@@ -1,16 +1,21 @@
-import getAuth from "@/helpers/auth-utils";
-import React, { useEffect, useState } from "react";
+import { getFetcher } from "@/helpers/request-utils";
+import { TextResponse } from "@/types/types";
+import React from "react";
+import useSWR from "swr";
 
-export default function ModeratorPrivilege({ children }: Readonly<{ children: React.ReactNode }>) {
-    const [isModerator, setIsModerator] = useState(false);
-    // TODO: Check endpoint instead
+export default function ModeratorPrivilege({ children, fallBackComponent }: Readonly<{ children: React.ReactNode, fallBackComponent?: React.ReactNode }>) {
+    const { data: isModerator, isLoading } = useSWR<TextResponse>('/api/user/is_role/Moderator', getFetcher);
 
-    useEffect(() => {
-        const auth = getAuth();
-        if (auth && auth.roles.some(e => e === 'Moderator')) {
-            setIsModerator(true);
-        }
-    }, []);
+    if (isLoading)
+        return null;
+
+    if (!isLoading && !isModerator) {
+        if (fallBackComponent)
+            return fallBackComponent;
+
+        return null;
+    }
+
 
     if (!isModerator) {
         return null;

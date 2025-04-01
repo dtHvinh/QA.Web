@@ -1,25 +1,29 @@
 'use client'
 
 import CreateCommunityDialog from "@/components/Community/CreateCommunityDialog";
-import { getFetcher } from "@/helpers/request-utils";
-import { fromImage } from "@/helpers/utils";
+import { getFetcher, IsErrorResponse } from "@/helpers/request-utils";
+import { fromImage, isScrollBottom } from "@/helpers/utils";
 import { theme } from "@/theme/theme";
 import { GetCommunityResponse } from "@/types/types";
 import { Add, Email } from "@mui/icons-material";
 import { Avatar, Tooltip, useMediaQuery } from "@mui/material";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import useSWR from "swr";
 
 export default function CommunityLayout({ children }: { children: React.ReactNode }) {
     const [pageIndex, setPageIndex] = useState(1);
     const pathname = usePathname();
-    const [createDialogOpen, setCreateDialogOpen] = useState(false);
-    const [joinDialogOpen, setJoinDialogOpen] = useState(false);
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const pageSize = 15;
+    const [createDialogOpen, setCreateDialogOpen] = useState(false);
+    const [joinViaInvitationDialogOpen, setJoinViaInvitationDialogOpen] = useState(false);
+    const [hasNext, setHasNext] = useState(true);
 
-    const { data: communityJoined, isLoading, mutate } = useSWR<GetCommunityResponse[]>(`/api/community/joined?pageIndex=${pageIndex}&pageSize=10`, getFetcher);
+    const communityContainerRef = useRef<HTMLDivElement>(null);
+
+    const { data: communityJoined, isLoading, mutate } = useSWR<GetCommunityResponse[]>(`/api/community/joined?pageIndex=1&pageSize=${pageSize}`, getFetcher);
 
     const isCommunityPage = pathname.startsWith('/community/') &&
         pathname !== '/community/joined' &&
@@ -35,6 +39,31 @@ export default function CommunityLayout({ children }: { children: React.ReactNod
         window.location.href = `/community/${newCommunity.name}`;
     };
 
+    const handleScroll = async () => {
+        if (!communityContainerRef.current
+            || !hasNext
+        ) return;
+
+        const e = communityContainerRef.current;
+
+        if (isScrollBottom(e)) {
+            const response = await getFetcher(`/api/community/joined?pageIndex=${pageIndex + 1}&pageSize=${pageSize}`);
+
+            if (!IsErrorResponse(response)) {
+                const newData = response as GetCommunityResponse[];
+
+                if (newData.length < pageSize) {
+                    setHasNext(false);
+                }
+
+                if (communityJoined)
+                    mutate([...communityJoined, ...newData], false);
+
+                setPageIndex(pageIndex + 1);
+            }
+        }
+    }
+
     return (
         <div className="h-[calc(100vh-calc(var(--appbar-height)*2))]">
             <div className="flex-1">
@@ -42,7 +71,10 @@ export default function CommunityLayout({ children }: { children: React.ReactNod
             </div>
 
             {!isMobile &&
-                <div className="fixed right-0 top-[var(--appbar-height)] bottom-0 
+                <div
+                    ref={communityContainerRef}
+                    onScroll={handleScroll}
+                    className="fixed right-0 top-[var(--appbar-height)] bottom-0 
                 w-[var(--community-right-sidebar-width)]
                 border-l border-[var(--border-color)] bg-[var(--card-background)] 
                 p-2 flex flex-col gap-2 overflow-y-auto
@@ -79,12 +111,6 @@ export default function CommunityLayout({ children }: { children: React.ReactNod
                                 className="w-12 h-12 mx-auto rounded-full bg-[var(--hover-background)] animate-pulse"
                             />
                         ))
-                    ) : communityJoined?.length === 0 ? (
-                        <div className="text-center py-4 px-2">
-                            <p className="text-xs text-[var(--text-tertiary)] mb-2">
-                                You haven't joined any yet
-                            </p>
-                        </div>
                     ) : (
                         communityJoined?.map((community) => (
                             <Tooltip
@@ -144,12 +170,20 @@ export default function CommunityLayout({ children }: { children: React.ReactNod
                                         border: '2px solid var(--success)'
                                     }
                                 }}
-                                onClick={() => setJoinDialogOpen(true)}
+                                onClick={() => setJoinViaInvitationDialogOpen(true)}
                             >
                                 <Email />
                             </Avatar>
                         </div>
                     </Tooltip>
+
+                    {communityJoined?.length === 0 && (
+                        <div className="text-center py-4 px-2">
+                            <p className="text-xs text-[var(--text-tertiary)] mb-2">
+                                You haven't joined any yet
+                            </p>
+                        </div>
+                    )}
                 </div>
             }
 

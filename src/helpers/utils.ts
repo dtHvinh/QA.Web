@@ -22,7 +22,7 @@ export function isScrollBottom(e: HTMLDivElement) {
     const scrollTop = e.scrollTop;
     const scrollHeight = e.scrollHeight;
     const clientHeight = e.clientHeight;
-    return scrollTop + clientHeight >= scrollHeight;
+    return scrollTop + clientHeight >= scrollHeight - 10;
 }
 
 export function getProviderImage(url: string) {

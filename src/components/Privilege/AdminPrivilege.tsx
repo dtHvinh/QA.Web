@@ -1,5 +1,7 @@
-import getAuth from "@/helpers/auth-utils";
-import React, { memo, useEffect, useState } from "react";
+import { getFetcher } from "@/helpers/request-utils";
+import { TextResponse } from "@/types/types";
+import React, { memo } from "react";
+import useSWR from "swr";
 
 interface AdminPrivilegeProps {
     children: React.ReactNode;
@@ -7,18 +9,7 @@ interface AdminPrivilegeProps {
 }
 
 const AdminPrivilege = ({ children, fallBackComponent }: Readonly<AdminPrivilegeProps>) => {
-    const [isAdmin, setIsAdmin] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
-
-    // TODO: Check endpoint instead
-    useEffect(() => {
-        const auth = getAuth();
-        if (auth && auth.roles.some(e => e === 'Admin')) {
-            setIsAdmin(true);
-        }
-
-        setIsLoading(false);
-    }, []);
+    const { data: isAdmin, isLoading } = useSWR<TextResponse>('/api/user/is_role/Admin', getFetcher);
 
     if (isLoading)
         return null;

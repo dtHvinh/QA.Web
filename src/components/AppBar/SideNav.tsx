@@ -1,10 +1,11 @@
 import useLogout from "@/helpers/logout-hook";
 import { Routes } from "@/utilities/Constants";
-import { AdminPanelSettings, BookmarksOutlined, ChevronLeft, ChevronRight, CollectionsOutlined, HomeOutlined, Language, Logout, PsychologyOutlined, QuestionMarkSharp, TagOutlined } from "@mui/icons-material";
+import { AdminPanelSettings, BookmarksOutlined, BuildOutlined, ChevronLeft, ChevronRight, CollectionsOutlined, HomeOutlined, Language, Logout, PsychologyOutlined, QuestionMarkSharp, TagOutlined } from "@mui/icons-material";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import AdminPrivilege from "../Privilege/AdminPrivilege";
+import ModeratorPrivilege from "../Privilege/ModeratorPrivilege";
 
 export default function SideNav() {
     const pathname = usePathname();
@@ -100,6 +101,19 @@ export default function SideNav() {
                             </div>
                         </div>
                     </AdminPrivilege>
+
+                    <ModeratorPrivilege>
+                        <div className="pt-2">
+                            <div className="border-t border-[var(--border-color)] pt-2">
+                                <Link href={'/moderator'}
+                                    className={`h-8 px-3 flex items-center gap-2 w-full rounded-md hover:bg-[var(--hover-background)] transition-colors text-sm
+                                ${pathname === '/moderator' ? theme.selected : ''}`}>
+                                    <BuildOutlined fontSize="small" />
+                                    <span>Modrator</span>
+                                </Link>
+                            </div>
+                        </div>
+                    </ModeratorPrivilege>
 
                     <div className="mt-auto pt-2">
                         <button onClick={logOut}
