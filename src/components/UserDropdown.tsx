@@ -4,7 +4,7 @@ import getAuth from "@/helpers/auth-utils";
 import useLogout from "@/helpers/logout-hook";
 import { fromImage } from "@/helpers/utils";
 import { Routes } from "@/utilities/Constants";
-import { Add, AdminPanelSettings, AutoStories, Language, LogoutOutlined, SwitchLeftOutlined } from "@mui/icons-material";
+import { Add, AdminPanelSettings, AutoStories, BuildOutlined, Language, LogoutOutlined, SwitchLeftOutlined } from "@mui/icons-material";
 import { Avatar, Popover, SvgIcon, Tooltip } from "@mui/material";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -12,6 +12,7 @@ import React, { useEffect, useState } from "react";
 import ChangeProfilePopup from "./Auth/ChangeProfilePopup";
 import ChatBot from "./ChatBot";
 import AdminPrivilege from "./Privilege/AdminPrivilege";
+import ModeratorPrivilege from "./Privilege/ModeratorPrivilege";
 
 export default function UserDropdown() {
     const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
@@ -153,6 +154,18 @@ export default function UserDropdown() {
                                 </div>
                             </div>
                         </AdminPrivilege>
+
+                        <ModeratorPrivilege>
+                            <div className="pt-4">
+                                <div className="border-t border-[var(--border-color)] pt-4">
+                                    <Link href={'/moderator'}
+                                        className={`${buttonStyle} ${pathname === "/moderator" ? selectedStyle : "text-[var(--text-primary)]"}`}>
+                                        <BuildOutlined fontSize="small" />
+                                        <span>Moderator</span>
+                                    </Link>
+                                </div>
+                            </div>
+                        </ModeratorPrivilege>
                     </div>
 
                     <div className="block px-1 py-2 mb-1">

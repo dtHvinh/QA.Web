@@ -109,7 +109,7 @@ export default function SideNav() {
                                     className={`h-8 px-3 flex items-center gap-2 w-full rounded-md hover:bg-[var(--hover-background)] transition-colors text-sm
                                 ${pathname === '/moderator' ? theme.selected : ''}`}>
                                     <BuildOutlined fontSize="small" />
-                                    <span>Modrator</span>
+                                    <span>Moderkaiser</span>
                                 </Link>
                             </div>
                         </div>
