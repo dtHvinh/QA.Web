@@ -14,7 +14,7 @@ export default function ChatRoomMessage({ message: msg, isCurrentUser, showAvata
 
     return (
         <div
-            className="group relative px-2 py-2 hover:bg-gray-700 rounded-md transition-colors"
+            className="group relative px-2 py-2 dark:hover:bg-gray-700 hover:bg-gray-200 transition-colors"
         >
             <div className="invisible group-hover:visible absolute right-2 -top-3 flex gap-1 rounded-full bg-[var(--background)] px-4 z-50">
                 <IconButton size="small" >

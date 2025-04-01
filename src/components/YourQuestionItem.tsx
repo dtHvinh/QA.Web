@@ -38,6 +38,7 @@ export default function YourQuestionItem({ question, showAuthor = true, view = '
                         <div className="flex flex-wrap gap-1">
                             {question.tags?.map(tag =>
                                 <TagLabel
+                                    tagId={tag.id}
                                     key={tag.id}
                                     name={tag.name}
                                     description={tag.description}

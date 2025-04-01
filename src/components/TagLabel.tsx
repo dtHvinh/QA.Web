@@ -1,8 +1,10 @@
 import TagTooltip from "@/components/TagTooltip";
+import { getFetcher } from "@/helpers/request-utils";
+import { TextResponse } from "@/types/types";
 import { Chip } from "@mui/material";
 
 interface TagLabelProps {
-    id?: string,
+    tagId?: string,
     name: string,
     description: string,
     className?: string,
@@ -10,10 +12,12 @@ interface TagLabelProps {
 }
 
 export default function TagLabel(params: Readonly<TagLabelProps>) {
-    const { name, className, description, onClick } = params;
-
+    const { name, className, description, onClick, tagId } = params;
+    const fetchTagDescription = async () => {
+        return ((await getFetcher(`/api/tag/${tagId}/description`)) as TextResponse).message;
+    }
     return (
-        <TagTooltip name={name} description={description}>
+        <TagTooltip name={name} description={description} fetchDescription={fetchTagDescription}>
             <Chip
                 label={name}
                 size="small"

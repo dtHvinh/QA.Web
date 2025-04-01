@@ -131,6 +131,7 @@ export default function QuestionSection({ questionInit }: { questionInit: Questi
                         <div className="flex flex-wrap gap-2">
                             {question.tags?.map(tag => (
                                 <TagLabel
+                                    tagId={tag.id}
                                     key={tag.id}
                                     name={tag.name}
                                     description={tag.description}

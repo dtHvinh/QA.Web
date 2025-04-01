@@ -60,6 +60,7 @@ export default function TagInput({ onTagIdChange, maxTags, onTagChange, defaultT
                             <TagLabel
                                 {...getTagProps({ index })}
                                 {...option}
+                                key={option.id}
                                 name={option.name}
                                 onClick={(name: string) => {
                                     setSelectedTags(selectedTags.filter((tag) => tag.name !== name));

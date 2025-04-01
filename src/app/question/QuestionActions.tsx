@@ -3,10 +3,11 @@ import AlertDialog from "@/components/AlertDialog";
 import AddToCollection from "@/components/Collection/AddToCollection";
 import PermissionAction from "@/components/PermissionAction";
 import ModeratorPrivilege from "@/components/Privilege/ModeratorPrivilege";
+import ReportDialog from "@/components/ReportDialog";
 import { deleteFetcher, IsErrorResponse, postFetcher, putFetcher } from "@/helpers/request-utils";
 import { QuestionResponse, VoteResponse } from "@/types/types";
 import notifyError, { notifyInfo, notifySucceed } from "@/utilities/ToastrExtensions";
-import { BookmarkAdded, BookmarkAddOutlined, Close, Delete, FileCopyOutlined, OpenInFull } from "@mui/icons-material";
+import { BookmarkAdded, BookmarkAddOutlined, Close, Delete, FileCopyOutlined, OpenInFull, ReportOutlined } from "@mui/icons-material";
 import { ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -37,6 +38,7 @@ export default function QuestionActions({
     const router = useRouter();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [duplicateUrl, setDuplicateUrl] = useState('');
+    const [reportDialogOpen, setReportDialogOpen] = useState(false);
 
     const handleFlagDuplicate = async () => {
         const response = await putFetcher(`/api/question/duplicate`, JSON.stringify({
@@ -120,6 +122,10 @@ export default function QuestionActions({
         setAnchorEl(event.currentTarget);
     };
 
+    const handleReportQuestion = () => {
+        setReportDialogOpen(true);
+    }
+
     const handleMenuClose = () => {
         setAnchorEl(null);
         setDuplicateUrl('');
@@ -164,6 +170,14 @@ export default function QuestionActions({
                     ) : (
                         <BookmarkAddOutlined className="text-[var(--text-secondary)]" />
                     )}
+                </button>
+
+                <button
+                    onClick={handleReportQuestion}
+                    className="p-2 rounded-full hover:bg-[var(--hover-background)] transition-colors"
+                    title="Report question"
+                >
+                    <ReportOutlined className="text-[var(--text-secondary)]" />
                 </button>
 
                 <button
@@ -304,6 +318,13 @@ export default function QuestionActions({
                 description="Are you sure you want to close this question? This will prevent new answers."
                 onClose={() => setCloseConfirmOpen(false)}
                 onYes={handleCloseQuestion}
+            />
+
+            <ReportDialog
+                open={reportDialogOpen}
+                onClose={() => setReportDialogOpen(false)}
+                targetId={question.id}
+                targetType="Question"
             />
         </div>
     );

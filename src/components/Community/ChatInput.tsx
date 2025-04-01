@@ -114,7 +114,7 @@ export default function ChatInput({ onSubmit, onStartTyping, onStopTyping }: Cha
                         hover:text-[var(--text-primary)] transition-colors"
                     size="small"
                 >
-                    <Image />
+                    <Image className="text-[var(--text-primary)]" />
                 </IconButton>
                 <IconButton
                     type="submit"
@@ -124,7 +124,7 @@ export default function ChatInput({ onSubmit, onStartTyping, onStopTyping }: Cha
                         transition-all rounded-xl shadow-md"
                     size="medium"
                 >
-                    <Send className="text-white" />
+                    <Send className="text-[var(--text-primary)]" />
                 </IconButton>
             </div>
         </form>

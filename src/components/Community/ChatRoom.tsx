@@ -27,6 +27,45 @@ export default function ChatRoom({ chatRoomId, onBack }: ChatRoomProps & { onBac
     const { connection, joinRoom, leaveRoom } = useSignalR();
     const [oldRoomId, setOldRoomId] = useState<number>(0);
 
+    useEffect(() => {
+        if (messagesEndRef.current && messagesContainerRef.current) {
+            messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+        }
+    }, [messageInit?.items]);
+
+    useEffect(() => {
+        if (!connection) return;
+
+        leaveRoom(oldRoomId);
+        joinRoom(Number.parseInt(chatRoomId));
+        setOldRoomId(Number.parseInt(chatRoomId));
+
+        connection.on('ReceiveMessage', (message: ChatMessageResponse) => {
+            if (message.author.id != Number.parseInt(userId)) {
+                updateMessage(message);
+            }
+        });
+
+        connection.on('SomeOneStartTyping', (username: string, userId: string) => {
+            console.log('start typing', username, userId);
+            throttledStartTyping(username, userId);
+        })
+
+        connection.on('SomeOneStopTyping', (username: string, userId: string) => {
+            console.log('stop typing', username, userId);
+            throttledStopTyping(username, userId);
+        })
+
+        return () => {
+            if (!connection) return;
+
+            connection.off('ReceiveMessage');
+            connection.off('SomeOneStartTyping');
+            connection.off('SomeOneStopTyping');
+            leaveRoom(Number.parseInt(chatRoomId));
+        }
+    }, [connection, chatRoomId])
+
     const throttledStartTyping = useThrottledCallback(
         (username: string, userId: string) => {
             setTypingUsers(prev => {
@@ -111,45 +150,6 @@ export default function ChatRoom({ chatRoomId, onBack }: ChatRoomProps & { onBac
         return <Loading />
     }
 
-    useEffect(() => {
-        if (messagesEndRef.current && messagesContainerRef.current) {
-            messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
-        }
-    }, [messageInit?.items]);
-
-    useEffect(() => {
-        if (!connection) return;
-
-        leaveRoom(oldRoomId);
-        joinRoom(Number.parseInt(chatRoomId));
-        setOldRoomId(Number.parseInt(chatRoomId));
-
-        connection.on('ReceiveMessage', (message: ChatMessageResponse) => {
-            if (message.author.id != Number.parseInt(userId)) {
-                updateMessage(message);
-            }
-        });
-
-        connection.on('SomeOneStartTyping', (username: string, userId: string) => {
-            console.log('start typing', username, userId);
-            throttledStartTyping(username, userId);
-        })
-
-        connection.on('SomeOneStopTyping', (username: string, userId: string) => {
-            console.log('stop typing', username, userId);
-            throttledStopTyping(username, userId);
-        })
-
-        return () => {
-            if (!connection) return;
-
-            connection.off('ReceiveMessage');
-            connection.off('SomeOneStartTyping');
-            connection.off('SomeOneStopTyping');
-            leaveRoom(Number.parseInt(chatRoomId));
-        }
-    }, [chatRoomId])
-
     return (
         <div className="flex flex-col h-full bg-[var(--card-background)] rounded-xl border border-[var(--border-color)] overflow-hidden">
             <div className="px-4 py-1 border-b border-[var(--border-color)] flex items-center">
@@ -163,7 +163,7 @@ export default function ChatRoom({ chatRoomId, onBack }: ChatRoomProps & { onBac
                 <span className="text-[var(--text-primary)] text-sm font-medium">Back to community</span>
             </div>
 
-            <div ref={messagesContainerRef} className="flex-1 overflow-y-auto px-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+            <div ref={messagesContainerRef} className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
                 <div className="space-y-4">
                     {messageInit?.items?.length === 0 ? (
                         <div className="flex flex-col items-center justify-center h-64 text-[var(--text-tertiary)]">

@@ -5,7 +5,6 @@ import FilterBar from "@/components/FilterBar";
 import ItemPerPage from "@/components/ItemPerPage";
 import QuestionCardListSkeleton from "@/components/Skeletons/YQPSkeleton";
 import YourQuestionItem from "@/components/YourQuestionItem";
-import getAuth from "@/helpers/auth-utils";
 import { getFetcher } from "@/helpers/request-utils";
 import { scrollToTop } from "@/helpers/utils";
 import { PagedResponse, QuestionResponse, ViewOptions } from "@/types/types";
@@ -17,7 +16,6 @@ import useSWR from "swr";
 
 
 export default function QuestionsPage() {
-    const auth = getAuth()!;
     const validOrderValue = ['Newest', 'MostViewed', 'MostVoted', 'Solved'];
     const validOrder = ['Newest', 'Most Viewed', 'Most Voted', 'Solved'];
     const orderDescription = [
@@ -38,8 +36,9 @@ export default function QuestionsPage() {
         + `&pageSize=${pageSize}`);
 
     const [view, setView] = useState<ViewOptions>('full');
-
     const { data, isLoading } = useSWR(requestUrl, getFetcher);
+
+    console.log('questions', questions);
 
     useEffect(() => {
         if (data) {
