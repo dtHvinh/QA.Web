@@ -2,14 +2,16 @@
 
 import { getFetcher } from "@/helpers/request-utils";
 import { GetReportResponse, PagedResponse } from "@/types/types";
-import { Check, Close, MoreVert } from "@mui/icons-material";
+import { notifyInfo } from "@/utilities/ToastrExtensions";
+import { Check, Close, CopyAllTwoTone, MoreVert } from "@mui/icons-material";
 import {
     Chip,
     IconButton,
     Menu,
     MenuItem,
     Pagination,
-    Paper
+    Paper,
+    Tooltip
 } from "@mui/material";
 import { useState } from "react";
 import useSWR from "swr";
@@ -51,6 +53,11 @@ export default function ReportsTable() {
         }
     };
 
+    const handleCopyId = (report: GetReportResponse) => {
+        navigator.clipboard.writeText(report.targetId.toString());
+        notifyInfo('Copied to clipboard', { horizontal: 'center', vertical: 'top' }, 0.5);
+    }
+
     if (isLoading) {
         return (
             <div className="flex justify-center items-center h-40">
@@ -69,12 +76,15 @@ export default function ReportsTable() {
 
     return (
         <div>
-            <div className="overflow-x-auto rounded-b-lg border border-[var(--border-color)] shadow-sm">
+            <div className="overflow-x-auto rounded-lg border border-[var(--border-color)] shadow-sm">
                 <table className="min-w-full divide-y divide-[var(--border-color)]">
                     <thead className="bg-[var(--hover-background)]">
                         <tr>
                             <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">
                                 Type
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">
+                                Target Id
                             </th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">
                                 Description
@@ -99,6 +109,14 @@ export default function ReportsTable() {
                             >
                                 <td className="whitespace-nowrap text-sm text-[var(--text-primary)]">
                                     {report.type}
+                                </td>
+                                <td className="whitespace-nowrap text-sm text-[var(--text-primary)]">
+                                    <div className="justify-between flex">
+                                        {report.targetId}
+                                        <Tooltip title="Click to copy">
+                                            <CopyAllTwoTone fontSize="small" className="ml-2 text-[var(--text-secondary)] cursor-pointer" onClick={() => handleCopyId(report)} />
+                                        </Tooltip>
+                                    </div>
                                 </td>
                                 <td className="whitespace-nowrap text-sm text-[var(--text-primary)] max-w-xs truncate">
                                     {report.description}

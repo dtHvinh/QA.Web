@@ -10,7 +10,7 @@ import { formatReputation } from "@/helpers/evaluate-utils";
 import { fromImage, highlightCode } from "@/helpers/utils";
 import { QuestionResponse } from "@/types/types";
 import EditIcon from '@mui/icons-material/Edit';
-import { Avatar, Dialog, DialogContent, IconButton, Link, Tooltip } from "@mui/material";
+import { Avatar, Dialog, IconButton, Link, Tooltip } from "@mui/material";
 import 'highlight.js/styles/atom-one-dark.css';
 import React, { useEffect } from "react";
 
@@ -172,23 +172,13 @@ export default function QuestionSection({ questionInit }: { questionInit: Questi
             </div>
 
             <Dialog
-                fullScreen={true}
                 open={isEditing}
                 onClose={handleEditingClose}
-                hideBackdrop={true}
-                sx={{
-                    '& .MuiDialog-paper': {
-                        maxWidth: 'none',
-                        backgroundColor: 'var(--card-background)',
-                        color: 'var(--text-primary)'
-                    }
-                }}
+                fullScreen={true}
             >
-                <DialogContent>
-                    <EditSection question={question}
-                        onEditSuccess={handleQuestionEdit}
-                        onClose={handleEditingClose} />
-                </DialogContent>
+                <EditSection question={question}
+                    onEditSuccess={handleQuestionEdit}
+                    onClose={handleEditingClose} />
             </Dialog>
         </div>
     );

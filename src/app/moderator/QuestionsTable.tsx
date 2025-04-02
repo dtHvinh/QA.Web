@@ -2,10 +2,10 @@
 
 import DeleteConfirmDialog from "@/components/Dialog/DeleteConfirmDialog";
 import toQuestionDetail from "@/helpers/path";
-import { deleteFetcher, getFetcher, putFetcher } from "@/helpers/request-utils";
+import { deleteFetcher, getFetcher, IsErrorResponse, putFetcher } from "@/helpers/request-utils";
 import { fromImage } from "@/helpers/utils";
 import { PagedResponse, QuestionResponse } from "@/types/types";
-import { notifyInfo } from "@/utilities/ToastrExtensions";
+import { notifyInfo, notifySucceed } from "@/utilities/ToastrExtensions";
 import { Delete, Flag, FlagOutlined, InsertLink, Lock, MoreVert, RestoreFromTrash, Visibility } from "@mui/icons-material";
 import {
     Avatar,
@@ -76,6 +76,33 @@ export default function QuestionsTable() {
             mutate();
         }
         handleMenuClose();
+    }
+
+    const handleFlagDuplicate = async () => {
+        if (selectedQuestion) {
+            const response = await putFetcher(`/api/question/duplicate`, JSON.stringify({
+                duplicateUrl: '',
+                questionId: selectedQuestion.id
+            }));
+
+            if (!IsErrorResponse(response)) {
+                notifySucceed('Question marked as duplicate');
+                handleMenuClose();
+                mutate();
+            }
+        }
+    }
+
+    const handleRemoveDuplicateFlag = async () => {
+        if (selectedQuestion) {
+            const response = await putFetcher(`/api/question/${selectedQuestion.id}/remove-duplicate-flag`);
+
+            if (!IsErrorResponse(response)) {
+                notifySucceed('Question duplicate flag removed');
+                handleMenuClose();
+                mutate();
+            }
+        }
     }
 
     const getStatusChip = (question: QuestionResponse) => {
@@ -202,11 +229,19 @@ export default function QuestionsTable() {
                 />
             </div>
 
-            // Update the Menu section at the bottom
             <Menu
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
                 onClose={handleMenuClose}
+                sx={{
+                    '& .MuiPaper-root': {
+                        backgroundColor: 'var(--card-background)',
+                        color: 'var(--text-primary)',
+                        border: '1px solid var(--border-color)',
+                        boxShadow: 'none',
+                        borderRadius: '8px',
+                    },
+                }}
             >
                 <MenuItem onClick={handleViewQuestion}>
                     <Visibility fontSize="small" className="mr-2" />
@@ -221,14 +256,25 @@ export default function QuestionsTable() {
                     Close Question
                 </MenuItem>
                 {selectedQuestion?.isDuplicate ?
-                    <MenuItem>
+                    <MenuItem onClick={handleRemoveDuplicateFlag}>
                         <Flag fontSize="small" className="mr-2" />
                         Remove duplicate mark
                     </MenuItem>
                     :
-                    <MenuItem onClick={handleMarkAsDuplicate}>
-                        <FlagOutlined fontSize="small" className="mr-2" />
-                        Mark as Duplicate
+                    <MenuItem sx={{ display: 'block', width: '100%', padding: '8px 16px' }}>
+                        <div className="flex items-center mb-2">
+                            <FlagOutlined fontSize="small" className="mr-2" />
+                            Mark as Duplicate
+                        </div>
+                        <form onSubmit={handleFlagDuplicate}>
+                            <input
+                                type="text"
+                                className="w-full border border-[var(--border-color)] rounded-md px-3 py-1.5 text-sm
+                                bg-[var(--input-background)] text-[var(--text-primary)]
+                                focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)]"
+                                placeholder="Enter duplicate question URL"
+                            />
+                        </form>
                     </MenuItem>
                 }
                 {selectedQuestion?.isDeleted ?

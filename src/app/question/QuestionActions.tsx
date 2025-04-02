@@ -281,32 +281,7 @@ export default function QuestionActions({
                         </MenuItem>
                     )}
 
-                    <div className="p-5 mt-2">
-                        <div className="flex items-center gap-3 text-sm text-[var(--text-secondary)] mb-2">
-                            <FileCopyOutlined fontSize="small" />
-                            Mark as duplicate
-                        </div>
-                        <div className="flex gap-2">
-                            <input
-                                type="text"
-                                value={duplicateUrl}
-                                onChange={(e) => setDuplicateUrl(e.target.value)}
-                                placeholder="Enter question URL"
-                                className="flex-1 px-3 py-1.5 text-sm rounded border border-[var(--border-color)] 
-                                        bg-[var(--input-background)] text-[var(--text-primary)] 
-                                        placeholder:text-[var(--text-tertiary)] outline-none"
-                            />
-                            <button
-                                onClick={handleFlagDuplicate}
-                                className="px-3 py-1.5 text-sm rounded bg-[var(--primary)] text-white 
-                                        hover:bg-[var(--primary-darker)] transition-colors"
-                            >
-                                Set
-                            </button>
-                        </div>
-                    </div>
-
-                    {isDuplicated &&
+                    {isDuplicated ?
                         <MenuItem
                             onClick={() => {
                                 handleMenuClose();
@@ -318,6 +293,31 @@ export default function QuestionActions({
                             </ListItemIcon>
                             <ListItemText>Remove duplicate flag</ListItemText>
                         </MenuItem>
+                        :
+                        <div className="p-5 mt-2">
+                            <div className="flex items-center gap-3 text-sm text-[var(--text-secondary)] mb-2">
+                                <FileCopyOutlined fontSize="small" />
+                                Mark as duplicate
+                            </div>
+                            <div className="flex gap-2">
+                                <input
+                                    type="text"
+                                    value={duplicateUrl}
+                                    onChange={(e) => setDuplicateUrl(e.target.value)}
+                                    placeholder="Enter question URL"
+                                    className="flex-1 px-3 py-1.5 text-sm rounded border border-[var(--border-color)] 
+                                        bg-[var(--input-background)] text-[var(--text-primary)] 
+                                        placeholder:text-[var(--text-tertiary)] outline-none"
+                                />
+                                <button
+                                    onClick={handleFlagDuplicate}
+                                    className="px-3 py-1.5 text-sm rounded bg-[var(--primary)] text-white 
+                                        hover:bg-[var(--primary-darker)] transition-colors"
+                                >
+                                    Set
+                                </button>
+                            </div>
+                        </div>
                     }
                 </Menu>
             </ModeratorPrivilege>

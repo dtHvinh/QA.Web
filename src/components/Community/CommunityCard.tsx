@@ -64,7 +64,7 @@ export default function CommunityCard({ community, compact = "compact" }: Commun
                 </Avatar>
                 <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                        <h3 className="font-semibold text-[var(--text-primary)] truncate">
+                        <h3 className="font-semibold text-[var(--text-primary)] max-w-24">
                             {community.name}
                         </h3>
                         {community.isPrivate && (

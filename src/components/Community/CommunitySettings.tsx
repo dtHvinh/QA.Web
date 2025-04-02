@@ -73,7 +73,7 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
     const { data: members, isLoading: isMemberLoading, mutate } = useSWR<PagedResponse<CommunityMemberResponse>>(
         `/api/community/${community.id}/members?pageIndex=1&pageSize=100`,
         getFetcher);
-    const { trigger: layoutJoinedList } = useSWRMutate<GetCommunityResponse[]>(`/api/community/joined?pageIndex=1&pageSize=10`, getFetcher);
+    const { trigger: layoutJoinedList } = useSWRMutate<GetCommunityResponse[]>(`/api/community/joined?pageIndex=1&pageSize=15`, getFetcher);
 
     useEffect(() => {
         setAnyChange(name !== community.name
@@ -152,37 +152,32 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
         e.preventDefault();
         setIsSubmitting(true);
 
-        try {
-            const formData = new FormData();
-            formData.append('id', community.id.toString());
-            formData.append('name', name);
-            formData.append('description', description);
-            formData.append('isPrivate', isPrivate.toString());
+        const formData = new FormData();
+        formData.append('id', community.id.toString());
+        formData.append('name', name);
+        formData.append('description', description);
+        formData.append('isPrivate', isPrivate.toString());
 
-            if (iconImage) {
-                formData.append('iconImage', iconImage);
-            }
+        if (iconImage) {
+            formData.append('iconImage', iconImage);
+        }
 
-            const response = await formPutFetcher(`/api/community`, formData);
+        const response = await formPutFetcher(`/api/community`, formData);
 
-            if (!IsErrorResponse(response)) {
+        if (!IsErrorResponse(response)) {
 
-                notifySucceed('Community updated successfully');
+            notifySucceed('Community updated successfully');
 
-                onUpdate({
-                    name,
-                    description,
-                    isPrivate,
-                    iconImage: iconPreview
-                });
+            onUpdate({
+                name,
+                description,
+                isPrivate,
+                iconImage: iconPreview
+            });
 
-                await updateCommunitySideBar();
+            await updateCommunitySideBar();
 
-                onClose();
-            }
-        } catch (error) {
-            notifyError('Failed to update community');
-        } finally {
+            onClose();
             setIsSubmitting(false);
         }
     };
