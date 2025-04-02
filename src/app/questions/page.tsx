@@ -8,7 +8,7 @@ import YourQuestionItem from "@/components/YourQuestionItem";
 import { getFetcher } from "@/helpers/request-utils";
 import { scrollToTop } from "@/helpers/utils";
 import { PagedResponse, QuestionResponse, ViewOptions } from "@/types/types";
-import { backendURL, Routes } from "@/utilities/Constants";
+import { Routes } from "@/utilities/Constants";
 import { Add } from "@mui/icons-material";
 import { Pagination } from "@mui/material";
 import Link from "next/link";
@@ -31,7 +31,7 @@ export default function QuestionsPage() {
     const [questions, setQuestions] = useState<QuestionResponse[]>([]);
     const [pageIndex, setPageIndex] = useState<number>(1);
     const [pageSize, setPageSize] = useState(16);
-    const [requestUrl, setRequestUrl] = useState<string>(`${backendURL}/api/question`
+    const [requestUrl, setRequestUrl] = useState<string>(`/api/question`
         + '/?orderBy=' + orderBy
         + `&pageIndex=${pageIndex}`
         + `&pageSize=${pageSize}`);

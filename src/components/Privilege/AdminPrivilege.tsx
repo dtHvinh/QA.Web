@@ -1,3 +1,4 @@
+import getAuth, { extractId } from "@/helpers/auth-utils";
 import { getFetcher } from "@/helpers/request-utils";
 import { TextResponse } from "@/types/types";
 import React, { memo } from "react";
@@ -9,7 +10,8 @@ interface AdminPrivilegeProps {
 }
 
 const AdminPrivilege = ({ children, fallBackComponent }: Readonly<AdminPrivilegeProps>) => {
-    const { data: isAdmin, isLoading } = useSWR<TextResponse>('/api/user/is_role/Admin', getFetcher);
+    const userId = extractId(getAuth()?.accessToken);
+    const { data: isAdmin, isLoading } = useSWR<TextResponse>(`/api/user/${userId}/is_role/Admin`, getFetcher);
 
     if (isLoading)
         return null;

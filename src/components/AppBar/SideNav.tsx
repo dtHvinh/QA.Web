@@ -24,6 +24,8 @@ export default function SideNav() {
             ${isExpanded ? 'w-[var(--left-nav-expanded-width)]' : 'w-4'} 
             border-r border-[var(--border-color)]
             fixed left-0 top-[var(--appbar-height)]
+            bg-[var(--nav-background)]
+            transition-width
             z-50
             `}
         >

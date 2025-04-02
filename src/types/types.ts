@@ -162,6 +162,7 @@ export interface QuestionResponse extends ResourceRightProps {
     isClosed: boolean,
     isSolved: boolean,
     isBookmarked: boolean,
+    isDeleted: boolean,
 
     duplicateQuestionUrl?: string,
     comments: CommentResponse[],

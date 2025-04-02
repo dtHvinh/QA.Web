@@ -7,7 +7,7 @@ interface DeleteConfirmDialogProps {
     onClose: () => void;
     onConfirm: () => void;
     itemType: string;
-    itemName: string;
+    itemName?: string;
     isDeleting?: boolean;
 }
 
@@ -24,7 +24,10 @@ export default function DeleteConfirmDialog({
     const handleConfirm = (e: any) => {
         e.preventDefault();
 
-        if (confirmText === itemName) {
+        const expectedText = itemName ?? 'yes';
+        const isValid = confirmText.trim().toLowerCase() === expectedText.trim().toLowerCase();
+
+        if (isValid) {
             onConfirm();
             setConfirmText('');
         }
@@ -51,12 +54,13 @@ export default function DeleteConfirmDialog({
             <DialogContent>
                 <div className="space-y-4">
                     <p className="text-[var(--text-primary)]">
-                        Are you sure you want to delete <span className="font-semibold">"{itemName}"</span>?
+                        Are you sure you want to delete {itemName ? <span className="font-semibold">"{itemName}"</span>
+                            : `this ${itemType}`}?
                         This action cannot be undone.
                     </p>
                     <div>
                         <label className="block text-sm text-[var(--text-secondary)] mb-2">
-                            Type '<span className="font-mono bg-[var(--hover-background)] px-1 rounded">{itemName}</span>' to confirm:
+                            Type '<span className="font-mono bg-[var(--hover-background)] px-1 rounded">{itemName ?? 'yes'}</span>' to confirm:
                         </label>
                         <form onSubmit={handleConfirm}>
                             <input
@@ -66,7 +70,7 @@ export default function DeleteConfirmDialog({
                                 className="w-full px-4 py-2 border border-[var(--border-color)] 
                                 bg-[var(--input-background)] text-[var(--text-primary)] rounded-lg 
                                 focus:ring-2 focus:ring-[var(--error)] focus:border-[var(--error)] transition-colors"
-                                placeholder={`Type '${itemName}' to confirm`}
+                                placeholder={`Type '${itemName ?? "yes"}' to confirm`}
                             />
                         </form>
                     </div>

@@ -1,21 +1,20 @@
 'use client'
 
-import { getFetcher } from "@/helpers/request-utils";
+import DeleteConfirmDialog from "@/components/Dialog/DeleteConfirmDialog";
+import toQuestionDetail from "@/helpers/path";
+import { deleteFetcher, getFetcher, putFetcher } from "@/helpers/request-utils";
+import { fromImage } from "@/helpers/utils";
 import { PagedResponse, QuestionResponse } from "@/types/types";
-import { Delete, Edit, Flag, Lock, MoreVert, Visibility } from "@mui/icons-material";
-import { 
-    Chip, 
-    IconButton, 
-    Menu, 
-    MenuItem, 
-    Pagination, 
-    Paper, 
-    Table, 
-    TableBody, 
-    TableCell, 
-    TableContainer, 
-    TableHead, 
-    TableRow 
+import { notifyInfo } from "@/utilities/ToastrExtensions";
+import { Delete, Flag, FlagOutlined, InsertLink, Lock, MoreVert, RestoreFromTrash, Visibility } from "@mui/icons-material";
+import {
+    Avatar,
+    Chip,
+    IconButton,
+    Menu,
+    MenuItem,
+    Pagination,
+    Paper
 } from "@mui/material";
 import Link from "next/link";
 import { useState } from "react";
@@ -25,9 +24,10 @@ export default function QuestionsTable() {
     const [pageIndex, setPageIndex] = useState(1);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [selectedQuestion, setSelectedQuestion] = useState<QuestionResponse | null>(null);
-    
-    const { data, isLoading } = useSWR<PagedResponse<QuestionResponse>>(
-        `/api/moderator/questions?pageIndex=${pageIndex}&pageSize=10`,
+    const [deleteConfirmDialogOpen, setDeleteConfirmDialogOpen] = useState(false);
+
+    const { data, isLoading, mutate } = useSWR<PagedResponse<QuestionResponse>>(
+        `/api/mod/questions/all?pageIndex=${pageIndex}&pageSize=20`,
         getFetcher
     );
 
@@ -41,11 +41,47 @@ export default function QuestionsTable() {
         setSelectedQuestion(null);
     };
 
+    const handleViewQuestion = () => {
+        if (selectedQuestion) {
+            window.open(toQuestionDetail(selectedQuestion.id, selectedQuestion.slug), '_blank');
+        }
+        handleMenuClose();
+    };
+
+    const handleCloseQuestion = async () => {
+
+        handleMenuClose();
+    };
+
+    const handleMarkAsDuplicate = async () => {
+
+        handleMenuClose();
+    };
+
+    const handleDeleteQuestion = async () => {
+        if (selectedQuestion) {
+            await deleteFetcher(`/api/mod/question/${selectedQuestion.id}`);
+            mutate();
+        }
+        handleMenuClose();
+    };
+
     const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
         setPageIndex(value);
     };
 
+    const handleRestoreQuestion = async () => {
+        if (selectedQuestion) {
+            await putFetcher(`/api/mod/question/${selectedQuestion.id}/restore`);
+            mutate();
+        }
+        handleMenuClose();
+    }
+
     const getStatusChip = (question: QuestionResponse) => {
+        if (question.isDeleted) {
+            return <Chip size="small" label="Deleted" color="error" />;
+        }
         if (question.isClosed) {
             return <Chip size="small" label="Closed" color="error" />;
         }
@@ -57,6 +93,13 @@ export default function QuestionsTable() {
         }
         return <Chip size="small" label="Open" color="info" />;
     };
+
+    const handleCopy = () => {
+        if (selectedQuestion) {
+            navigator.clipboard.writeText(toQuestionDetail(selectedQuestion.id, selectedQuestion.slug));
+            notifyInfo("Copied to clipboard", { horizontal: 'center', vertical: 'bottom' });
+        }
+    }
 
     if (isLoading) {
         return (
@@ -76,56 +119,79 @@ export default function QuestionsTable() {
 
     return (
         <div>
-            <Paper className="mb-6">
-                <TableContainer>
-                    <Table>
-                        <TableHead className="bg-[var(--hover-background)]">
-                            <TableRow>
-                                <TableCell className="font-medium">Title</TableCell>
-                                <TableCell className="font-medium">Author</TableCell>
-                                <TableCell className="font-medium">Status</TableCell>
-                                <TableCell className="font-medium">Date</TableCell>
-                                <TableCell className="font-medium" align="right">Actions</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {data.items.map((question) => (
-                                <TableRow key={question.id} hover>
-                                    <TableCell className="max-w-xs truncate">
-                                        <Link 
-                                            href={`/question/${question.id}/${question.slug}`}
-                                            className="text-[var(--primary)] hover:underline"
-                                        >
-                                            {question.title}
-                                        </Link>
-                                    </TableCell>
-                                    <TableCell>
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-6 h-6 rounded-full overflow-hidden bg-gray-200">
-                                                {question.author?.profilePicture && (
-                                                    <img 
-                                                        src={question.author.profilePicture} 
-                                                        alt={question.author.username}
-                                                        className="w-full h-full object-cover"
-                                                    />
-                                                )}
-                                            </div>
-                                            <span>{question.author?.username}</span>
+            <div className="overflow-x-auto rounded-lg border border-[var(--border-color)] shadow-sm mb-6">
+                <table className="min-w-full divide-y divide-[var(--border-color)]">
+                    <thead className="bg-[var(--hover-background)]">
+                        <tr>
+                            <th className="px-6 py-2 text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">
+                                Id
+                            </th>
+                            <th className="px-6 py-2 text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">
+                                Title
+                            </th>
+                            <th className="px-6 text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">
+                                Author
+                            </th>
+                            <th className="px-6 text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">
+                                Status
+                            </th>
+                            <th className="px-6 text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">
+                                Date
+                            </th>
+                            <th className="px-6 text-right text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody className="bg-[var(--card-background)] divide-y divide-[var(--border-color)]">
+                        {data.items.map((question) => (
+                            <tr
+                                key={question.id}
+                                className="hover:bg-[var(--hover-background)] transition-colors duration-150
+                                [&>td]:px-6 [&>td]:py-2"
+                            >
+                                <td className="whitespace-nowrap text-sm text-[var(--text-primary)]">
+                                    {question.id}
+                                </td>
+                                <td className="text-sm text-[var(--text-primary)] max-w-xs truncate">
+                                    <Link
+                                        href={`/question/${question.id}/${question.slug}`}
+                                        className="text-[var(--text-primary)] hover:underline"
+                                    >
+                                        {question.title}
+                                    </Link>
+                                </td>
+                                <td className="whitespace-nowrap text-sm text-[var(--text-primary)]">
+                                    <div className="flex items-center gap-2">
+                                        <div className="rounded-full overflow-hidden bg-gray-200">
+                                            {question.author?.profilePicture && (
+                                                <Avatar
+                                                    src={fromImage(question.author.profilePicture)}
+                                                    alt={question.author.username}
+                                                    className="object-cover"
+                                                    sx={{ width: 26, height: 26 }}
+                                                />
+                                            )}
                                         </div>
-                                    </TableCell>
-                                    <TableCell>{getStatusChip(question)}</TableCell>
-                                    <TableCell>{new Date(question.createdAt).toLocaleDateString()}</TableCell>
-                                    <TableCell align="right">
-                                        <IconButton size="small" onClick={(e) => handleMenuOpen(e, question)}>
-                                            <MoreVert fontSize="small" />
-                                        </IconButton>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </Paper>
+                                        <span>{question.author?.username}</span>
+                                    </div>
+                                </td>
+                                <td className="whitespace-nowrap text-sm">
+                                    {getStatusChip(question)}
+                                </td>
+                                <td className="whitespace-nowrap text-sm text-[var(--text-primary)]">
+                                    {new Date(question.createdAt).toLocaleDateString()}
+                                </td>
+                                <td className="whitespace-nowrap text-right text-sm font-medium">
+                                    <IconButton size="small" onClick={(e) => handleMenuOpen(e, question)}>
+                                        <MoreVert fontSize="small" className="text-[var(--text-primary)]" />
+                                    </IconButton>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
 
             <div className="flex justify-center mt-4">
                 <Pagination
@@ -136,32 +202,54 @@ export default function QuestionsTable() {
                 />
             </div>
 
+            // Update the Menu section at the bottom
             <Menu
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
                 onClose={handleMenuClose}
             >
-                <MenuItem onClick={handleMenuClose}>
+                <MenuItem onClick={handleViewQuestion}>
                     <Visibility fontSize="small" className="mr-2" />
                     View Question
                 </MenuItem>
-                <MenuItem onClick={handleMenuClose}>
-                    <Edit fontSize="small" className="mr-2" />
-                    Edit Question
+                <MenuItem onClick={handleCopy}>
+                    <InsertLink fontSize="small" className="mr-2" />
+                    Copy Url
                 </MenuItem>
-                <MenuItem onClick={handleMenuClose}>
+                <MenuItem onClick={handleCloseQuestion}>
                     <Lock fontSize="small" className="mr-2" />
                     Close Question
                 </MenuItem>
-                <MenuItem onClick={handleMenuClose}>
-                    <Flag fontSize="small" className="mr-2" />
-                    Mark as Duplicate
-                </MenuItem>
-                <MenuItem onClick={handleMenuClose} className="text-red-500">
-                    <Delete fontSize="small" className="mr-2" />
-                    Delete Question
-                </MenuItem>
+                {selectedQuestion?.isDuplicate ?
+                    <MenuItem>
+                        <Flag fontSize="small" className="mr-2" />
+                        Remove duplicate mark
+                    </MenuItem>
+                    :
+                    <MenuItem onClick={handleMarkAsDuplicate}>
+                        <FlagOutlined fontSize="small" className="mr-2" />
+                        Mark as Duplicate
+                    </MenuItem>
+                }
+                {selectedQuestion?.isDeleted ?
+                    <MenuItem onClick={handleRestoreQuestion} className="text-red-500">
+                        <RestoreFromTrash fontSize="small" className="mr-2" />
+                        Restore Question
+                    </MenuItem>
+                    :
+                    <MenuItem onClick={() => setDeleteConfirmDialogOpen(true)} className="text-red-500">
+                        <Delete fontSize="small" className="mr-2" />
+                        Delete Question
+                    </MenuItem>
+                }
             </Menu>
+
+            <DeleteConfirmDialog
+                itemType="question"
+                open={deleteConfirmDialogOpen}
+                onClose={() => setDeleteConfirmDialogOpen(false)}
+                onConfirm={handleDeleteQuestion}
+            />
         </div>
     );
 }

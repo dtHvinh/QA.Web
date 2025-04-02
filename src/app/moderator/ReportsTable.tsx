@@ -9,13 +9,7 @@ import {
     Menu,
     MenuItem,
     Pagination,
-    Paper,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow
+    Paper
 } from "@mui/material";
 import { useState } from "react";
 import useSWR from "swr";
@@ -26,11 +20,10 @@ export default function ReportsTable() {
     const [selectedReport, setSelectedReport] = useState<GetReportResponse | null>(null);
 
     const { data, isLoading, mutate } = useSWR<PagedResponse<GetReportResponse>>(
-        `/api/report/all?pageIndex=${pageIndex}&pageSize=20`,
+        `/api/mod/reports/?pageIndex=${pageIndex}&pageSize=20`,
         getFetcher
     );
 
-    console.log(data);
     const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, report: GetReportResponse) => {
         setAnchorEl(event.currentTarget);
         setSelectedReport(report);
@@ -76,36 +69,56 @@ export default function ReportsTable() {
 
     return (
         <div>
-            <Paper className="mb-6">
-                <TableContainer>
-                    <Table>
-                        <TableHead className="bg-[var(--hover-background)]">
-                            <TableRow>
-                                <TableCell className="font-medium">Type</TableCell>
-                                <TableCell className="font-medium">Description</TableCell>
-                                <TableCell className="font-medium">Status</TableCell>
-                                <TableCell className="font-medium">Date</TableCell>
-                                <TableCell className="font-medium" align="right">Actions</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {data.items.map((report) => (
-                                <TableRow key={report.id} hover>
-                                    <TableCell>{report.type}</TableCell>
-                                    <TableCell className="max-w-xs truncate">{report.description}</TableCell>
-                                    <TableCell>{getStatusChip(report.status)}</TableCell>
-                                    <TableCell>{new Date(report.createdAt).toLocaleDateString()}</TableCell>
-                                    <TableCell align="right">
-                                        <IconButton size="small" onClick={(e) => handleMenuOpen(e, report)}>
-                                            <MoreVert fontSize="small" />
-                                        </IconButton>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </Paper>
+            <div className="overflow-x-auto rounded-b-lg border border-[var(--border-color)] shadow-sm">
+                <table className="min-w-full divide-y divide-[var(--border-color)]">
+                    <thead className="bg-[var(--hover-background)]">
+                        <tr>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">
+                                Type
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">
+                                Description
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">
+                                Status
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">
+                                Date
+                            </th>
+                            <th className="px-6 py-3 text-right text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody className="bg-[var(--card-background)] divide-y divide-[var(--border-color)]">
+                        {data.items.map((report) => (
+                            <tr
+                                key={report.id}
+                                className="hover:bg-[var(--hover-background)] transition-colors duration-150 
+                                [&_td]:py-2 [&_td]:px-6"
+                            >
+                                <td className="whitespace-nowrap text-sm text-[var(--text-primary)]">
+                                    {report.type}
+                                </td>
+                                <td className="whitespace-nowrap text-sm text-[var(--text-primary)] max-w-xs truncate">
+                                    {report.description}
+                                </td>
+                                <td className="whitespace-nowrap text-sm">
+                                    {getStatusChip(report.status)}
+                                </td>
+                                <td className="whitespace-nowrap text-sm text-[var(--text-primary)]">
+                                    {new Date(report.createdAt).toLocaleString()}
+                                </td>
+                                <td className="whitespace-nowrap text-right text-sm font-medium">
+                                    <IconButton size="small" onClick={(e) => handleMenuOpen(e, report)}>
+                                        <MoreVert fontSize="small" className="text-[var(--text-primary)]" />
+                                    </IconButton>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
 
             <div className="flex justify-center mt-4">
                 <Pagination

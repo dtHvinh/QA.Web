@@ -7,7 +7,7 @@ import ReportDialog from "@/components/ReportDialog";
 import { deleteFetcher, IsErrorResponse, postFetcher, putFetcher } from "@/helpers/request-utils";
 import { QuestionResponse, VoteResponse } from "@/types/types";
 import notifyError, { notifyInfo, notifySucceed } from "@/utilities/ToastrExtensions";
-import { BookmarkAdded, BookmarkAddOutlined, Close, Delete, FileCopyOutlined, OpenInFull, ReportOutlined } from "@mui/icons-material";
+import { BookmarkAdded, BookmarkAddOutlined, Close, Delete, DeleteForeverOutlined, FileCopyOutlined, OpenInFull, ReportOutlined } from "@mui/icons-material";
 import { ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -33,6 +33,7 @@ export default function QuestionActions({
 }) {
     const [currentVote, setCurrentVote] = React.useState<number>(question.score);
     const [isBookmarked, setIsBookmarked] = React.useState<boolean>(question.isBookmarked);
+    const [modDeleteConfirmOpen, setModDeleteConfirmOpen] = React.useState(false);
     const [deleteConfirmOpen, setDeleteConfirmOpen] = React.useState(false);
     const [closeConfirmOpen, setCloseConfirmOpen] = React.useState(false);
     const router = useRouter();
@@ -74,6 +75,15 @@ export default function QuestionActions({
 
     const handleDeleteQuestion = async () => {
         const response = await deleteFetcher(`/api/question/${question.id}`);
+
+        if (!IsErrorResponse(response)) {
+            notifySucceed('Question deleted');
+            window.history.go(-1);
+        }
+    }
+
+    const handleModDeleteQuestion = async () => {
+        const response = await deleteFetcher(`/api/mod/question/${question.id}`);
 
         if (!IsErrorResponse(response)) {
             notifySucceed('Question deleted');
@@ -201,6 +211,14 @@ export default function QuestionActions({
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </button>
+
+                <button
+                    onClick={() => setDeleteConfirmOpen(true)}
+                    className="p-2 rounded-full hover:bg-[var(--hover-background)] transition-colors"
+                    title="Delete question"
+                >
+                    <DeleteForeverOutlined />
+                </button>
             </div>
 
             <ModeratorPrivilege>
@@ -228,7 +246,7 @@ export default function QuestionActions({
                     <MenuItem
                         onClick={() => {
                             handleMenuClose();
-                            setDeleteConfirmOpen(true);
+                            setModDeleteConfirmOpen(true);
                         }}
                     >
                         <ListItemIcon>
@@ -305,6 +323,14 @@ export default function QuestionActions({
             </ModeratorPrivilege>
 
             <AlertDialog
+                open={modDeleteConfirmOpen}
+                title="Delete Question"
+                description="Are you sure you want to delete this question? This action cannot be undone."
+                onClose={() => setModDeleteConfirmOpen(false)}
+                onYes={handleModDeleteQuestion}
+            />
+
+            <AlertDialog
                 open={deleteConfirmOpen}
                 title="Delete Question"
                 description="Are you sure you want to delete this question? This action cannot be undone."
@@ -326,6 +352,6 @@ export default function QuestionActions({
                 targetId={question.id}
                 targetType="Question"
             />
-        </div>
+        </div >
     );
 }

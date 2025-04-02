@@ -49,7 +49,8 @@ export function getAuthUsername() {
     return getAuth()?.username;
 }
 
-export function extractId(jwt: string) {
+export function extractId(jwt?: string) {
+    if (!jwt) return 0;
     return jwtDecode<{
         "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier": string
     }>(jwt)["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
