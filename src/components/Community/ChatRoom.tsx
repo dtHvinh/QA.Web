@@ -41,7 +41,7 @@ export default function ChatRoom({ chatRoomId, onBack }: ChatRoomProps & { onBac
         setOldRoomId(Number.parseInt(chatRoomId));
 
         connection.on('ReceiveMessage', (message: ChatMessageResponse) => {
-            if (message.author.id != Number.parseInt(userId)) {
+            if (message.author.id != userId) {
                 updateMessage(message);
             }
         });
