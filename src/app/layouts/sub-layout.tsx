@@ -25,7 +25,7 @@ export default function SubLayout({
     return (
         <ThemeProvider theme={theme}>
             <ErrorBoundary FallbackComponent={ErrorFallback}>
-                <SnackbarProvider autoHideDuration={6000}>
+                <SnackbarProvider autoHideDuration={6000} preventDuplicate={true}>
                     <div className="flex flex-col min-h-[calc(100vh-var(--appbar-height))]">
                         {shouldShowSidebar ? (
                             <div className="flex flex-1">

@@ -1,6 +1,7 @@
 'use client'
 
 import CreateCommunityDialog from "@/components/Community/CreateCommunityDialog";
+import JoinViaInvitationDialog from "@/components/Community/JoinViaInvitationDialog";
 import { getFetcher, IsErrorResponse } from "@/helpers/request-utils";
 import { fromImage, isScrollBottom } from "@/helpers/utils";
 import { theme } from "@/theme/theme";
@@ -191,6 +192,11 @@ export default function CommunityLayout({ children }: { children: React.ReactNod
                 open={createDialogOpen}
                 onClose={() => setCreateDialogOpen(false)}
                 onCreated={handleCreateSuccess}
+            />
+
+            <JoinViaInvitationDialog
+                open={joinViaInvitationDialogOpen}
+                onClose={() => setJoinViaInvitationDialogOpen(false)}
             />
         </div>
     );

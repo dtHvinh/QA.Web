@@ -67,14 +67,14 @@ export default function CommunityCard({ community, compact = "compact" }: Commun
                         <h3 className="font-semibold text-[var(--text-primary)] max-w-24">
                             {community.name}
                         </h3>
+                    </div>
+
+                    <div className="flex gap-1 items-center text-xs text-[var(--text-secondary)] mt-1">
+                        <People fontSize="small" sx={{ fontSize: 14, marginRight: 0.5 }} />
+                        <span>{community.memberCount} members</span>
                         {community.isPrivate && (
                             <Lock fontSize="small" className="text-[var(--text-tertiary)]" />
                         )}
-                    </div>
-
-                    <div className="flex items-center text-xs text-[var(--text-secondary)] mt-1">
-                        <People fontSize="small" sx={{ fontSize: 14, marginRight: 0.5 }} />
-                        <span>{community.memberCount} members</span>
                     </div>
 
                     {compact == 'full' && community.description && (

@@ -1,8 +1,9 @@
-import timeFromNow from "@/helpers/time-utils";
+import { formatTimeString } from "@/helpers/time-utils";
 import { fromImage } from "@/helpers/utils";
 import { ChatMessageResponse } from "@/types/types";
 import { MoreHoriz, Reply } from "@mui/icons-material";
 import { Avatar, IconButton } from "@mui/material";
+import Link from "next/link";
 
 interface MessageProps {
     message: ChatMessageResponse;
@@ -14,7 +15,7 @@ export default function ChatRoomMessage({ message: msg, isCurrentUser, showAvata
 
     return (
         <div
-            className="group relative px-2 py-2 dark:hover:bg-gray-700 hover:bg-gray-200 transition-colors"
+            className="group relative px-2 dark:hover:bg-gray-700 hover:bg-gray-200 transition-colors py-1"
         >
             <div className="invisible [&>*>*]:text-white group-hover:visible absolute right-2 -top-3 flex gap-1 rounded-full bg-black px-4 z-50">
                 <IconButton size="small" >
@@ -31,8 +32,8 @@ export default function ChatRoomMessage({ message: msg, isCurrentUser, showAvata
                         src={fromImage(msg.author.profilePicture)}
                         alt={msg.author.username}
                         sx={{
-                            width: 38,
-                            height: 38,
+                            width: 40,
+                            height: 40,
                             boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
                         }}
                     />
@@ -40,14 +41,14 @@ export default function ChatRoomMessage({ message: msg, isCurrentUser, showAvata
                     <div className="w-[38px]"></div>
                 )}
 
-                <div className="flex-1 min-w-0">
+                <div className="flex-1 min-w-0 [&>*]:text-sm">
                     {showAvatar && (
                         <div className="flex items-center gap-2 mb-1">
-                            <span className="font-medium text-[var(--text-primary)]">
+                            <Link href={`/profile/${msg.author.username}`} className="font-medium text-[var(--text-primary)] hover:underline">
                                 {isCurrentUser ? 'You' : msg.author.username}
-                            </span>
+                            </Link>
                             <span className="text-xs text-[var(--text-tertiary)]">
-                                {timeFromNow(msg.createdAt)}
+                                {formatTimeString(msg.createdAt)}
                             </span>
                         </div>
                     )}

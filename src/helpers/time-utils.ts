@@ -7,6 +7,32 @@ const specificTime = (date: Date) => {
     });
 }
 
+export function formatTimeString(utcTimeString: string): string {
+    const date = new Date(utcTimeString + (utcTimeString.endsWith('Z') ? '' : 'Z'));
+    const now = new Date();
+    const lang = navigator.language;
+    const isToday = date.getDate() === now.getDate() &&
+        date.getMonth() === now.getMonth() &&
+        date.getFullYear() === now.getFullYear();
+
+    if (isToday) {
+        return date.toLocaleTimeString(lang, {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+    } else {
+        return date.toLocaleDateString(lang, {
+            month: 'short',
+            day: 'numeric'
+        }) + ' at ' + date.toLocaleTimeString(lang, {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+    }
+}
+
 export default function timeFromNow(dateTimeString: string): string {
     const date = new Date(dateTimeString + (dateTimeString.endsWith('Z') ? '' : 'Z'));
     const now = new Date();

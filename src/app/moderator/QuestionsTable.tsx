@@ -6,7 +6,7 @@ import { deleteFetcher, getFetcher, IsErrorResponse, putFetcher } from "@/helper
 import { fromImage } from "@/helpers/utils";
 import { PagedResponse, QuestionResponse } from "@/types/types";
 import { notifyInfo, notifySucceed } from "@/utilities/ToastrExtensions";
-import { Delete, Flag, FlagOutlined, InsertLink, Lock, MoreVert, RestoreFromTrash, Visibility } from "@mui/icons-material";
+import { Delete, Flag, FlagOutlined, InsertLink, Lock, LockOpenOutlined, MoreVert, RestoreFromTrash, Visibility } from "@mui/icons-material";
 import {
     Avatar,
     Chip,
@@ -17,19 +17,31 @@ import {
     Paper
 } from "@mui/material";
 import Link from "next/link";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import useSWR from "swr";
+import { useDebounce } from "use-debounce";
 
 export default function QuestionsTable() {
     const [pageIndex, setPageIndex] = useState(1);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [selectedQuestion, setSelectedQuestion] = useState<QuestionResponse | null>(null);
     const [deleteConfirmDialogOpen, setDeleteConfirmDialogOpen] = useState(false);
+    const [searchId, setSearchId] = useState<number>(0);
+    const [debounceSearchId] = useDebounce(searchId, 500);
 
     const { data, isLoading, mutate } = useSWR<PagedResponse<QuestionResponse>>(
         `/api/mod/questions/all?pageIndex=${pageIndex}&pageSize=20`,
+        getFetcher,
+    );
+
+    const { data: searchResult, isLoading: isSearching } = useSWR<QuestionResponse>(
+        debounceSearchId ? `/api/mod/question/${debounceSearchId}` : null,
         getFetcher
     );
+
+    const displayedQuestions = searchResult
+        ? [searchResult]
+        : data?.items || [];
 
     const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, question: QuestionResponse) => {
         setAnchorEl(event.currentTarget);
@@ -49,11 +61,24 @@ export default function QuestionsTable() {
     };
 
     const handleCloseQuestion = async () => {
+        const response = await putFetcher(`/api/question/${selectedQuestion?.id}/close`);
+
+        if (!IsErrorResponse(response)) {
+            notifySucceed('Question closed');
+            mutate();
+        }
 
         handleMenuClose();
     };
 
-    const handleMarkAsDuplicate = async () => {
+
+    const handleReopenQuestion = async () => {
+        const response = await putFetcher(`/api/question/${selectedQuestion?.id}/re-open`);
+
+        if (!IsErrorResponse(response)) {
+            notifySucceed('Question reopend');
+            mutate();
+        }
 
         handleMenuClose();
     };
@@ -78,10 +103,14 @@ export default function QuestionsTable() {
         handleMenuClose();
     }
 
-    const handleFlagDuplicate = async () => {
+    const handleFlagDuplicate = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        const formData = new FormData(e.currentTarget);
+
         if (selectedQuestion) {
             const response = await putFetcher(`/api/question/duplicate`, JSON.stringify({
-                duplicateUrl: '',
+                duplicateUrl: formData.get('duplicateUrl'),
                 questionId: selectedQuestion.id
             }));
 
@@ -125,6 +154,7 @@ export default function QuestionsTable() {
         if (selectedQuestion) {
             navigator.clipboard.writeText(toQuestionDetail(selectedQuestion.id, selectedQuestion.slug));
             notifyInfo("Copied to clipboard", { horizontal: 'center', vertical: 'bottom' });
+            handleMenuClose();
         }
     }
 
@@ -144,8 +174,89 @@ export default function QuestionsTable() {
         );
     }
 
+    const QuestionRow = (question: QuestionResponse) => {
+        return (
+            <tr
+                key={question.id}
+                className={`hover:bg-[var(--hover-background)] transition-colors duration-150
+    [&>td]:px-6 [&>td]:py-2 ${selectedQuestion?.id === question.id && 'bg-[var(--hover-background)]'}`}
+            >
+                <td className="whitespace-nowrap text-sm text-[var(--text-primary)]">
+                    {question.id}
+                </td>
+                <td className="text-sm text-[var(--text-primary)] max-w-xs truncate">
+                    <Link
+                        href={`/question/${question.id}/${question.slug}`}
+                        className="text-[var(--text-primary)] hover:underline"
+                    >
+                        {question.title}
+                    </Link>
+                </td>
+                <td className="whitespace-nowrap text-sm text-[var(--text-primary)]">
+                    <div className="flex items-center gap-2">
+                        <div className="rounded-full overflow-hidden bg-gray-200">
+                            {question.author?.profilePicture && (
+                                <Avatar
+                                    src={fromImage(question.author.profilePicture)}
+                                    alt={question.author.username}
+                                    className="object-cover"
+                                    sx={{ width: 26, height: 26 }}
+                                />
+                            )}
+                        </div>
+                        <span>{question.author?.username}</span>
+                    </div>
+                </td>
+                <td className="whitespace-nowrap text-sm">
+                    {getStatusChip(question)}
+                </td>
+                <td className="whitespace-nowrap text-sm text-[var(--text-primary)]">
+                    {new Date(question.createdAt).toLocaleDateString()}
+                </td>
+                <td className="whitespace-nowrap text-right text-sm font-medium">
+                    <IconButton size="small" onClick={(e) => handleMenuOpen(e, question)}>
+                        <MoreVert fontSize="small" className="text-[var(--text-primary)]" />
+                    </IconButton>
+                </td>
+            </tr>
+        )
+    };
+
     return (
         <div>
+            <div className="pb-5 flex items-center gap-3">
+                <div className="relative flex items-center">
+                    <svg className="w-5 h-5 absolute left-3 text-[var(--text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    <input
+                        type="text"
+                        id="search"
+                        autoComplete="off"
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            setSearchId(value ? parseInt(value) : 0);
+                        }}
+                        placeholder="Search by ID..."
+                        className="pl-10 pr-4 py-2 w-64 rounded-lg border border-[var(--border-color)]
+                        bg-[var(--input-background)] text-[var(--text-primary)]
+                        placeholder:text-[var(--text-secondary)]"
+                    />
+                    {isSearching && (
+                        <div className="absolute right-3">
+                            <div className="w-4 h-4 border-2 border-[var(--primary)] border-t-transparent rounded-full animate-spin" />
+                        </div>
+                    )}
+                </div>
+                {searchResult && (
+                    <button
+                        onClick={() => setSearchId(0)}
+                        className="text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                    >
+                        Clear Search
+                    </button>
+                )}
+            </div>
             <div className="overflow-x-auto rounded-lg border border-[var(--border-color)] shadow-sm mb-6">
                 <table className="min-w-full divide-y divide-[var(--border-color)]">
                     <thead className="bg-[var(--hover-background)]">
@@ -171,62 +282,22 @@ export default function QuestionsTable() {
                         </tr>
                     </thead>
                     <tbody className="bg-[var(--card-background)] divide-y divide-[var(--border-color)]">
-                        {data.items.map((question) => (
-                            <tr
-                                key={question.id}
-                                className="hover:bg-[var(--hover-background)] transition-colors duration-150
-                                [&>td]:px-6 [&>td]:py-2"
-                            >
-                                <td className="whitespace-nowrap text-sm text-[var(--text-primary)]">
-                                    {question.id}
-                                </td>
-                                <td className="text-sm text-[var(--text-primary)] max-w-xs truncate">
-                                    <Link
-                                        href={`/question/${question.id}/${question.slug}`}
-                                        className="text-[var(--text-primary)] hover:underline"
-                                    >
-                                        {question.title}
-                                    </Link>
-                                </td>
-                                <td className="whitespace-nowrap text-sm text-[var(--text-primary)]">
-                                    <div className="flex items-center gap-2">
-                                        <div className="rounded-full overflow-hidden bg-gray-200">
-                                            {question.author?.profilePicture && (
-                                                <Avatar
-                                                    src={fromImage(question.author.profilePicture)}
-                                                    alt={question.author.username}
-                                                    className="object-cover"
-                                                    sx={{ width: 26, height: 26 }}
-                                                />
-                                            )}
-                                        </div>
-                                        <span>{question.author?.username}</span>
-                                    </div>
-                                </td>
-                                <td className="whitespace-nowrap text-sm">
-                                    {getStatusChip(question)}
-                                </td>
-                                <td className="whitespace-nowrap text-sm text-[var(--text-primary)]">
-                                    {new Date(question.createdAt).toLocaleDateString()}
-                                </td>
-                                <td className="whitespace-nowrap text-right text-sm font-medium">
-                                    <IconButton size="small" onClick={(e) => handleMenuOpen(e, question)}>
-                                        <MoreVert fontSize="small" className="text-[var(--text-primary)]" />
-                                    </IconButton>
-                                </td>
-                            </tr>
+                        {displayedQuestions.map((question) => (
+                            <QuestionRow key={question.id} {...question} />
                         ))}
                     </tbody>
                 </table>
             </div>
 
             <div className="flex justify-center mt-4">
-                <Pagination
-                    count={data?.totalPage || 1}
-                    page={pageIndex}
-                    onChange={handlePageChange}
-                    color="primary"
-                />
+                {!searchResult && (
+                    <Pagination
+                        count={data?.totalPage || 1}
+                        page={pageIndex}
+                        onChange={handlePageChange}
+                        color="primary"
+                    />
+                )}
             </div>
 
             <Menu
@@ -251,10 +322,17 @@ export default function QuestionsTable() {
                     <InsertLink fontSize="small" className="mr-2" />
                     Copy Url
                 </MenuItem>
-                <MenuItem onClick={handleCloseQuestion}>
-                    <Lock fontSize="small" className="mr-2" />
-                    Close Question
-                </MenuItem>
+                {!selectedQuestion?.isClosed ?
+                    <MenuItem onClick={handleCloseQuestion}>
+                        <LockOpenOutlined fontSize="small" className="mr-2" />
+                        Close Question
+                    </MenuItem>
+                    :
+                    <MenuItem onClick={handleReopenQuestion}>
+                        <Lock fontSize="small" className="mr-2" />
+                        Reopen Question
+                    </MenuItem>
+                }
                 {selectedQuestion?.isDuplicate ?
                     <MenuItem onClick={handleRemoveDuplicateFlag}>
                         <Flag fontSize="small" className="mr-2" />
@@ -269,6 +347,7 @@ export default function QuestionsTable() {
                         <form onSubmit={handleFlagDuplicate}>
                             <input
                                 type="text"
+                                name="duplicateUrl"
                                 className="w-full border border-[var(--border-color)] rounded-md px-3 py-1.5 text-sm
                                 bg-[var(--input-background)] text-[var(--text-primary)]
                                 focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)]"

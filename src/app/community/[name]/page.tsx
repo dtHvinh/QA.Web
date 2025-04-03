@@ -16,7 +16,7 @@ import { ChatRoomResponse, CommunityDetailResponse } from "@/types/types";
 import { notifySucceed } from "@/utilities/ToastrExtensions";
 import { ChatBubbleOutlineRounded, Forum, InfoOutlined, People, SettingsOutlined } from "@mui/icons-material";
 import { Avatar, Chip, IconButton, Tooltip, useMediaQuery } from "@mui/material";
-import { use, useEffect, useState } from "react";
+import { use, useState } from "react";
 import useSWR from "swr";
 
 export default function CommunityDetailPage({ params }: { params: Promise<{ name: string }> }) {
@@ -36,15 +36,6 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
     const { data: communityDetail, isLoading, mutate } = useSWR<CommunityDetailResponse>(`/api/community/detail/${communityName}`, getFetcher);
-
-    useEffect(() => {
-        if (communityDetail) {
-            const firstRoom = communityDetail.rooms[0];
-            setSelectedRoomId(firstRoom?.id ?? null);
-            setSelectedRoom(firstRoom);
-            setChatRoomOpen(true);
-        }
-    }, [communityDetail])
 
     if ((!isLoading && IsErrorResponse(communityDetail))) {
         return <ObjectNotfound title="Error" message="Community is not exist or it is a private " />

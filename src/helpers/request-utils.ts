@@ -18,6 +18,7 @@ interface RequestConfig {
 
 interface RQOptions {
     needAuth?: boolean;
+    displayError?: boolean;
 }
 
 export const makeRequest = async (config: RequestConfig, options?: RQOptions) => {
@@ -63,7 +64,8 @@ export const makeRequest = async (config: RequestConfig, options?: RQOptions) =>
         }
 
         const err = error.response.data as ErrorResponse;
-        notifyError(err.title);
+        if ((options && options.displayError) || !options)
+            notifyError(err.title);
         return err;
     }
 };
@@ -73,6 +75,12 @@ export const getFetcher = (url: string) =>
         url,
         method: 'GET'
     });
+
+export const getFetcherSilent = (url: string) =>
+    makeRequest({
+        url,
+        method: 'GET'
+    }, { displayError: false });
 
 export const postFetcher = (url: string, jsonBody?: string, options?: RQOptions) =>
     makeRequest({

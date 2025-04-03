@@ -1,9 +1,17 @@
+import { notifyInfo } from "@/utilities/ToastrExtensions";
 import hljs from "highlight.js";
 
 export function highlightCode() {
     document.querySelectorAll('pre code:not(.hljs)').forEach((block) => {
         hljs.highlightElement(block as HTMLElement);
     });
+}
+
+export async function copyToClipboard(text: string, notify: boolean = true) {
+    await navigator.clipboard.writeText(text);
+    if (notify) {
+        notifyInfo("Copied to clipboard");
+    }
 }
 
 export function scrollToTop() {

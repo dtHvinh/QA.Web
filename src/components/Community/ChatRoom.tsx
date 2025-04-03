@@ -1,12 +1,12 @@
 import Loading from "@/app/loading";
 import { useSignalR } from "@/context/SignalRContext";
 import getAuth, { extractId, getAuthUsername } from "@/helpers/auth-utils";
-import { formPostFetcher, getFetcher, IsErrorResponse } from "@/helpers/request-utils";
+import { formPostFetcher, getFetcher } from "@/helpers/request-utils";
 import { ChatMessageResponse, PagedResponse } from "@/types/types";
 import { HubConnectionState } from "@microsoft/signalr";
 import { ArrowBack } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useSWR from "swr";
 import { useThrottledCallback } from "use-debounce";
 import ChatInput from "./ChatInput";
@@ -41,9 +41,7 @@ export default function ChatRoom({ chatRoomId, onBack }: ChatRoomProps & { onBac
         setOldRoomId(Number.parseInt(chatRoomId));
 
         connection.on('ReceiveMessage', (message: ChatMessageResponse) => {
-            if (message.author.id != userId) {
-                updateMessage(message);
-            }
+            updateMessage(message);
         });
 
         connection.on('SomeOneStartTyping', (username: string, userId: string) => {
@@ -120,31 +118,29 @@ export default function ChatRoom({ chatRoomId, onBack }: ChatRoomProps & { onBac
 
         const res = await formPostFetcher('/api/community/room/chat', formData);
 
-        if (!IsErrorResponse(res)) {
-            if (messageInit) {
-                mutate({
-                    ...messageInit,
-                    items: [...messageInit.items, res as ChatMessageResponse]
-                }, false);
-            }
-        }
+        if (!res) return;
+        // if (!IsErrorResponse(res)) {
+        //     if (messageInit) {
+        //         mutate({
+        //             ...messageInit,
+        //             items: [...messageInit.items, res as ChatMessageResponse]
+        //         }, false);
+        //     }
+        // }
+        // => use signalR instead to sync between devices
     };
 
-    const renderMessage = useMemo(() => messageInit ? messageInit.items.map((msg, index) => {
+    const RenderMessage = () => messageInit ? messageInit.items.map((msg, index) => {
         const isCurrentUser = msg.author.id === userId;
-        const isNewGroup = index === 0 || messageInit.items[index - 1].author.id !== msg.author.id;
-
         return (
-            <div key={msg.id} className={isNewGroup ? "mt-4" : "mt-0"}>
-                <ChatRoomMessage
-                    message={msg}
-                    isCurrentUser={isCurrentUser}
-                    showAvatar={true}
-                />
-            </div>
+            <ChatRoomMessage
+                key={msg.id}
+                message={msg}
+                isCurrentUser={isCurrentUser}
+                showAvatar={true}
+            />
         );
-    }) : [],
-        [messageInit]);
+    }) : [];
 
     if ((connection && connection.state !== HubConnectionState.Connected)) {
         return <Loading />
@@ -174,7 +170,26 @@ export default function ChatRoom({ chatRoomId, onBack }: ChatRoomProps & { onBac
                             <p className="text-sm opacity-75">Be the first to start the conversation!</p>
                         </div>
                     ) : (
-                        renderMessage
+                        <div className="[&>*]:mt-2">
+                            <div className="flex flex-col items-center px-4 py-8 mb-6 border-b border-[var(--border-color)]">
+                                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center mb-4">
+                                    <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
+                                    </svg>
+                                </div>
+                                <h2 className="text-xl font-bold text-[var(--text-primary)] mb-2">Welcome to Chat Room #{chatRoomId}</h2>
+                                <p className="text-sm text-[var(--text-secondary)] text-center max-w-md">
+                                    This is the beginning of the chat room. Be nice and follow our community guidelines!
+                                </p>
+                                <div className="flex items-center gap-2 mt-4 text-xs text-[var(--text-tertiary)]">
+                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <span>Chat room created on {new Date().toLocaleDateString()}</span>
+                                </div>
+                            </div>
+                            <RenderMessage />
+                        </div>
                     )}
                     <div ref={messagesEndRef} />
                 </div>

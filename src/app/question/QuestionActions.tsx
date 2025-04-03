@@ -107,7 +107,6 @@ export default function QuestionActions({
             const voteResponse = response as VoteResponse;
             setCurrentVote(voteResponse.score);
         }
-
     }
 
     const handleBookmarkQuestion = async () => {

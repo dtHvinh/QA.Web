@@ -1,10 +1,10 @@
-import { deleteFetcher, formPutFetcher, getFetcher, IsErrorResponse } from "@/helpers/request-utils";
-import { fromImage } from "@/helpers/utils";
+import { deleteFetcher, formPutFetcher, getFetcher, getFetcherSilent, IsErrorResponse, postFetcher } from "@/helpers/request-utils";
+import { copyToClipboard, fromImage } from "@/helpers/utils";
 import { ErrorResponse } from "@/props/ErrorResponse";
 import { theme } from "@/theme/theme";
 import { CommunityDetailResponse, GetCommunityResponse, PagedResponse } from "@/types/types";
 import notifyError, { notifySucceed } from "@/utilities/ToastrExtensions";
-import { AddPhotoAlternate, Close, Delete, Group, PersonAdd, Save } from "@mui/icons-material";
+import { AddPhotoAlternate, Close, ContentPasteOutlined, Delete, Group, PersonAdd, RestartAltOutlined, Save } from "@mui/icons-material";
 import {
     Avatar,
     Box,
@@ -73,8 +73,12 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
     const { data: members, isLoading: isMemberLoading, mutate } = useSWR<PagedResponse<CommunityMemberResponse>>(
         `/api/community/${community.id}/members?pageIndex=1&pageSize=100`,
         getFetcher);
-    const { trigger: layoutJoinedList } = useSWRMutate<GetCommunityResponse[]>(`/api/community/joined?pageIndex=1&pageSize=15`, getFetcher);
+    const { data: communityInvitationLink, isLoading: isCommunityInvitationLinkLoading, mutate: invitationMutate } = useSWR<{
+        invitationLink: string
+    }>(`/api/community/${community.id}/invitation`, getFetcherSilent);
 
+    const { trigger: layoutJoinedList } = useSWRMutate<GetCommunityResponse[]>(`/api/community/joined?pageIndex=1&pageSize=15`, getFetcher);
+    console.log(community)
     useEffect(() => {
         setAnyChange(name !== community.name
             || description !== community.description
@@ -128,6 +132,21 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
             setIconPreview(URL.createObjectURL(file));
         }
     };
+
+    const handleCreateInvitationLink = async () => {
+        const response = await postFetcher(`/api/community/${community.id}/invitation`);
+
+        if (!IsErrorResponse(response)) {
+            notifySucceed('Invitation link created successfully');
+            copyToClipboard((response as { invitationLink: string }).invitationLink);
+            invitationMutate(() => {
+                return {
+                    ...communityInvitationLink,
+                    invitationLink: (response as { invitationLink: string }).invitationLink
+                }
+            })
+        }
+    }
 
     const updateCommunitySideBar = async () => {
         await layoutJoinedList(undefined, {
@@ -376,17 +395,52 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
                                     Members ({members?.totalCount || 0})
                                 </Typography>
                             </div>
-                            {(!community.isPrivate || (community.isModerator || community.isOwner)) &&
-                                <button
-                                    type="button"
-                                    className="flex items-center gap-2 px-4 py-2 rounded-lg
-                                text-[var(--text-secondary)] border border-[var(--border-color)]
-                                hover:bg-[var(--hover-background)] transition-colors"
-                                >
-                                    <PersonAdd fontSize="small" />
-                                    Invite Members
-                                </button>
-                            }
+                            {(community.isPrivate && (community.isModerator || community.isOwner)) &&
+                                (communityInvitationLink?.invitationLink ?
+                                    <div className="flex items-center gap-2">
+                                        <div className="relative flex items-center gap-2 px-4 py-2 rounded-lg
+                                        text-[var(--text-secondary)] border border-[var(--border-color)]
+                                        bg-[var(--input-background)]"
+                                        >
+                                            <PersonAdd fontSize="small" />
+                                            <input
+                                                type="text"
+                                                value={communityInvitationLink?.invitationLink}
+                                                className="bg-transparent border-none outline-none text-sm"
+                                                readOnly
+                                            />
+                                            <div className="flex items-center gap-1">
+                                                <IconButton
+                                                    size="small"
+                                                    onClick={() => {
+                                                        copyToClipboard(communityInvitationLink.invitationLink);
+                                                    }}
+                                                    className="text-[var(--text-primary)] hover:text-[var(--primary)]"
+                                                >
+                                                    <ContentPasteOutlined fontSize="small" className="text-[var(--text-primary)]" />
+                                                </IconButton>
+                                                <IconButton
+                                                    size="small"
+                                                    onClick={handleCreateInvitationLink}
+                                                    className="text-[var(--text-primary)] hover:text-[var(--primary)]"
+                                                >
+                                                    <RestartAltOutlined fontSize="small" className="text-[var(--text-primary)]" />
+                                                </IconButton>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    :
+                                    <button
+                                        type="button"
+                                        onClick={handleCreateInvitationLink}
+                                        className="flex items-center gap-2 px-4 py-2 rounded-lg
+                                    text-[var(--text-secondary)] border border-[var(--border-color)]
+                                    hover:bg-[var(--hover-background)] transition-colors"
+                                    >
+                                        <PersonAdd fontSize="small" />
+                                        Create Invitation Link
+                                    </button>
+                                )}
                         </div>
 
                         {isMemberLoading ? (
