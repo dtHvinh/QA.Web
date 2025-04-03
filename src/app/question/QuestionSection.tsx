@@ -4,6 +4,7 @@ import EditSection from "@/app/question/EditSection";
 import QuestionActions from "@/app/question/QuestionActions";
 import QuestionContent from "@/app/question/QuestionContent";
 import QuestionHeaderDetails from "@/app/question/QuestionHeaderDetails";
+import { DefaultScrollTop } from "@/components/DefaultScrollTop";
 import ResourceOwnerPrivilege from "@/components/Privilege/ResourceOwnerPrivilege";
 import TagLabel from "@/components/TagLabel";
 import { formatReputation } from "@/helpers/evaluate-utils";
@@ -12,6 +13,7 @@ import { QuestionResponse } from "@/types/types";
 import EditIcon from '@mui/icons-material/Edit';
 import { Avatar, Dialog, IconButton, Link, Tooltip } from "@mui/material";
 import 'highlight.js/styles/atom-one-dark.css';
+import { useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 
 export default function QuestionSection({ questionInit }: { questionInit: QuestionResponse }) {
@@ -21,6 +23,23 @@ export default function QuestionSection({ questionInit }: { questionInit: Questi
     const [isEditing, setIsEditing] = React.useState<boolean>(false);
     const [question, setQuestion] = React.useState<QuestionResponse>(questionInit);
     const [duplicateQuestionUrl, setDuplicateQuestionUrl] = React.useState<string>(questionInit.duplicateQuestionUrl ?? "");
+    const answerSectionRef = React.useRef<HTMLDivElement>(null);
+    const query = useSearchParams();
+
+    useEffect(() => {
+        setTimeout(() => {
+            const anchor = query.get('goto');
+            switch (anchor) {
+                case 'answer':
+                    if (answerSectionRef.current) {
+                        answerSectionRef.current.scrollIntoView({ behavior: 'smooth' });
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }, 700)
+    }, []);
 
     const handleEditClick = () => {
         setIsEditing(!isEditing);
@@ -63,6 +82,7 @@ export default function QuestionSection({ questionInit }: { questionInit: Questi
 
     return (
         <div className="page-container">
+            <DefaultScrollTop />
             <div className="grid grid-cols-12 gap-6">
                 <div className="col-span-1">
                     <QuestionActions
@@ -163,6 +183,7 @@ export default function QuestionSection({ questionInit }: { questionInit: Questi
                     <div className="space-y-5">
                         <CommentSection question={question} isClosed={isClosed} />
                         <AnswerSection
+                            ref={answerSectionRef}
                             question={question}
                             isClosed={isClosed}
                             onAnswerAcceptAction={handleAnswerAcceptAction}

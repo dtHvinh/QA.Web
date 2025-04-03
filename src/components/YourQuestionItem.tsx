@@ -16,7 +16,7 @@ interface YourQuestionItemProps {
 
 export default function YourQuestionItem({ question, showAuthor = true, view = 'full' }: Readonly<YourQuestionItemProps>) {
     return (
-        <div className={`bg-[var(--card-background)] rounded-lg ${'border border-[var(--border-color)]'} hover:border-blue-500 hover:shadow-sm transition-all ${view === 'compact' ? 'p-2' : 'p-3'}`}>
+        <div className={`bg-[var(--card-background)] rounded-lg ${'border-2 border-[var(--border-color)]'} hover:border-blue-500 hover:shadow-sm transition-all ${view === 'compact' ? 'p-2' : 'p-3'}`}>
             <div className={`${view === 'compact' ? 'space-y-1 px-1.5' : 'space-y-2'}`}>
                 <div className="flex items-start justify-between gap-2">
                     <Link href={toQuestionDetail(question.id, question.slug)}
@@ -48,15 +48,17 @@ export default function YourQuestionItem({ question, showAuthor = true, view = '
 
                         <div className="flex items-center justify-between pt-1.5 text-xs">
                             <div className="flex gap-3">
-                                <span className="text-[var(--text-secondary)]">
+                                <span className="text-[var(--text-secondary)]  p-1 px-2">
                                     <span className="font-medium">{question.score}</span> votes
                                 </span>
-                                <span className="text-[var(--text-secondary)]">
+                                <span className="text-[var(--text-secondary)]  p-1 px-2">
                                     <span className="font-medium">{formatNumber(question.viewCount)}</span> views
                                 </span>
-                                <span className={question.isSolved ? 'text-green-500' : 'text-[var(--text-secondary)]'}>
-                                    <span className="font-medium">{formatNumber(question.answerCount)}</span> answers
-                                </span>
+                                <Tooltip title={question.isSolved ? 'See answers' : 'Answer this question'}>
+                                    <Link href={toQuestionDetail(question.id, question.slug, 'answer')} className={`${question.isSolved ? 'text-green-500' : 'text-[var(--text-secondary)]'} p-1 px-2 bg-gray-200 rounded-full`}>
+                                        <span className="font-medium">{formatNumber(question.answerCount)}</span> answers
+                                    </Link>
+                                </Tooltip>
                             </div>
 
                             <div className="flex items-center gap-2 text-[var(--text-secondary)]">

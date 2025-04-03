@@ -12,10 +12,12 @@ import React from "react";
 
 export default function AnswerSection(
     {
+        ref,
         question,
         isClosed,
         onAnswerAcceptAction,
     }: {
+        ref?: React.RefObject<HTMLDivElement | null>,
         question: QuestionResponse,
         isClosed: boolean,
         onAnswerAcceptAction: (answerId: string) => void
@@ -56,7 +58,7 @@ export default function AnswerSection(
     }
 
     return (
-        <div className="p-2">
+        <div ref={ref} className="p-2">
             <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2 text-[var(--text-primary)]">
                     <QuestionAnswerOutlined />

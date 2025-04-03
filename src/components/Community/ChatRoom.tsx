@@ -15,9 +15,10 @@ import TypingIndicator from './TypingIndicator';
 
 interface ChatRoomProps {
     chatRoomId: string;
+    chatRoomName: string;
 }
 
-export default function ChatRoom({ chatRoomId, onBack }: ChatRoomProps & { onBack?: () => void }) {
+export default function ChatRoom({ chatRoomId, chatRoomName, onBack }: ChatRoomProps & { onBack?: () => void }) {
     const { data: messageInit, isLoading: isMessageLoading, mutate } = useSWR<PagedResponse<ChatMessageResponse>>(
         '/api/community/room/chat/' + chatRoomId + "?pageIndex=1&pageSize=10", getFetcher);
     const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -177,7 +178,7 @@ export default function ChatRoom({ chatRoomId, onBack }: ChatRoomProps & { onBac
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
                                     </svg>
                                 </div>
-                                <h2 className="text-xl font-bold text-[var(--text-primary)] mb-2">Welcome to Chat Room #{chatRoomId}</h2>
+                                <h2 className="text-xl font-bold text-[var(--text-primary)] mb-2">Welcome to Chat Room #{chatRoomName}</h2>
                                 <p className="text-sm text-[var(--text-secondary)] text-center max-w-md">
                                     This is the beginning of the chat room. Be nice and follow our community guidelines!
                                 </p>

@@ -211,6 +211,7 @@ export default function CommunityDetailPage({ params }: { params: Promise<{ name
                         selectedRoom &&
                         <div className="h-full p-2">
                             <ChatRoom
+                                chatRoomName={selectedRoom.name}
                                 chatRoomId={`${selectedRoom.id}`}
                                 onBack={handleClickBack}
                             />

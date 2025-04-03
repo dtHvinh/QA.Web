@@ -1,7 +1,7 @@
 import { formatTimeString } from "@/helpers/time-utils";
 import { fromImage } from "@/helpers/utils";
 import { ChatMessageResponse } from "@/types/types";
-import { MoreHoriz, Reply } from "@mui/icons-material";
+import { EmojiEmotions, MoreHoriz } from "@mui/icons-material";
 import { Avatar, IconButton } from "@mui/material";
 import Link from "next/link";
 
@@ -15,11 +15,11 @@ export default function ChatRoomMessage({ message: msg, isCurrentUser, showAvata
 
     return (
         <div
-            className="group relative px-2 dark:hover:bg-gray-700 hover:bg-gray-200 transition-colors py-1"
+            className="group relative px-2 dark:hover:bg-gray-700 hover:bg-gray-200  py-1"
         >
-            <div className="invisible [&>*>*]:text-white group-hover:visible absolute right-2 -top-3 flex gap-1 rounded-full bg-black px-4 z-50">
+            <div className="hidden [&>*>*]:text-white group-hover:flex absolute right-2 -top-3 gap-1 rounded-full bg-black px-4 z-50">
                 <IconButton size="small" >
-                    <Reply className="text-[var(--text-primary)]" fontSize="small" />
+                    <EmojiEmotions className="text-[var(--text-primary)]" fontSize="small" />
                 </IconButton>
                 <IconButton size="small">
                     <MoreHoriz className="text-[var(--text-primary)]" fontSize="small" />

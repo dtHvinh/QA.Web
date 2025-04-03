@@ -1,4 +1,4 @@
-import { AttachFile, Close, Image, Send } from '@mui/icons-material';
+import { AttachFile, Close, EmojiEmotionsOutlined, Send } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
 import { FormEvent, useEffect, useRef, useState } from 'react';
 
@@ -98,7 +98,7 @@ export default function ChatInput({ onSubmit, onStartTyping, onStopTyping }: Cha
                         bg-[var(--hover-background)] text-[var(--text-primary)] 
                         placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 
                         focus:ring-[var(--primary-light)] focus:border-transparent
-                        pr-12 transition-all text-[15px]"
+                        pr-12 transition-all text-[15px] mr-2"
                 />
                 <input
                     type="file"
@@ -110,11 +110,20 @@ export default function ChatInput({ onSubmit, onStartTyping, onStopTyping }: Cha
                 />
                 <IconButton
                     onClick={() => fileInputRef.current?.click()}
-                    className="absolute right-14 text-[var(--text-secondary)] 
-                        hover:text-[var(--text-primary)] transition-colors"
-                    size="small"
+                    className="absolute right-2 p-2 bg-[var(--primary)] hover:bg-[var(--primary-darker)]
+                        disabled:bg-[var(--disabled-background)] disabled:text-[var(--text-tertiary)]
+                        transition-all rounded-xl shadow-md"
+                    size="medium"
                 >
-                    <Image className="text-[var(--text-primary)]" />
+                    <AttachFile className="text-[var(--text-primary)]" />
+                </IconButton>
+                <IconButton
+                    className="absolute right-2 p-2 bg-[var(--primary)] hover:bg-[var(--primary-darker)]
+                        disabled:bg-[var(--disabled-background)] disabled:text-[var(--text-tertiary)]
+                        transition-all rounded-xl shadow-md"
+                    size="medium"
+                >
+                    <EmojiEmotionsOutlined className="text-[var(--text-primary)]" />
                 </IconButton>
                 <IconButton
                     type="submit"
