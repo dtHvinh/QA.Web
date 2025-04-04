@@ -6,7 +6,6 @@ import CreateCommunityDialog from "@/components/Community/CreateCommunityDialog"
 import { getFetcher } from "@/helpers/request-utils";
 import { GetCommunityResponse, ViewOptions } from "@/types/types";
 import { Add, Search } from "@mui/icons-material";
-import { InputAdornment, TextField } from "@mui/material";
 import Link from "next/link";
 import { useState } from "react";
 import useSWR from "swr";
@@ -55,30 +54,25 @@ export default function CommunityPage() {
                 </button>
             </div>
 
-            <div className="mb-8">
-                <TextField
-                    fullWidth
-                    placeholder="Search communities..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    slotProps={{
-                        htmlInput: {
-                            startadorment: (
-                                <InputAdornment position="start">
-                                    <Search className="text-[var(--text-tertiary)]" />
-                                </InputAdornment>
-                            ),
-                            sx: {
-                                backgroundColor: 'var(--input-background)',
-                                borderRadius: '12px',
-                                '& fieldset': {
-                                    borderColor: 'var(--border-color)'
-                                },
-                                color: 'var(--text-primary)'
-                            }
-                        }
-                    }}
-                />
+            <div className="mb-8 relative">
+                <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]" />
+                    <input
+                        type="text"
+                        placeholder="Search communities..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-[var(--border-color)]
+                            bg-[var(--input-background)] text-[var(--text-primary)]
+                            placeholder:text-[var(--text-tertiary)]
+                            transition-all"
+                    />
+                    {isLoadingSearch && debounceSearchTerm.length > 2 && (
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                            <div className="w-4 h-4 border-2 border-[var(--primary)] border-t-transparent rounded-full animate-spin" />
+                        </div>
+                    )}
+                </div>
             </div>
 
             {debounceSearchTerm.length > 2 ? (

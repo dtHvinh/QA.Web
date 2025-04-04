@@ -1,8 +1,7 @@
 import { formatTimeString } from "@/helpers/time-utils";
 import { fromImage } from "@/helpers/utils";
 import { ChatMessageResponse } from "@/types/types";
-import { EmojiEmotions, MoreHoriz } from "@mui/icons-material";
-import { Avatar, IconButton } from "@mui/material";
+import { Avatar } from "@mui/material";
 import Link from "next/link";
 
 interface MessageProps {
@@ -17,14 +16,14 @@ export default function ChatRoomMessage({ message: msg, isCurrentUser, showAvata
         <div
             className="group relative px-2 dark:hover:bg-gray-700 hover:bg-gray-200  py-1"
         >
-            <div className="hidden [&>*>*]:text-white group-hover:flex absolute right-2 -top-3 gap-1 rounded-full bg-black px-4 z-50">
+            {/* <div className="hidden [&>*>*]:text-white group-hover:flex absolute right-2 -top-3 gap-1 rounded-full bg-black px-4 z-50">
                 <IconButton size="small" >
                     <EmojiEmotions className="text-[var(--text-primary)]" fontSize="small" />
                 </IconButton>
                 <IconButton size="small">
                     <MoreHoriz className="text-[var(--text-primary)]" fontSize="small" />
                 </IconButton>
-            </div>
+            </div> */}
 
             <div className="flex items-center gap-3 w-full">
                 {showAvatar ? (
@@ -53,9 +52,10 @@ export default function ChatRoomMessage({ message: msg, isCurrentUser, showAvata
                         </div>
                     )}
 
-                    <div className="text-[var(--text-primary)] whitespace-pre-wrap break-words text-[15px]">
-                        {msg.message}
-                    </div>
+                    <div
+                        className="text-[var(--text-primary)] whitespace-pre-wrap break-words text-[15px]"
+                        dangerouslySetInnerHTML={{ __html: msg.message }}
+                    />
                 </div>
             </div>
         </div>
