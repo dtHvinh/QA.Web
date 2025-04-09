@@ -260,7 +260,7 @@ export default function CreateCommunityDialog({ open, onClose, onCreated }: Crea
                         variant="contained"
                         sx={{ textTransform: 'none' }}
                         disabled={!isSubmitable || !!nameError || isSubmitting}
-                        className="bg-[var(--primary)] hover:bg-[var(--primary-darker)]"
+                        className="bg-[var(--primary)] hover:bg-[var(--primary-darker)] text-[var(--text-primary)]"
                     >
                         {isSubmitting ? 'Creating...' : 'Create Community'}
                     </Button>

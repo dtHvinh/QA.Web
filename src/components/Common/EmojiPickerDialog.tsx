@@ -1,6 +1,5 @@
 import { Menu } from '@mui/material';
-import Picker, { EmojiClickData, Theme } from 'emoji-picker-react';
-
+import { EmojiClickData } from 'emoji-picker-react';
 
 interface EmojiPickerDialogProps {
     open: boolean;
@@ -10,6 +9,19 @@ interface EmojiPickerDialogProps {
 }
 
 export default function EmojiPickerDialog({ open, anchorEl, onClose, onEmojiClick }: EmojiPickerDialogProps) {
+    const commonEmojis = [
+        { emoji: '👍', name: 'thumbs up' },
+        { emoji: '❤️', name: 'heart' },
+        { emoji: '😂', name: 'joy' },
+        { emoji: '🎉', name: 'party popper' },
+        { emoji: '🙏', name: 'pray' },
+    ];
+
+    const handleEmojiClick = (emoji: string, emojiName: string) => {
+        onEmojiClick({ emoji, names: [emojiName] } as EmojiClickData);
+        onClose();
+    };
+
     return (
         <Menu
             open={open}
@@ -30,21 +42,23 @@ export default function EmojiPickerDialog({ open, anchorEl, onClose, onEmojiClic
                         border: '1px solid var(--border-color)',
                         boxShadow: 'var(--shadow-md)',
                         mt: 1,
-                        '& .MuiList-root': {
-                            padding: 0,
-                        }
+                        borderRadius: '12px',
+                        overflow: 'hidden'
                     }
                 }
             }}
         >
-            <Picker
-                lazyLoadEmojis={true}
-                width={320}
-                height={400}
-                skinTonesDisabled
-                theme={document.documentElement.getAttribute('data-theme') === 'dark' ? Theme.DARK : Theme.LIGHT}
-                onEmojiClick={onEmojiClick}
-            />
+            <div className="flex px-2 gap-2">
+                {commonEmojis.map((item) => (
+                    <button
+                        key={item.name}
+                        onClick={() => handleEmojiClick(item.emoji, item.name)}
+                        className="w-10 h-10 flex items-center justify-center text-2xl hover:bg-[var(--hover-background)] rounded-full transition-colors"
+                    >
+                        {item.emoji}
+                    </button>
+                ))}
+            </div>
         </Menu>
     );
 }

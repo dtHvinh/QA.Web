@@ -19,8 +19,15 @@ export default function AuthPage() {
         setIsLoading(true);
         setError('');
 
+
         try {
             const formData = new FormData(e.currentTarget);
+
+            if (!isLogin && formData.get('confirmPassword') !== formData.get('password')) {
+                notifyError('Passwords do not match');
+                return;
+            }
+
             const data = {
                 email: formData.get('email') as string,
                 password: formData.get('password') as string,

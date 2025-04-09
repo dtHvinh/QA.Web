@@ -5,6 +5,7 @@ import CollectionItem from '@/components/CollectionItem';
 import CreateCollectionDialog from "@/components/CreateCollectionDialog";
 import FilterBar from '@/components/FilterBar';
 import { getFetcher, IsErrorResponse } from '@/helpers/request-utils';
+import { scrollToTop } from '@/helpers/utils';
 import { GetCollectionResponse, PagedResponse } from '@/types/types';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import { Pagination, Tooltip } from "@mui/material";
@@ -42,6 +43,10 @@ export default function CollectionsPage() {
             setCachedCollections(data.items || [])
         }
     }, [data])
+
+    useEffect(() => {
+        scrollToTop();
+    }, [pageIndex]);
 
     const handleOnCreated = () => {
         window.location.reload();

@@ -5,11 +5,12 @@ import PermissionAction from "@/components/PermissionAction";
 import TagSkeleton from "@/components/Skeletons/TagSkeleton";
 import { getFetcher } from "@/helpers/request-utils";
 import { toTagDetail } from "@/helpers/route-utils";
+import { scrollToTop } from "@/helpers/utils";
 import { PagedResponse, TagResponse } from "@/types/types";
 import { Pagination } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import useSWR from "swr";
 
 export default function Tags() {
@@ -25,6 +26,10 @@ export default function Tags() {
 
     const requestUrl = `/api/tag/${orderBy}?skip=${(pageIndex - 1) * pageSize}&take=${pageSize}`;
     const { data, error, isLoading } = useSWR<PagedResponse<TagResponse>>(requestUrl, getFetcher);
+
+    useEffect(() => {
+        scrollToTop();
+    }, [pageIndex]);
 
     const handleOrderByChange = (value: string) => {
         setOrderBy(value);

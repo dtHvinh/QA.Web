@@ -174,54 +174,6 @@ export default function QuestionsTable() {
         );
     }
 
-    const QuestionRow = (question: QuestionResponse) => {
-        return (
-            <tr
-                key={question.id}
-                className={`hover:bg-[var(--hover-background)] transition-colors duration-150
-    [&>td]:px-6 [&>td]:py-2 ${selectedQuestion?.id === question.id && 'bg-[var(--hover-background)]'}`}
-            >
-                <td className="whitespace-nowrap text-sm text-[var(--text-primary)]">
-                    {question.id}
-                </td>
-                <td className="text-sm text-[var(--text-primary)] max-w-xs truncate">
-                    <Link
-                        href={`/question/${question.id}/${question.slug}`}
-                        className="text-[var(--text-primary)] hover:underline"
-                    >
-                        {question.title}
-                    </Link>
-                </td>
-                <td className="whitespace-nowrap text-sm text-[var(--text-primary)]">
-                    <div className="flex items-center gap-2">
-                        <div className="rounded-full overflow-hidden bg-gray-200">
-                            {question.author?.profilePicture && (
-                                <Avatar
-                                    src={fromImage(question.author.profilePicture)}
-                                    alt={question.author.username}
-                                    className="object-cover"
-                                    sx={{ width: 26, height: 26 }}
-                                />
-                            )}
-                        </div>
-                        <span>{question.author?.username}</span>
-                    </div>
-                </td>
-                <td className="whitespace-nowrap text-sm">
-                    {getStatusChip(question)}
-                </td>
-                <td className="whitespace-nowrap text-sm text-[var(--text-primary)]">
-                    {new Date(question.createdAt).toLocaleDateString()}
-                </td>
-                <td className="whitespace-nowrap text-right text-sm font-medium">
-                    <IconButton size="small" onClick={(e) => handleMenuOpen(e, question)}>
-                        <MoreVert fontSize="small" className="text-[var(--text-primary)]" />
-                    </IconButton>
-                </td>
-            </tr>
-        )
-    };
-
     return (
         <div>
             <div className="pb-5 flex items-center gap-3">
@@ -283,7 +235,49 @@ export default function QuestionsTable() {
                     </thead>
                     <tbody className="bg-[var(--card-background)] divide-y divide-[var(--border-color)]">
                         {displayedQuestions.map((question) => (
-                            <QuestionRow key={question.id} {...question} />
+                            <tr
+                                key={question.id}
+                                className={`hover:bg-[var(--hover-background)] transition-colors duration-150
+                [&>td]:px-6 [&>td]:py-2 ${selectedQuestion?.id === question.id && 'bg-[var(--hover-background)]'}`}
+                            >
+                                <td className="whitespace-nowrap text-sm text-[var(--text-primary)]">
+                                    {question.id}
+                                </td>
+                                <td className="text-sm text-[var(--text-primary)] max-w-xs truncate">
+                                    <Link
+                                        href={`/question/${question.id}/${question.slug}`}
+                                        className="text-[var(--text-primary)] hover:underline"
+                                    >
+                                        {question.title}
+                                    </Link>
+                                </td>
+                                <td className="whitespace-nowrap text-sm text-[var(--text-primary)]">
+                                    <div className="flex items-center gap-2">
+                                        <div className="rounded-full overflow-hidden bg-gray-200">
+                                            {question.author?.profilePicture && (
+                                                <Avatar
+                                                    src={fromImage(question.author.profilePicture)}
+                                                    alt={question.author.username}
+                                                    className="object-cover"
+                                                    sx={{ width: 26, height: 26 }}
+                                                />
+                                            )}
+                                        </div>
+                                        <span>{question.author?.username}</span>
+                                    </div>
+                                </td>
+                                <td className="whitespace-nowrap text-sm">
+                                    {getStatusChip(question)}
+                                </td>
+                                <td className="whitespace-nowrap text-sm text-[var(--text-primary)]">
+                                    {new Date(question.createdAt).toLocaleDateString()}
+                                </td>
+                                <td className="whitespace-nowrap text-right text-sm font-medium">
+                                    <IconButton size="small" onClick={(e) => handleMenuOpen(e, question)}>
+                                        <MoreVert fontSize="small" className="text-[var(--text-primary)]" />
+                                    </IconButton>
+                                </td>
+                            </tr>
                         ))}
                     </tbody>
                 </table>
@@ -304,6 +298,14 @@ export default function QuestionsTable() {
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
                 onClose={handleMenuClose}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'right',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                }}
                 sx={{
                     '& .MuiPaper-root': {
                         backgroundColor: 'var(--card-background)',

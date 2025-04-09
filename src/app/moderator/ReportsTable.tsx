@@ -1,6 +1,6 @@
 'use client'
 
-import { getFetcher } from "@/helpers/request-utils";
+import { getFetcher, IsErrorResponse, putFetcher } from "@/helpers/request-utils";
 import { GetReportResponse, PagedResponse } from "@/types/types";
 import { notifyInfo } from "@/utilities/ToastrExtensions";
 import { Check, Close, CopyAllTwoTone, MoreVert } from "@mui/icons-material";
@@ -39,6 +39,52 @@ export default function ReportsTable() {
     const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
         setPageIndex(value);
     };
+
+    const handleResolveReport = async () => {
+        if (!selectedReport) {
+            return;
+        }
+
+        const response = await putFetcher(`/api/report/${selectedReport.id}/resolve`);
+        if (!IsErrorResponse(response)) {
+            notifyInfo('Report resolved', { horizontal: 'center', vertical: 'top' }, 0.5);
+            if (data)
+                mutate({
+                    ...data,
+                    items: data.items.map((report) => {
+                        if (report.id !== selectedReport.id)
+                            report.status = 'Resolved';
+
+                        return report;
+                    })
+                });
+        }
+
+        handleMenuClose();
+    };
+
+    const handleRejectReport = async () => {
+        if (!selectedReport) {
+            return;
+        }
+
+        const response = await putFetcher(`/api/report/${selectedReport.id}/reject`);
+        if (!IsErrorResponse(response)) {
+            notifyInfo('Report resolved', { horizontal: 'center', vertical: 'top' }, 0.5);
+            if (data)
+                mutate({
+                    ...data,
+                    items: data.items.map((report) => {
+                        if (report.id !== selectedReport.id)
+                            report.status = 'Rejected';
+
+                        return report;
+                    })
+                });
+        }
+
+        handleMenuClose();
+    }
 
     const getStatusChip = (status: string) => {
         switch (status) {
@@ -152,14 +198,18 @@ export default function ReportsTable() {
                 open={Boolean(anchorEl)}
                 onClose={handleMenuClose}
             >
-                <MenuItem onClick={handleMenuClose}>
-                    <Check fontSize="small" className="mr-2" />
-                    Mark as Resolved
-                </MenuItem>
-                <MenuItem onClick={handleMenuClose}>
-                    <Close fontSize="small" className="mr-2" />
-                    Reject Report
-                </MenuItem>
+                {selectedReport && selectedReport.status !== 'Resolved' &&
+                    <MenuItem onClick={handleResolveReport}>
+                        <Check fontSize="small" className="mr-2" />
+                        Mark as Resolved
+                    </MenuItem>
+                }
+                {selectedReport && selectedReport.status !== 'Rejected' &&
+                    <MenuItem onClick={handleRejectReport}>
+                        <Close fontSize="small" className="mr-2" />
+                        Reject Report
+                    </MenuItem>
+                }
             </Menu>
         </div>
     );
