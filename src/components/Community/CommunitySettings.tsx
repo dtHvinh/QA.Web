@@ -75,7 +75,7 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
         getFetcher);
     const { data: communityInvitationLink, isLoading: isCommunityInvitationLinkLoading, mutate: invitationMutate } = useSWR<{
         invitationLink: string
-    }>(`/api/community/${community.id}/invitation`, getFetcherSilent);
+    }>(community.isPrivate ? `/api/community/${community.id}/invitation` : null, getFetcherSilent);
 
     const { trigger: layoutJoinedList } = useSWRMutate<GetCommunityResponse[]>(`/api/community/joined?pageIndex=1&pageSize=15`, getFetcher);
     console.log(community)

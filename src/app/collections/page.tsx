@@ -26,7 +26,8 @@ export default function CollectionsPage() {
     const [collections, setCollections] = React.useState<GetCollectionResponse[]>([])
     const [cachedCollections, setCachedCollections] = React.useState<GetCollectionResponse[]>([])
 
-    const { data } = useSWR<PagedResponse<GetCollectionResponse>>(`/api/collection?orderBy=${sortOrder}&pageIndex=${pageIndex}&pageSize=${pageSize}`, getFetcher)
+    const { data } = useSWR<PagedResponse<GetCollectionResponse>>(
+        `/api/collection?orderBy=${sortOrder}&pageIndex=${pageIndex}&pageSize=${pageSize}`, getFetcher)
 
     useEffect(() => {
         const searchTerm = debouncedSearchTerm.trim();
@@ -61,6 +62,9 @@ export default function CollectionsPage() {
         }
     }
 
+    if (data)
+        console.log(data)
+
     return (
         <div className="page-container mx-auto px-4">
             <div className="flex flex-col space-y-6">
@@ -69,10 +73,9 @@ export default function CollectionsPage() {
                     <Tooltip title="Create Collection" arrow placement="left">
                         <button
                             onClick={() => setOpen(true)}
-                            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                            className="gap-2 px-2 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                         >
                             <PlaylistAddIcon className="w-5 h-5" />
-                            <span className="hidden sm:inline">New Collection</span>
                         </button>
                     </Tooltip>
                 </div>

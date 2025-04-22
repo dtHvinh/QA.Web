@@ -161,7 +161,7 @@ export async function refreshToken(auth?: AuthProps) {
         if (IsErrorResponse(data)) {
             notifyError((data as ErrorResponse).title);
             invalidateAuth(auth)
-            window.location.href = '/login';
+            window.location.href = '/login?return-url=' + window.location.href;
             return null;
         }
 
@@ -182,7 +182,7 @@ export async function refreshToken(auth?: AuthProps) {
         return authRefreshResponse.accessToken;
     } catch (error) {
         notifyError("Failed to refresh token");
-        window.location.href = '/auth';
+        window.location.href = '/auth?return-url=' + encodeURIComponent(window.location.pathname);
         invalidateAuth(auth);
         return null;
     } finally {

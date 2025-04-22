@@ -135,19 +135,25 @@ export default function QuestionsTable() {
     }
 
     const getStatusChip = (question: QuestionResponse) => {
+        const chips = [];
+
         if (question.isDeleted) {
-            return <Chip size="small" label="Deleted" color="error" />;
+            chips.push(<Chip key="deleted" size="small" label="Deleted" color="error" />);
         }
         if (question.isClosed) {
-            return <Chip size="small" label="Closed" color="error" />;
+            chips.push(<Chip key="closed" size="small" label="Closed" color="error" />);
         }
         if (question.isSolved) {
-            return <Chip size="small" label="Solved" color="success" />;
+            chips.push(<Chip key="solved" size="small" label="Solved" color="success" />);
         }
         if (question.isDuplicate) {
-            return <Chip size="small" label="Duplicate" color="warning" />;
+            chips.push(<Chip key="duplicate" size="small" label="Duplicate" color="warning" />);
         }
-        return <Chip size="small" label="Open" color="info" />;
+        if (chips.length === 0) {
+            chips.push(<Chip key="open" size="small" label="Open" color="info" />);
+        }
+
+        return <div className="flex flex-wrap gap-1">{chips}</div>;
     };
 
     const handleCopy = () => {
@@ -238,18 +244,20 @@ export default function QuestionsTable() {
                             <tr
                                 key={question.id}
                                 className={`hover:bg-[var(--hover-background)] transition-colors duration-150
-                [&>td]:px-6 [&>td]:py-2 ${selectedQuestion?.id === question.id && 'bg-[var(--hover-background)]'}`}
+                            [&>td]:px-6 [&>td]:py-2 ${selectedQuestion?.id === question.id && 'bg-[var(--hover-background)]'}`}
                             >
                                 <td className="whitespace-nowrap text-sm text-[var(--text-primary)]">
                                     {question.id}
                                 </td>
-                                <td className="text-sm text-[var(--text-primary)] max-w-xs truncate">
-                                    <Link
-                                        href={`/question/${question.id}/${question.slug}`}
-                                        className="text-[var(--text-primary)] hover:underline"
-                                    >
-                                        {question.title}
-                                    </Link>
+                                <td className="text-sm text-[var(--text-primary)] max-w-[100px]">
+                                    <div className="truncate" title={question.title}>
+                                        <Link
+                                            href={`/question/${question.id}/${question.slug}`}
+                                            className="text-[var(--text-primary)] hover:underline"
+                                        >
+                                            {question.title}
+                                        </Link>
+                                    </div>
                                 </td>
                                 <td className="whitespace-nowrap text-sm text-[var(--text-primary)]">
                                     <div className="flex items-center gap-2">
@@ -269,7 +277,7 @@ export default function QuestionsTable() {
                                 <td className="whitespace-nowrap text-sm">
                                     {getStatusChip(question)}
                                 </td>
-                                <td className="whitespace-nowrap text-sm text-[var(--text-primary)]">
+                                <td className="whitespace-nowrap text-sm text-[var(--text-primary)] max-w-[50]">
                                     {new Date(question.createdAt).toLocaleDateString()}
                                 </td>
                                 <td className="whitespace-nowrap text-right text-sm font-medium">

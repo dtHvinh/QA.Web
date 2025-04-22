@@ -30,12 +30,12 @@ export default function SubLayout({
                         {shouldShowSidebar ? (
                             <div className="flex flex-1">
                                 <SideNav />
-                                <div className="flex-1 pt-4">
+                                <div className="flex-1 py-4">
                                     {children}
                                 </div>
                             </div>
                         ) : (
-                            <div className="flex-1">
+                            <div className="flex-1 py-4">
                                 {children}
                             </div>
                         )}

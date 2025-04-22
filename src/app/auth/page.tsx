@@ -4,7 +4,7 @@ import { AuthProps, setAuth, setRememberAuth } from "@/helpers/auth-utils";
 import { IsErrorResponse, postFetcher } from "@/helpers/request-utils";
 import notifyError from "@/utilities/ToastrExtensions";
 import { AnimatePresence, motion } from "framer-motion";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, useState } from "react";
 
 export default function AuthPage() {
@@ -13,6 +13,7 @@ export default function AuthPage() {
     const [error, setError] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
     const router = useRouter();
+    const searchParam = useSearchParams();
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -49,7 +50,7 @@ export default function AuthPage() {
             else
                 setAuth(response as AuthProps);
 
-            router.push('/');
+            router.push(searchParam.get('return-url') || '/');
         } catch (e: any) {
             notifyError(e);
         } finally {
@@ -58,7 +59,7 @@ export default function AuthPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-tr from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
+        <div className="min-h-screen bg-gradient-to-tr from-blue-50 via-white to-purple-50 flex items-center justify-center -my-4">
             <div className="w-full max-w-4xl grid md:grid-cols-2 gap-8 items-center">
                 <motion.div
                     initial={{ opacity: 0, x: -20 }}

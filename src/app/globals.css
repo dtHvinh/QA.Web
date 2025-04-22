@@ -5,7 +5,7 @@
 :root {
     --riw: 40px;
 
-    --left-nav-expanded-width: 180px;
+    --left-nav-expanded-width: 15rem;
     --community-right-sidebar-width: 72px;
     --appbar-height: 58px;
     --chatroom-height: 515px;
