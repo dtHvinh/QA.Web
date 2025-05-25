@@ -23,7 +23,7 @@ export default function ProfilePage({ params }: { params: Promise<{ username?: s
 
     useEffect(() => {
         if (user) {
-            setUsername(user.username)
+            setUsername(user.userName)
             setExternalLinks(user.externalLinks)
         }
     }, [user])
@@ -89,7 +89,7 @@ export default function ProfilePage({ params }: { params: Promise<{ username?: s
                                     </ResourceOwnerPrivilege>
                                 </div>
                                 <div className="mt-2 text-[var(--text-secondary)]">
-                                    Member for {countTotalDays(user.createdAt)}
+                                    Member for {countTotalDays(user.creationDate)}
                                 </div>
                             </div>
                         </div>
@@ -102,7 +102,8 @@ export default function ProfilePage({ params }: { params: Promise<{ username?: s
                                         <Link
                                             key={link.id}
                                             href={link.url}
-                                            className="flex items-center gap-2 px-4 py-2 bg-[var(--hover-background-darker)] text-[var(--text-primary)] rounded-lg hover:bg-[var(--hover-background-darkest)] transition-colors"
+                                            target="_blank"
+                                            className="flex items-center gap-2 px-4 py-2 bg-[var(--hover-background-darker)] text-[var(--text-primary)] rounded-lg"
                                         >
                                             <Avatar src={getProviderImage(link.url)} sx={{ width: 16, height: 16 }} />
                                             <span className="truncate">{link.url}</span>

@@ -39,9 +39,9 @@ export default function QuestionsTable() {
         getFetcher
     );
 
-    const displayedQuestions = searchResult
+    const displayedQuestions = !IsErrorResponse(searchResult) && searchResult
         ? [searchResult]
-        : data?.items || [];
+        : data?.items ?? [];
 
     const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, question: QuestionResponse) => {
         setAnchorEl(event.currentTarget);

@@ -16,7 +16,7 @@ export default function CollectionQuestions({ collectionId, questionInit, pageIn
     pageSize: number,
     resourceRight: ResourceRight
 }) {
-    const { data } = useSWR<GetCollectionDetailResponse>(`/api/collection/${collectionId}/?pageIndex=${pageIndex}&pageSize=${pageSize}`, getFetcher);
+    const { data, mutate } = useSWR<GetCollectionDetailResponse>(`/api/collection/${collectionId}/?pageIndex=${pageIndex}&pageSize=${pageSize}`, getFetcher);
     const [questions, setQuestions] = React.useState<QuestionResponse[]>(questionInit);
     const [cachedQuestions, setCachedQuestions] = useState<QuestionResponse[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
@@ -64,11 +64,11 @@ export default function CollectionQuestions({ collectionId, questionInit, pageIn
                 <input
                     type="text"
                     placeholder="Search questions..."
-                    className="w-full pl-10 pr-4 py-3 bg-[var(--card)] border-[var(--card-border)] bg-white border border-gray-200 rounded-lg transition-colors"
+                    className="w-full pl-10 pr-4 py-3 bg-[var(--card-background)] text-[var(--text-primary)] border border-[var(--border-color)] rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] focus:border-transparent"
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
                 <svg
-                    className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-secondary)]"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -80,8 +80,8 @@ export default function CollectionQuestions({ collectionId, questionInit, pageIn
             <div className="space-y-4">
                 <AnimatePresence>
                     {questions.length === 0 ? (
-                        <div className="text-center py-12 bg-gray-50 rounded-lg">
-                            <p className="text-gray-500">No questions found</p>
+                        <div className="text-center py-12 bg-[var(--card-background-secondary)] rounded-lg">
+                            <p className="text-[var(--text-secondary)]">No questions found</p>
                         </div>
                     ) : (
                         questions.map((question) => (

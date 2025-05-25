@@ -3,6 +3,7 @@ import AlertDialog from "@/components/AlertDialog";
 import AddToCollection from "@/components/Collection/AddToCollection";
 import PermissionAction from "@/components/PermissionAction";
 import ModeratorPrivilege from "@/components/Privilege/ModeratorPrivilege";
+import ResourceOwnerPrivilege from "@/components/Privilege/ResourceOwnerPrivilege";
 import ReportDialog from "@/components/ReportDialog";
 import { deleteFetcher, IsErrorResponse, postFetcher, putFetcher } from "@/helpers/request-utils";
 import { QuestionResponse, VoteResponse } from "@/types/types";
@@ -211,13 +212,15 @@ export default function QuestionActions({
                     </svg>
                 </button>
 
-                <button
-                    onClick={() => setDeleteConfirmOpen(true)}
-                    className="p-2 rounded-full hover:bg-[var(--hover-background)] transition-colors"
-                    title="Delete question"
-                >
-                    <DeleteForeverOutlined />
-                </button>
+                <ResourceOwnerPrivilege resourceRight={question.resourceRight}>
+                    <button
+                        onClick={() => setDeleteConfirmOpen(true)}
+                        className="p-2 rounded-full hover:bg-[var(--hover-background)] transition-colors"
+                        title="Delete question"
+                    >
+                        <DeleteForeverOutlined />
+                    </button>
+                </ResourceOwnerPrivilege>
             </div>
 
             <ModeratorPrivilege>

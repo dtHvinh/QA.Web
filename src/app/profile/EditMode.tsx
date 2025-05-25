@@ -27,7 +27,7 @@ const EditMode = ({
     externalLinks
 }: Readonly<EditModeProps>) => {
     const auth = getAuth()
-    const [editedName, setEditedName] = useState(profile.username)
+    const [editedName, setEditedName] = useState(profile.userName)
     const [socialLinks, setSocialLinks] = useState<ExternalLinkResponse[]>(externalLinks ?? []);
     const [anyChange, setAnyChange] = useState(false)
     const [profileImage, setProfileImage] = useState<File | null>(null);
@@ -35,7 +35,7 @@ const EditMode = ({
     const maxLinks = 5
 
     useEffect(() => {
-        setAnyChange(editedName != profile.username || JSON.stringify(socialLinks) != JSON.stringify(externalLinks))
+        setAnyChange(editedName != profile.userName || JSON.stringify(socialLinks) != JSON.stringify(externalLinks))
     }, [editedName, socialLinks])
 
     const handleLinkChange = (index: number, field: keyof ExternalLinkResponse, value: string) => {
@@ -106,7 +106,7 @@ const EditMode = ({
                             <Avatar
                                 variant="rounded"
                                 src={fromImage(profile.profilePicture)}
-                                alt={profile.username}
+                                alt={profile.userName}
                                 sx={{
                                     width: 120,
                                     height: 120,
@@ -139,12 +139,12 @@ const EditMode = ({
                                         autoFocus
                                         className="w-full px-4 py-2 border border-[var(--border-color)] bg-[var(--input-background)] text-[var(--text-primary)] rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                         onChange={(e) => setEditedName(e.target.value)}
-                                        defaultValue={profile.username}
+                                        defaultValue={profile.userName}
                                     />
                                 </div>
                             </div>
                             <div className="mt-2 text-[var(--text-secondary)]">
-                                Member for {countTotalDays(profile.createdAt)} days
+                                Member for {countTotalDays(profile.creationDate)}
                             </div>
                         </div>
                     </div>

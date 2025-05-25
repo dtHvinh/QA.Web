@@ -27,7 +27,6 @@ export const makeRequest = async (config: RequestConfig, options?: RQOptions) =>
     const headers = {
         ...config.headers,
         Authorization: auth ? `Bearer ${auth.accessToken}` : ''
-
     };
 
     if (options) {

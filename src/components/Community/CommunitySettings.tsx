@@ -75,7 +75,7 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
         getFetcher);
     const { data: communityInvitationLink, isLoading: isCommunityInvitationLinkLoading, mutate: invitationMutate } = useSWR<{
         invitationLink: string
-    }>(community.isPrivate ? `/api/community/${community.id}/invitation` : null, getFetcherSilent);
+    }>(null, getFetcherSilent);
 
     const { trigger: layoutJoinedList } = useSWRMutate<GetCommunityResponse[]>(`/api/community/joined?pageIndex=1&pageSize=15`, getFetcher);
     console.log(community)
@@ -460,8 +460,8 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
                 )}
 
                 {tabValue === 2 && (
-                    <Box className="p-6">
-                        <div className="p-4 border border-[var(--error)] rounded-lg bg-[var(--error-light)] mb-4 flex flex-col gap-2">
+                    <Box className="p-5">
+                        <div className="p-4 pb-8 border border-[var(--error)] rounded-lg bg-opacity-10 mb-4 flex flex-col gap-2">
                             <Typography variant="h6" className="text-[var(--error)] mb-2">
                                 Delete Community
                             </Typography>
@@ -469,7 +469,12 @@ export default function CommunitySettings({ open, onClose, community, onUpdate }
                                 Once you delete a community, there is no going back. Please be certain.
                             </Typography>
                             <Button
-                                sx={{ textTransform: 'none' }}
+                                sx={{
+                                    textTransform: 'none',
+                                    '&:hover': {
+                                        backgroundColor: 'var(--error-darker)'
+                                    }
+                                }}
                                 variant="contained"
                                 color="error"
                                 startIcon={<Delete />}

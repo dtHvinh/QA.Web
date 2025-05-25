@@ -121,7 +121,8 @@ export default function ChatInput({ onSubmit, onStartTyping, onStopTyping }: Cha
                         className="hidden"
                         accept="image/*,.pdf,.doc,.docx,.txt"
                     />
-                    <IconButton
+                    {/*TODO: Implement this*/}
+                    {/* <IconButton
                         onClick={() => fileInputRef.current?.click()}
                         className="absolute right-2 p-2 bg-[var(--primary)] hover:bg-[var(--primary-darker)]
                         disabled:bg-[var(--disabled-background)] disabled:text-[var(--text-tertiary)]
@@ -129,7 +130,7 @@ export default function ChatInput({ onSubmit, onStartTyping, onStopTyping }: Cha
                         size="medium"
                     >
                         <AttachFile className="text-[var(--text-primary)]" />
-                    </IconButton>
+                    </IconButton> */}
                     <IconButton
                         className="absolute right-2 p-2 bg-[var(--primary)] hover:bg-[var(--primary-darker)]
                         disabled:bg-[var(--disabled-background)] disabled:text-[var(--text-tertiary)]

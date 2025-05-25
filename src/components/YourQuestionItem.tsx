@@ -23,7 +23,7 @@ export default function YourQuestionItem({ question, showAuthor = true, view = '
                         className={`font-medium line-clamp-1 text-[var(--text-primary)] hover:text-blue-500 transition-colors flex-grow
                                 ${view === 'compact' ? 'text-xs' : 'text-sm'}`}>
                         <Tooltip title={question.title}>
-                            <span className={`${question.isDuplicate && 'text-orange-500'}`}>{question.title}</span>
+                            <span className={`${question.isDuplicate && 'text-orange-400'} ${question.score <= -1000 && 'text-red-500'}`}>{question.title}</span>
                         </Tooltip>
                     </Link>
                     {view === 'full' && <QuestionStatusBar {...question} />}
@@ -55,7 +55,8 @@ export default function YourQuestionItem({ question, showAuthor = true, view = '
                                     <span className="font-medium">{formatNumber(question.viewCount)}</span> views
                                 </span>
                                 <Tooltip title={question.isSolved ? 'See answers' : 'Answer this question'}>
-                                    <Link href={toQuestionDetail(question.id, question.slug, 'answer')} className={`${question.isSolved ? 'text-green-500' : 'text-[var(--text-secondary)]'} p-1 px-2 bg-gray-200 rounded-full`}>
+                                    <Link href={toQuestionDetail(question.id, question.slug, 'answer')}
+                                        className={`${question.isSolved ? 'text-green-500' : 'text-gray-700'} p-1 px-2 bg-gray-200 rounded-full`}>
                                         <span className="font-medium">{formatNumber(question.answerCount)}</span> answers
                                     </Link>
                                 </Tooltip>

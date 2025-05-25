@@ -4,7 +4,6 @@ import toQuestionDetail from "@/helpers/path";
 import { IsErrorResponse } from "@/helpers/request-utils";
 import { deleteQuestionFromCollection } from "@/helpers/requests";
 import { QuestionResponse, ResourceRight } from "@/types/types";
-import { notifyConfirm } from "@/utilities/ToastrExtensions";
 import { Delete } from "@mui/icons-material";
 import { motion } from "framer-motion";
 import Link from "next/link";
@@ -23,12 +22,6 @@ export default function CollectionQuestionItem({ question, collectionId, onRemov
         if (!IsErrorResponse(res)) {
             onRemove(question.id)
         }
-    }
-
-    const handleRemoveConfirm = () => {
-        notifyConfirm(
-            "Are you sure you want to remove this question from the collection?",
-            () => handleRemove())
     }
 
     return (
@@ -72,10 +65,7 @@ export default function CollectionQuestionItem({ question, collectionId, onRemov
 
                     <ResourceOwnerPrivilege resourceRight={resourceRight}>
                         <button
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                handleRemoveConfirm()
-                            }}
+                            onClick={handleRemove}
                             className="p-2 text-[var(--text-tertiary)] hover:text-[var(--error)] 
                                 rounded-lg hover:bg-[var(--hover-background)] transition-colors"
                         >

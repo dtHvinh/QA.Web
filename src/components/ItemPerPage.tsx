@@ -25,7 +25,7 @@ export default function ItemPerPage(
                     <button
                         key={value}
                         onClick={() => handlePageSizeChange(value)}
-                        className={`px-3 py-2 text-sm ${pageSize == value ? 'bg-blue-700' : 'hover:bg-blue-500'} rounded-full transition-colors w-9 justify-center flex`}>{value}
+                        className={`px-3 py-2 text-sm ${pageSize == value ? 'bg-blue-700 text-white' : 'hover:bg-blue-500'} rounded-full transition-colors w-9 justify-center flex`}>{value}
                     </button>
                 ))}
             </div>

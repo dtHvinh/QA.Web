@@ -22,8 +22,8 @@ export interface ChatRoomResponse {
 export interface ChatMessageResponse {
     id: number;
     message: string;
-    createdAt: string;
-    updatedAt: string;
+    creationDate: string;
+    modificationDate: string;
     author: AuthorResponse;
 }
 
@@ -50,8 +50,8 @@ export interface GetReportResponse {
     targetId: number;
     description: string;
     status: string;
-    createdAt: Date;
-    updatedAt: Date;
+    creationDate: Date;
+    modificationDate: Date;
 }
 
 export interface GetQuestionResponse {
@@ -71,8 +71,8 @@ export interface TagResponse {
 
 export interface QuestionHistoryResponse {
     id: string,
-    createdAt: string,
-    updatedAt: string,
+    creationDate: string,
+    modificationDate: string,
     authorId: string,
     authorName: string,
     comment: string,
@@ -81,7 +81,7 @@ export interface QuestionHistoryResponse {
 
 export interface BookmarkResponse {
     id: string,
-    createdAt: string,
+    creationDate: string,
     question: QuestionResponse
 }
 
@@ -101,8 +101,8 @@ export interface GetUserResponse {
     firstName?: string;
     lastName?: string;
     profilePicture: string;
-    createdAt: string;
-    updatedAt: string;
+    creationDate: string;
+    modificationDate: string;
     reputation: number;
 
     isDeleted: boolean;
@@ -151,8 +151,8 @@ export interface QuestionResponse extends ResourceRightProps {
 
     score: number,
 
-    createdAt: string,
-    updatedAt: string,
+    creationDate: string,
+    modificationDate: string,
 
     viewCount: number,
     commentCount: number,
@@ -178,7 +178,7 @@ export interface GetCollectionResponse {
     questionCount: number,
     isPublic: boolean,
     isLikedByUser: boolean,
-    createdAt: string,
+    creationDate: string,
     author: AuthorResponse
 }
 
@@ -196,7 +196,7 @@ export interface GetCollectionDetailResponse {
     likeCount: number,
     isPublic: boolean,
     isLikedByUser: boolean,
-    createdAt: string,
+    creationDate: string,
     author: AuthorResponse
     resourceRight: ResourceRight,
     questions: PagedResponse<QuestionResponse>
@@ -223,12 +223,12 @@ export interface VoteResponse {
 export interface UserResponse {
     id: string;
     email: string;
-    username: string;
+    userName: string;
     firstName: string;
     lastName: string;
     reputation: number;
     profilePicture: string;
-    createdAt: string;
+    creationDate: string;
     lastActive: string;
     questionCount: number;
     answerCount: number;
@@ -248,8 +248,8 @@ export interface ExternalLinkResponse {
 
 export interface CommentResponse extends ResourceRightProps {
     id: string;
-    createdAt: string;
-    updatedAt: string;
+    creationDate: string;
+    modificationDate: string;
     content?: string;
     author?: AuthorResponse;
 }
@@ -257,8 +257,8 @@ export interface CommentResponse extends ResourceRightProps {
 export interface AnswerResponse extends ResourceRightProps {
     id: string;
     content: string;
-    createdAt: string;
-    updatedAt: string;
+    creationDate: string;
+    modificationDate: string;
     score: number;
     isAccepted: boolean;
     author?: AuthorResponse;

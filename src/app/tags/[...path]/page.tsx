@@ -2,15 +2,17 @@
 
 import TagQuestionDisplay from "@/app/tags/[...path]/TagQuestionDisplay";
 import TagQuestionDisplaySkeleton from "@/app/tags/[...path]/TagQuestionDisplaySkeleton";
+import DeleteConfirmDialog from "@/components/Dialog/DeleteConfirmDialog";
 import ObjectNotfound from "@/components/Error/ObjectNotFound";
 import FilterBar from "@/components/FilterBar";
 import PermissionAction from "@/components/PermissionAction";
 import ModeratorPrivilege from "@/components/Privilege/ModeratorPrivilege";
-import { getFetcher, IsErrorResponse } from "@/helpers/request-utils";
+import { deleteFetcher, getFetcher, IsErrorResponse } from "@/helpers/request-utils";
 import { QuestionResponse, TagDetailResponse } from "@/types/types";
 import { Delete, Edit } from "@mui/icons-material";
 import { Pagination, Tooltip } from "@mui/material";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import useSWR from "swr";
 
@@ -20,16 +22,20 @@ export default function TagDetailPage({ params }: { params: Promise<{ path: stri
     const [tagQuestions, setTagQuestions] = React.useState<QuestionResponse[]>([]);
     const validOrderValue = ['Newest', 'MostViewed', 'MostVoted', 'Solved'];
     const validOrder = ['Newest', 'Most Viewed', 'Most Voted', 'Solved'];
-    const orderDescription = [
-        'Newest question base on their creation date',
-        'Question has most view',
-        'Question has most total vote count',
-        'Question has been solved'
-    ];
+    const orderDescription = ['Newest question base on their creation date', 'Question has most view', 'Question has most total vote count', 'Question has been solved'];
+    const [deleteTagConfirmOpen, setDeleteTagConfirmOpen] = React.useState<boolean>(false);
     const [selectedOrder, setSelectedOrder] = React.useState<string>(validOrderValue[0]);
     const titleRef = React.useRef<HTMLHeadingElement>(null);
-
+    const router = useRouter();
     const { data: tag, isLoading } = useSWR<TagDetailResponse>(`/api/tag/${path[0]}?orderBy=${selectedOrder}&pageIndex=${pageIndex}&pageSize=15`, getFetcher);
+
+    const handleDeleteTag = async () => {
+        const res = await deleteFetcher(`/api/tag/${tag?.id}`);
+        if (!IsErrorResponse(res)) {
+            setDeleteTagConfirmOpen(false);
+            router.push('/tags');
+        }
+    }
 
     useEffect(() => {
         if (!IsErrorResponse(tag)) {
@@ -81,7 +87,9 @@ export default function TagDetailPage({ params }: { params: Promise<{ path: stri
 
                             <ModeratorPrivilege>
                                 <Tooltip title='Delete Tag'>
-                                    <button className="h-10 w-10 flex items-center justify-center rounded-lg hover:bg-[var(--error-light)] 
+                                    <button
+                                        onClick={() => setDeleteTagConfirmOpen(true)}
+                                        className="h-10 w-10 flex items-center justify-center rounded-lg hover:bg-[var(--error-light)] 
                                             text-[var(--error)] transition-colors">
                                         <Delete />
                                     </button>
@@ -148,6 +156,15 @@ export default function TagDetailPage({ params }: { params: Promise<{ path: stri
                     </div>
                 )}
             </div>
+
+
+            <DeleteConfirmDialog
+                itemType="Tag"
+                itemName={tag?.name}
+                onClose={() => { setDeleteTagConfirmOpen(false) }}
+                onConfirm={handleDeleteTag}
+                open={deleteTagConfirmOpen}
+            />
         </div>
     );
 }

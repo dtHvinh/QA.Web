@@ -61,7 +61,7 @@ export default function EditSection({ question, onEditSuccess, onClose }: {
     }
 
     return (
-        <div className="bg-[var(--card-background)] shadow-lg border border-[var(--border-color)]">
+        <div className="bg-[var(--card-background)] min-h-screen shadow-lg border border-[var(--border-color)]">
             <div className="border-b border-[var(--border-color)] bg-[var(--hover-background)]">
                 <div className="p-4 sm:p-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
                     <div>

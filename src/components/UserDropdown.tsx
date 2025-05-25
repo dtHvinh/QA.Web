@@ -191,8 +191,6 @@ export default function UserDropdown() {
                             <div>Your Collections</div>
                         </Link>
 
-                        <hr className="my-5" />
-
                         <button onClick={logOut}
                             className={`${buttonStyle} w-full text-[var(--text-primary)]`}>
                             <LogoutOutlined />

@@ -96,11 +96,11 @@ export default function SearchInput({ onSearch }: SearchInputProps) {
                 }}
                 slotProps={{
                     paper: {
-                        className: "w-[672px] rounded-xl shadow-lg mt-2 bg-[var(--card-background)] border border-[var(--border-color)]",
+                        className: "w-[672px] h-[calc(100vh-var(--appbar-height)-50px)] mt-3 shadow-lg bg-[var(--card-background)] flex flex-col",
                     }
                 }}
             >
-                <div className="p-3 border-b border-[var(--border-color)] bg-[var(--card-background)]">
+                <div className="p-3 border-b border-[var(--border-color)] bg-[var(--card-background)] sticky top-0 z-10">
                     <input
                         ref={tagSearchInputRef}
                         placeholder="Search tags..."
@@ -109,7 +109,7 @@ export default function SearchInput({ onSearch }: SearchInputProps) {
                     />
                 </div>
 
-                <div className="overflow-y-auto p-2 bg-[var(--card-background)]">
+                <div className="overflow-y-auto p-2 bg-[var(--card-background)] flex-grow">
                     <div className="space-y-1">
                         {tags?.map((tag) => (
                             <button

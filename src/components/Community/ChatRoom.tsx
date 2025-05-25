@@ -79,10 +79,11 @@ export default function ChatRoom({ chatRoomId, chatRoomName, onBack }: ChatRoomP
 
     const throttledStopTyping = useThrottledCallback(
         (_: string, userId: string) => {
+            console.log('stop typing', userId);
             setTypingUsers(prev => prev.filter(user => user.userId !== userId));
         },
         300,
-        { leading: false, trailing: true }
+        { leading: true, trailing: true }
     );
 
     const updateMessage = (message: ChatMessageResponse) => {

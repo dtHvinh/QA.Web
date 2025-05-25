@@ -5,28 +5,18 @@ import QuestionSection from "@/app/question/QuestionSection";
 import ObjectNotfound from "@/components/Error/ObjectNotFound";
 import toQuestionDetail from "@/helpers/path";
 import { getFetcher, IsErrorResponse } from "@/helpers/request-utils";
-import { ErrorResponse } from "@/props/ErrorResponse";
 import { PagedResponse, QuestionResponse } from "@/types/types";
 import { Apis } from "@/utilities/Constants";
 import 'highlight.js/styles/github.min.css';
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import useSWR from "swr";
 
 export default function QuestionPage({ params }: { params: Promise<{ path: string[] }> }) {
     const { path } = React.use(params);
-    const [relatedQuestions, setRelatedQuestions] = useState<PagedResponse<QuestionResponse>>()
     const { data, isLoading } = useSWR<QuestionResponse>(`${Apis.Question.GetQuestionDetail}/view/${path[0]}`, getFetcher);
-
+    const { data: relatedQuestions, isLoading: relatedQuestionsLoading } = useSWR<PagedResponse<QuestionResponse>>(`/api/question/${path[0]}/similar?skip=0&take=10`, getFetcher);
     const question = data as QuestionResponse;
-
-    useEffect(() => {
-        getFetcher(`/api/question/${path[0]}/similar?skip=0&take=10`).then((response: PagedResponse<QuestionResponse> | ErrorResponse) => {
-            if (!IsErrorResponse(response)) {
-                setRelatedQuestions(response as PagedResponse<QuestionResponse>);
-            }
-        })
-    }, []);
 
     if (isLoading) {
         return <Loading />
