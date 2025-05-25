@@ -1,5 +1,6 @@
 import { IsErrorResponse } from "@/helpers/request-utils";
 import { isAllowedTo } from "@/helpers/requests";
+import { FloatingPosition, Tooltip } from "@mantine/core";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import WarningTooltip from "./Tooltip/WarningTooltip";
@@ -9,10 +10,14 @@ export interface PermissionActionProps {
     children: React.ReactNode;
     className?: string;
     allowedHref?: string;
+    title?: {
+        text: string;
+        position: FloatingPosition;
+    };
     callback?: () => void;
 }
 
-const PermissionAction = ({ children, className, action, allowedHref, callback }: Readonly<PermissionActionProps>) => {
+const PermissionAction = ({ children, className, action, allowedHref, title, callback }: Readonly<PermissionActionProps>) => {
     const router = useRouter();
     const [isOpen, setIsOpen] = useState(false);
     const [message, setMessage] = useState('');
@@ -38,9 +43,11 @@ const PermissionAction = ({ children, className, action, allowedHref, callback }
     }
 
     return (
-        <WarningTooltip open={isOpen} title={message} placement="right-end" arrow>
-            <button onMouseLeave={handleMouseLeaveButton} className={className} onClick={handleClick}>{children}</button>
-        </WarningTooltip>
+        <Tooltip label={title?.text} position={title?.position} offset={12}>
+            <WarningTooltip open={isOpen} title={message} placement="right-end" arrow>
+                <button onMouseLeave={handleMouseLeaveButton} className={className} onClick={handleClick}>{children}</button>
+            </WarningTooltip>
+        </Tooltip>
     );
 }
 

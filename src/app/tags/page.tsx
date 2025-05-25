@@ -8,6 +8,7 @@ import { toTagDetail } from "@/helpers/route-utils";
 import { scrollToTop } from "@/helpers/utils";
 import { PagedResponse, TagResponse } from "@/types/types";
 import { Pagination } from "@mui/material";
+import { Plus } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -41,28 +42,36 @@ export default function Tags() {
 
     return (
         <div className="page-container mx-auto px-4 space-y-8">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div className="flex sm:flex-row justify-between items-center gap-4">
                 <div className="space-y-1">
                     <h1 className="text-3xl font-bold text-[var(--text-primary)]">Tags</h1>
 
                     {data && (
                         <p className="text-[var(--text-secondary)]">{data.totalCount.toLocaleString()} tags</p>
                     )}
-
-                    <PermissionAction
-                        action="createTag"
-                        allowedHref='/tags/create'
-                        className="inline-flex items-center px-4 py-1 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                    >
-                        Create Tag
-                    </PermissionAction>
                 </div>
-                <FilterBar
-                    tabs={validOrder}
-                    tabValues={validOrderValue}
-                    tabDescriptions={orderDescriptions}
-                    onFilterValueChange={handleOrderByChange}
-                />
+                <div className="flex flex-col text-end space-y-1">
+                    <div>
+                        <PermissionAction
+                            title={{
+                                'text': 'Create tag',
+                                'position': 'right'
+                            }}
+                            action="createTag"
+                            allowedHref='/tags/create'
+                            className="px-4 py-1 text-sm font-medium rounded-md hover:bg-gray-100 transition-colors"
+                        >
+                            <Plus />
+                        </PermissionAction>
+                    </div>
+
+                    <FilterBar
+                        tabs={validOrder}
+                        tabValues={validOrderValue}
+                        tabDescriptions={orderDescriptions}
+                        onFilterValueChange={handleOrderByChange}
+                    />
+                </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -55,7 +55,6 @@ const FilterBar = (params: Readonly<FilterBarProps>) => {
                             key={label}
                             title={tabDescriptions[index]}
                             placement="right"
-                            arrow
                         >
                             <button
                                 className={`w-full text-left px-4 py-2 text-sm transition-colors

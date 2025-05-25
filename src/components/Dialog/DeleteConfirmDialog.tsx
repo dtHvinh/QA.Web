@@ -33,6 +33,12 @@ export default function DeleteConfirmDialog({
         }
     };
 
+    // Add this helper function to check if the confirmation text is valid
+    const isConfirmTextValid = () => {
+        const expectedText = itemName ?? 'yes';
+        return confirmText.trim().toLowerCase() === expectedText.trim().toLowerCase();
+    };
+
     return (
         <Dialog
             open={open}
@@ -86,7 +92,7 @@ export default function DeleteConfirmDialog({
                         <button
                             type="button"
                             onClick={handleConfirm}
-                            disabled={confirmText !== itemName || isDeleting}
+                            disabled={!isConfirmTextValid() || isDeleting}
                             className="px-4 py-2 rounded-lg bg-[var(--error)] text-white
                                 hover:bg-[var(--error-darker)] transition-colors
                                 disabled:opacity-50 disabled:cursor-not-allowed"

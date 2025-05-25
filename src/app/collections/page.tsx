@@ -73,9 +73,9 @@ export default function CollectionsPage() {
                     <Tooltip title="Create Collection" arrow placement="left">
                         <button
                             onClick={() => setOpen(true)}
-                            className="gap-2 px-2 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                            className="gap-2 px-2 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
                         >
-                            <PlaylistAddIcon className="w-5 h-5" />
+                            <PlaylistAddIcon className="w-5 h-5" /> Create collection
                         </button>
                     </Tooltip>
                 </div>

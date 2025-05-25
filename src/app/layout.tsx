@@ -3,11 +3,14 @@ import ScrollToTopButton from "@/components/ScrollToTopButton";
 import { SignalRProvider } from "@/context/SignalRContext";
 import { SupabaseProvider } from "@/context/SupabaseClientContext";
 import { AppThemeProvider } from '@/context/ThemeContext';
+import { MantineProvider } from "@mantine/core";
+import '@mantine/core/styles.css';
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata, Viewport } from "next";
 import { DM_Sans, Geist, Geist_Mono } from "next/font/google";
 import React from "react";
+import { Toaster } from 'sonner';
 import "./globals.css";
 import "./globals.scss";
 import SubLayout from "./layouts/sub-layout";
@@ -54,22 +57,25 @@ export default function RootLayout({
             </head>
             <body className={`${dmSans.className} ${geistSans.variable} ${geistMono.variable} antialiased`} suppressHydrationWarning>
                 <AppThemeProvider>
+                    <Toaster />
                     <div className="flex flex-col min-h-screen">
                         <header className="sticky top-0 z-50 bg-white shadow-sm">
                             <Appbar />
                         </header>
 
                         <main className="flex-1">
-                            <SignalRProvider>
-                                <SupabaseProvider>
-                                    <SubLayout>
-                                        {children}
-                                        <Analytics />
-                                        <SpeedInsights />
-                                    </SubLayout>
-                                </SupabaseProvider>
-                            </SignalRProvider>
-                            <ScrollToTopButton />
+                            <MantineProvider>
+                                <SignalRProvider>
+                                    <SupabaseProvider>
+                                        <SubLayout>
+                                            {children}
+                                            <Analytics />
+                                            <SpeedInsights />
+                                        </SubLayout>
+                                    </SupabaseProvider>
+                                </SignalRProvider>
+                                <ScrollToTopButton />
+                            </MantineProvider >
                         </main>
                     </div>
                 </AppThemeProvider>

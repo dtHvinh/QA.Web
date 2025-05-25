@@ -8,6 +8,7 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
+    "@mantine/core": "^8.0.1",
     "@microsoft/signalr": "^8.0.7",
     "@mui/icons-material": "^6.4.2",
     "@mui/material": "^6.4.2",
@@ -27,9 +28,9 @@
     "highlight.js": "^11.11.1",
     "highlightjs": "^9.16.2",
     "jwt-decode": "^4.0.0",
+    "lucide-react": "^0.511.0",
     "marked": "^15.0.7",
     "next": "^15.2.4",
-    "notistack": "^3.0.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-error-boundary": "^5.0.0",

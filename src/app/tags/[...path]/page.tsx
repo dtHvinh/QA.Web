@@ -68,7 +68,7 @@ export default function TagDetailPage({ params }: { params: Promise<{ path: stri
                             <div className="h-10 flex items-center">
                                 <Link
                                     href={`/wiki/${tag.id}/${tag.name}`}
-                                    className="flex items-center px-4 rounded-xl font-medium
+                                    className="flex items-center px-4 rounded-md font-medium
                                     bg-[var(--primary)] text-white hover:bg-[var(--primary-darker)] transition-colors"
                                 >
                                     Wiki
