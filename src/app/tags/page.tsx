@@ -14,6 +14,10 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import useSWR from "swr";
 
+export const getTagKey = (pageIndex: number, pageSize: number, orderBy: string) => {
+    return `/api/tag/${orderBy}?skip=${(pageIndex - 1) * pageSize}&take=${pageSize}`;
+}
+
 export default function Tags() {
     const router = useRouter();
 
@@ -25,8 +29,7 @@ export default function Tags() {
     const [pageIndex, setPageIndex] = useState<number>(1);
     const [pageSize, setPageSize] = useState(12);
 
-    const requestUrl = `/api/tag/${orderBy}?skip=${(pageIndex - 1) * pageSize}&take=${pageSize}`;
-    const { data, error, isLoading } = useSWR<PagedResponse<TagResponse>>(requestUrl, getFetcher);
+    const { data: tags, isLoading } = useSWR<PagedResponse<TagResponse>>(getTagKey(pageIndex, pageSize, orderBy), getFetcher);
 
     useEffect(() => {
         scrollToTop();
@@ -46,49 +49,47 @@ export default function Tags() {
                 <div className="space-y-1">
                     <h1 className="text-3xl font-bold text-[var(--text-primary)]">Tags</h1>
 
-                    {data && (
-                        <p className="text-[var(--text-secondary)]">{data.totalCount.toLocaleString()} tags</p>
-                    )}
-                </div>
-                <div className="flex flex-col text-end space-y-1">
-                    <div>
-                        <PermissionAction
-                            title={{
-                                'text': 'Create tag',
-                                'position': 'right'
-                            }}
-                            action="createTag"
-                            allowedHref='/tags/create'
-                            className="px-4 py-1 text-sm font-medium rounded-md hover:bg-gray-100 transition-colors"
-                        >
-                            <Plus />
-                        </PermissionAction>
-                    </div>
 
+                </div>
+                <div className="flex items-center text-end space-x-1">
                     <FilterBar
                         tabs={validOrder}
                         tabValues={validOrderValue}
                         tabDescriptions={orderDescriptions}
                         onFilterValueChange={handleOrderByChange}
                     />
+
+                    <PermissionAction
+                        title={{
+                            'text': 'Create tag',
+                            'position': 'right',
+                            offset: 0
+                        }}
+                        action="createTag"
+                        allowedHref='/tags/create'
+                        className="px-4 text-sm mt-0 font-medium rounded-md  transition-colors"
+                    >
+                        <Plus />
+                    </PermissionAction>
                 </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="col-span-3">
+                    {tags && (
+                        <p className="text-[var(--text-secondary)]">{tags.totalCount.toLocaleString()} tags</p>
+                    )}
+                </div>
                 {isLoading && (
-                    <>
-                        {[...Array(12)].map((_, index) => (
-                            <TagSkeleton key={index} />
-                        ))}
-                    </>
+                    <TagSkeleton />
                 )}
-                {data?.items.map((tag: TagResponse) => (
+                {tags?.items.map((tag: TagResponse) => (
                     <Link
                         href={toTagDetail(tag.id, tag.name)}
                         key={tag.id}
                         className="group block"
                     >
-                        <div className="h-full p-4 bg-[var(--card-background)] border border-[var(--border-color)] rounded-lg hover:border-blue-500 hover:shadow-sm transition-all duration-200">
+                        <div className="h-full p-4 bg-[var(--card-background)] border border-[var(--border-color)] rounded-lg hover:shadow-lg transition-all duration-200">
                             <div className="flex items-center justify-between mb-2">
                                 <h3 className="text-base font-medium text-[var(--text-primary)] group-hover:text-blue-500 transition-colors">
                                     {tag.name}
@@ -110,10 +111,10 @@ export default function Tags() {
                 ))}
             </div>
 
-            {data && data.totalPage > 1 && (
+            {tags && tags.totalPage > 1 && (
                 <div className="flex justify-center pt-6 pb-5">
                     <Pagination
-                        count={data.totalPage}
+                        count={tags.totalPage}
                         page={pageIndex}
                         onChange={handlePageChange}
                         size="large"

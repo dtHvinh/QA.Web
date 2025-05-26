@@ -46,7 +46,7 @@ const EditMode = ({
 
     const addNewLink = () => {
         if (socialLinks.length == maxLinks)
-            notifyError("Max links reached", { vertical: "top", horizontal: "center" }, 0.5)
+            notifyError("Max links reached")
         else
             setSocialLinks([...socialLinks, { id: '0', provider: "", url: "" }]);
     }
@@ -69,7 +69,7 @@ const EditMode = ({
                 const previewUrl = URL.createObjectURL(file);
                 setProfilePreview(previewUrl);
                 onProfilePictureChange?.(previewUrl);
-                notifySucceed("Profile picture updated", { vertical: "top", horizontal: "center" }, 1);
+                notifySucceed("Profile picture updated");
 
                 updateCurrentAuthPfp((res as TextResponse).message)
             }
@@ -87,7 +87,7 @@ const EditMode = ({
         const res = await putFetcher('/api/user', JSON.stringify(updateData));
 
         if (!IsErrorResponse(res)) {
-            notifySucceed("Profile updated", { vertical: "top", horizontal: "center" }, 1)
+            notifySucceed("Profile updated")
             onEditModeClick()
             onSocialLinksChange?.(socialLinks)
             onUsernameChange?.(editedName)
@@ -137,7 +137,7 @@ const EditMode = ({
                                         type="text"
                                         spellCheck="false"
                                         autoFocus
-                                        className="w-full px-4 py-2 border border-[var(--border-color)] bg-[var(--input-background)] text-[var(--text-primary)] rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                        className="w-full px-4 py-2  bg-[var(--input-background)] text-[var(--text-primary)] rounded-lg border-black border-2"
                                         onChange={(e) => setEditedName(e.target.value)}
                                         defaultValue={profile.userName}
                                     />

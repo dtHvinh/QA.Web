@@ -1,6 +1,6 @@
 'use client'
 
-import { TextEditorToolbar } from "@/components/TextEditorToolbar";
+import { TextEditorToolbar } from "@/components/Editors/TextEditorToolbar";
 import Image from '@tiptap/extension-image';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';

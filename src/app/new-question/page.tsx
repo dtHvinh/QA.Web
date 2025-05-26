@@ -1,7 +1,7 @@
 'use client'
 
+import TextEditor from "@/components/Editors/TextEditor";
 import TagInput from "@/components/TagInput";
-import TextEditor from "@/components/TextEditor";
 import { IsErrorResponse, postFetcher } from "@/helpers/request-utils";
 import { Apis } from "@/utilities/Constants";
 import notifyError, { notifySucceed } from "@/utilities/ToastrExtensions";

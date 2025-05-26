@@ -1,5 +1,5 @@
+import TextEditor from "@/components/Editors/TextEditor";
 import TagInput from "@/components/TagInput";
-import TextEditor from "@/components/TextEditor";
 import { IsErrorResponse, putFetcher } from "@/helpers/request-utils";
 import { formatString } from "@/helpers/string-utils";
 import { QuestionResponse, TagResponse } from "@/types/types";

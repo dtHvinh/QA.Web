@@ -3,8 +3,8 @@ import ScrollToTopButton from "@/components/ScrollToTopButton";
 import { SignalRProvider } from "@/context/SignalRContext";
 import { SupabaseProvider } from "@/context/SupabaseClientContext";
 import { AppThemeProvider } from '@/context/ThemeContext';
-import { MantineProvider } from "@mantine/core";
 import '@mantine/core/styles.css';
+import '@mantine/tiptap/styles.css';
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata, Viewport } from "next";
@@ -64,18 +64,16 @@ export default function RootLayout({
                         </header>
 
                         <main className="flex-1">
-                            <MantineProvider>
-                                <SignalRProvider>
-                                    <SupabaseProvider>
-                                        <SubLayout>
-                                            {children}
-                                            <Analytics />
-                                            <SpeedInsights />
-                                        </SubLayout>
-                                    </SupabaseProvider>
-                                </SignalRProvider>
-                                <ScrollToTopButton />
-                            </MantineProvider >
+                            <SignalRProvider>
+                                <SupabaseProvider>
+                                    <SubLayout>
+                                        {children}
+                                        <Analytics />
+                                        <SpeedInsights />
+                                    </SubLayout>
+                                </SupabaseProvider>
+                            </SignalRProvider>
+                            <ScrollToTopButton />
                         </main>
                     </div>
                 </AppThemeProvider>

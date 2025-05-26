@@ -5,7 +5,7 @@ import ViewOptionsButton from "@/components/Common/ViewOptionsButton";
 import QuestionCardListSkeleton from "@/components/Skeletons/YQPSkeleton";
 import YourQuestionItem from "@/components/YourQuestionItem";
 import { getFetcher } from "@/helpers/request-utils";
-import { PagedResponse, QuestionResponse, ViewOptions } from "@/types/types";
+import { PagedResponse, QuestionResponse, UserResponse, ViewOptions } from "@/types/types";
 import Link from "next/link";
 import { useState } from "react";
 import useSWR from "swr";
@@ -15,7 +15,7 @@ export default function Home() {
         `/api/question/you_may_like?pageIndex=1&pageSize=30`, getFetcher, {
         revalidateOnFocus: false,
     });
-    const { data: user, isLoading } = useSWR(`/api/user/`, getFetcher);
+    const { data: user, isLoading, error } = useSWR<UserResponse>(`/api/user/`, getFetcher);
     const [view, setView] = useState<ViewOptions>('full')
 
     if (isLoading) return <Loading />;
@@ -25,7 +25,7 @@ export default function Home() {
             <div className="grid grid-cols-12 gap-6">
                 <div className="col-span-full">
                     <h1 className="text-3xl font-bold text-[var(--text-primary)]">
-                        Welcome back, <span className="text-blue-500">{user.username}</span>
+                        Welcome back, <span className="text-blue-500">{user?.userName}</span>
                     </h1>
                 </div>
 
@@ -37,7 +37,7 @@ export default function Home() {
                                     Your Reputation
                                 </h2>
                                 <p className="text-3xl font-bold text-blue-500 mt-2">
-                                    {user.reputation}
+                                    {user?.reputation}
                                 </p>
                             </div>
 
@@ -71,10 +71,10 @@ export default function Home() {
                             </p>
                             <Link
                                 href="/community"
-                                className="inline-block w-full text-center px-4 py-2 bg-[var(--primary)] text-white rounded-lg 
+                                className="inline-block w-full text-center px-4 py-2 bg-blue-500 text-white rounded-lg 
                                     hover:bg-[var(--primary-darker)] transition-colors font-medium"
                             >
-                                Explore Communities
+                                Explore
                             </Link>
                         </div>
                     </div>

@@ -13,6 +13,7 @@ export interface PermissionActionProps {
     title?: {
         text: string;
         position: FloatingPosition;
+        offset?: number;
     };
     callback?: () => void;
 }
@@ -43,7 +44,7 @@ const PermissionAction = ({ children, className, action, allowedHref, title, cal
     }
 
     return (
-        <Tooltip label={title?.text} position={title?.position} offset={12}>
+        <Tooltip label={title?.text} position={title?.position} offset={title?.offset ?? 5}>
             <WarningTooltip open={isOpen} title={message} placement="right-end" arrow>
                 <button onMouseLeave={handleMouseLeaveButton} className={className} onClick={handleClick}>{children}</button>
             </WarningTooltip>

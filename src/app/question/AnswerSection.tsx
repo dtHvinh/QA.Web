@@ -1,7 +1,7 @@
 'use client'
 
 import Answer from "@/app/question/Answer";
-import TextEditor from "@/components/TextEditor";
+import TextEditor from "@/components/Editors/TextEditor";
 import getAuth from "@/helpers/auth-utils";
 import { IsErrorResponse, postFetcher } from "@/helpers/request-utils";
 import { formatString } from "@/helpers/string-utils";

@@ -1,6 +1,6 @@
 'use client'
 
-import TextEditor from "@/components/TextEditor";
+import TextEditor2 from "@/components/Editors/TextEditor2";
 import { IsErrorResponse, postFetcher } from "@/helpers/request-utils";
 import notifyError, { notifySucceed } from "@/utilities/ToastrExtensions";
 import { useRouter } from "next/navigation";
@@ -34,7 +34,7 @@ export default function CreateTagPage() {
 
     return (
         <div className="max-w-4xl mx-auto py-8 px-4">
-            <div className="bg-[var(--card-background)] rounded-xl shadow-sm border border-[var(--border-color)] overflow-hidden">
+            <div className="rounded-xl shadow-sm overflow-hidden">
                 <div className="p-6 border-b border-[var(--border-color)]">
                     <h1 className="text-2xl font-bold text-[var(--text-primary)]">Create New Tag</h1>
                     <p className="mt-1 text-sm text-[var(--text-secondary)]">Add a new tag to help categorize questions</p>
@@ -49,8 +49,9 @@ export default function CreateTagPage() {
                             type="text"
                             id="name"
                             value={name}
+                            spellCheck={false}
                             onChange={(e) => setName(e.target.value)}
-                            className="w-full px-4 py-2 rounded-lg border border-[var(--border-color)] bg-[var(--input-background)] text-[var(--text-primary)] focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                            className="w-full px-4 py-2 rounded-lg border border-[var(--border-color)] bg-[var(--input-background)] text-[var(--text-primary)]"
                             placeholder="Enter tag name"
                             required
                         />
@@ -63,9 +64,10 @@ export default function CreateTagPage() {
                         <input
                             type="text"
                             id="description"
+                            spellCheck={false}
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
-                            className="w-full px-4 py-2 rounded-lg border border-[var(--border-color)] bg-[var(--input-background)] text-[var(--text-primary)] focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                            className="w-full px-4 py-2 rounded-lg border border-[var(--border-color)] bg-[var(--input-background)] text-[var(--text-primary)]"
                             placeholder="Brief description of the tag"
                         />
                     </div>
@@ -75,10 +77,7 @@ export default function CreateTagPage() {
                             Wiki Content <small className="text-[var(--text-secondary)]">(optional)</small>
                         </label>
                         <div className="border border-[var(--border-color)] rounded-lg">
-                            <TextEditor
-                                currentText={wikiBody}
-                                onTextChange={setWikiBody}
-                            />
+                            <TextEditor2 currentText="" onTextChange={(e) => setWikiBody(e)} />
                         </div>
                     </div>
 
@@ -86,9 +85,9 @@ export default function CreateTagPage() {
                         <button
                             type="submit"
                             disabled={isSubmitting || !name.trim()}
-                            className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-[var(--disabled-background)] disabled:cursor-not-allowed transition-colors"
+                            className="px-4 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-[var(--disabled-background)] disabled:cursor-not-allowed transition-colors"
                         >
-                            {isSubmitting ? 'Creating...' : 'Create Tag'}
+                            {isSubmitting ? 'Creating...' : 'Create'}
                         </button>
                     </div>
                 </form>

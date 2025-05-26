@@ -1,7 +1,7 @@
 'use client'
 
+import TextEditor from "@/components/Editors/TextEditor";
 import ModeratorPrivilege from "@/components/Privilege/ModeratorPrivilege";
-import TextEditor from "@/components/TextEditor";
 import { getFetcher, IsErrorResponse, putFetcher } from "@/helpers/request-utils";
 import { TagDetailResponse } from "@/types/types";
 import { notifySucceed } from "@/utilities/ToastrExtensions";

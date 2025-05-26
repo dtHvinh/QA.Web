@@ -13,7 +13,7 @@ export default function SideNav() {
     const [isExpanded, setIsExpanded] = useState(true);
 
     const theme = {
-        "selected": 'bg-[var(--hover-background)] font-medium'
+        "selected": 'bg-[var(--primary-light)] text-[var(--primary)] font-semibold shadow-sm'
     }
 
     return (
@@ -25,103 +25,130 @@ export default function SideNav() {
             border-r border-[var(--border-color)]
             fixed left-0 top-[var(--appbar-height)]
             bg-[var(--nav-background)]
-            transition-width
+            transition-all duration-300 ease-in-out
             z-50
+            shadow-lg
             `}
         >
             <button
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="absolute -right-3 top-16 w-6 h-6 rounded-full bg-[var(--nav-background)] 
-                border border-[var(--border-color)] flex items-center justify-center
-                hover:bg-[var(--hover-background)] transition-colors z-50 shadow-sm"
+                className="absolute -right-3 top-6 w-7 h-7 rounded-full bg-[var(--nav-background)] 
+                border-2 border-[var(--border-color)] flex items-center justify-center
+                hover:bg-[var(--hover-background)] hover:border-[var(--primary)] transition-all duration-200 z-50 shadow-md
+                hover:scale-105"
             >
                 {isExpanded ? <ChevronLeft fontSize="small" /> : <ChevronRight fontSize="small" />}
             </button>
 
-            {isExpanded && <>
-                <div className="h-14 flex items-center justify-between w-full px-4">
-                    <div className="flex items-center gap-2">
-                        <PsychologyOutlined className="text-blue-500" fontSize="small" />
-                        {isExpanded && <span className="font-medium text-base">QA Platform</span>}
-                    </div>
-                </div>
-
-                <nav className="w-full flex flex-col p-2 space-y-1">
-                    <div className="space-y-0.5 border-white">
-                        <Link href={Routes.Home}
-                            className={`h-8 px-3 flex items-center gap-2 w-full rounded-md hover:bg-[var(--hover-background)] transition-colors text-sm
-                        ${pathname === Routes.Home ? theme.selected : ''}`}>
-                            <HomeOutlined fontSize="small" />
-                            <span>Home</span>
-                        </Link>
-
-                        <Link href={Routes.Questions}
-                            className={`h-8 px-3 flex items-center gap-2 w-full rounded-md hover:bg-[var(--hover-background)] transition-colors text-sm
-                        ${pathname === Routes.Questions ? theme.selected : ''}`}>
-                            <QuestionMarkSharp fontSize="small" />
-                            <span>Questions</span>
-                        </Link>
-
-                        <Link href={Routes.Tags}
-                            className={`h-8 px-3 flex items-center gap-2 w-full rounded-md hover:bg-[var(--hover-background)] transition-colors text-sm
-                        ${pathname === Routes.Tags ? theme.selected : ''}`}>
-                            <TagOutlined fontSize="small" />
-                            <span>Tags</span>
-                        </Link>
-
-                        <Link href={Routes.Collections}
-                            className={`h-8 px-3 flex items-center gap-2 w-full rounded-md hover:bg-[var(--hover-background)] transition-colors text-sm
-                        ${pathname === Routes.Collections ? theme.selected : ''}`}>
-                            <CollectionsOutlined fontSize="small" />
-                            <span>Collections</span>
-                        </Link>
-
-                        <Link href={Routes.Bookmarks}
-                            className={`h-8 px-3 flex items-center gap-2 w-full rounded-md hover:bg-[var(--hover-background)] transition-colors text-sm
-                        ${pathname === Routes.Bookmarks ? theme.selected : ''}`}>
-                            <BookmarksOutlined fontSize="small" />
-                            <span>Bookmarks</span>
-                        </Link>
-
-                        <Link href={'/community'}
-                            className={`h-8 px-3 flex items-center gap-2 w-full rounded-md hover:bg-[var(--hover-background)] transition-colors text-sm
-                        ${pathname === '/community' ? theme.selected : ''}`}>
-                            <Language fontSize="small" />
-                            <span>Community</span>
-                        </Link>
+            {isExpanded && (
+                <div className="w-full h-full flex flex-col">
+                    {/* Header */}
+                    <div className="h-16 flex items-center justify-center w-full px-4 border-b border-[var(--border-color)] bg-gradient-to-r from-[var(--primary-light)] to-transparent">
+                        <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-lg bg-[var(--primary)] flex items-center justify-center shadow-sm">
+                                <PsychologyOutlined className="text-white" fontSize="small" />
+                            </div>
+                            <span className="font-bold text-lg text-[var(--text-primary)]">
+                                QA Platform
+                            </span>
+                        </div>
                     </div>
 
-                    <AdminPrivilege>
-                        <div className="pt-2">
-                            <div className="border-t border-[var(--border-color)] pt-2">
-                                <Link href={'/admin'}
-                                    className={`h-8 px-3 flex items-center gap-2 w-full rounded-md hover:bg-[var(--hover-background)] transition-colors text-sm
-                                ${pathname === '/admin' ? theme.selected : ''}`}>
-                                    <AdminPanelSettings fontSize="small" />
-                                    <span>Admin</span>
+                    {/* Navigation */}
+                    <nav className="w-full flex flex-col p-3 space-y-2 flex-1">
+                        <div className="space-y-1">
+                            <div className="text-xs font-semibold text-[var(--text-tertiary)] uppercase tracking-wider px-3 py-2">
+                                Main
+                            </div>
+
+                            <Link href={Routes.Home}
+                                className={`h-10 px-3 flex items-center gap-3 w-full rounded-lg hover:bg-[var(--hover-background)] transition-all duration-200 text-sm group
+                            ${pathname === Routes.Home ? theme.selected : 'hover:translate-x-1'}`}>
+                                <HomeOutlined fontSize="small" className="group-hover:scale-110 transition-transform" />
+                                <span>Home</span>
+                            </Link>
+
+                            <Link href={Routes.Questions}
+                                className={`h-10 px-3 flex items-center gap-3 w-full rounded-lg hover:bg-[var(--hover-background)] transition-all duration-200 text-sm group
+                            ${pathname === Routes.Questions ? theme.selected : 'hover:translate-x-1'}`}>
+                                <QuestionMarkSharp fontSize="small" className="group-hover:scale-110 transition-transform" />
+                                <span>Questions</span>
+                            </Link>
+
+                            <Link href={Routes.Tags}
+                                className={`h-10 px-3 flex items-center gap-3 w-full rounded-lg hover:bg-[var(--hover-background)] transition-all duration-200 text-sm group
+                            ${pathname === Routes.Tags ? theme.selected : 'hover:translate-x-1'}`}>
+                                <TagOutlined fontSize="small" className="group-hover:scale-110 transition-transform" />
+                                <span>Tags</span>
+                            </Link>
+
+                            <Link href={Routes.Collections}
+                                className={`h-10 px-3 flex items-center gap-3 w-full rounded-lg hover:bg-[var(--hover-background)] transition-all duration-200 text-sm group
+                            ${pathname === Routes.Collections ? theme.selected : 'hover:translate-x-1'}`}>
+                                <CollectionsOutlined fontSize="small" className="group-hover:scale-110 transition-transform" />
+                                <span>Collections</span>
+                            </Link>
+
+                            <Link href={Routes.Bookmarks}
+                                className={`h-10 px-3 flex items-center gap-3 w-full rounded-lg hover:bg-[var(--hover-background)] transition-all duration-200 text-sm group
+                            ${pathname === Routes.Bookmarks ? theme.selected : 'hover:translate-x-1'}`}>
+                                <BookmarksOutlined fontSize="small" className="group-hover:scale-110 transition-transform" />
+                                <span>Bookmarks</span>
+                            </Link>
+
+                            <Link href={'/community'}
+                                className={`h-10 px-3 flex items-center gap-3 w-full rounded-lg hover:bg-[var(--hover-background)] transition-all duration-200 text-sm group
+                            ${pathname === '/community' ? theme.selected : 'hover:translate-x-1'}`}>
+                                <Language fontSize="small" className="group-hover:scale-110 transition-transform" />
+                                <span>Community</span>
+                            </Link>
+                        </div>
+
+                        {/* Admin Section */}
+                        <AdminPrivilege>
+                            <div className="pt-4">
+                                <div className="border-t border-[var(--border-color)] pt-4">
+                                    <div className="text-xs font-semibold text-[var(--text-tertiary)] uppercase tracking-wider px-3 py-2">
+                                        Administration
+                                    </div>
+                                    <Link href={'/admin'}
+                                        className={`h-10 px-3 flex items-center gap-3 w-full rounded-lg hover:bg-[var(--hover-background)] transition-all duration-200 text-sm group
+                                    ${pathname === '/admin' ? theme.selected : 'hover:translate-x-1'}`}>
+                                        <AdminPanelSettings fontSize="small" className="group-hover:scale-110 transition-transform" />
+                                        <span>Admin Panel</span>
+                                    </Link>
+                                </div>
+                            </div>
+                        </AdminPrivilege>
+
+                        {/* Moderator Section */}
+                        <ModeratorPrivilege>
+                            <div className={`${pathname.startsWith('/admin') ? '' : 'pt-4 border-t border-[var(--border-color)]'}`}>
+                                {!pathname.startsWith('/admin') && (
+                                    <div className="text-xs font-semibold text-[var(--text-tertiary)] uppercase tracking-wider px-3 py-2">
+                                        Moderation
+                                    </div>
+                                )}
+                                <Link href={'/moderator'}
+                                    className={`h-10 px-3 flex items-center gap-3 w-full rounded-lg hover:bg-[var(--hover-background)] transition-all duration-200 text-sm group
+                                    ${pathname === '/moderator' ? theme.selected : 'hover:translate-x-1'}`}>
+                                    <BuildOutlined fontSize="small" className="group-hover:scale-110 transition-transform" />
+                                    <span>Moderator Tools</span>
                                 </Link>
                             </div>
+                        </ModeratorPrivilege>
+
+                        {/* Logout Section */}
+                        <div className="mt-auto pt-4 border-t border-[var(--border-color)]">
+                            <button onClick={logOut}
+                                className="h-10 px-3 flex items-center gap-3 w-full rounded-lg text-red-500 hover:bg-red-50 hover:text-red-600 transition-all duration-200 text-sm group hover:translate-x-1">
+                                <Logout fontSize="small" className="group-hover:scale-110 transition-transform" />
+                                <span>Sign Out</span>
+                            </button>
                         </div>
-                    </AdminPrivilege>
-
-                    <ModeratorPrivilege>
-                        <Link href={'/moderator'}
-                            className={`h-8 px-3 flex items-center gap-2 w-full rounded-md hover:bg-[var(--hover-background)] transition-colors text-sm
-                                ${pathname === '/moderator' ? theme.selected : ''}`}>
-                            <BuildOutlined fontSize="small" />
-                            <span>Moderator</span>
-                        </Link>
-                    </ModeratorPrivilege>
-
-                    <div className="mt-auto pt-2">
-                        <button onClick={logOut}
-                            className="h-8 px-3 flex items-center gap-2 w-full rounded-md text-red-500 hover:bg-[var(--hover-background)] transition-colors text-sm">
-                            <Logout fontSize="small" />
-                            <span>Logout</span>
-                        </button>
-                    </div>
-                </nav>
-            </>}
+                    </nav>
+                </div>
+            )}
         </aside>
     );
 }

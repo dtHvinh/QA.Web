@@ -1,23 +1,25 @@
 'use client'
 
 import Loading from "@/app/loading";
+import ActionButton from "@/components/Button/ActionButton";
 import ObjectNotfound from "@/components/Error/ObjectNotFound";
 import ResourceOwnerPrivilege from "@/components/Privilege/ResourceOwnerPrivilege";
 import { getFetcher, IsErrorResponse } from "@/helpers/request-utils";
 import { countTotalDays } from "@/helpers/time-utils";
 import { fromImage, getProviderImage } from "@/helpers/utils";
 import { ExternalLinkResponse, UserResponse } from "@/types/types";
-import { Edit } from "@mui/icons-material";
 import { Avatar } from "@mui/material";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import useSWR from "swr";
 import EditMode from "../EditMode";
 
+export const getUserProfileKey = (username?: string) => `/api/user/${username ?? ''}`
+
 export default function ProfilePage({ params }: { params: Promise<{ username?: string }> }) {
     const p = React.use(params);
     const [isEditMode, setIsEditMode] = useState(false)
-    const { data: user, isLoading, mutate } = useSWR<UserResponse>(`/api/user/${p.username ?? ''} `, getFetcher);
+    const { data: user, isLoading, mutate } = useSWR<UserResponse>(getUserProfileKey(p.username), getFetcher);
     const [username, setUsername] = useState('')
     const [externalLinks, setExternalLinks] = useState<ExternalLinkResponse[]>([])
 
@@ -79,13 +81,10 @@ export default function ProfilePage({ params }: { params: Promise<{ username?: s
                                 <div className="flex flex-col sm:flex-row sm:items-center justify-between">
                                     <h1 className="text-3xl font-bold text-[var(--text-primary)]">{username}</h1>
                                     <ResourceOwnerPrivilege resourceRight={user.resourceRight}>
-                                        <button
+                                        <ActionButton
                                             onClick={() => setIsEditMode(true)}
-                                            className="mt-2 sm:mt-0 flex items-center gap-2 px-4 py-2 bg-[var(--primary-light)] text-[var(--primary)] rounded-lg hover:bg-[var(--primary-lighter)] transition-colors"
-                                        >
-                                            <Edit fontSize="small" />
-                                            <span>Edit Profile</span>
-                                        </button>
+                                            kind='edit'
+                                        />
                                     </ResourceOwnerPrivilege>
                                 </div>
                                 <div className="mt-2 text-[var(--text-secondary)]">
